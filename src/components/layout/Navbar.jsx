@@ -7,7 +7,13 @@ const navItems = [
   { label: 'Home', path: '/' },
   {
     label: 'Publishing', children: [
-      { label: 'Publishing Packages', path: '/publishingpackages' },
+      {
+        label: 'Publishing Packages', children: [
+          { label: 'Mini Package', path: '/publishingpackages/mini' },
+          { label: 'A5 Package', path: '/publishingpackages/a5' },
+          { label: '6x9 Package', path: '/publishingpackages/6x9' },
+        ]
+      },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
       { label: 'Amazon KDP', path: '/amazonkdp' },
@@ -146,21 +152,52 @@ export default function Navbar() {
                     >
                       {item.children.map((child, i) => (
                         <motion.div
-                          key={child.path}
+                          key={child.label}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.04 }}
+                          className={child.children ? 'relative group' : ''}
                         >
-                          <Link
-                            to={child.path}
-                            className={`block px-4 py-3 text-sm transition-all hover:bg-copper/10 hover:pl-5 ${
-                              child.label === 'Get a Quote'
-                                ? 'text-copper font-medium'
-                                : 'text-white/70 hover:text-copper'
-                            }`}
-                          >
-                            {child.label}
-                          </Link>
+                          {child.children ? (
+                            <>
+                              <button className="w-full text-left flex items-center justify-between px-4 py-3 text-sm text-white/70 hover:text-copper hover:bg-copper/10 transition-all">
+                                {child.label}
+                                <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform" />
+                              </button>
+                              <motion.div
+                                initial={{ opacity: 0, x: 8 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="hidden group-hover:block absolute left-full top-0 ml-1 w-52 rounded-lg overflow-hidden"
+                                style={{
+                                  background: 'rgba(10, 8, 6, 0.95)',
+                                  backdropFilter: 'blur(24px)',
+                                  border: '1px solid rgba(184, 115, 51, 0.15)',
+                                }}
+                              >
+                                {child.children.map((grandchild) => (
+                                  <Link
+                                    key={grandchild.path}
+                                    to={grandchild.path}
+                                    className="block px-4 py-3 text-sm text-white/70 hover:text-copper hover:bg-copper/10 transition-all"
+                                  >
+                                    {grandchild.label}
+                                  </Link>
+                                ))}
+                              </motion.div>
+                            </>
+                          ) : (
+                            <Link
+                              to={child.path}
+                              className={`block px-4 py-3 text-sm transition-all hover:bg-copper/10 hover:pl-5 ${
+                                child.label === 'Get a Quote'
+                                  ? 'text-copper font-medium'
+                                  : 'text-white/70 hover:text-copper'
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          )}
                         </motion.div>
                       ))}
                     </motion.div>
@@ -259,10 +296,42 @@ export default function Navbar() {
                             className="overflow-hidden pl-4 border-l border-copper/20 ml-3"
                           >
                             {item.children.map((child) => (
-                              <Link key={child.path} to={child.path}
-                                className="block px-3 py-2.5 text-sm text-white/60 hover:text-copper transition-colors">
-                                {child.label}
-                              </Link>
+                              <div key={child.label}>
+                                {child.children ? (
+                                  <>
+                                    <button
+                                      onClick={() => setActiveDropdown(activeDropdown === `${item.label}-${child.label}` ? item.label : `${item.label}-${child.label}`)}
+                                      className="flex items-center justify-between w-full px-3 py-2.5 text-sm text-white/60 hover:text-copper transition-colors"
+                                    >
+                                      {child.label}
+                                      <ChevronDown className={`w-3 h-3 transition-transform ${activeDropdown === `${item.label}-${child.label}` ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    <AnimatePresence>
+                                      {activeDropdown === `${item.label}-${child.label}` && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: 'auto', opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          transition={{ duration: 0.2 }}
+                                          className="overflow-hidden pl-3 border-l border-copper/10 ml-3"
+                                        >
+                                          {child.children.map((grandchild) => (
+                                            <Link key={grandchild.path} to={grandchild.path}
+                                              className="block px-3 py-2 text-sm text-white/50 hover:text-copper transition-colors">
+                                              {grandchild.label}
+                                            </Link>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </>
+                                ) : (
+                                  <Link to={child.path}
+                                    className="block px-3 py-2.5 text-sm text-white/60 hover:text-copper transition-colors">
+                                    {child.label}
+                                  </Link>
+                                )}
+                              </div>
                             ))}
                           </motion.div>
                         )}
