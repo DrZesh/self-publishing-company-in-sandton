@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BookOpen, Printer, PenLine, Palette, AlignLeft, BookMarked,
-  BookCopy, FileText, BookText, Feather, Heart, Cross,
-  Globe, Smartphone, Hash, Package, ArrowRight
+  BookCopy, Globe, Smartphone, ArrowRight
 } from 'lucide-react';
 
 const services = [
@@ -58,41 +57,6 @@ const services = [
     aria: 'Hardcover book printing South Africa',
   },
   {
-    icon: FileText,
-    title: 'A5 Book Printing',
-    desc: 'The most popular South African book format. Perfect for novels, poetry, memoirs, and general non-fiction.',
-    link: '/a5bookprinting',
-    aria: 'A5 book printing South Africa',
-  },
-  {
-    icon: BookText,
-    title: '6×9 Book Printing',
-    desc: 'The international trade standard for Amazon KDP and global distribution. Ideal for business books.',
-    link: '/6x9bookprinting',
-    aria: '6x9 book printing South Africa',
-  },
-  {
-    icon: Feather,
-    title: 'Poetry Publishing',
-    desc: 'Beautifully crafted poetry collections with thoughtful typesetting, cover design, and print and digital options.',
-    link: '/poetrypublishing',
-    aria: 'Poetry book publishing South Africa',
-  },
-  {
-    icon: Heart,
-    title: 'Memoir Publishing',
-    desc: 'Preserve your life story. Professional memoir writing assistance, editing, design, and full publishing support.',
-    link: '/memoirpublishing',
-    aria: 'Memoir publishing South Africa',
-  },
-  {
-    icon: Cross,
-    title: 'Christian Book Publishing',
-    desc: 'Publish your faith-based book with sensitivity and excellence. Specialised design and distribution for Christian titles.',
-    link: '/christianbookpublishing',
-    aria: 'Christian book publishing South Africa',
-  },
-  {
     icon: Globe,
     title: 'Author Website Design',
     desc: 'Professional author websites that build your brand, grow your readership, and help you sell more books online.',
@@ -105,20 +69,6 @@ const services = [
     desc: 'Professionally formatted ePub and Kindle files ready for Amazon KDP, Apple Books, and global ebook platforms.',
     link: '/ebookformatting',
     aria: 'Ebook formatting services South Africa',
-  },
-  {
-    icon: Hash,
-    title: 'ISBN Assistance',
-    desc: 'We handle your ISBN registration, barcode generation, and national book registration so you can focus on writing.',
-    link: '/isbnregistration',
-    aria: 'ISBN registration South Africa',
-  },
-  {
-    icon: Package,
-    title: 'Publishing Packages',
-    desc: 'All-inclusive publishing packages from R4,999. Editing, design, print, and distribution — one price, zero stress.',
-    link: '/publishingpackages',
-    aria: 'Book publishing packages South Africa',
   },
 ];
 
