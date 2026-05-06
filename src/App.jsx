@@ -68,6 +68,7 @@ import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.
 // City Pages (scalable component)
 import { CityPrintingPage } from './pages/seo/location/CityPrintingPage.jsx';
 import SelfPublishingCityPage from './pages/seo/location/SelfPublishingCityPage';
+import LocationsHub from './pages/seo/LocationsHub';
 
 // Industry-Specific Printing Pages
 import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
@@ -197,6 +198,9 @@ const AuthenticatedApp = () => {
         <Route path="/proofreadingservicessouthafrica" element={<ProofreadingServicesSouthAfrica />} />
         <Route path="/ghostwriterssouthafrica" element={<GhostwritersSouthAfrica />} />
         <Route path="/bestpublishingcompaniesinsouthafrica" element={<BestPublishingCompaniesSouthAfrica />} />
+
+        {/* Locations Hub */}
+        <Route path="/locations" element={<LocationsHub />} />
 
         {/* Gauteng Location Pages (dedicated) */}
         <Route path="/bookprintingsandton" element={<BookPrintingSandton />} />
