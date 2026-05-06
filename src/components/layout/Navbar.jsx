@@ -15,15 +15,10 @@ const navItems = [
   },
   {
     label: 'Printing', children: [
-      { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-      { label: 'A5 Book Printing', path: '/a5bookprinting' },
-      { label: '6×9 Book Printing', path: '/6x9bookprinting' },
-      { label: 'Hardcover Printing', path: '/hardcoverprinting' },
-      { label: 'Softcover Printing', path: '/softcoverprinting' },
-      { label: "Children's Book Printing", path: '/childrensbookprinting' },
-      { label: 'Workbook Printing', path: '/workbookprinting' },
-      { label: 'Comic Book Printing', path: '/comicbookprinting' },
-      { label: 'Manual Printing', path: '/manualprinting' },
+      { label: 'A5 Printing', path: '/printing/a5' },
+      { label: '6x9 Printing', path: '/printing/6x9' },
+      { label: 'Hardcover Printing', path: '/printing/hardcover' },
+      { label: "Children's Book Printing", path: '/printing/childrensbooks' },
     ]
   },
   {

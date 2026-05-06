@@ -18,6 +18,15 @@ import FAQ from './pages/FAQ';
 import Blog from './pages/Blog';
 import BlogArticle from './pages/BlogArticle';
 
+// Printing Sub-Pages
+import PrintingA5 from './pages/printing/PrintingA5';
+import Printing6x9 from './pages/printing/Printing6x9';
+import PrintingHardcover from './pages/printing/PrintingHardcover';
+import PrintingChildrensBooks from './pages/printing/PrintingChildrensBooks';
+import ChildrensBooks15x15 from './pages/printing/childrensbooks/ChildrensBooks15x15';
+import ChildrensBooks20x20 from './pages/printing/childrensbooks/ChildrensBooks20x20';
+import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks21x21';
+
 // Service Silo Pages
 import BookPublishing from './pages/services/BookPublishing';
 import BookPrinting from './pages/services/BookPrinting';
@@ -83,6 +92,15 @@ const AuthenticatedApp = () => {
         <Route path="/memoirpublishing" element={<GenericServicePage serviceKey="memoirpublishing" />} />
         <Route path="/poetrypublishing" element={<GenericServicePage serviceKey="poetrypublishing" />} />
         <Route path="/businessbookpublishing" element={<GenericServicePage serviceKey="businessbookpublishing" />} />
+
+        {/* Printing Sub-Pages */}
+        <Route path="/printing/a5" element={<PrintingA5 />} />
+        <Route path="/printing/6x9" element={<Printing6x9 />} />
+        <Route path="/printing/hardcover" element={<PrintingHardcover />} />
+        <Route path="/printing/childrensbooks" element={<PrintingChildrensBooks />} />
+        <Route path="/printing/childrensbooks/15cmx15cm" element={<ChildrensBooks15x15 />} />
+        <Route path="/printing/childrensbooks/20cmx20cm" element={<ChildrensBooks20x20 />} />
+        <Route path="/printing/childrensbooks/21cmx21cm" element={<ChildrensBooks21x21 />} />
 
         {/* Printing Silo */}
         <Route path="/bookprinting" element={<BookPrinting />} />
