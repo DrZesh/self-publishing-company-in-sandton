@@ -4,49 +4,44 @@ import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 
 const footerSilos = [
   {
-    title: 'Quick Links',
-    links: [
-      { label: 'Home', path: '/' },
-      { label: 'About Us', path: '/aboutus' },
-      { label: 'Blog', path: '/blog' },
-      { label: 'FAQ', path: '/faq' },
-      { label: 'Contact Us', path: '/contact' },
-      { label: 'Get a Quote', path: '/getquote' },
-    ]
-  },
-  {
-    title: 'Services',
-    links: [
-      { label: 'Book Printing', path: '/bookprinting' },
-      { label: 'Book Editing', path: '/bookediting' },
-      { label: 'Book Cover Design', path: '/bookcoverdesign' },
-      { label: 'eBook Publishing', path: '/ebookpublishing' },
-      { label: 'Ghostwriting', path: '/ghostwriting' },
-      { label: 'Typesetting & Layout', path: '/typesetting' },
-      { label: 'Author Websites', path: '/authorwebsites' },
-    ]
-  },
-  {
-    title: 'Publishing Categories',
+    title: 'Publishing',
     links: [
       { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Poetry Book Publishing', path: '/poetrybookpublishing' },
-      { label: 'Memoir Book Publishing', path: '/memoirbookpublishing' },
-      { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
-      { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
-      { label: 'Business Book Publishing', path: '/businessbookpublishing' },
-      { label: 'Self Publishing', path: '/selfpublishing' },
+      { label: 'Publishers in South Africa', path: '/bookpublisherssouthafrica' },
+      { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
+      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+      { label: 'Publishing Packages', path: '/publishingpackages' },
+      { label: 'eBook Publishing', path: '/ebookpublishing' },
+    ]
+  },
+  {
+    title: 'Printing',
+    links: [
+      { label: 'Book Printing', path: '/bookprinting' },
+      { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+      { label: 'Hardcover Printing', path: '/hardcoverprinting' },
+      { label: 'Softcover Printing', path: '/softcoverprinting' },
+      { label: 'A5 Book Printing', path: '/a5bookprinting' },
+    ]
+  },
+  {
+    title: 'Editing & Design',
+    links: [
+      { label: 'Book Editing', path: '/bookediting' },
+      { label: 'Proofreading Services SA', path: '/proofreadingservicessouthafrica' },
+      { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
+      { label: 'Ghostwriters South Africa', path: '/ghostwriterssouthafrica' },
     ]
   },
   {
     title: 'Resources',
     links: [
       { label: 'ISBN Registration', path: '/isbnregistration' },
-      { label: 'How to Publish a Book', path: '/howtopublishabook' },
-      { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Best Publishers SA', path: '/bestpublishingcompaniesinsouthafrica' },
-      { label: 'Publishers in SA', path: '/bookpublisherssouthafrica' },
-      { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
+      { label: 'How to Publish a Book', path: '/howtopublishabook' },
+      { label: 'Blog', path: '/blog' },
+      { label: 'FAQ', path: '/faq' },
     ]
   },
 ];
@@ -56,7 +51,7 @@ export default function Footer() {
     <footer className="bg-obsidian text-white/70">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -85,8 +80,8 @@ export default function Footer() {
           </div>
 
           {/* Silo Columns */}
-          {footerSilos.map((silo, i) => (
-            <div key={silo.title} className={i > 0 ? 'border-t border-white/5 pt-6 md:border-t-0 md:pt-0 md:border-l md:border-white/5 md:pl-6' : ''}>
+          {footerSilos.map((silo) => (
+            <div key={silo.title}>
               <h4 className="text-white font-heading text-sm font-semibold mb-4 tracking-wider uppercase">{silo.title}</h4>
               <ul className="space-y-2.5">
                 {silo.links.map((link) => (

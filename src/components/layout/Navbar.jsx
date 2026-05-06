@@ -7,25 +7,34 @@ const navItems = [
   { label: 'Home', path: '/' },
   { label: 'About Us', path: '/aboutus' },
   {
-    label: 'Packages', children: [
-      { label: 'Full Package (A5)', path: '/fullpackagesa5' },
-      { label: 'Full Package (6×9)', path: '/fullpackages6x9' },
-      { label: 'Mini Package', path: '/minipackages' },
+    label: 'Publishing', children: [
+      { label: 'Book Publishing', path: '/bookpublishing' },
+      { label: 'Publishing Packages', path: '/publishingpackages' },
+      { label: 'Self Publishing', path: '/selfpublishing' },
+      { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
+      { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
+      { label: 'Memoir Publishing', path: '/memoirpublishing' },
+      { label: 'Poetry Publishing', path: '/poetrypublishing' },
+      { label: 'Business Book Publishing', path: '/businessbookpublishing' },
+      { label: 'eBook Publishing', path: '/ebookpublishing' },
+      { label: 'Amazon KDP', path: '/amazonkdp' },
     ]
   },
   {
-    label: 'Book Printing', children: [
+    label: 'Printing', children: [
+      { label: 'Book Printing', path: '/bookprinting' },
       { label: 'A5 Book Printing', path: '/a5bookprinting' },
       { label: '6×9 Book Printing', path: '/6x9bookprinting' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },
       { label: 'Softcover Printing', path: '/softcoverprinting' },
-      { label: 'Cream Paper Printing', path: '/creampaperprinting' },
-      { label: 'White Paper Printing', path: '/whitepaperprinting' },
       { label: "Children's Book Printing", path: '/childrensbookprinting' },
+      { label: 'Workbook Printing', path: '/workbookprinting' },
+      { label: 'Comic Book Printing', path: '/comicbookprinting' },
+      { label: 'Manual Printing', path: '/manualprinting' },
     ]
   },
   {
-    label: 'Editing Services', children: [
+    label: 'Editing', children: [
       { label: 'Book Editing', path: '/bookediting' },
       { label: 'Proofreading', path: '/proofreading' },
       { label: 'Copy Editing', path: '/copyediting' },
@@ -38,17 +47,12 @@ const navItems = [
     ]
   },
   {
-    label: 'Design Services', children: [
+    label: 'Design & Writing', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
       { label: 'Author Websites', path: '/authorwebsites' },
-    ]
-  },
-  { label: 'eBook Publishing', path: '/ebookpublishing' },
-  {
-    label: 'Ghostwriting', children: [
-      { label: 'Ghostwriting Services', path: '/ghostwriting' },
+      { label: 'Ghostwriting', path: '/ghostwriting' },
       { label: 'Memoir Writing', path: '/memoirwriting' },
       { label: 'Biography Writing', path: '/biographywriting' },
       { label: 'Christian Book Writing', path: '/christianbookwriting' },
@@ -59,12 +63,16 @@ const navItems = [
       { label: 'ISBN Registration', path: '/isbnregistration' },
       { label: 'How to Publish a Book', path: '/howtopublishabook' },
       { label: 'Publishing Guide', path: '/publishingguide' },
+      { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
     ]
   },
-  { label: 'Blog', path: '/blog' },
-  { label: 'Contact', path: '/contact' },
-  { label: 'Get Quote', path: '/getquote', highlight: true },
+  {
+    label: 'Get In Touch', children: [
+      { label: 'Contact Us', path: '/contact' },
+      { label: 'Get a Quote', path: '/getquote' },
+    ]
+  },
 ];
 
 export default function Navbar() {
@@ -115,10 +123,6 @@ export default function Navbar() {
                     {item.label}
                     <ChevronDown className="w-3 h-3" />
                   </button>
-                ) : item.highlight ? (
-                  <Link to={item.path} className="px-4 py-2 text-sm bg-copper text-white rounded-full hover:bg-copper/90 transition-colors font-body font-medium">
-                    {item.label}
-                  </Link>
                 ) : (
                   <Link to={item.path} className="px-3 py-2 text-sm text-white/80 hover:text-copper transition-colors font-body">
                     {item.label}

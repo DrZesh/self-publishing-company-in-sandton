@@ -193,38 +193,6 @@ const serviceData = {
     description: 'Professional author websites designed to showcase your books, build your brand, and connect with readers. SEO-optimised and mobile-responsive.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/63376ef11_generated_5bcb307c.png',
   },
-  // PACKAGES
-  fullpackagesa5: {
-    subtitle: 'Full Publishing Package',
-    title: 'Full Publishing Package (A5)',
-    description: 'Our complete A5 self-publishing package covers everything from professional editing and typesetting to cover design, ISBN registration, and print-ready files — all in one affordable bundle.',
-    heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
-  },
-  fullpackages6x9: {
-    subtitle: 'Full Publishing Package',
-    title: 'Full Publishing Package (6×9)',
-    description: 'Everything you need to publish your book in the popular 6×9 trade paperback format. Professional editing, layout, cover design, ISBN, and print-ready files included.',
-    heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
-  },
-  minipackages: {
-    subtitle: 'Affordable Publishing',
-    title: 'Mini Publishing Package',
-    description: 'Our most affordable entry-level publishing package for first-time authors. Professional formatting, basic cover design, eBook conversion, and ISBN registration at the best value price.',
-    heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
-  },
-  // FOOTER SEO CATEGORIES
-  poetrybookpublishing: {
-    subtitle: 'Poetry Book Publishing South Africa',
-    title: 'Poetry Book Publishing in South Africa',
-    description: 'Publish your poetry collection with Creative Books SA. Beautiful typesetting, artistic cover design, and premium printing that showcases the rhythm and beauty of your verse.',
-    heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/866979bdb_generated_1a350664.png',
-  },
-  memoirbookpublishing: {
-    subtitle: 'Memoir Book Publishing South Africa',
-    title: 'Memoir Book Publishing in South Africa',
-    description: 'Preserve your life story with professional memoir publishing. From writing assistance to beautifully printed and distributed copies — we help you create a lasting personal legacy.',
-    heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
-  },
   // DIGITAL SILO
   amazonkdp: {
     subtitle: 'Amazon KDP South Africa',
