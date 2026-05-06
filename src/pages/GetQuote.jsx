@@ -1,206 +1,255 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, BookOpen, Printer, PenLine, Palette, Globe, Users, Check, Send } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import QuoteStep1 from '../components/quote/QuoteStep1';
+import QuoteStep2 from '../components/quote/QuoteStep2';
+import QuoteStep3 from '../components/quote/QuoteStep3';
+import QuoteStep4 from '../components/quote/QuoteStep4';
+import QuoteStep5 from '../components/quote/QuoteStep5';
+import QuoteStep6 from '../components/quote/QuoteStep6';
+import QuoteStep7 from '../components/quote/QuoteStep7';
+import QuoteReview from '../components/quote/QuoteReview';
+import QuoteProgress from '../components/quote/QuoteProgress';
 
-const serviceOptions = [
-  { id: 'publishing', icon: BookOpen, label: 'Book Publishing', desc: 'Complete publishing packages' },
-  { id: 'printing', icon: Printer, label: 'Book Printing', desc: 'Print copies of your book' },
-  { id: 'editing', icon: PenLine, label: 'Editing', desc: 'Professional editing & proofreading' },
-  { id: 'design', icon: Palette, label: 'Design', desc: 'Cover design & typesetting' },
-  { id: 'ebook', icon: Globe, label: 'eBook Publishing', desc: 'Digital publishing & KDP' },
-  { id: 'ghostwriting', icon: Users, label: 'Ghostwriting', desc: 'Professional ghost writers' },
+const STORAGE_KEY = 'cbsa_quote_form';
+
+const INITIAL_DATA = {
+  // Step 1
+  firstName: '', lastName: '', email: '', confirmEmail: '',
+  phone: '', address: '', city: '', province: '', postalCode: '',
+  // Step 2
+  bookSize: '', bookSizeConverted: '', numberOfPages: '', bookGenre: '', wordCount: '',
+  // Step 3
+  needCover: '', coverType: '',
+  // Step 4
+  needPrinting: '', printCopies: '', paperType: '', coverFinish: '',
+  hasColourImages: '', colourImageCount: '', colourImagePrint: '',
+  // Step 5
+  needTypesetting: '', typesettingType: '',
+  // Step 6
+  needEditing: '', editingWordCount: '', editingGenre: '',
+  // Step 7
+  startDate: '', howFound: '', additionalNotes: '',
+};
+
+const STEP_LABELS = [
+  'Client Details', 'Book Details', 'Cover Design',
+  'Printing', 'Typesetting', 'Editing', 'Timeline', 'Review'
 ];
-
-const genres = ['Fiction', 'Non-Fiction', 'Children\'s Book', 'Christian / Religious', 'Memoir / Biography', 'Poetry', 'Academic / Thesis', 'Business', 'Self-Help', 'Other'];
-const bookTypes = ['Softcover', 'Hardcover', 'eBook Only', 'Softcover + eBook', 'Hardcover + eBook', 'Not Sure'];
 
 export default function GetQuote() {
   const [step, setStep] = useState(0);
-  const [data, setData] = useState({
-    services: [],
-    genre: '',
-    bookType: '',
-    wordCount: '',
-    name: '',
-    email: '',
-    phone: '',
-    details: '',
+  const [data, setData] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? { ...INITIAL_DATA, ...JSON.parse(saved) } : INITIAL_DATA;
+    } catch { return INITIAL_DATA; }
   });
+  const [errors, setErrors] = useState({});
+  const [direction, setDirection] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const steps = [
-    { title: 'What do you need?', subtitle: 'Select all services that apply' },
-    { title: 'About your book', subtitle: 'Tell us about your project' },
-    { title: 'Your details', subtitle: 'So we can send your personalised quote' },
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  }, [data]);
+
+  const update = useCallback((fields) => {
+    setData(prev => ({ ...prev, ...fields }));
+    setErrors(prev => {
+      const next = { ...prev };
+      Object.keys(fields).forEach(k => delete next[k]);
+      return next;
+    });
+  }, []);
+
+  const validate = () => {
+    const e = {};
+    if (step === 0) {
+      if (!data.firstName.trim()) e.firstName = 'Required';
+      if (!data.lastName.trim()) e.lastName = 'Required';
+      if (!data.email.trim()) e.email = 'Required';
+      else if (!/\S+@\S+\.\S+/.test(data.email)) e.email = 'Invalid email';
+      if (!data.confirmEmail.trim()) e.confirmEmail = 'Required';
+      else if (data.email !== data.confirmEmail) e.confirmEmail = 'Emails do not match';
+      if (!data.phone.trim()) e.phone = 'Required';
+      if (!data.address.trim()) e.address = 'Required';
+      if (!data.city.trim()) e.city = 'Required';
+      if (!data.province.trim()) e.province = 'Required';
+      if (!data.postalCode.trim()) e.postalCode = 'Required';
+    }
+    if (step === 1) {
+      if (!data.bookSize) e.bookSize = 'Required';
+      if (!data.bookSizeConverted) e.bookSizeConverted = 'Required';
+      if (!data.numberOfPages.trim()) e.numberOfPages = 'Required';
+      if (!data.bookGenre) e.bookGenre = 'Required';
+      if (!data.wordCount.trim()) e.wordCount = 'Required';
+    }
+    if (step === 2) {
+      if (!data.needCover) e.needCover = 'Required';
+      if (data.needCover === 'yes' && !data.coverType) e.coverType = 'Required';
+    }
+    if (step === 3) {
+      if (!data.needPrinting) e.needPrinting = 'Required';
+      if (data.needPrinting === 'yes') {
+        if (!data.printCopies) e.printCopies = 'Required';
+        if (!data.paperType) e.paperType = 'Required';
+        if (!data.coverFinish) e.coverFinish = 'Required';
+        if (!data.hasColourImages) e.hasColourImages = 'Required';
+        if (data.hasColourImages === 'yes') {
+          if (!data.colourImageCount.trim()) e.colourImageCount = 'Required';
+          if (!data.colourImagePrint) e.colourImagePrint = 'Required';
+        }
+      }
+    }
+    if (step === 4) {
+      if (!data.needTypesetting) e.needTypesetting = 'Required';
+      if (data.needTypesetting === 'yes' && !data.typesettingType) e.typesettingType = 'Required';
+    }
+    if (step === 5) {
+      if (!data.needEditing) e.needEditing = 'Required';
+      if (data.needEditing === 'yes') {
+        if (!data.editingWordCount.trim()) e.editingWordCount = 'Required';
+        if (!data.editingGenre.trim()) e.editingGenre = 'Required';
+      }
+    }
+    if (step === 6) {
+      if (!data.startDate) e.startDate = 'Required';
+      if (!data.howFound) e.howFound = 'Required';
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const next = () => {
+    if (!validate()) return;
+    setDirection(1);
+    setStep(s => Math.min(s + 1, 7));
+  };
+
+  const back = () => {
+    setDirection(-1);
+    setErrors({});
+    setStep(s => Math.max(s - 1, 0));
+  };
+
+  const submit = async () => {
+    setSubmitting(true);
+    // Build email-like submission via mailto fallback
+    await new Promise(r => setTimeout(r, 1200));
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    setSubmitting(false);
+    setSubmitted(true);
+  };
+
+  const stepProps = { data, update, errors };
+
+  const STEPS = [
+    <QuoteStep1 {...stepProps} />,
+    <QuoteStep2 {...stepProps} />,
+    <QuoteStep3 {...stepProps} />,
+    <QuoteStep4 {...stepProps} />,
+    <QuoteStep5 {...stepProps} />,
+    <QuoteStep6 {...stepProps} />,
+    <QuoteStep7 {...stepProps} />,
+    <QuoteReview data={data} onEdit={(s) => { setDirection(-1); setStep(s); }} />,
   ];
-
-  const toggleService = (id) => {
-    setData(prev => ({
-      ...prev,
-      services: prev.services.includes(id)
-        ? prev.services.filter(s => s !== id)
-        : [...prev.services, id]
-    }));
-  };
-
-  const canProceed = () => {
-    if (step === 0) return data.services.length > 0;
-    if (step === 1) return data.genre && data.bookType;
-    if (step === 2) return data.name && data.email;
-    return false;
-  };
-
-  const handleSubmit = () => setSubmitted(true);
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center px-4 pt-20">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md">
+      <div className="min-h-screen bg-vellum flex items-center justify-center px-4 pt-24 pb-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-3xl shadow-xl p-10 max-w-lg w-full text-center"
+        >
           <div className="w-20 h-20 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-6">
-            <Send className="w-10 h-10 text-copper" />
+            <CheckCircle className="w-10 h-10 text-copper" />
           </div>
-          <h1 className="font-heading text-3xl font-bold text-white mb-4">Quote Request Received!</h1>
-          <p className="text-white/60 font-body leading-relaxed">
-            Thank you, {data.name}. We'll review your project details and send a personalised quote to {data.email} within 24 hours.
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0F0F0F] mb-4">
+            Quote Request Received!
+          </h2>
+          <p className="text-[#0F0F0F]/60 font-body leading-relaxed mb-8">
+            Thank you. Your quote request has been received. Creative Books SA will review your information and get back to you shortly.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="https://wa.me/27000000000" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors">
+              <MessageCircle className="w-4 h-4" /> WhatsApp Us
+            </a>
+            <Link to="/"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-obsidian text-white rounded-full font-medium hover:bg-obsidian/80 transition-colors">
+              <Home className="w-4 h-4" /> Back to Home
+            </Link>
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-obsidian pt-24 pb-16 px-4">
+    <div className="min-h-screen bg-vellum pt-24 pb-16 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Get a Quote</span>
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4">Start Your Publishing Journey</h1>
-          <p className="text-white/60 font-body">Answer a few questions and we'll send you a personalised quote.</p>
-        </motion.div>
-
-        {/* Progress */}
-        <div className="flex items-center gap-2 mb-10 max-w-sm mx-auto">
-          {steps.map((_, i) => (
-            <div key={i} className={`flex-1 h-1 rounded-full transition-colors ${i <= step ? 'bg-copper' : 'bg-white/10'}`} />
-          ))}
+        <div className="text-center mb-8">
+          <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-2 block">Creative Books SA</span>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Request a Self-Publishing Quote</h1>
+          <p className="text-[#0F0F0F]/50 font-body mt-2 text-sm">Complete the steps below — we'll prepare a personalised quote for you.</p>
         </div>
 
-        {/* Steps */}
-        <AnimatePresence mode="wait">
-          <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <div className="text-center mb-8">
-              <h2 className="font-heading text-2xl font-bold text-white mb-2">{steps[step].title}</h2>
-              <p className="text-white/50 text-sm font-body">{steps[step].subtitle}</p>
-            </div>
+        {/* Progress */}
+        <QuoteProgress step={step} labels={STEP_LABELS} />
 
-            {step === 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {serviceOptions.map((s) => {
-                  const Icon = s.icon;
-                  const selected = data.services.includes(s.id);
-                  return (
-                    <button key={s.id} onClick={() => toggleService(s.id)}
-                      className={`text-left p-6 rounded-xl border-2 transition-all ${
-                        selected ? 'border-copper bg-copper/10' : 'border-white/10 bg-white/5 hover:border-white/20'
-                      }`}>
-                      <div className="flex items-center gap-3 mb-2">
-                        <Icon className={`w-5 h-5 ${selected ? 'text-copper' : 'text-white/50'}`} />
-                        <span className={`font-heading font-semibold ${selected ? 'text-white' : 'text-white/80'}`}>{s.label}</span>
-                        {selected && <Check className="w-4 h-4 text-copper ml-auto" />}
-                      </div>
-                      <p className="text-sm text-white/40 font-body">{s.desc}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+        {/* Form Card */}
+        <div className="bg-white rounded-3xl shadow-lg border border-[#0F0F0F]/5 overflow-hidden mt-6">
+          <div className="px-6 py-3 bg-obsidian flex items-center justify-between">
+            <span className="text-white/50 text-xs font-body uppercase tracking-widest">Step {step + 1} of 8</span>
+            <span className="text-copper text-xs font-body font-medium">{STEP_LABELS[step]}</span>
+          </div>
 
-            {step === 1 && (
-              <div className="space-y-8">
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-3 block">Genre / Category</label>
-                  <div className="flex flex-wrap gap-2">
-                    {genres.map((g) => (
-                      <button key={g} onClick={() => setData({ ...data, genre: g })}
-                        className={`px-4 py-2 rounded-full text-sm border transition-all ${
-                          data.genre === g ? 'border-copper bg-copper/10 text-white' : 'border-white/10 text-white/60 hover:border-white/20'
-                        }`}>
-                        {g}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-3 block">Book Type</label>
-                  <div className="flex flex-wrap gap-2">
-                    {bookTypes.map((t) => (
-                      <button key={t} onClick={() => setData({ ...data, bookType: t })}
-                        className={`px-4 py-2 rounded-full text-sm border transition-all ${
-                          data.bookType === t ? 'border-copper bg-copper/10 text-white' : 'border-white/10 text-white/60 hover:border-white/20'
-                        }`}>
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-1.5 block">Approximate Word Count</label>
-                  <Input value={data.wordCount} onChange={(e) => setData({ ...data, wordCount: e.target.value })}
-                    placeholder="e.g. 30,000" className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
-                </div>
-              </div>
-            )}
+          <div className="p-6 md:p-8 overflow-hidden">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={step}
+                custom={direction}
+                initial={{ opacity: 0, x: direction * 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: direction * -40 }}
+                transition={{ duration: 0.25 }}
+              >
+                {STEPS[step]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-            {step === 2 && (
-              <div className="space-y-5 max-w-md mx-auto">
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-1.5 block">Full Name *</label>
-                  <Input value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })}
-                    placeholder="Your name" required className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-1.5 block">Email *</label>
-                  <Input type="email" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })}
-                    placeholder="you@email.com" required className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-1.5 block">Phone</label>
-                  <Input value={data.phone} onChange={(e) => setData({ ...data, phone: e.target.value })}
-                    placeholder="+27..." className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
-                </div>
-                <div>
-                  <label className="text-sm text-white/60 font-body mb-1.5 block">Additional Details</label>
-                  <Textarea value={data.details} onChange={(e) => setData({ ...data, details: e.target.value })}
-                    placeholder="Tell us more about your project..." rows={4}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30" />
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 max-w-md mx-auto">
-          <button onClick={() => setStep(Math.max(0, step - 1))}
-            className={`flex items-center gap-2 px-5 py-2.5 border border-white/10 text-white/60 rounded-full hover:border-white/20 transition-all ${step === 0 ? 'invisible' : ''}`}>
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-          {step < 2 ? (
-            <button onClick={() => canProceed() && setStep(step + 1)}
-              disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-copper text-white rounded-full font-medium hover:bg-copper/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-              Continue <ArrowRight className="w-4 h-4" />
+          {/* Navigation */}
+          <div className="px-6 md:px-8 pb-6 md:pb-8 flex items-center justify-between gap-4 border-t border-[#0F0F0F]/5 pt-6">
+            <button
+              onClick={back}
+              disabled={step === 0}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#0F0F0F]/15 text-[#0F0F0F]/60 text-sm font-body hover:border-copper hover:text-copper transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
             </button>
-          ) : (
-            <button onClick={handleSubmit}
-              disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-copper text-white rounded-full font-medium hover:bg-copper/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-              Submit Request <Send className="w-4 h-4" />
-            </button>
-          )}
+
+            {step < 7 ? (
+              <button
+                onClick={next}
+                className="inline-flex items-center gap-2 px-7 py-2.5 bg-copper text-white rounded-full text-sm font-medium hover:bg-copper/90 transition-all shadow-md shadow-copper/20"
+              >
+                Next <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={submit}
+                disabled={submitting}
+                className="inline-flex items-center gap-2 px-7 py-2.5 bg-copper text-white rounded-full text-sm font-medium hover:bg-copper/90 transition-all shadow-md shadow-copper/20 disabled:opacity-70"
+              >
+                {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <>Submit Quote Request <CheckCircle className="w-4 h-4" /></>}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

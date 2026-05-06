@@ -63,7 +63,8 @@ const navItems = [
       { label: 'FAQ', path: '/faq' },
     ]
   },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Get In Touch', path: '/contact' },
+  { label: 'Get a Quote', path: '/getquote' },
 ];
 
 export default function Navbar() {
@@ -114,6 +115,10 @@ export default function Navbar() {
                     {item.label}
                     <ChevronDown className="w-3 h-3" />
                   </button>
+                ) : item.label === 'Get a Quote' ? (
+                  <Link to={item.path} className="px-5 py-2.5 bg-copper text-white text-sm font-medium rounded-full hover:bg-copper/90 transition-all shadow-lg shadow-copper/20 font-body">
+                    {item.label}
+                  </Link>
                 ) : (
                   <Link to={item.path} className="px-3 py-2 text-sm text-white/80 hover:text-copper transition-colors font-body">
                     {item.label}
@@ -150,10 +155,6 @@ export default function Navbar() {
               className="flex items-center gap-2 text-sm text-white/80 hover:text-copper transition-colors">
               <MessageCircle className="w-4 h-4" />
             </a>
-            <Link to="/getquote"
-              className="px-5 py-2.5 bg-copper text-white text-sm font-medium rounded-full hover:bg-copper/90 transition-all shadow-lg shadow-copper/20">
-              Get a Quote
-            </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
