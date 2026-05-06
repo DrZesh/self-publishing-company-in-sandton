@@ -14,6 +14,15 @@ export default function PageMeta({
   useEffect(() => {
     const siteUrl = 'https://www.creativebookssa.co.za';
 
+    // Add hreflang tags
+    const addHreflang = (lang, href) => {
+      let el = document.querySelector(`link[rel="alternate"][hreflang="${lang}"]`);
+      if (!el) { el = document.createElement('link'); el.rel = 'alternate'; el.setAttribute('hreflang', lang); document.head.appendChild(el); }
+      el.href = href;
+    };
+    addHreflang('en', siteUrl);
+    addHreflang('en-ZA', siteUrl);
+
     // Title
     if (title) document.title = title;
 

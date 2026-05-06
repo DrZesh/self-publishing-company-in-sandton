@@ -126,6 +126,8 @@ export default function HeroSlider() {
           exit="exit"
           className="absolute inset-0 w-full h-full object-cover will-change-transform"
           loading="eager"
+          width="1800"
+          height="1000"
         />
       </AnimatePresence>
 

@@ -38,23 +38,24 @@ export default function InternalLinks({ title = "Related Services", links = [], 
               transition={{ delay: i * 0.04 }}
             >
               <Link
-                to={link.path}
-                className="group flex items-center justify-between p-4 rounded-xl transition-all"
-                style={light ? {
-                  background: 'rgba(255,255,255,0.9)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(0,0,0,0.06)',
-                } : {
-                  background: 'rgba(10, 8, 6, 0.6)',
-                  backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(184, 115, 51, 0.08)',
-                }}
-              >
-                <span className={`text-sm font-body transition-colors ${light ? 'text-[#0F0F0F]/80 group-hover:text-copper' : 'text-white/70 group-hover:text-copper'}`}>
-                  {link.label}
-                </span>
-                <ArrowRight className="w-3 h-3 text-copper opacity-0 translate-x-[-4px] group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-              </Link>
+                 to={link.path}
+                 title={`Learn more about ${link.label}`}
+                 className="group flex items-center justify-between p-4 rounded-xl transition-all"
+                 style={light ? {
+                   background: 'rgba(255,255,255,0.9)',
+                   backdropFilter: 'blur(12px)',
+                   border: '1px solid rgba(0,0,0,0.06)',
+                 } : {
+                   background: 'rgba(10, 8, 6, 0.6)',
+                   backdropFilter: 'blur(12px)',
+                   border: '1px solid rgba(184, 115, 51, 0.08)',
+                 }}
+               >
+                 <span className={`text-sm font-body transition-colors ${light ? 'text-[#0F0F0F]/80 group-hover:text-copper' : 'text-white/70 group-hover:text-copper'}`}>
+                   {link.label}
+                 </span>
+                 <ArrowRight className="w-3 h-3 text-copper opacity-0 translate-x-[-4px] group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+               </Link>
             </motion.div>
           ))}
         </div>

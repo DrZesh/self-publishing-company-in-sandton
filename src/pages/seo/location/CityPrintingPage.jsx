@@ -1,26 +1,26 @@
 import React from 'react';
 import ServicePageTemplate from '../../../components/shared/ServicePageTemplate';
 import PageMeta from '../../../components/shared/PageMeta';
-import { serviceSchema, faqSchema, breadcrumbSchema } from '../../../lib/seo/schemas';
+import { serviceSchema, faqSchema, breadcrumbSchema, localBusinessSchemaForCity } from '../../../lib/seo/schemas';
 
 const cityData = {
-  capetown: { city: 'Cape Town', province: 'Western Cape', slug: 'bookprintingcapetown', nearby: 'Stellenbosch, Bellville, Paarl, Somerset West', deliveryDays: '3–5' },
-  durban: { city: 'Durban', province: 'KwaZulu-Natal', slug: 'bookprintingdurban', nearby: 'Pinetown, Umhlanga, Westville, Ballito', deliveryDays: '2–4' },
-  bloemfontein: { city: 'Bloemfontein', province: 'Free State', slug: 'bookprintingbloemfontein', nearby: 'Mangaung, Welkom, Kroonstad', deliveryDays: '2–3' },
-  polokwane: { city: 'Polokwane', province: 'Limpopo', slug: 'bookprintingpolokwane', nearby: 'Tzaneen, Mokopane, Louis Trichardt', deliveryDays: '2–3' },
-  nelspruit: { city: 'Nelspruit', province: 'Mpumalanga', slug: 'bookprintingnelspruit', nearby: 'Mbombela, White River, Hazyview', deliveryDays: '2–3' },
-  portelizabeth: { city: 'Gqeberha (Port Elizabeth)', province: 'Eastern Cape', slug: 'bookprintingportelizabeth', nearby: 'Uitenhage, George, East London', deliveryDays: '3–5' },
-  eastlondon: { city: 'East London', province: 'Eastern Cape', slug: 'bookprintingeastlondon', nearby: "King William's Town, Stutterheim, Queenstown", deliveryDays: '3–5' },
-  kimberley: { city: 'Kimberley', province: 'Northern Cape', slug: 'bookprintingkimberley', nearby: 'Upington, Springbok, De Aar', deliveryDays: '2–4' },
-  pietermaritzburg: { city: 'Pietermaritzburg', province: 'KwaZulu-Natal', slug: 'bookprintingpietermaritzburg', nearby: 'Howick, Richmond, Greytown', deliveryDays: '2–4' },
-  rustenburg: { city: 'Rustenburg', province: 'North West', slug: 'bookprintingrustenburg', nearby: 'Brits, Hartbeespoort, Mahikeng', deliveryDays: '1–3' },
-  boksburg: { city: 'Boksburg', province: 'Gauteng', slug: 'bookprintingboksburg', nearby: 'Benoni, Germiston, Brakpan', deliveryDays: '1–2' },
-  benoni: { city: 'Benoni', province: 'Gauteng', slug: 'bookprintingbenoni', nearby: 'Boksburg, Brakpan, Kempton Park', deliveryDays: '1–2' },
-  germiston: { city: 'Germiston', province: 'Gauteng', slug: 'bookprintinggermiston', nearby: 'Boksburg, Alberton, Johannesburg South', deliveryDays: '1' },
-  kemptonpark: { city: 'Kempton Park', province: 'Gauteng', slug: 'bookprintingkemptonpark', nearby: 'Edenvale, Benoni, Midrand', deliveryDays: '1–2' },
-  fourways: { city: 'Fourways', province: 'Gauteng', slug: 'bookprintingfourways', nearby: 'Sandton, Bryanston, Midrand', deliveryDays: '1' },
-  bryanston: { city: 'Bryanston', province: 'Gauteng', slug: 'bookprintingbryanston', nearby: 'Sandton, Fourways, Randburg', deliveryDays: '1' },
-};
+   capetown: { city: 'Cape Town', province: 'Western Cape', slug: 'bookprintingcapetown', nearby: 'Stellenbosch, Bellville, Paarl, Somerset West', deliveryDays: '3–5', lat: -33.9249, lon: 18.4241 },
+   durban: { city: 'Durban', province: 'KwaZulu-Natal', slug: 'bookprintingdurban', nearby: 'Pinetown, Umhlanga, Westville, Ballito', deliveryDays: '2–4', lat: -29.8587, lon: 31.0192 },
+   bloemfontein: { city: 'Bloemfontein', province: 'Free State', slug: 'bookprintingbloemfontein', nearby: 'Mangaung, Welkom, Kroonstad', deliveryDays: '2–3', lat: -29.1137, lon: 25.5148 },
+   polokwane: { city: 'Polokwane', province: 'Limpopo', slug: 'bookprintingpolokwane', nearby: 'Tzaneen, Mokopane, Louis Trichardt', deliveryDays: '2–3', lat: -23.9006, lon: 29.4167 },
+   nelspruit: { city: 'Nelspruit', province: 'Mpumalanga', slug: 'bookprintingnelspruit', nearby: 'Mbombela, White River, Hazyview', deliveryDays: '2–3', lat: -25.4833, lon: 30.9667 },
+   portelizabeth: { city: 'Gqeberha (Port Elizabeth)', province: 'Eastern Cape', slug: 'bookprintingportelizabeth', nearby: 'Uitenhage, George, East London', deliveryDays: '3–5', lat: -33.9585, lon: 25.6017 },
+   eastlondon: { city: 'East London', province: 'Eastern Cape', slug: 'bookprintingeastlondon', nearby: "King William's Town, Stutterheim, Queenstown", deliveryDays: '3–5', lat: -32.9973, lon: 27.8109 },
+   kimberley: { city: 'Kimberley', province: 'Northern Cape', slug: 'bookprintingkimberley', nearby: 'Upington, Springbok, De Aar', deliveryDays: '2–4', lat: -28.7347, lon: 24.8517 },
+   pietermaritzburg: { city: 'Pietermaritzburg', province: 'KwaZulu-Natal', slug: 'bookprintingpietermaritzburg', nearby: 'Howick, Richmond, Greytown', deliveryDays: '2–4', lat: -29.6100, lon: 30.3776 },
+   rustenburg: { city: 'Rustenburg', province: 'North West', slug: 'bookprintingrustenburg', nearby: 'Brits, Hartbeespoort, Mahikeng', deliveryDays: '1–3', lat: -25.5256, lon: 27.2333 },
+   boksburg: { city: 'Boksburg', province: 'Gauteng', slug: 'bookprintingboksburg', nearby: 'Benoni, Germiston, Brakpan', deliveryDays: '1–2', lat: -26.2028, lon: 28.2373 },
+   benoni: { city: 'Benoni', province: 'Gauteng', slug: 'bookprintingbenoni', nearby: 'Boksburg, Brakpan, Kempton Park', deliveryDays: '1–2', lat: -26.1667, lon: 28.3333 },
+   germiston: { city: 'Germiston', province: 'Gauteng', slug: 'bookprintinggermiston', nearby: 'Boksburg, Alberton, Johannesburg South', deliveryDays: '1', lat: -26.0111, lon: 28.2011 },
+   kemptonpark: { city: 'Kempton Park', province: 'Gauteng', slug: 'bookprintingkemptonpark', nearby: 'Edenvale, Benoni, Midrand', deliveryDays: '1–2', lat: -26.0228, lon: 28.2397 },
+   fourways: { city: 'Fourways', province: 'Gauteng', slug: 'bookprintingfourways', nearby: 'Sandton, Bryanston, Midrand', deliveryDays: '1', lat: -25.9931, lon: 28.0381 },
+   bryanston: { city: 'Bryanston', province: 'Gauteng', slug: 'bookprintingbryanston', nearby: 'Sandton, Fourways, Randburg', deliveryDays: '1', lat: -25.9544, lon: 28.0397 },
+ };
 
 const selfPubData = {
   johannesburg: { city: 'Johannesburg', province: 'Gauteng', slug: 'selfpublishingjohannesburg' },
@@ -44,6 +44,7 @@ export function CityPrintingPage({ cityKey }) {
     '@context': 'https://schema.org',
     '@graph': [
       serviceSchema({ name: `Book Printing ${d.city}`, description: `Professional book printing services for ${d.city} authors and businesses.`, url: `/${d.slug}`, areaServed: `${d.city}, ${d.province}, South Africa` }),
+      localBusinessSchemaForCity({ cityName: d.city, latitude: d.lat, longitude: d.lon }),
       faqSchema(faqs),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: `Book Printing ${d.city}`, path: `/${d.slug}` }]),
     ],
@@ -108,6 +109,7 @@ export function SelfPublishingCityPage({ cityKey }) {
     '@context': 'https://schema.org',
     '@graph': [
       serviceSchema({ name: `Self Publishing ${d.city}`, description: `Self-publishing services for authors in ${d.city}.`, url: `/selfpublishing${cityKey}`, areaServed: `${d.city}, ${d.province}, South Africa` }),
+      localBusinessSchemaForCity({ cityName: d.city, latitude: d.lat, longitude: d.lon }),
       faqSchema(faqs),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Self Publishing', path: '/selfpublishingsouthafrica' }, { name: `Self Publishing ${d.city}`, path: `/selfpublishing${cityKey}` }]),
     ],

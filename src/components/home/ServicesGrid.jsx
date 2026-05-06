@@ -122,7 +122,7 @@ export default function ServicesGrid() {
         >
           {services.map((svc) => (
             <motion.div key={svc.title} variants={cardVariants}>
-              <Link to={svc.link} aria-label={svc.aria}>
+              <Link to={svc.link} className="block h-full">
                 <ServiceCard svc={svc} />
               </Link>
             </motion.div>

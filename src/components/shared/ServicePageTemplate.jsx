@@ -69,7 +69,7 @@ export default function ServicePageTemplate({
                   >
                     <CheckCircle className="w-5 h-5 text-copper" />
                   </motion.div>
-                  <h3 className="font-heading text-lg font-semibold text-[#0F0F0F] mb-2">{feature.title}</h3>
+                  <h3 className="font-heading text-base font-semibold text-[#0F0F0F] mb-2">{feature.title}</h3>
                   <p className="text-sm text-[#0F0F0F]/60 leading-relaxed font-body">{feature.description}</p>
                 </motion.div>
               ))}

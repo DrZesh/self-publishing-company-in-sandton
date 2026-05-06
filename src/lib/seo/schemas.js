@@ -111,17 +111,50 @@ export function breadcrumbSchema(items) {
 }
 
 export function articleSchema({ title, description, datePublished, url, image }) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: title,
-    description,
-    datePublished,
-    dateModified: datePublished,
-    url: SITE_URL + url,
-    image,
-    author: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL },
-    publisher: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL, logo: { '@type': 'ImageObject', url: SITE_URL + '/logo.png' } },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': SITE_URL + url },
-  };
-}
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'BlogPosting',
+     headline: title,
+     description,
+     datePublished,
+     dateModified: datePublished,
+     url: SITE_URL + url,
+     image,
+     author: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL },
+     publisher: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL, logo: { '@type': 'ImageObject', url: SITE_URL + '/logo.png' } },
+     mainEntityOfPage: { '@type': 'WebPage', '@id': SITE_URL + url },
+   };
+ }
+
+export function offerSchema({ name, price, priceCurrency = 'ZAR', description, availability = 'https://schema.org/InStock' }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'Offer',
+     name,
+     description,
+     price: String(price),
+     priceCurrency,
+     seller: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL },
+     availability,
+   };
+ }
+
+export function localBusinessSchemaForCity({ cityName, latitude, longitude, areaServed = [] }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'LocalBusiness',
+     '@id': SITE_URL + `/#localbusiness-${cityName.toLowerCase()}`,
+     name: `${BUSINESS_NAME} - ${cityName}`,
+     image: SITE_URL + '/og-image.jpg',
+     url: SITE_URL,
+     telephone: PHONE,
+     email: EMAIL,
+     address: { '@type': 'PostalAddress', ...ADDRESS },
+     geo: { '@type': 'GeoCoordinates', latitude, longitude },
+     openingHoursSpecification: [
+       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '08:00', closes: '17:00' },
+     ],
+     areaServed: [{ '@type': 'City', name: cityName }, ...areaServed],
+     aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '127', bestRating: '5', worstRating: '1' },
+   };
+ }
