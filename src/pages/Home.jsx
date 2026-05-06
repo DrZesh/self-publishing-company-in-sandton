@@ -2,6 +2,7 @@ import React from 'react';
 import PageMeta from '../components/shared/PageMeta';
 import HeroSection from '../components/home/HeroSection';
 import ServicesGrid from '../components/home/ServicesGrid';
+import AboutSection from '../components/home/AboutSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import ProcessTimeline from '../components/home/ProcessTimeline';
 import PackagesPreview from '../components/home/PackagesPreview';
@@ -28,6 +29,7 @@ export default function Home() {
       />
       <HeroSection heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png" />
       <ServicesGrid />
+      <AboutSection />
       <WhyChooseUs bookImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" />
       <ProcessTimeline />
       <PackagesPreview />

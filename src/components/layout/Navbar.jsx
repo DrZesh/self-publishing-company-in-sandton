@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { label: 'Home', path: '/' },
-  { label: 'About Us', path: '/aboutus' },
   {
     label: 'Publishing', children: [
       { label: 'Publishing Packages', path: '/publishingpackages' },
@@ -40,6 +39,7 @@ const navItems = [
   {
     label: 'Design & Writing', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
       { label: 'Author Websites', path: '/authorwebsites' },

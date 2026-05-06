@@ -23,6 +23,7 @@ import BookPublishing from './pages/services/BookPublishing';
 import BookPrinting from './pages/services/BookPrinting';
 import BookEditing from './pages/services/BookEditing';
 import BookCoverDesign from './pages/services/BookCoverDesign';
+import AnnualReportDesign from './pages/AnnualReportDesign';
 import EbookPublishing from './pages/services/EbookPublishing';
 import Ghostwriting from './pages/services/Ghostwriting';
 import GenericServicePage from './pages/services/GenericServicePage';
@@ -109,6 +110,7 @@ const AuthenticatedApp = () => {
 
         {/* Design Silo */}
         <Route path="/bookcoverdesign" element={<BookCoverDesign />} />
+        <Route path="/annualreportdesignsandton" element={<AnnualReportDesign />} />
         <Route path="/typesetting" element={<GenericServicePage serviceKey="typesetting" />} />
         <Route path="/booklayoutdesign" element={<GenericServicePage serviceKey="booklayoutdesign" />} />
         <Route path="/ebookformatting" element={<GenericServicePage serviceKey="ebookformatting" />} />

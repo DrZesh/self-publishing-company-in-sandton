@@ -36,6 +36,7 @@ const footerSilos = [
   {
     title: 'Editing & Design',
     links: [
+      { label: 'Annual Report Design Sandton', path: '/annualreportdesignsandton' },
       { label: 'Book Editing', path: '/bookediting' },
       { label: 'Technical Editing', path: '/technicalediting' },
       { label: 'Language Editing', path: '/languageediting' },
