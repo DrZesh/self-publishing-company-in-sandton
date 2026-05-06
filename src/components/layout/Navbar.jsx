@@ -9,9 +9,9 @@ const navItems = [
     label: 'Publishing', children: [
       {
         label: 'Publishing Packages', children: [
-          { label: 'Mini Package', path: '/publishingpackages/mini' },
-          { label: 'A5 Package', path: '/publishingpackages/a5' },
-          { label: '6x9 Package', path: '/publishingpackages/6x9' },
+          { label: 'Mini Packages', path: '/publishingpackages/mini' },
+          { label: 'Full Packages (A5)', path: '/publishingpackages/a5' },
+          { label: 'Full Packages (6x9)', path: '/publishingpackages/6x9' },
         ]
       },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
