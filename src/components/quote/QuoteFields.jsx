@@ -54,6 +54,12 @@ export function RadioGroup({ value, onChange, options, error }) {
               ? 'border-copper bg-copper/5 text-copper font-medium'
               : 'border-[#0F0F0F]/10 text-[#0F0F0F]/70 hover:border-copper/40'}`}
         >
+          <input
+            type="radio"
+            className="sr-only"
+            checked={value === opt.value}
+            onChange={() => onChange(opt.value)}
+          />
           <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0
             ${value === opt.value ? 'border-copper' : 'border-[#0F0F0F]/30'}`}>
             {value === opt.value && <div className="w-2 h-2 rounded-full bg-copper" />}
