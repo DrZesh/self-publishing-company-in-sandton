@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, MessageCircle, ArrowUpRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const footerSilos = [
@@ -202,9 +202,7 @@ export default function Footer() {
                 {item.label}
               </Link>
             ))}
-            <motion.a href="https://wa.me/27000000000" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }} className="text-white/40 hover:text-green-500 transition-colors">
-              <MessageCircle className="w-4 h-4" />
-            </motion.a>
+
           </div>
         </div>
       </div>

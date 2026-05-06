@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function CTASection({
   title = "Ready to Publish Your Book?",
   description = "Get a free consultation and personalized quote for your publishing project. Our team of experts is ready to bring your story to life.",
   primaryLabel = "Get a Free Quote",
-  primaryLink = "/getquote",
-  showWhatsApp = true
+  primaryLink = "/getquote"
 }) {
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden">
@@ -83,23 +82,7 @@ export default function CTASection({
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
-            {showWhatsApp && (
-              <motion.a
-                href="https://wa.me/27000000000"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 px-8 py-4 text-white rounded-full transition-all text-base"
-                style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  backdropFilter: 'blur(12px)',
-                }}
-              >
-                <MessageCircle className="w-4 h-4" /> Chat on WhatsApp
-              </motion.a>
-            )}
+
           </motion.div>
         </motion.div>
       </div>
