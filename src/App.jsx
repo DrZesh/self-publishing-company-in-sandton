@@ -60,7 +60,8 @@ import BookPrintingCenturion from './pages/seo/location/BookPrintingCenturion.js
 import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.jsx';
 
 // City Pages (scalable component)
-import { CityPrintingPage, SelfPublishingCityPage } from './pages/seo/location/CityPrintingPage.jsx';
+import { CityPrintingPage } from './pages/seo/location/CityPrintingPage.jsx';
+import SelfPublishingCityPage from './pages/seo/location/SelfPublishingCityPage';
 
 // Industry-Specific Printing Pages
 import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
@@ -215,11 +216,58 @@ const AuthenticatedApp = () => {
         <Route path="/bookprintingfourways" element={<CityPrintingPage cityKey="fourways" />} />
         <Route path="/bookprintingbryanston" element={<CityPrintingPage cityKey="bryanston" />} />
 
-        {/* Self Publishing City Pages */}
+        {/* Self Publishing City Pages — Gauteng */}
         <Route path="/selfpublishingjohannesburg" element={<SelfPublishingCityPage cityKey="johannesburg" />} />
+        <Route path="/selfpublishingsandton" element={<SelfPublishingCityPage cityKey="sandton" />} />
+        <Route path="/selfpublishingmidrand" element={<SelfPublishingCityPage cityKey="midrand" />} />
+        <Route path="/selfpublishingrandburg" element={<SelfPublishingCityPage cityKey="randburg" />} />
+        <Route path="/selfpublishingroodepoort" element={<SelfPublishingCityPage cityKey="roodepoort" />} />
+        <Route path="/selfpublishingcenturion" element={<SelfPublishingCityPage cityKey="centurion" />} />
         <Route path="/selfpublishingpretoria" element={<SelfPublishingCityPage cityKey="pretoria" />} />
+        <Route path="/selfpublishingboksburg" element={<SelfPublishingCityPage cityKey="boksburg" />} />
+        <Route path="/selfpublishingbenoni" element={<SelfPublishingCityPage cityKey="benoni" />} />
+        <Route path="/selfpublishingkemptonpark" element={<SelfPublishingCityPage cityKey="kemptonpark" />} />
+        <Route path="/selfpublishinggermiston" element={<SelfPublishingCityPage cityKey="germiston" />} />
+        <Route path="/selfpublishingfourways" element={<SelfPublishingCityPage cityKey="fourways" />} />
+        <Route path="/selfpublishingbryanston" element={<SelfPublishingCityPage cityKey="bryanston" />} />
+        <Route path="/selfpublishingsoweto" element={<SelfPublishingCityPage cityKey="soweto" />} />
+        <Route path="/selfpublishingalberton" element={<SelfPublishingCityPage cityKey="alberton" />} />
+        {/* Self Publishing City Pages — Western Cape */}
         <Route path="/selfpublishingcapetown" element={<SelfPublishingCityPage cityKey="capetown" />} />
+        <Route path="/selfpublishingstellenbosch" element={<SelfPublishingCityPage cityKey="stellenbosch" />} />
+        <Route path="/selfpublishingpaarl" element={<SelfPublishingCityPage cityKey="paarl" />} />
+        <Route path="/selfpublishinggeorge" element={<SelfPublishingCityPage cityKey="george" />} />
+        <Route path="/selfpublishingsomersetwest" element={<SelfPublishingCityPage cityKey="somersetwest" />} />
+        <Route path="/selfpublishingbellville" element={<SelfPublishingCityPage cityKey="bellville" />} />
+        {/* Self Publishing City Pages — KwaZulu-Natal */}
         <Route path="/selfpublishingdurban" element={<SelfPublishingCityPage cityKey="durban" />} />
+        <Route path="/selfpublishingumhlanga" element={<SelfPublishingCityPage cityKey="umhlanga" />} />
+        <Route path="/selfpublishingpietermaritzburg" element={<SelfPublishingCityPage cityKey="pietermaritzburg" />} />
+        <Route path="/selfpublishingnewcastle" element={<SelfPublishingCityPage cityKey="newcastle" />} />
+        <Route path="/selfpublishingrichardsbay" element={<SelfPublishingCityPage cityKey="richardsbay" />} />
+        {/* Self Publishing City Pages — Eastern Cape */}
+        <Route path="/selfpublishingportelizabeth" element={<SelfPublishingCityPage cityKey="portelizabeth" />} />
+        <Route path="/selfpublishingeastlondon" element={<SelfPublishingCityPage cityKey="eastlondon" />} />
+        <Route path="/selfpublishinggrahamstown" element={<SelfPublishingCityPage cityKey="grahamstown" />} />
+        <Route path="/selfpublishinguitenhage" element={<SelfPublishingCityPage cityKey="uitenhage" />} />
+        {/* Self Publishing City Pages — Free State */}
+        <Route path="/selfpublishingbloemfontein" element={<SelfPublishingCityPage cityKey="bloemfontein" />} />
+        <Route path="/selfpublishingwelkom" element={<SelfPublishingCityPage cityKey="welkom" />} />
+        {/* Self Publishing City Pages — Limpopo */}
+        <Route path="/selfpublishingpolokwane" element={<SelfPublishingCityPage cityKey="polokwane" />} />
+        <Route path="/selfpublishingtzaneen" element={<SelfPublishingCityPage cityKey="tzaneen" />} />
+        <Route path="/selfpublishingthohoyandou" element={<SelfPublishingCityPage cityKey="thohoyandou" />} />
+        {/* Self Publishing City Pages — Mpumalanga */}
+        <Route path="/selfpublishingnelspruit" element={<SelfPublishingCityPage cityKey="nelspruit" />} />
+        <Route path="/selfpublishingwitbank" element={<SelfPublishingCityPage cityKey="witbank" />} />
+        <Route path="/selfpublishingmiddelburg" element={<SelfPublishingCityPage cityKey="middelburg" />} />
+        {/* Self Publishing City Pages — North West */}
+        <Route path="/selfpublishingrustenburg" element={<SelfPublishingCityPage cityKey="rustenburg" />} />
+        <Route path="/selfpublishingklerksdorp" element={<SelfPublishingCityPage cityKey="klerksdorp" />} />
+        <Route path="/selfpublishingpotchefstroom" element={<SelfPublishingCityPage cityKey="potchefstroom" />} />
+        {/* Self Publishing City Pages — Northern Cape */}
+        <Route path="/selfpublishingkimberley" element={<SelfPublishingCityPage cityKey="kimberley" />} />
+        <Route path="/selfpublishingupington" element={<SelfPublishingCityPage cityKey="upington" />} />
 
         {/* Location SEO (legacy - keep for backward compat) */}
         <Route path="/editingservicesjohannesburg" element={<LocationPage locationKey="editingservicesjohannesburg" />} />
