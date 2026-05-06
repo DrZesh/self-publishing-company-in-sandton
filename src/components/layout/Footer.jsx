@@ -121,6 +121,8 @@ const itemVariants = {
 };
 
 export default function Footer() {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
   return (
     <footer className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[#060504]" />
@@ -171,7 +173,7 @@ export default function Footer() {
                 <ul className="space-y-1.5">
                   {silo.links.map((link) => (
                     <li key={link.path}>
-                      <Link to={link.path} className="group text-xs text-white/45 hover:text-copper transition-colors flex items-center gap-1">
+                      <Link to={link.path} onClick={scrollToTop} className="group text-xs text-white/45 hover:text-copper transition-colors flex items-center gap-1">
                         {link.label}
                         <ArrowUpRight className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
@@ -196,7 +198,7 @@ export default function Footer() {
               { label: 'Get Quote', to: '/getquote' },
               { label: 'Printing Calculator', to: '/bookprintingcalculator' },
             ].map((item) => (
-              <Link key={item.to} to={item.to} className="text-white/40 hover:text-copper transition-colors">
+              <Link key={item.to} to={item.to} onClick={scrollToTop} className="text-white/40 hover:text-copper transition-colors">
                 {item.label}
               </Link>
             ))}
