@@ -161,7 +161,7 @@ export default function ServicesGrid() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
           {services.map((svc) => (
             <ServiceCard key={svc.title} svc={svc} />
@@ -180,24 +180,33 @@ function ServiceCard({ svc }) {
       <Link
         to={svc.link}
         aria-label={svc.aria}
-        className="group flex flex-col h-full p-6 rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1"
+        className="group flex flex-col h-full p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
         style={{
-          boxShadow: '0 2px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(184,115,51,0.07)',
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(184,115,51,0.12)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)',
+          minHeight: '280px',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.1), 0 0 0 1.5px rgba(184,115,51,0.35)';
+          e.currentTarget.style.background = 'rgba(255,255,255,0.75)';
+          e.currentTarget.style.border = '1px solid rgba(184,115,51,0.4)';
+          e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.1), 0 0 0 0 transparent, inset 0 1px 0 rgba(255,255,255,0.9)';
         }}
         onMouseLeave={e => {
-          e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(184,115,51,0.07)';
+          e.currentTarget.style.background = 'rgba(255,255,255,0.55)';
+          e.currentTarget.style.border = '1px solid rgba(184,115,51,0.12)';
+          e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)';
         }}
       >
         {/* Icon */}
         <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-copper/15"
+          className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 group-hover:bg-copper/15"
           style={{ background: 'rgba(184,115,51,0.08)' }}
           aria-hidden="true"
         >
-          <Icon className="w-5 h-5 text-copper" />
+          <Icon className="w-6 h-6 text-copper" />
         </div>
 
         {/* Title */}
@@ -206,7 +215,7 @@ function ServiceCard({ svc }) {
         </h3>
 
         {/* Description */}
-        <p className="text-[#0F0F0F]/55 text-sm font-body leading-relaxed flex-1 mb-5">
+        <p className="text-[#0F0F0F]/55 text-sm font-body leading-relaxed flex-1 mb-7">
           {svc.desc}
         </p>
 
