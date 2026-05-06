@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BookOpen, Printer, PenLine, Palette, AlignLeft, BookMarked,
-  BookCopy, Globe, Smartphone, ArrowRight
+  BookCopy, Globe, Smartphone
 } from 'lucide-react';
 
 const services = [
@@ -184,15 +184,9 @@ function ServiceCard({ svc }) {
         </h3>
 
         {/* Description */}
-        <p className="text-white/45 text-sm font-body leading-relaxed flex-1 mb-7">
+        <p className="text-white/45 text-sm font-body leading-relaxed flex-1">
           {svc.desc}
         </p>
-
-        {/* Learn More */}
-        <span className="inline-flex items-center gap-1.5 text-copper text-xs font-mono tracking-widest uppercase font-medium group-hover:gap-2.5 transition-all duration-200">
-          Learn More
-          <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-        </span>
       </Link>
     </motion.article>
   );
