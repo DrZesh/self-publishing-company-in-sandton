@@ -16,7 +16,7 @@ const navItems = [
   },
   {
     label: 'Printing', children: [
-      { label: 'Book Printing', path: '/bookprinting' },
+      { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
       { label: 'A5 Book Printing', path: '/a5bookprinting' },
       { label: '6×9 Book Printing', path: '/6x9bookprinting' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },

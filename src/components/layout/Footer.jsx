@@ -23,9 +23,14 @@ const footerSilos = [
     links: [
       { label: 'Book Printing', path: '/bookprinting' },
       { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+      { label: 'A5 Book Printing', path: '/a5bookprinting' },
+      { label: '6×9 Book Printing', path: '/6x9bookprinting' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },
       { label: 'Softcover Printing', path: '/softcoverprinting' },
-      { label: 'A5 Book Printing', path: '/a5bookprinting' },
+      { label: "Children's Book Printing", path: '/childrensbookprinting' },
+      { label: 'Workbook Printing', path: '/workbookprinting' },
+      { label: 'Comic Book Printing', path: '/comicbookprinting' },
+      { label: 'Manual Printing', path: '/manualprinting' },
     ]
   },
   {
