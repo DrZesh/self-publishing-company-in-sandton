@@ -122,9 +122,9 @@ const AuthenticatedApp = () => {
         <Route path="/bookpublishing" element={<BookPublishing />} />
         <Route path="/selfpublishing" element={<GenericServicePage serviceKey="selfpublishing" />} />
         <Route path="/publishingpackages" element={<GenericServicePage serviceKey="publishingpackages" />} />
-        <Route path="/minipublishingpackage" element={<MiniPublishingPackage />} />
-        <Route path="/a5bookpublishing" element={<A5BookPublishing />} />
-        <Route path="/6x9bookpublishing" element={<SixByNinePublishing />} />
+        <Route path="/publishingpackages/mini" element={<MiniPublishingPackage />} />
+        <Route path="/publishingpackages/a5" element={<A5BookPublishing />} />
+        <Route path="/publishingpackages/6x9" element={<SixByNinePublishing />} />
         <Route path="/premiumpublishingpackage" element={<GenericServicePage serviceKey="premiumpublishingpackage" />} />
         <Route path="/christianbookpublishing" element={<GenericServicePage serviceKey="christianbookpublishing" />} />
         <Route path="/childrensbookpublishing" element={<GenericServicePage serviceKey="childrensbookpublishing" />} />

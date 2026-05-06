@@ -23,7 +23,7 @@ const publishingPackages = [
       'ISBN registration',
       'Print-ready PDF files'
     ],
-    link: '/minipublishingpackage',
+    link: '/publishingpackages/mini',
     ctaText: 'Get Started'
   },
   {
@@ -42,7 +42,7 @@ const publishingPackages = [
       'Amazon KDP setup',
       'eBook publishing'
     ],
-    link: '/publishingpackages',
+    link: '/publishingpackages/a5',
     ctaText: 'Choose This Package'
   },
   {
@@ -61,7 +61,7 @@ const publishingPackages = [
       'Launch marketing consultation',
       'National distribution network'
     ],
-    link: '/premiumpublishingpackage',
+    link: '/publishingpackages/premium',
     ctaText: 'Upgrade to Premium'
   }
 ];
