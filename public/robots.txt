@@ -1,12 +1,8 @@
 User-agent: *
 Allow: /
 
-# Disallow admin/utility paths
-Disallow: /api/
-Disallow: /*.json$
-
-# Crawl-delay for well-behaved bots
-Crawl-delay: 1
-
-# Sitemap
 Sitemap: https://www.creativebookssa.co.za/sitemap.xml
+
+# Disallow admin/system paths
+Disallow: /api/
+Disallow: /__base44/

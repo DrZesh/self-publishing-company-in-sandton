@@ -18,14 +18,14 @@ import FAQ from './pages/FAQ';
 import Blog from './pages/Blog';
 import BlogArticle from './pages/BlogArticle';
 
-// Printing Sub-Pages
-import PrintingA5 from './pages/printing/PrintingA5';
-import Printing6x9 from './pages/printing/Printing6x9';
-import PrintingHardcover from './pages/printing/PrintingHardcover';
+// Printing Sub-Pages (full content)
+import PrintingA5 from './pages/printing/PrintingA5.jsx';
+import Printing6x9 from './pages/printing/Printing6x9.jsx';
+import PrintingHardcover from './pages/printing/PrintingHardcover.jsx';
 import PrintingChildrensBooks from './pages/printing/PrintingChildrensBooks';
-import ChildrensBooks15x15 from './pages/printing/childrensbooks/ChildrensBooks15x15';
-import ChildrensBooks20x20 from './pages/printing/childrensbooks/ChildrensBooks20x20';
-import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks21x21';
+import ChildrensBooks15x15 from './pages/printing/childrensbooks/ChildrensBooks15x15.jsx';
+import ChildrensBooks20x20 from './pages/printing/childrensbooks/ChildrensBooks20x20.jsx';
+import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks21x21.jsx';
 
 // Service Silo Pages
 import BookPublishing from './pages/services/BookPublishing';
@@ -40,7 +40,7 @@ import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
 import ISBNRegistration from './pages/resources/ISBNRegistration';
 
-// SEO Landing Pages
+// Existing SEO Landing Pages
 import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
 import BookPublishersSouthAfrica from './pages/seo/BookPublishersSouthAfrica';
 import BookPublishersJohannesburg from './pages/seo/BookPublishersJohannesburg';
@@ -50,6 +50,39 @@ import BookCoverDesignSouthAfrica from './pages/seo/BookCoverDesignSouthAfrica';
 import ProofreadingServicesSouthAfrica from './pages/seo/ProofreadingServicesSouthAfrica';
 import GhostwritersSouthAfrica from './pages/seo/GhostwritersSouthAfrica';
 import BestPublishingCompaniesSouthAfrica from './pages/seo/BestPublishingCompaniesSouthAfrica';
+
+// Gauteng Location Pages (dedicated)
+import BookPrintingSandton from './pages/seo/location/BookPrintingSandton.jsx';
+import BookPrintingRandburg from './pages/seo/location/BookPrintingRandburg.jsx';
+import BookPrintingMidrand from './pages/seo/location/BookPrintingMidrand.jsx';
+import BookPrintingPretoria from './pages/seo/location/BookPrintingPretoria.jsx';
+import BookPrintingCenturion from './pages/seo/location/BookPrintingCenturion.jsx';
+import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.jsx';
+
+// City Pages (scalable component)
+import { CityPrintingPage, SelfPublishingCityPage } from './pages/seo/location/CityPrintingPage.jsx';
+
+// Industry-Specific Printing Pages
+import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
+import MemoirBookPrinting from './pages/seo/industry/MemoirBookPrinting.jsx';
+import ChristianBookPrinting from './pages/seo/industry/ChristianBookPrinting.jsx';
+import BusinessBookPrinting from './pages/seo/industry/BusinessBookPrinting.jsx';
+import TrainingManualPrinting from './pages/seo/industry/TrainingManualPrinting.jsx';
+import SchoolBookPrinting from './pages/seo/industry/SchoolBookPrinting.jsx';
+import NovelPrinting from './pages/seo/industry/NovelPrinting.jsx';
+import CookbookPrinting from './pages/seo/industry/CookbookPrinting.jsx';
+import EducationalBookPrinting from './pages/seo/industry/EducationalBookPrinting.jsx';
+
+// Long-Tail SEO Article Pages
+import HowToPrintABook from './pages/seo/longtail/HowToPrintABook.jsx';
+import HowMuchDoesBookPrintingCost from './pages/seo/longtail/HowMuchDoesBookPrintingCost.jsx';
+import BestBookSizeForSelfPublishing from './pages/seo/longtail/BestBookSizeForSelfPublishing.jsx';
+import A5vs6x9BookPrinting from './pages/seo/longtail/A5vs6x9BookPrinting.jsx';
+import HardcoverVsPaperback from './pages/seo/longtail/HardcoverVsPaperback.jsx';
+import HowToSelfPublishABook from './pages/seo/longtail/HowToSelfPublishABook.jsx';
+
+// Interactive Tools
+import BookPrintingCalculator from './pages/tools/BookPrintingCalculator.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -93,7 +126,7 @@ const AuthenticatedApp = () => {
         <Route path="/poetrypublishing" element={<GenericServicePage serviceKey="poetrypublishing" />} />
         <Route path="/businessbookpublishing" element={<GenericServicePage serviceKey="businessbookpublishing" />} />
 
-        {/* Printing Sub-Pages */}
+        {/* Printing Sub-Pages (full content) */}
         <Route path="/printing/a5" element={<PrintingA5 />} />
         <Route path="/printing/6x9" element={<Printing6x9 />} />
         <Route path="/printing/hardcover" element={<PrintingHardcover />} />
@@ -102,7 +135,7 @@ const AuthenticatedApp = () => {
         <Route path="/printing/childrensbooks/20cmx20cm" element={<ChildrensBooks20x20 />} />
         <Route path="/printing/childrensbooks/21cmx21cm" element={<ChildrensBooks21x21 />} />
 
-        {/* Printing Silo */}
+        {/* Printing Silo (GenericServicePage) */}
         <Route path="/bookprinting" element={<BookPrinting />} />
         <Route path="/a5bookprinting" element={<GenericServicePage serviceKey="a5bookprinting" />} />
         <Route path="/6x9bookprinting" element={<GenericServicePage serviceKey="6x9bookprinting" />} />
@@ -145,7 +178,7 @@ const AuthenticatedApp = () => {
         <Route path="/biographywriting" element={<GenericServicePage serviceKey="biographywriting" />} />
         <Route path="/christianbookwriting" element={<GenericServicePage serviceKey="christianbookwriting" />} />
 
-        {/* High-Priority SEO Landing Pages */}
+        {/* Existing SEO Landing Pages */}
         <Route path="/publishingcompaniessouthafrica" element={<PublishingCompaniesSouthAfrica />} />
         <Route path="/bookpublisherssouthafrica" element={<BookPublishersSouthAfrica />} />
         <Route path="/bookpublishersjohannesburg" element={<BookPublishersJohannesburg />} />
@@ -156,10 +189,63 @@ const AuthenticatedApp = () => {
         <Route path="/ghostwriterssouthafrica" element={<GhostwritersSouthAfrica />} />
         <Route path="/bestpublishingcompaniesinsouthafrica" element={<BestPublishingCompaniesSouthAfrica />} />
 
-        {/* Location SEO (legacy) */}
+        {/* Gauteng Location Pages (dedicated) */}
+        <Route path="/bookprintingsandton" element={<BookPrintingSandton />} />
+        <Route path="/bookprintingrandburg" element={<BookPrintingRandburg />} />
+        <Route path="/bookprintingmidrand" element={<BookPrintingMidrand />} />
+        <Route path="/bookprintingpretoria" element={<BookPrintingPretoria />} />
+        <Route path="/bookprintingcenturion" element={<BookPrintingCenturion />} />
+        <Route path="/bookprintingroodepoort" element={<BookPrintingRoodepoort />} />
+
+        {/* National City Printing Pages */}
+        <Route path="/bookprintingcapetown" element={<CityPrintingPage cityKey="capetown" />} />
+        <Route path="/bookprintingdurban" element={<CityPrintingPage cityKey="durban" />} />
+        <Route path="/bookprintingbloemfontein" element={<CityPrintingPage cityKey="bloemfontein" />} />
+        <Route path="/bookprintingpolokwane" element={<CityPrintingPage cityKey="polokwane" />} />
+        <Route path="/bookprintingnelspruit" element={<CityPrintingPage cityKey="nelspruit" />} />
+        <Route path="/bookprintingportelizabeth" element={<CityPrintingPage cityKey="portelizabeth" />} />
+        <Route path="/bookprintingeastlondon" element={<CityPrintingPage cityKey="eastlondon" />} />
+        <Route path="/bookprintingkimberley" element={<CityPrintingPage cityKey="kimberley" />} />
+        <Route path="/bookprintingpietermaritzburg" element={<CityPrintingPage cityKey="pietermaritzburg" />} />
+        <Route path="/bookprintingrustenburg" element={<CityPrintingPage cityKey="rustenburg" />} />
+        <Route path="/bookprintingboksburg" element={<CityPrintingPage cityKey="boksburg" />} />
+        <Route path="/bookprintingbenoni" element={<CityPrintingPage cityKey="benoni" />} />
+        <Route path="/bookprintinggermiston" element={<CityPrintingPage cityKey="germiston" />} />
+        <Route path="/bookprintingkemptonpark" element={<CityPrintingPage cityKey="kemptonpark" />} />
+        <Route path="/bookprintingfourways" element={<CityPrintingPage cityKey="fourways" />} />
+        <Route path="/bookprintingbryanston" element={<CityPrintingPage cityKey="bryanston" />} />
+
+        {/* Self Publishing City Pages */}
+        <Route path="/selfpublishingjohannesburg" element={<SelfPublishingCityPage cityKey="johannesburg" />} />
+        <Route path="/selfpublishingpretoria" element={<SelfPublishingCityPage cityKey="pretoria" />} />
+        <Route path="/selfpublishingcapetown" element={<SelfPublishingCityPage cityKey="capetown" />} />
+        <Route path="/selfpublishingdurban" element={<SelfPublishingCityPage cityKey="durban" />} />
+
+        {/* Location SEO (legacy - keep for backward compat) */}
         <Route path="/editingservicesjohannesburg" element={<LocationPage locationKey="editingservicesjohannesburg" />} />
-        <Route path="/selfpublishingjohannesburg" element={<LocationPage locationKey="selfpublishingjohannesburg" />} />
         <Route path="/bookcoverdesignjohannesburg" element={<LocationPage locationKey="bookcoverdesignjohannesburg" />} />
+
+        {/* Industry-Specific Printing Pages */}
+        <Route path="/poetrybookprintingjohannesburg" element={<PoetryBookPrinting />} />
+        <Route path="/memoirbookprintingjohannesburg" element={<MemoirBookPrinting />} />
+        <Route path="/christianbookprintingjohannesburg" element={<ChristianBookPrinting />} />
+        <Route path="/businessbookprintingjohannesburg" element={<BusinessBookPrinting />} />
+        <Route path="/trainingmanualprintingjohannesburg" element={<TrainingManualPrinting />} />
+        <Route path="/schoolbookprintingjohannesburg" element={<SchoolBookPrinting />} />
+        <Route path="/novelprintingjohannesburg" element={<NovelPrinting />} />
+        <Route path="/cookbookprintingjohannesburg" element={<CookbookPrinting />} />
+        <Route path="/educationalbookprintingjohannesburg" element={<EducationalBookPrinting />} />
+
+        {/* Long-Tail SEO Article Pages */}
+        <Route path="/howtoprintabookinsouthafrica" element={<HowToPrintABook />} />
+        <Route path="/howmuchdoesbookprintingcost" element={<HowMuchDoesBookPrintingCost />} />
+        <Route path="/bestbooksizeforselfpublishing" element={<BestBookSizeForSelfPublishing />} />
+        <Route path="/a5vs6x9bookprinting" element={<A5vs6x9BookPrinting />} />
+        <Route path="/hardcovervspaperbackprinting" element={<HardcoverVsPaperback />} />
+        <Route path="/howtoselfpublishabook" element={<HowToSelfPublishABook />} />
+
+        {/* Interactive Tools */}
+        <Route path="/bookprintingcalculator" element={<BookPrintingCalculator />} />
 
         {/* Resource Pages */}
         <Route path="/isbnregistration" element={<ISBNRegistration />} />
@@ -193,7 +279,6 @@ const AuthenticatedApp = () => {
     </Routes>
   );
 };
-
 
 function App() {
   return (

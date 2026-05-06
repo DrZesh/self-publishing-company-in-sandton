@@ -25,11 +25,6 @@ const locationData = {
     title: 'Editing Services in Johannesburg',
     description: 'Expert book editing, proofreading, and manuscript evaluation in Johannesburg. Professional editors serving authors across Gauteng and South Africa.',
   },
-  selfpublishingjohannesburg: {
-    subtitle: 'Self Publishing Johannesburg',
-    title: 'Self Publishing in Johannesburg',
-    description: 'Self-publish your book in Johannesburg with professional support. Retain your rights and royalties while getting expert publishing services in Gauteng.',
-  },
   bookcoverdesignjohannesburg: {
     subtitle: 'Book Cover Design Johannesburg',
     title: 'Book Cover Design in Johannesburg',
