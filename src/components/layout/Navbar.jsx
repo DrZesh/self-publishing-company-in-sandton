@@ -63,8 +63,12 @@ const navItems = [
       { label: 'FAQ', path: '/faq' },
     ]
   },
-  { label: 'Get In Touch', path: '/contact' },
-  { label: 'Get a Quote', path: '/getquote' },
+  {
+    label: 'Get In Touch', children: [
+      { label: 'Contact Us', path: '/contact' },
+      { label: 'Get a Quote', path: '/getquote' },
+    ]
+  },
 ];
 
 export default function Navbar() {
@@ -115,10 +119,6 @@ export default function Navbar() {
                     {item.label}
                     <ChevronDown className="w-3 h-3" />
                   </button>
-                ) : item.label === 'Get a Quote' ? (
-                  <Link to={item.path} className="px-5 py-2.5 bg-copper text-white text-sm font-medium rounded-full hover:bg-copper/90 transition-all shadow-lg shadow-copper/20 font-body">
-                    {item.label}
-                  </Link>
                 ) : (
                   <Link to={item.path} className="px-3 py-2 text-sm text-white/80 hover:text-copper transition-colors font-body">
                     {item.label}
@@ -134,13 +134,23 @@ export default function Navbar() {
                       className="absolute top-full left-0 mt-1 w-56 bg-obsidian/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl overflow-hidden"
                     >
                       {item.children.map((child) => (
-                        <Link
-                          key={child.path}
-                          to={child.path}
-                          className="block px-4 py-2.5 text-sm text-white/70 hover:text-copper hover:bg-white/5 transition-all"
-                        >
-                          {child.label}
-                        </Link>
+                        child.label === 'Get a Quote' ? (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            className="block px-4 py-2.5 text-sm text-copper font-medium hover:bg-white/5 transition-all"
+                          >
+                            {child.label}
+                          </Link>
+                        ) : (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            className="block px-4 py-2.5 text-sm text-white/70 hover:text-copper hover:bg-white/5 transition-all"
+                          >
+                            {child.label}
+                          </Link>
+                        )
                       ))}
                     </motion.div>
                   )}
@@ -210,12 +220,7 @@ export default function Navbar() {
                   )}
                 </div>
               ))}
-              <div className="pt-4 border-t border-white/10">
-                <Link to="/getquote"
-                  className="block w-full text-center px-5 py-3 bg-copper text-white font-medium rounded-full">
-                  Get a Quote
-                </Link>
-              </div>
+
             </div>
           </motion.div>
         )}
