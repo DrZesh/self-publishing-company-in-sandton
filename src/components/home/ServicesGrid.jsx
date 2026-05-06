@@ -6,151 +6,262 @@ import {
 } from 'lucide-react';
 
 const services = [
-  { icon: BookOpen,     title: 'Book Publishing',     cat: 'Publishing', desc: 'Complete publishing solutions — self-publishing and full-service packages that put you in total control.', tags: ['Self-Publishing', 'ISBN', 'Packages'] },
-  { icon: Printer,      title: 'Book Printing',        cat: 'Printing',   desc: 'Offset & digital printing in Johannesburg. Hardcover, softcover, specialty formats from 50–50,000 copies.', tags: ['Hardcover', 'Softcover', 'Bulk'] },
-  { icon: PenLine,      title: 'Editing Services',     cat: 'Editing',    desc: 'Proofreading, copy editing, manuscript evaluation, and academic editing by South Africa\'s finest editors.', tags: ['Proofreading', 'Copy Edit', 'Academic'] },
-  { icon: Palette,      title: 'Cover Design',         cat: 'Design',     desc: 'Award-quality cover design, interior typesetting, and layout. Books that stop browsers in their tracks.', tags: ['Cover', 'Typesetting', 'Layout'] },
-  { icon: Globe,        title: 'eBook Publishing',     cat: 'Digital',    desc: 'Amazon KDP, Kindle, and global platforms. Full digital formatting and international distribution.', tags: ['Amazon KDP', 'ePub', 'Global'] },
-  { icon: Users,        title: 'Ghostwriting',         cat: 'Writing',    desc: 'Professional ghostwriters for memoirs, biographies, business books, and Christian literature.', tags: ['Memoir', 'Biography', 'Business'] },
-  { icon: Feather,      title: 'Memoir Writing',       cat: 'Writing',    desc: 'Transform your life story into a beautifully crafted memoir. Our specialists capture your voice authentically.', tags: ['Life Story', 'Family', 'Legacy'] },
-  { icon: GraduationCap, title: 'Academic Editing',   cat: 'Editing',    desc: 'Thesis, dissertation editing, journal preparation, and academic manuscript evaluation.', tags: ['Thesis', 'Research', 'PhD'] },
-  { icon: BookMarked,   title: "Children's Books",     cat: 'Publishing', desc: 'Specialised publishing with illustration coordination, age-appropriate design, and full-colour printing.', tags: ['Illustration', 'Full Colour', 'Ages 0–16'] },
-  { icon: FileText,     title: 'Training Manuals',     cat: 'Printing',   desc: 'Corporate training manuals and workbooks printed and bound to professional standards.', tags: ['Corporate', 'Workbooks', 'Spiral Bound'] },
-  { icon: BarChart2,    title: 'Annual Reports',       cat: 'Design',     desc: 'Premium annual report design and printing for Johannesburg corporates. Boardroom-ready.', tags: ['Corporate', 'Premium', 'JSE Listed'] },
-  { icon: Mic,          title: 'Author Branding',      cat: 'Design',     desc: 'Author websites, press kits, social media assets, and full personal brand identity.', tags: ['Website', 'Press Kit', 'Identity'] },
+  {
+    icon: BookOpen,
+    title: 'Book Publishing',
+    desc: 'Complete self-publishing solutions from manuscript to marketplace — editing, design, print, and distribution handled end-to-end.',
+    tags: ['Self-Publishing', 'ISBN', 'Distribution'],
+    size: 'large', // takes 2 cols
+    image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&q=80',
+  },
+  {
+    icon: Printer,
+    title: 'Book Printing',
+    desc: 'Offset & digital printing in Johannesburg. Hardcover, softcover, and specialty formats.',
+    tags: ['Hardcover', 'Softcover', 'Bulk Runs'],
+    size: 'medium',
+  },
+  {
+    icon: PenLine,
+    title: 'Editing Services',
+    desc: 'Proofreading, copy editing, and developmental editing by South Africa\'s finest editors.',
+    tags: ['Proofreading', 'Copy Editing', 'Academic'],
+    size: 'medium',
+  },
+  {
+    icon: Palette,
+    title: 'Cover Design',
+    desc: 'Award-quality cover design and interior typesetting. Books that stop shoppers mid-scroll.',
+    tags: ['Cover Design', 'Typesetting', 'Branding'],
+    size: 'tall', // takes 2 rows
+    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80',
+  },
+  {
+    icon: Globe,
+    title: 'eBook Publishing',
+    desc: 'Amazon KDP, Kindle, and global platforms. Full digital formatting and international reach.',
+    tags: ['Amazon KDP', 'ePub', 'Global'],
+    size: 'small',
+  },
+  {
+    icon: Users,
+    title: 'Ghostwriting',
+    desc: 'Professional ghostwriters for memoirs, biographies, and business books.',
+    tags: ['Memoir', 'Biography', 'Business'],
+    size: 'small',
+  },
+  {
+    icon: Feather,
+    title: 'Memoir Writing',
+    desc: 'Transform your life story into a beautifully crafted memoir.',
+    tags: ['Life Story', 'Family', 'Legacy'],
+    size: 'small',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Academic Editing',
+    desc: 'Thesis, dissertation, and journal article editing for SA researchers.',
+    tags: ['Thesis', 'Research', 'PhD'],
+    size: 'small',
+  },
+  {
+    icon: BookMarked,
+    title: "Children's Books",
+    desc: 'Illustration coordination, age-appropriate design, and full-colour printing.',
+    tags: ['Illustration', 'Full Colour', 'All Ages'],
+    size: 'medium',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80',
+  },
+  {
+    icon: FileText,
+    title: 'Training Manuals',
+    desc: 'Corporate workbooks and training manuals printed to professional standards.',
+    tags: ['Corporate', 'Workbooks', 'Spiral Bound'],
+    size: 'small',
+  },
+  {
+    icon: BarChart2,
+    title: 'Annual Reports',
+    desc: 'Premium annual report design and printing for Johannesburg corporates.',
+    tags: ['Corporate', 'Premium', 'Print'],
+    size: 'small',
+  },
+  {
+    icon: Mic,
+    title: 'Author Branding',
+    desc: 'Author websites, press kits, and full personal brand identity.',
+    tags: ['Website', 'Press Kit', 'Identity'],
+    size: 'small',
+  },
 ];
 
-const cats = ['All', 'Publishing', 'Printing', 'Editing', 'Design', 'Digital', 'Writing'];
+const COPPER = '#B87333';
 
 export default function ServicesGrid() {
-  const [activeCat, setActiveCat] = useState('All');
-  const [activeIdx, setActiveIdx] = useState(null);
+  const [hovered, setHovered] = useState(null);
 
-  const filtered = activeCat === 'All' ? services : services.filter(s => s.cat === activeCat);
-
+  // We'll arrange into a visual bento grid using explicit grid placement
   return (
-    <section className="relative py-24 lg:py-32 bg-[#050403] overflow-hidden">
-      {/* HUD scan lines */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
-        style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(184,115,51,0.6) 3px, rgba(184,115,51,0.6) 4px)', backgroundSize: '100% 4px' }} />
+    <section className="relative py-24 lg:py-32 overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #0a0704 0%, #050403 100%)' }}>
 
-      {/* Corner brackets */}
-      {[['top-8 left-8', 'tl'], ['top-8 right-8', 'tr'], ['bottom-8 left-8', 'bl'], ['bottom-8 right-8', 'br']].map(([pos, corner]) => (
-        <div key={corner} className={`absolute ${pos} w-10 h-10 pointer-events-none opacity-20`}
-          style={{
-            borderTop: corner.startsWith('t') ? '1px solid #B87333' : 'none',
-            borderBottom: corner.startsWith('b') ? '1px solid #B87333' : 'none',
-            borderLeft: corner.endsWith('l') ? '1px solid #B87333' : 'none',
-            borderRight: corner.endsWith('r') ? '1px solid #B87333' : 'none',
-          }} />
-      ))}
-
-      {/* Ambient glow */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,115,51,0.08) 0%, transparent 70%)' }} />
+      {/* Ambient top glow */}
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, ${COPPER}60, transparent)` }} />
+      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
+        style={{ background: `radial-gradient(ellipse 60% 100% at 50% 0%, rgba(184,115,51,0.07) 0%, transparent 100%)` }} />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
 
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex gap-1">
-              {[...Array(3)].map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-copper" style={{ opacity: 1 - i * 0.3 }} />)}
-            </div>
-            <span className="text-copper/60 text-xs font-mono tracking-[0.3em] uppercase">SVC_MODULE · {services.length} SERVICES ACTIVE</span>
-          </div>
-          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-            Complete Publishing<br />
-            <span className="text-gradient-copper">Ecosystem</span>
-          </h2>
-        </motion.div>
-
-        {/* Filter pills */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          {cats.map(cat => (
-            <button key={cat} onClick={() => setActiveCat(cat)}
-              className="relative px-4 py-1.5 text-xs font-mono tracking-widest uppercase transition-all duration-200"
-              style={activeCat === cat ? {
-                color: '#B87333',
-                background: 'rgba(184,115,51,0.08)',
-                border: '1px solid rgba(184,115,51,0.4)',
-              } : {
-                color: 'rgba(255,255,255,0.3)',
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.08)',
-              }}>
-              {cat}
-              {activeCat === cat && (
-                <motion.div layoutId="cat-active" className="absolute inset-0 pointer-events-none"
-                  style={{ border: '1px solid rgba(184,115,51,0.6)', boxShadow: '0 0 12px rgba(184,115,51,0.15) inset' }} />
-              )}
-            </button>
-          ))}
+        {/* Section header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <p className="text-copper/60 text-xs font-mono tracking-[0.35em] uppercase mb-3">
+              12 SERVICES · COMPLETE ECOSYSTEM
+            </p>
+            <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95]">
+              Every Service<br />
+              <em className="not-italic text-gradient-copper">You Need</em>
+            </h2>
+          </motion.div>
+          <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            transition={{ delay: 0.15 }}
+            className="md:max-w-xs text-white/35 text-sm font-body leading-relaxed md:text-right">
+            From first draft to final distribution — South Africa's most comprehensive publishing services, all under one roof.
+          </motion.p>
         </div>
 
-        {/* Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px"
-          style={{ background: 'rgba(184,115,51,0.06)', border: '1px solid rgba(184,115,51,0.1)' }}>
-          <AnimatePresence mode="popLayout">
-            {filtered.map((svc, i) => {
-              const Icon = svc.icon;
-              const isActive = activeIdx === `${svc.title}-${i}`;
-              return (
-                <motion.div key={svc.title} layout
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25, delay: i * 0.04 }}
-                  onMouseEnter={() => setActiveIdx(`${svc.title}-${i}`)}
-                  onMouseLeave={() => setActiveIdx(null)}
-                  className="relative p-6 cursor-default group overflow-hidden"
-                  style={{
-                    background: isActive ? 'rgba(184,115,51,0.06)' : 'rgba(5,4,3,0.98)',
-                    transition: 'background 0.3s ease',
-                  }}>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 auto-rows-[180px] gap-3">
 
-                  {/* Top border glow on hover */}
-                  <div className="absolute top-0 left-0 right-0 h-px transition-all duration-300"
-                    style={{ background: isActive ? 'linear-gradient(90deg, transparent, #B87333, transparent)' : 'transparent' }} />
+          {/* 1: Book Publishing — LARGE (col-span-3, row-span-2) */}
+          <BentoCard svc={services[0]} hovered={hovered} setHovered={setHovered} index={0}
+            className="col-span-2 md:col-span-3 row-span-2" showImage />
 
-                  {/* Index number */}
-                  <div className="absolute top-4 right-4 font-mono text-[10px] opacity-20 text-copper">
-                    {String(i + 1).padStart(2, '0')}
-                  </div>
+          {/* 2: Cover Design — TALL (col-span-1, row-span-2) on large, medium on small */}
+          <BentoCard svc={services[3]} hovered={hovered} setHovered={setHovered} index={3}
+            className="col-span-2 md:col-span-1 lg:col-span-2 row-span-2" showImage />
 
-                  <motion.div animate={isActive ? { scale: 1.08, rotate: 3 } : { scale: 1, rotate: 0 }} transition={{ duration: 0.2 }}
-                    className="w-9 h-9 rounded flex items-center justify-center mb-4"
-                    style={{ background: 'rgba(184,115,51,0.08)', border: '1px solid rgba(184,115,51,0.15)' }}>
-                    <Icon className="w-4 h-4 text-copper" />
-                  </motion.div>
+          {/* 3: Book Printing */}
+          <BentoCard svc={services[1]} hovered={hovered} setHovered={setHovered} index={1}
+            className="col-span-1 md:col-span-2 lg:col-span-1" />
 
-                  <div className="text-[10px] font-mono text-copper/40 tracking-widest uppercase mb-1">{svc.cat}</div>
-                  <h3 className="font-heading text-base font-semibold text-white mb-2 leading-tight">{svc.title}</h3>
-                  <p className="text-white/40 text-xs font-body leading-relaxed mb-4">{svc.desc}</p>
+          {/* 4: Editing */}
+          <BentoCard svc={services[2]} hovered={hovered} setHovered={setHovered} index={2}
+            className="col-span-1 md:col-span-2 lg:col-span-1" />
 
-                  <div className="flex flex-wrap gap-1">
-                    {svc.tags.map(tag => (
-                      <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded"
-                        style={{ background: 'rgba(255,255,255,0.03)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+          {/* 5: eBook */}
+          <BentoCard svc={services[4]} hovered={hovered} setHovered={setHovered} index={4}
+            className="col-span-1" compact />
 
-                  {/* Bottom accent line on hover */}
-                  <motion.div animate={{ scaleX: isActive ? 1 : 0 }} className="absolute bottom-0 left-0 right-0 h-px origin-left"
-                    style={{ background: 'rgba(184,115,51,0.5)' }} transition={{ duration: 0.3 }} />
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
+          {/* 6: Ghostwriting */}
+          <BentoCard svc={services[5]} hovered={hovered} setHovered={setHovered} index={5}
+            className="col-span-1" compact />
 
-        {/* Footer count */}
-        <div className="flex items-center gap-4 mt-6">
-          <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(184,115,51,0.3), transparent)' }} />
-          <span className="text-copper/30 text-[10px] font-mono tracking-widest">{filtered.length}/{services.length} MODULES DISPLAYED</span>
-          <div className="flex-1 h-px" style={{ background: 'linear-gradient(270deg, rgba(184,115,51,0.3), transparent)' }} />
+          {/* 7: Children's Books — spans 2 cols */}
+          <BentoCard svc={services[8]} hovered={hovered} setHovered={setHovered} index={8}
+            className="col-span-2 md:col-span-2 lg:col-span-2" showImage />
+
+          {/* 8: Memoir Writing */}
+          <BentoCard svc={services[6]} hovered={hovered} setHovered={setHovered} index={6}
+            className="col-span-1" compact />
+
+          {/* 9: Academic Editing */}
+          <BentoCard svc={services[7]} hovered={hovered} setHovered={setHovered} index={7}
+            className="col-span-1" compact />
+
+          {/* 10: Training Manuals */}
+          <BentoCard svc={services[9]} hovered={hovered} setHovered={setHovered} index={9}
+            className="col-span-1" compact />
+
+          {/* 11: Annual Reports */}
+          <BentoCard svc={services[10]} hovered={hovered} setHovered={setHovered} index={10}
+            className="col-span-1" compact />
+
+          {/* 12: Author Branding — spans 2 */}
+          <BentoCard svc={services[11]} hovered={hovered} setHovered={setHovered} index={11}
+            className="col-span-2 md:col-span-2" />
+
         </div>
       </div>
     </section>
+  );
+}
+
+function BentoCard({ svc, hovered, setHovered, index, className = '', showImage = false, compact = false }) {
+  const Icon = svc.icon;
+  const isHot = hovered === index;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.45, delay: index * 0.04, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onMouseEnter={() => setHovered(index)}
+      onMouseLeave={() => setHovered(null)}
+      className={`relative overflow-hidden cursor-default group ${className}`}
+      style={{
+        background: isHot ? 'rgba(184,115,51,0.07)' : 'rgba(255,255,255,0.025)',
+        border: isHot ? '1px solid rgba(184,115,51,0.45)' : '1px solid rgba(255,255,255,0.07)',
+        transition: 'all 0.3s cubic-bezier(0.25,0.46,0.45,0.94)',
+      }}
+    >
+      {/* Background image if present */}
+      {showImage && svc.image && (
+        <div className="absolute inset-0">
+          <img src={svc.image} alt={svc.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0"
+            style={{ background: 'linear-gradient(to top, rgba(5,4,3,0.96) 30%, rgba(5,4,3,0.7) 60%, rgba(5,4,3,0.4) 100%)' }} />
+        </div>
+      )}
+
+      {/* Top shimmer on hover */}
+      <AnimatePresence>
+        {isHot && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(184,115,51,0.9), transparent)' }} />
+        )}
+      </AnimatePresence>
+
+      {/* Content */}
+      <div className={`relative z-10 flex flex-col justify-end h-full ${compact ? 'p-4' : 'p-6'}`}>
+        {/* Icon */}
+        <motion.div
+          animate={isHot ? { scale: 1.1, y: -2 } : { scale: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className={`${compact ? 'w-7 h-7 mb-3' : 'w-9 h-9 mb-4'} rounded flex items-center justify-center shrink-0`}
+          style={{ background: 'rgba(184,115,51,0.12)', border: '1px solid rgba(184,115,51,0.2)' }}>
+          <Icon className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} text-copper`} />
+        </motion.div>
+
+        <h3 className={`font-heading font-bold text-white leading-tight ${compact ? 'text-sm mb-1' : 'text-lg mb-2'}`}>
+          {svc.title}
+        </h3>
+
+        {!compact && (
+          <p className="text-white/45 text-xs font-body leading-relaxed mb-3 line-clamp-3">{svc.desc}</p>
+        )}
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1">
+          {svc.tags.slice(0, compact ? 1 : 3).map(tag => (
+            <span key={tag} className="text-[9px] font-mono px-1.5 py-0.5 tracking-wider"
+              style={{ background: 'rgba(184,115,51,0.08)', color: 'rgba(184,115,51,0.6)', border: '1px solid rgba(184,115,51,0.12)' }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom accent */}
+      <motion.div
+        animate={{ scaleX: isHot ? 1 : 0 }}
+        transition={{ duration: 0.35 }}
+        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left"
+        style={{ background: 'linear-gradient(90deg, #B87333, rgba(184,115,51,0.2))' }}
+      />
+    </motion.div>
   );
 }
