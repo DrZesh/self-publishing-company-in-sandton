@@ -34,8 +34,8 @@ export default function HeroSection({ heroImage }) {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6"
           >
-            Your Story,{' '}
-            <span className="text-gradient-copper italic">Perfected</span>
+            Professional Book Publishing{' '}
+            <span className="text-gradient-copper">Done Right</span>
           </motion.h1>
 
           <motion.p
@@ -44,7 +44,7 @@ export default function HeroSection({ heroImage }) {
             transition={{ duration: 0.7, delay: 0.4 }}
             className="text-white/60 text-lg md:text-xl leading-relaxed mb-10 max-w-xl font-body"
           >
-            South Africa's premier publishing house. We transform manuscripts into masterworks with professional publishing, printing, editing, and design services.
+            Award-winning publishing, printing, editing and design services for authors across South Africa. Over 500 books published. 15+ years industry expertise. 100% author rights retained.
           </motion.p>
 
           <motion.div

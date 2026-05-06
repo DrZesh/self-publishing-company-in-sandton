@@ -40,13 +40,13 @@ export default function AboutSection() {
           <motion.div className="lg:col-span-5"
             initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
             <h2 className="font-heading text-4xl md:text-5xl xl:text-6xl font-bold text-[#0F0F0F] leading-tight mb-8">
-              Born from a<br />
-              <span className="text-gradient-copper">Love of Books</span>
+              South Africa's<br />
+              <span className="text-gradient-copper">Publishing Authority</span>
             </h2>
             <div className="space-y-4 text-[#0F0F0F]/55 text-sm font-body leading-relaxed mb-8">
-              <p>What started as a small printing workshop in Johannesburg has grown into South Africa's most trusted publishing house — serving over 500 authors from every corner of the country.</p>
-              <p>Our team of editors, designers, and printing specialists brings decades of combined experience. We understand the South African market and the unique needs of local authors writing local stories for local and global audiences.</p>
-              <p>Today we offer a complete publishing ecosystem: manuscript evaluation, professional editing, premium cover design, typesetting, printing, ISBN registration, and worldwide digital distribution.</p>
+              <p>Since 2009, Creative Books SA has been the trusted partner for over 500 published authors. We combine professional publishing standards with deep expertise in the South African literary market and global distribution channels.</p>
+              <p>Our certified team—editors, designers, production specialists—brings over 15 years of combined industry experience. We deliver measurable results: faster publication timelines, superior production quality, and increased reader discoverability across multiple platforms.</p>
+              <p>From manuscript evaluation through global distribution, we provide end-to-end publishing solutions: professional editing, premium design, production management, ISBN coordination, and worldwide digital access via Amazon KDP, Apple Books, Takealot, and international retailers.</p>
             </div>
             <Link to="/aboutus" className="group inline-flex items-center gap-2 text-copper text-sm font-mono tracking-widest uppercase hover:gap-3 transition-all">
               LEARN MORE <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
