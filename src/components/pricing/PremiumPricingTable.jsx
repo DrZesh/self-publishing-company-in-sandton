@@ -163,7 +163,7 @@ export default function PremiumPricingTable({ packages = [], title, subtitle }) 
                         boxShadow: '0 4px 16px rgba(184,115,51,0.1)'
                       }}
                     >
-                      {typeof pkg.icon === 'function' ? <pkg.icon className="w-6 h-6 text-copper" /> : pkg.icon}
+                      <pkg.icon className="w-6 h-6 text-copper" />
                     </motion.div>
                   )}
 
