@@ -9,8 +9,8 @@ const navItems = [
   {
     label: 'Publishing', children: [
       { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
+      { label: 'Self Publishing', path: '/selfpublishing' },
       { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
       { label: 'Memoir Publishing', path: '/memoirpublishing' },
