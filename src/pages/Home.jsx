@@ -1,5 +1,6 @@
 import React from 'react';
 import PageMeta from '../components/shared/PageMeta';
+import { faqSchema } from '../lib/seo/schemas';
 import HeroSlider from '../components/home/HeroSlider';
 import ServicesGrid from '../components/home/ServicesGrid';
 import AboutSection from '../components/home/AboutSection';
@@ -18,26 +19,18 @@ const homeFaqs = [
   { question: 'Where are you located?', answer: 'We are based in Johannesburg, Gauteng, and serve authors across South Africa and internationally. We welcome in-person consultations and also work remotely with authors nationwide.' },
 ];
 
-const homeSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: homeFaqs.map(({ question, answer }) => ({
-    '@type': 'Question',
-    name: question,
-    acceptedAnswer: { '@type': 'Answer', text: answer },
-  })),
-};
+const faqSchemas = [faqSchema(homeFaqs)];
 
 export default function Home() {
   return (
     <div>
       <PageMeta
-        title="Publishing Company South Africa | Book Publishing, Printing & Editing | Creative Books SA"
-        description="Creative Books SA — South Africa's premier publishing company in Johannesburg. Professional book publishing, printing, editing, cover design & ISBN support. Free quote today."
-        keywords="publishing company South Africa, book publishers South Africa, self publishing South Africa, book printing Johannesburg, book editing South Africa, ISBN registration"
-        canonical="https://www.creativebookssa.co.za/"
-        schema={homeSchema}
-      />
+         title="Publishing Company South Africa | Book Publishing, Printing & Editing | Creative Books SA"
+         description="Creative Books SA — South Africa's premier publishing company in Johannesburg. Professional book publishing, printing, editing, cover design & ISBN support. Free quote today."
+         keywords="publishing company South Africa, book publishers South Africa, self publishing South Africa, book printing Johannesburg, book editing South Africa, ISBN registration"
+         canonical="https://www.creativebookssa.co.za/"
+         schema={{ '@graph': faqSchemas }}
+       />
       <HeroSlider />
       <ServicesGrid />
       <AboutSection />

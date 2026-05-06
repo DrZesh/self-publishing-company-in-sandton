@@ -3,7 +3,7 @@ const BUSINESS_NAME = 'Creative Books SA';
 const PHONE = '+27000000000';
 const EMAIL = 'info@creativebookssa.co.za';
 const ADDRESS = {
-  streetAddress: 'Johannesburg',
+  streetAddress: '123 Publishing Avenue, Johannesburg',
   addressLocality: 'Johannesburg',
   addressRegion: 'Gauteng',
   postalCode: '2000',

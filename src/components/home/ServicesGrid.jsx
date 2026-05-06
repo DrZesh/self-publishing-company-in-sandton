@@ -121,7 +121,11 @@ export default function ServicesGrid() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
           {services.map((svc) => (
-            <ServiceCard key={svc.title} svc={svc} />
+            <motion.div key={svc.title} variants={cardVariants}>
+              <Link to={svc.link} aria-label={svc.aria}>
+                <ServiceCard svc={svc} />
+              </Link>
+            </motion.div>
           ))}
         </motion.div>
       </div>
@@ -130,10 +134,10 @@ export default function ServicesGrid() {
 }
 
 function ServiceCard({ svc }) {
-  const Icon = svc.icon;
+   const Icon = svc.icon;
 
-  return (
-    <motion.article variants={cardVariants}>
+   return (
+     <article>
       <div
         className="group flex flex-col h-full p-8 rounded-2xl transition-all duration-300 relative overflow-hidden"
         style={{
@@ -185,7 +189,7 @@ function ServiceCard({ svc }) {
         <p className="text-white/45 text-sm font-body leading-relaxed flex-1">
           {svc.desc}
         </p>
-      </div>
-    </motion.article>
-  );
-}
+        </div>
+        </article>
+        );
+        }

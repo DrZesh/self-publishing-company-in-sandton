@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { organizationSchema, websiteSchema } from '@/lib/seo/schemas';
 
 export default function PageMeta({
   title,
@@ -66,17 +67,24 @@ export default function PageMeta({
     setLink('canonical', canonicalHref);
     setOg('og:url', canonicalHref);
 
-    // Schema markup
-    if (schema) {
-      const id = 'page-schema';
-      let existing = document.getElementById(id);
-      if (existing) existing.remove();
-      const el = document.createElement('script');
-      el.id = id;
-      el.type = 'application/ld+json';
-      el.text = JSON.stringify(schema);
-      document.head.appendChild(el);
-    }
+    // Schema markup - include Organization & Website by default, plus page-specific schema
+    const allSchemas = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        organizationSchema,
+        websiteSchema,
+        ...(schema && schema['@graph'] ? schema['@graph'] : schema ? [schema] : [])
+      ]
+    };
+
+    const id = 'page-schema';
+    let existing = document.getElementById(id);
+    if (existing) existing.remove();
+    const el = document.createElement('script');
+    el.id = id;
+    el.type = 'application/ld+json';
+    el.text = JSON.stringify(allSchemas);
+    document.head.appendChild(el);
 
     // Cleanup schema on unmount
     return () => {

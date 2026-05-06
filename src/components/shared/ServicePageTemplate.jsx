@@ -44,6 +44,7 @@ export default function ServicePageTemplate({
       {/* Features Grid */}
       {features.length > 0 && (
         <section className="py-20 lg:py-28 bg-vellum relative overflow-hidden">
+          <h2 className="sr-only">Features of {title}</h2>
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feature, i) => (

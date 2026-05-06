@@ -117,7 +117,7 @@ export default function HeroSlider() {
         <motion.img
           key={`bg-${current}`}
           src={slide.bg}
-          alt=""
+          alt={slide.heading.join(' ')}
           aria-hidden="true"
           custom={direction}
           variants={bgVariants}
