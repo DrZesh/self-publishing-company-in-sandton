@@ -9,7 +9,6 @@ const navItems = [
   {
     label: 'Publishing', children: [
       { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Publishers in SA', path: '/bookpublisherssouthafrica' },
       { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
       { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
@@ -17,18 +16,21 @@ const navItems = [
       { label: 'Memoir Publishing', path: '/memoirpublishing' },
       { label: 'Poetry Publishing', path: '/poetrypublishing' },
       { label: 'Business Book Publishing', path: '/businessbookpublishing' },
+      { label: 'eBook Publishing', path: '/ebookpublishing' },
+      { label: 'Amazon KDP', path: '/amazonkdp' },
     ]
   },
   {
     label: 'Printing', children: [
       { label: 'Book Printing', path: '/bookprinting' },
-      { label: 'Book Printing Jhb', path: '/bookprintingjohannesburg' },
       { label: 'A5 Book Printing', path: '/a5bookprinting' },
-      { label: '6x9 Book Printing', path: '/6x9bookprinting' },
+      { label: '6×9 Book Printing', path: '/6x9bookprinting' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },
       { label: 'Softcover Printing', path: '/softcoverprinting' },
       { label: "Children's Book Printing", path: '/childrensbookprinting' },
       { label: 'Workbook Printing', path: '/workbookprinting' },
+      { label: 'Comic Book Printing', path: '/comicbookprinting' },
+      { label: 'Manual Printing', path: '/manualprinting' },
     ]
   },
   {
@@ -39,25 +41,28 @@ const navItems = [
       { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
       { label: 'Academic Editing', path: '/academicediting' },
       { label: 'Thesis Editing', path: '/thesisediting' },
+      { label: 'Dissertation Editing', path: '/dissertationediting' },
+      { label: 'Technical Editing', path: '/technicalediting' },
+      { label: 'Language Editing', path: '/languageediting' },
     ]
   },
   {
-    label: 'Design', children: [
+    label: 'Design & Writing', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
-      { label: 'Cover Design SA', path: '/bookcoverdesignsouthafrica' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
       { label: 'Author Websites', path: '/authorwebsites' },
+      { label: 'Ghostwriting', path: '/ghostwriting' },
+      { label: 'Memoir Writing', path: '/memoirwriting' },
+      { label: 'Biography Writing', path: '/biographywriting' },
+      { label: 'Christian Book Writing', path: '/christianbookwriting' },
     ]
   },
   {
-    label: 'More', children: [
-      { label: 'eBook Publishing', path: '/ebookpublishing' },
-      { label: 'Amazon KDP', path: '/amazonkdp' },
-      { label: 'Ghostwriting', path: '/ghostwriting' },
-      { label: 'Ghost Writers SA', path: '/ghostwriterssouthafrica' },
-      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+    label: 'Resources', children: [
       { label: 'ISBN Registration', path: '/isbnregistration' },
+      { label: 'How to Publish a Book', path: '/howtopublishabook' },
+      { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
     ]
