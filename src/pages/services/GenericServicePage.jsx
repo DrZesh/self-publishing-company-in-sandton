@@ -1,5 +1,66 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
+import PremiumPricingTable from '../../components/pricing/PremiumPricingTable';
+import { BookOpen, Zap, Star } from 'lucide-react';
+
+// Publishing packages for pricing tables
+const publishingPackages = [
+  {
+    id: 0,
+    name: 'Mini Package',
+    price: 'R4,999',
+    tagline: 'Perfect for first-time authors',
+    icon: BookOpen,
+    features: [
+      'Manuscript proofreading',
+      'Basic cover design',
+      'Interior typesetting',
+      'eBook (ePub) conversion',
+      'ISBN registration',
+      'Print-ready PDF files'
+    ],
+    link: '/minipublishingpackage',
+    ctaText: 'Get Started'
+  },
+  {
+    id: 1,
+    name: 'Standard Package',
+    price: 'R12,999',
+    tagline: 'Most comprehensive solution',
+    icon: Zap,
+    featured: true,
+    features: [
+      'Professional copy editing',
+      'Premium cover design (3 concepts)',
+      'Interior layout & typesetting',
+      'ISBN & barcode',
+      '100 printed softcover copies',
+      'Amazon KDP setup',
+      'eBook publishing'
+    ],
+    link: '/publishingpackages',
+    ctaText: 'Choose This Package'
+  },
+  {
+    id: 2,
+    name: 'Premium Package',
+    price: 'R24,999',
+    tagline: 'Full-service publishing',
+    icon: Star,
+    features: [
+      'Developmental + copy editing',
+      'Award-quality cover design',
+      'Hardcover & softcover printing',
+      '250 copies of each format',
+      'Amazon KDP + eBook setup',
+      'Author website',
+      'Launch marketing consultation',
+      'National distribution network'
+    ],
+    link: '/premiumpublishingpackage',
+    ctaText: 'Upgrade to Premium'
+  }
+];
 
 // Reusable service page data for all sub-pages
 const serviceData = {
@@ -15,18 +76,21 @@ const serviceData = {
     title: 'Publishing Packages',
     description: 'Comprehensive publishing packages for every budget. From our affordable Mini Package to our full-service Premium Package, find the perfect publishing solution.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
+    showPricing: true,
   },
   minipublishingpackage: {
     subtitle: 'Affordable Publishing',
     title: 'Mini Publishing Package',
     description: 'Our most affordable publishing package for first-time authors. Professional formatting, basic cover design, eBook conversion, and ISBN registration from R4,999.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
+    showPricing: true,
   },
   premiumpublishingpackage: {
     subtitle: 'Premium Publishing',
     title: 'Premium Publishing Package',
     description: 'The ultimate full-service publishing experience. Developmental editing, premium design, hardcover printing, Amazon KDP, author website, and marketing consultation.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
+    showPricing: true,
   },
   christianbookpublishing: {
     subtitle: 'Christian Book Publishers South Africa',
@@ -260,6 +324,15 @@ export default function GenericServicePage({ serviceKey }) {
         { title: 'Production', description: 'Our experts work on your project with regular updates and milestone reviews.' },
         { title: 'Delivery', description: 'Final review, approval, and delivery of your completed project.' },
       ]}
+      pricingSection={
+        data.showPricing ? (
+          <PremiumPricingTable 
+            packages={publishingPackages}
+            title="Choose Your Publishing Package"
+            subtitle="Transparent Pricing"
+          />
+        ) : null
+      }
       faqs={defaultFaqs}
       relatedLinks={[
         { label: 'Book Publishing', path: '/bookpublishing' },

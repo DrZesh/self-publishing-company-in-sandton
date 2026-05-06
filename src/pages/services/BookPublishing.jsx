@@ -1,5 +1,65 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
+import PremiumPricingTable from '../../components/pricing/PremiumPricingTable';
+import { BookOpen, Zap, Star } from 'lucide-react';
+
+const publishingPackages = [
+  {
+    id: 0,
+    name: 'Mini Package',
+    price: 'R4,999',
+    tagline: 'Perfect for first-time authors',
+    icon: BookOpen,
+    features: [
+      'Manuscript proofreading',
+      'Basic cover design',
+      'Interior typesetting',
+      'eBook (ePub) conversion',
+      'ISBN registration',
+      'Print-ready PDF files'
+    ],
+    link: '/minipublishingpackage',
+    ctaText: 'Get Started'
+  },
+  {
+    id: 1,
+    name: 'Standard Package',
+    price: 'R12,999',
+    tagline: 'Most comprehensive solution',
+    icon: Zap,
+    featured: true,
+    features: [
+      'Professional copy editing',
+      'Premium cover design (3 concepts)',
+      'Interior layout & typesetting',
+      'ISBN & barcode',
+      '100 printed softcover copies',
+      'Amazon KDP setup',
+      'eBook publishing'
+    ],
+    link: '/publishingpackages',
+    ctaText: 'Choose This Package'
+  },
+  {
+    id: 2,
+    name: 'Premium Package',
+    price: 'R24,999',
+    tagline: 'Full-service publishing',
+    icon: Star,
+    features: [
+      'Developmental + copy editing',
+      'Award-quality cover design',
+      'Hardcover & softcover printing',
+      '250 copies of each format',
+      'Amazon KDP + eBook setup',
+      'Author website',
+      'Launch marketing consultation',
+      'National distribution network'
+    ],
+    link: '/premiumpublishingpackage',
+    ctaText: 'Upgrade to Premium'
+  }
+];
 
 export default function BookPublishing() {
   return (
@@ -23,6 +83,13 @@ export default function BookPublishing() {
         { title: 'Print & Produce', description: 'Premium printing at our Johannesburg facility with rigorous quality control.' },
         { title: 'Publish & Distribute', description: 'ISBN registration, online listing, and distribution to retail channels.' },
       ]}
+      pricingSection={
+        <PremiumPricingTable 
+          packages={publishingPackages}
+          title="Choose Your Publishing Package"
+          subtitle="Transparent Pricing"
+        />
+      }
       faqs={[
         { question: 'How much does book publishing cost in South Africa?', answer: 'Our publishing packages range from R4,999 for the Mini Package to R24,999+ for the Premium Package. The cost depends on manuscript length, editing needs, and design complexity. We offer a free quote for every project.' },
         { question: 'How long does it take to publish a book?', answer: 'The publishing process typically takes 6–12 weeks from manuscript submission to printed copies. Timeline depends on the package chosen and manuscript readiness.' },

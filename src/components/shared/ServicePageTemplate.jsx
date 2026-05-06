@@ -17,6 +17,7 @@ export default function ServicePageTemplate({
   relatedLinks = [],
   ctaTitle,
   ctaDescription,
+  pricingSection,
   children
 }) {
   return (
@@ -153,6 +154,9 @@ export default function ServicePageTemplate({
 
       {/* Custom content slot */}
       {children}
+
+      {/* Pricing Section */}
+      {pricingSection}
 
       {/* FAQ */}
       <FAQSection faqs={faqs} />
