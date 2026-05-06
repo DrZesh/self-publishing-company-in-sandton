@@ -7,10 +7,10 @@ const footerSilos = [
     title: 'Publishing',
     links: [
       { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Self Publishing', path: '/selfpublishing' },
+      { label: 'Publishers in South Africa', path: '/bookpublisherssouthafrica' },
+      { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
+      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
-      { label: 'Christian Publishing', path: '/christianbookpublishing' },
-      { label: "Children's Publishing", path: '/childrensbookpublishing' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
     ]
   },
@@ -18,28 +18,28 @@ const footerSilos = [
     title: 'Printing',
     links: [
       { label: 'Book Printing', path: '/bookprinting' },
+      { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },
       { label: 'Softcover Printing', path: '/softcoverprinting' },
       { label: 'A5 Book Printing', path: '/a5bookprinting' },
-      { label: '6x9 Book Printing', path: '/6x9bookprinting' },
     ]
   },
   {
     title: 'Editing & Design',
     links: [
       { label: 'Book Editing', path: '/bookediting' },
-      { label: 'Proofreading', path: '/proofreading' },
+      { label: 'Proofreading Services SA', path: '/proofreadingservicessouthafrica' },
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
-      { label: 'Typesetting', path: '/typesetting' },
-      { label: 'Ghostwriting', path: '/ghostwriting' },
+      { label: 'Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
+      { label: 'Ghostwriters South Africa', path: '/ghostwriterssouthafrica' },
     ]
   },
   {
     title: 'Resources',
     links: [
       { label: 'ISBN Registration', path: '/isbnregistration' },
+      { label: 'Best Publishers SA', path: '/bestpublishingcompaniesinsouthafrica' },
       { label: 'How to Publish a Book', path: '/howtopublishabook' },
-      { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
     ]

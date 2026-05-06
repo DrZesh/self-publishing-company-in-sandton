@@ -28,12 +28,13 @@ export default function BookCoverDesign() {
         { question: 'Can I provide my own images?', answer: 'Yes, you can provide your own photos or artwork. We can also source professional stock images or commission custom illustrations.' },
       ]}
       relatedLinks={[
+        { label: 'Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
+        { label: 'Cover Design Johannesburg', path: '/bookcoverdesignjohannesburg' },
         { label: 'Typesetting', path: '/typesetting' },
         { label: 'Book Layout Design', path: '/booklayoutdesign' },
         { label: 'eBook Formatting', path: '/ebookformatting' },
         { label: 'Book Publishing', path: '/bookpublishing' },
         { label: 'Book Printing', path: '/bookprinting' },
-        { label: 'Author Websites', path: '/authorwebsites' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Get a Design Quote"

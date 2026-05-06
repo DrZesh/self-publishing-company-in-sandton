@@ -9,7 +9,8 @@ const navItems = [
   {
     label: 'Publishing', children: [
       { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Self Publishing', path: '/selfpublishing' },
+      { label: 'Publishers in SA', path: '/bookpublisherssouthafrica' },
+      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
       { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
@@ -21,6 +22,7 @@ const navItems = [
   {
     label: 'Printing', children: [
       { label: 'Book Printing', path: '/bookprinting' },
+      { label: 'Book Printing Jhb', path: '/bookprintingjohannesburg' },
       { label: 'A5 Book Printing', path: '/a5bookprinting' },
       { label: '6x9 Book Printing', path: '/6x9bookprinting' },
       { label: 'Hardcover Printing', path: '/hardcoverprinting' },
@@ -42,6 +44,7 @@ const navItems = [
   {
     label: 'Design', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Cover Design SA', path: '/bookcoverdesignsouthafrica' },
       { label: 'Typesetting', path: '/typesetting' },
       { label: 'Book Layout Design', path: '/booklayoutdesign' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
@@ -53,7 +56,9 @@ const navItems = [
       { label: 'eBook Publishing', path: '/ebookpublishing' },
       { label: 'Amazon KDP', path: '/amazonkdp' },
       { label: 'Ghostwriting', path: '/ghostwriting' },
-      { label: 'Resources', path: '/isbnregistration' },
+      { label: 'Ghost Writers SA', path: '/ghostwriterssouthafrica' },
+      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+      { label: 'ISBN Registration', path: '/isbnregistration' },
       { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
     ]

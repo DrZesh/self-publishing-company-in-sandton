@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import HeroSection from '../components/home/HeroSection';
 import ServicesGrid from '../components/home/ServicesGrid';
 import WhyChooseUs from '../components/home/WhyChooseUs';
@@ -20,6 +21,11 @@ const homeFaqs = [
 export default function Home() {
   return (
     <div>
+      <PageMeta
+        title="Publishing Company South Africa | Creative Books SA"
+        description="Creative Books SA helps authors publish professionally with editing, book cover design, typesetting, printing, ISBN support and publishing packages."
+        keywords="publishing company South Africa, book publishers South Africa, self publishing South Africa, book printing"
+      />
       <HeroSection heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png" />
       <ServicesGrid />
       <WhyChooseUs bookImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" />

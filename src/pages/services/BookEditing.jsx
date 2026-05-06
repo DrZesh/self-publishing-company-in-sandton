@@ -28,6 +28,7 @@ export default function BookEditing() {
         { question: 'How long does editing take?', answer: 'Turnaround depends on manuscript length and editing type. Proofreading typically takes 1–2 weeks, while developmental editing may take 3–4 weeks for a full-length manuscript.' },
       ]}
       relatedLinks={[
+        { label: 'Proofreading Services SA', path: '/proofreadingservicessouthafrica' },
         { label: 'Proofreading', path: '/proofreading' },
         { label: 'Copy Editing', path: '/copyediting' },
         { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
@@ -35,6 +36,7 @@ export default function BookEditing() {
         { label: 'Thesis Editing', path: '/thesisediting' },
         { label: 'Book Publishing', path: '/bookpublishing' },
         { label: 'Typesetting', path: '/typesetting' },
+        { label: 'Editing Guide', path: '/editingguide' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Get an Editing Quote"

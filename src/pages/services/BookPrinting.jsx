@@ -29,13 +29,15 @@ export default function BookPrinting() {
         { question: 'How fast is delivery?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available at an additional cost.' },
       ]}
       relatedLinks={[
+        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
         { label: 'A5 Book Printing', path: '/a5bookprinting' },
         { label: '6×9 Book Printing', path: '/6x9bookprinting' },
         { label: 'Hardcover Printing', path: '/hardcoverprinting' },
         { label: 'Softcover Printing', path: '/softcoverprinting' },
-        { label: 'Children\'s Book Printing', path: '/childrensbookprinting' },
+        { label: "Children's Book Printing", path: '/childrensbookprinting' },
         { label: 'Typesetting', path: '/typesetting' },
         { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Publishing Packages', path: '/publishingpackages' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Get a Printing Quote"

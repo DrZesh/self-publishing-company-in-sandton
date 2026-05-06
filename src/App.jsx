@@ -29,6 +29,17 @@ import GenericServicePage from './pages/services/GenericServicePage';
 import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
 
+// SEO Landing Pages
+import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
+import BookPublishersSouthAfrica from './pages/seo/BookPublishersSouthAfrica';
+import BookPublishersJohannesburg from './pages/seo/BookPublishersJohannesburg';
+import BookPrintingJohannesburg from './pages/seo/BookPrintingJohannesburg';
+import SelfPublishingSouthAfrica from './pages/seo/SelfPublishingSouthAfrica';
+import BookCoverDesignSouthAfrica from './pages/seo/BookCoverDesignSouthAfrica';
+import ProofreadingServicesSouthAfrica from './pages/seo/ProofreadingServicesSouthAfrica';
+import GhostwritersSouthAfrica from './pages/seo/GhostwritersSouthAfrica';
+import BestPublishingCompaniesSouthAfrica from './pages/seo/BestPublishingCompaniesSouthAfrica';
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -113,10 +124,18 @@ const AuthenticatedApp = () => {
         <Route path="/biographywriting" element={<GenericServicePage serviceKey="biographywriting" />} />
         <Route path="/christianbookwriting" element={<GenericServicePage serviceKey="christianbookwriting" />} />
 
-        {/* Location SEO */}
-        <Route path="/bookpublishersjohannesburg" element={<LocationPage locationKey="bookpublishersjohannesburg" />} />
-        <Route path="/publishingcompaniessouthafrica" element={<LocationPage locationKey="publishingcompaniessouthafrica" />} />
-        <Route path="/bookprintingjohannesburg" element={<LocationPage locationKey="bookprintingjohannesburg" />} />
+        {/* High-Priority SEO Landing Pages */}
+        <Route path="/publishingcompaniessouthafrica" element={<PublishingCompaniesSouthAfrica />} />
+        <Route path="/bookpublisherssouthafrica" element={<BookPublishersSouthAfrica />} />
+        <Route path="/bookpublishersjohannesburg" element={<BookPublishersJohannesburg />} />
+        <Route path="/bookprintingjohannesburg" element={<BookPrintingJohannesburg />} />
+        <Route path="/selfpublishingsouthafrica" element={<SelfPublishingSouthAfrica />} />
+        <Route path="/bookcoverdesignsouthafrica" element={<BookCoverDesignSouthAfrica />} />
+        <Route path="/proofreadingservicessouthafrica" element={<ProofreadingServicesSouthAfrica />} />
+        <Route path="/ghostwriterssouthafrica" element={<GhostwritersSouthAfrica />} />
+        <Route path="/bestpublishingcompaniesinsouthafrica" element={<BestPublishingCompaniesSouthAfrica />} />
+
+        {/* Location SEO (legacy) */}
         <Route path="/editingservicesjohannesburg" element={<LocationPage locationKey="editingservicesjohannesburg" />} />
         <Route path="/selfpublishingjohannesburg" element={<LocationPage locationKey="selfpublishingjohannesburg" />} />
         <Route path="/bookcoverdesignjohannesburg" element={<LocationPage locationKey="bookcoverdesignjohannesburg" />} />
