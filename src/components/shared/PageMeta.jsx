@@ -1,8 +1,21 @@
 import { useEffect } from 'react';
 
-export default function PageMeta({ title, description, keywords }) {
+export default function PageMeta({
+  title,
+  description,
+  keywords,
+  canonical,
+  ogImage = 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png',
+  ogType = 'website',
+  schema,
+  noindex = false,
+}) {
   useEffect(() => {
+    const siteUrl = 'https://www.creativebookssa.co.za';
+
+    // Title
     if (title) document.title = title;
+
     const setMeta = (name, content) => {
       let el = document.querySelector(`meta[name="${name}"]`);
       if (!el) { el = document.createElement('meta'); el.name = name; document.head.appendChild(el); }
@@ -13,9 +26,64 @@ export default function PageMeta({ title, description, keywords }) {
       if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
       el.content = content;
     };
-    if (description) { setMeta('description', description); setOg('og:description', description); }
-    if (title) setOg('og:title', title);
+    const setTwitter = (name, content) => {
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) { el = document.createElement('meta'); el.name = name; document.head.appendChild(el); }
+      el.content = content;
+    };
+    const setLink = (rel, href) => {
+      let el = document.querySelector(`link[rel="${rel}"]`);
+      if (!el) { el = document.createElement('link'); el.rel = rel; document.head.appendChild(el); }
+      el.href = href;
+    };
+
+    // Robots
+    setMeta('robots', noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
+
+    // Description & Keywords
+    if (description) setMeta('description', description);
     if (keywords) setMeta('keywords', keywords);
-  }, [title, description, keywords]);
+
+    // Open Graph
+    if (title) setOg('og:title', title);
+    if (description) setOg('og:description', description);
+    setOg('og:type', ogType);
+    setOg('og:image', ogImage);
+    setOg('og:image:width', '1200');
+    setOg('og:image:height', '630');
+    setOg('og:site_name', 'Creative Books SA');
+    setOg('og:locale', 'en_ZA');
+
+    // Twitter Cards
+    setTwitter('twitter:card', 'summary_large_image');
+    setTwitter('twitter:title', title || '');
+    setTwitter('twitter:description', description || '');
+    setTwitter('twitter:image', ogImage);
+    setTwitter('twitter:site', '@CreativeBooksSA');
+
+    // Canonical
+    const canonicalHref = canonical || siteUrl + window.location.pathname;
+    setLink('canonical', canonicalHref);
+    setOg('og:url', canonicalHref);
+
+    // Schema markup
+    if (schema) {
+      const id = 'page-schema';
+      let existing = document.getElementById(id);
+      if (existing) existing.remove();
+      const el = document.createElement('script');
+      el.id = id;
+      el.type = 'application/ld+json';
+      el.text = JSON.stringify(schema);
+      document.head.appendChild(el);
+    }
+
+    // Cleanup schema on unmount
+    return () => {
+      const s = document.getElementById('page-schema');
+      if (s) s.remove();
+    };
+  }, [title, description, keywords, canonical, ogImage, ogType, schema, noindex]);
+
   return null;
 }

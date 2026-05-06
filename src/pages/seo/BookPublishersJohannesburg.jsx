@@ -1,53 +1,76 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
+
+const faqs = [
+  { question: 'Where are Creative Books SA book publishers located in Johannesburg?', answer: 'Creative Books SA is based in Johannesburg, Gauteng, serving authors across the city and all of South Africa. We welcome in-person consultations and also work remotely with authors nationwide.' },
+  { question: 'Do Johannesburg book publishers help with self-publishing?', answer: 'Yes. Creative Books SA specialises in self-publishing for Johannesburg authors — we handle editing, design, typesetting, printing, ISBN, and distribution while you retain 100% of your rights.' },
+  { question: 'Can I meet with a book publisher in Johannesburg?', answer: 'Yes. We welcome in-person consultations at our Johannesburg office. Contact us to book your free publishing consultation.' },
+  { question: 'How much do book publishers in Johannesburg charge?', answer: 'Publishing packages in Johannesburg start from R4,999 for a basic eBook and cover package up to R24,999+ for a complete premium publishing package including editing, design, hardcover printing, and distribution.' },
+  { question: 'Do Johannesburg publishers handle Amazon KDP?', answer: 'Yes. We set up and manage Amazon KDP for Johannesburg authors, enabling global distribution and print-on-demand availability worldwide.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceSchema({
+      name: 'Book Publishers Johannesburg',
+      description: 'Professional book publishers in Johannesburg. Full-service self-publishing with editing, cover design, printing and distribution. Authors retain all rights.',
+      url: '/bookpublishersjohannesburg',
+      areaServed: 'Johannesburg, Gauteng',
+    }),
+    faqSchema(faqs),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Book Publishers South Africa', path: '/bookpublisherssouthafrica' },
+      { name: 'Book Publishers Johannesburg', path: '/bookpublishersjohannesburg' },
+    ]),
+  ],
+};
 
 export default function BookPublishersJohannesburg() {
   return (
     <>
       <PageMeta
-        title="Book Publishers Johannesburg | Creative Books SA"
-        description="Looking for book publishers in Johannesburg? Creative Books SA offers publishing, editing, printing and design support for authors in Johannesburg and across South Africa."
-        keywords="book publishers Johannesburg, book publisher Johannesburg, publishing company Johannesburg"
+        title="Book Publishers Johannesburg | Self Publishing Johannesburg | Creative Books SA"
+        description="Trusted book publishers in Johannesburg. Full-service self-publishing including editing, cover design, printing & Amazon distribution. Authors keep 100% rights. Book a free consultation."
+        keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
+        canonical="https://www.creativebookssa.co.za/bookpublishersjohannesburg"
+        schema={schema}
       />
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Publishers Johannesburg"
         title="Book Publishers in Johannesburg"
-        description="Creative Books SA is a leading book publisher based in Johannesburg, Gauteng. We offer full publishing, editing, printing, and cover design services for authors in Johannesburg and across South Africa — with in-person consultations, local printing, and transparent pricing."
+        description="Creative Books SA is Johannesburg's trusted self-publishing company. We offer complete book publishing services for Johannesburg and Gauteng authors — from manuscript editing and professional cover design to local printing, ISBN registration, and international distribution on Amazon and Takealot."
         features={[
-          { title: 'Johannesburg Based', description: 'Our offices and print facility are in Johannesburg, Gauteng. In-person consultations and book collections available.' },
-          { title: 'Full Publishing Services', description: 'Editing, cover design, typesetting, ISBN registration, printing and distribution — all handled locally in Johannesburg.' },
-          { title: 'Publishing Packages', description: 'Mini, Standard and Premium publishing packages for first-time authors, business book writers, and memoir authors.' },
-          { title: 'Fast Local Printing', description: 'Books printed locally in Johannesburg with 7–14 day turnaround and same-day collection for Gauteng authors.' },
-          { title: 'SA Market Expertise', description: 'Deep knowledge of the South African publishing market, ISBN registration, local bookstores, and retail channels.' },
-          { title: 'Author Support', description: 'Dedicated project manager and author support team based in Johannesburg to guide you through every step.' },
+          { title: 'Johannesburg-Based Publishing Team', description: 'Our full publishing team is based in Johannesburg. Meet with us in person or work with us remotely.' },
+          { title: 'Fast Local Turnaround', description: 'Books printed in Johannesburg with faster turnarounds for Gauteng authors. Same-day collection available.' },
+          { title: 'Full-Service Publishing', description: 'Editing, design, typesetting, printing, ISBN, and distribution — everything under one roof in Johannesburg.' },
+          { title: '100% Rights Retained', description: 'Johannesburg authors keep 100% of their intellectual property and royalties with Creative Books SA.' },
+          { title: 'Amazon KDP & Takealot', description: 'Your book listed on Amazon globally and Takealot for South African retail, managed by our Johannesburg team.' },
+          { title: 'Expert Local Knowledge', description: 'We understand Johannesburg readers, the South African book market, and local publishing requirements.' },
         ]}
         processSteps={[
-          { title: 'Free Consultation', description: 'Meet us at our Johannesburg office or schedule a video call. We review your manuscript and discuss your goals.' },
-          { title: 'Personalised Quote', description: 'Receive a detailed, no-obligation quote with a clear timeline and milestone plan.' },
-          { title: 'Professional Production', description: 'Our Johannesburg team handles editing, design, and printing with hands-on quality control.' },
-          { title: 'Deliver & Support', description: 'Collect or receive your books in Johannesburg with ongoing author support for marketing and distribution.' },
+          { title: 'Free Johannesburg Consultation', description: 'Meet with our team in Johannesburg or consult online. We review your manuscript and recommend the ideal package.' },
+          { title: 'Production & Design', description: 'Your book professionally edited, designed, and typeset by our Johannesburg team.' },
+          { title: 'Local Printing', description: 'High-quality printing at our Johannesburg facility with your choice of format, finish, and binding.' },
+          { title: 'Distribution', description: 'Your book launched locally on Takealot and internationally on Amazon with full ISBN registration.' },
         ]}
-        faqs={[
-          { question: 'Where are you located in Johannesburg?', answer: 'Creative Books SA is located in Johannesburg, Gauteng, South Africa. We welcome in-person consultations by appointment at our Johannesburg office.' },
-          { question: 'Do you serve authors outside Johannesburg?', answer: 'Yes. While based in Johannesburg, we serve authors across Gauteng, all nine provinces, and internationally. Most of our process is handled digitally.' },
-          { question: 'Can I collect my printed books in Johannesburg?', answer: 'Yes. Authors in Gauteng can collect their printed books directly from our Johannesburg facility by appointment. We also offer courier delivery nationwide.' },
-          { question: 'What publishing packages do you offer?', answer: 'We offer Mini (from R4,999), Standard (from R12,999) and Premium (from R24,999) packages. All include ISBN registration, editing, cover design, and printing.' },
-          { question: 'Do you work with first-time authors in Johannesburg?', answer: 'Absolutely. Most of our clients are first-time authors. Our Johannesburg team guides you through every step of the publishing process.' },
-        ]}
+        faqs={faqs}
         relatedLinks={[
           { label: 'Book Publishers SA', path: '/bookpublisherssouthafrica' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
+          { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
           { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+          { label: 'Book Cover Design', path: '/bookcoverdesign' },
           { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Cover Design JHB', path: '/bookcoverdesignjohannesburg' },
-          { label: 'Self Publishing JHB', path: '/selfpublishingjohannesburg' },
+          { label: 'Publishing Packages', path: '/publishingpackages' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
-        ctaTitle="Publish Your Book in Johannesburg"
-        ctaDescription="Contact Creative Books SA in Johannesburg for a free consultation and personalised publishing quote."
+        ctaTitle="Publish Your Book With Johannesburg's Trusted Publishers"
+        ctaDescription="Book a free consultation with our Johannesburg publishing team today. We're ready to bring your story to life."
       />
     </>
   );

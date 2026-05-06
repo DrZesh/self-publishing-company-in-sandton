@@ -1,54 +1,75 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
+
+const faqs = [
+  { question: 'How much does book cover design cost in South Africa?', answer: 'Book cover design in South Africa typically ranges from R3,500 to R12,000 depending on complexity, number of concepts, and revisions required. Contact us for a personalised quote.' },
+  { question: 'What is included in a book cover design package?', answer: 'Our cover design packages include front cover design, spine design, back cover design, author photo placement, barcode placement, and print-ready files in the correct resolution and colour profile.' },
+  { question: 'Do you design eBook covers separately?', answer: 'Yes. We design eBook covers optimised for digital platforms like Amazon KDP, Kindle, Apple Books, and Google Play, which have different dimensions to print covers.' },
+  { question: 'How many revisions are included?', answer: 'Standard packages include 3 rounds of revisions. Additional revision rounds are available at an agreed rate.' },
+  { question: 'Do you provide print-ready files?', answer: 'Yes. All cover designs are delivered as print-ready PDF and high-resolution JPEG/PNG files meeting your printer\'s exact specifications.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceSchema({
+      name: 'Book Cover Design South Africa',
+      description: 'Professional book cover design services in South Africa. Award-winning designers creating market-ready covers for print and digital publishing.',
+      url: '/bookcoverdesignsouthafrica',
+      areaServed: 'South Africa',
+    }),
+    faqSchema(faqs),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Book Cover Design', path: '/bookcoverdesign' },
+      { name: 'Book Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
+    ]),
+  ],
+};
 
 export default function BookCoverDesignSouthAfrica() {
   return (
     <>
       <PageMeta
         title="Book Cover Design South Africa | Professional Book Covers | Creative Books SA"
-        description="Get professional book cover design in South Africa for fiction, nonfiction, memoirs, Christian books, children's books and business books."
-        keywords="book cover design South Africa, professional book cover, book cover designer South Africa"
+        description="Award-winning book cover design in South Africa. Professional covers for print & eBook. Genre-specific, market-ready designs by Johannesburg designers. Free quote today."
+        keywords="book cover design South Africa, book cover designer South Africa, book cover design Johannesburg, eBook cover design South Africa, professional book covers South Africa"
+        canonical="https://www.creativebookssa.co.za/bookcoverdesignsouthafrica"
+        schema={schema}
       />
       <ServicePageTemplate
-        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/63376ef11_generated_5bcb307c.png"
+        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Cover Design South Africa"
-        title="Book Cover Design in South Africa"
-        description="Professional book cover design in South Africa for every genre. Our designers create stunning, market-ready covers for fiction, non-fiction, memoirs, children's books, Christian books, and business books — with print-ready and digital files included."
+        title="Professional Book Cover Design in South Africa"
+        description="Your book cover is your most powerful marketing tool. Creative Books SA designs professional, genre-appropriate book covers for South African authors that compete with the best-published titles on any shelf or digital platform — from Amazon to Takealot."
         features={[
-          { title: 'Fiction Covers', description: 'Genre-appropriate cover designs for literary fiction, romance, thriller, fantasy, sci-fi, and all fiction categories.' },
-          { title: 'Non-Fiction Covers', description: 'Clean, authoritative covers for business books, memoirs, biographies, self-help, and educational titles.' },
-          { title: "Children's Book Covers", description: "Vibrant, age-appropriate illustrated covers for picture books, middle-grade, and young adult titles." },
-          { title: 'Christian Book Covers', description: 'Spiritually resonant, faith-inspired cover designs for devotionals, testimonies, ministry books, and sermons.' },
-          { title: 'Print & Digital Files', description: 'Receive print-ready files for physical books plus optimised digital covers for eBook platforms.' },
-          { title: 'Revisions Included', description: 'All designs include up to 3 rounds of revisions to ensure you are completely satisfied.' },
+          { title: 'Genre-Specific Cover Design', description: 'We design covers that speak your genre\'s visual language — whether fiction, non-fiction, academic, or children\'s books.' },
+          { title: 'Full Cover Design (Front, Spine & Back)', description: 'Complete print-ready covers including front, spine, back, author bio, blurb, and barcode placement.' },
+          { title: 'eBook Cover Design', description: 'Digital covers optimised for Amazon KDP, Kindle, Apple Books, and Google Play with the correct dimensions.' },
+          { title: 'Print-Ready File Delivery', description: 'Receive your files at the correct DPI, colour profile, and bleed specifications for your specific printer.' },
+          { title: 'Multiple Concepts', description: 'We present multiple distinct design concepts for you to choose from and develop further.' },
+          { title: 'Unlimited Revisions Policy', description: 'We work with you until you love the final design. Your satisfaction is our standard.' },
         ]}
         processSteps={[
-          { title: 'Creative Brief', description: 'Share your vision, genre, target audience, and any reference designs you admire. The more detail, the better.' },
-          { title: 'Concept Development', description: 'Our designers create 2–3 unique cover concepts within 5 business days.' },
-          { title: 'Revisions & Refinement', description: 'Choose your favourite concept and we refine it through revision rounds until you are completely happy.' },
-          { title: 'Final Delivery', description: 'Receive print-ready and digital files in all required formats — PDF, PNG, JPEG, and EPUB cover.' },
+          { title: 'Creative Brief', description: 'Complete a detailed brief about your book genre, audience, style preferences, and any reference covers.' },
+          { title: 'Concept Presentation', description: 'We present 2–3 distinct cover concepts for your review and feedback.' },
+          { title: 'Revisions', description: 'Your chosen concept is refined through revision rounds until it perfectly represents your book.' },
+          { title: 'Final File Delivery', description: 'Print-ready and digital files delivered in all required formats for your printer and publishing platforms.' },
         ]}
-        faqs={[
-          { question: 'How much does book cover design cost in South Africa?', answer: 'Cover design starts from R2,500 for a front cover only, R4,500 for a full cover (front, spine, back), and R6,000+ for premium illustrated designs.' },
-          { question: 'How many cover concepts will I receive?', answer: 'You will receive 2–3 initial cover concepts to choose from, followed by up to 3 rounds of revisions on your chosen design.' },
-          { question: 'What files will I receive?', answer: 'You will receive a print-ready PDF/X-1a for printing, plus optimised PNG and JPEG files for digital use and eBook covers.' },
-          { question: 'How long does book cover design take?', answer: 'Initial concepts are delivered within 5 business days. The full design process, including revisions, typically takes 2 weeks.' },
-          { question: 'Can I provide my own images or photos?', answer: 'Yes. You can provide your own photos or artwork. We can also source professional stock images or commission custom illustrations at additional cost.' },
-          { question: 'Do you design children\'s book illustrations?', answer: 'Yes, we offer full illustration services for children\'s books, including character design, scene illustration, and full interior artwork.' },
-        ]}
+        faqs={faqs}
         relatedLinks={[
           { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Typesetting', path: '/typesetting' },
-          { label: 'Book Layout Design', path: '/booklayoutdesign' },
+          { label: 'Book Layout & Typesetting', path: '/typesetting' },
+          { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
           { label: 'eBook Formatting', path: '/ebookformatting' },
-          { label: 'Book Printing', path: '/bookprinting' },
+          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
           { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Cover Design JHB', path: '/bookcoverdesignjohannesburg' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
-        ctaTitle="Get a Professional Book Cover Design Quote"
-        ctaDescription="Share your book details and let our designers create a cover that captivates readers and drives sales."
+        ctaTitle="Get a Book Cover Design Quote in South Africa"
+        ctaDescription="Share your vision and receive professional book cover design concepts from our Johannesburg design team."
       />
     </>
   );

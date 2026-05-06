@@ -1,54 +1,76 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
+
+const faqs = [
+  { question: 'How much do ghostwriters charge in South Africa?', answer: 'Ghostwriting rates in South Africa vary depending on the length and complexity of the project. A memoir or business book typically ranges from R30,000–R150,000+ depending on word count, research required, and ghostwriter experience. Contact us for a personalised quote.' },
+  { question: 'Do ghostwriters in South Africa sign NDAs?', answer: 'Yes. All Creative Books SA ghostwriters sign comprehensive non-disclosure agreements. Your project remains completely confidential and you receive full authorship credit.' },
+  { question: 'What types of books do South African ghostwriters write?', answer: 'Our ghostwriters specialise in memoirs, biographies, business books, Christian books, self-help, motivational books, and corporate publications.' },
+  { question: 'How does the ghostwriting process work?', answer: 'We start with an in-depth interview process to capture your voice, story, and key messages. We then create an outline, draft chapters for your approval, and revise until the manuscript is exactly as you envisioned.' },
+  { question: 'Do I own the rights to a ghostwritten book?', answer: 'Yes. You are the legal author and owner of all rights to the finished manuscript. The ghostwriter has no claim to the work.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceSchema({
+      name: 'Ghostwriters South Africa',
+      description: 'Professional ghostwriting services in South Africa. Memoirs, biographies, business books and more. Confidential, expert ghostwriters based in Johannesburg.',
+      url: '/ghostwriterssouthafrica',
+      areaServed: 'South Africa',
+    }),
+    faqSchema(faqs),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Ghostwriting', path: '/ghostwriting' },
+      { name: 'Ghostwriters South Africa', path: '/ghostwriterssouthafrica' },
+    ]),
+  ],
+};
 
 export default function GhostwritersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Ghost Writers South Africa | Professional Ghostwriting | Creative Books SA"
-        description="Work with professional ghost writers in South Africa for memoirs, biographies, Christian books, business books and personal stories."
-        keywords="ghost writers South Africa, ghostwriting South Africa, ghostwriter South Africa"
+        title="Ghostwriters South Africa | Professional Ghostwriting Services | Creative Books SA"
+        description="Professional ghostwriters in South Africa. We write your memoir, biography, business book or personal story. Confidential, expert ghostwriting in Johannesburg. Free quote today."
+        keywords="ghostwriters South Africa, ghostwriting services South Africa, ghostwriter Johannesburg, memoir ghostwriter South Africa, book ghostwriter South Africa"
+        canonical="https://www.creativebookssa.co.za/ghostwriterssouthafrica"
+        schema={schema}
       />
       <ServicePageTemplate
-        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/866979bdb_generated_1a350664.png"
-        subtitle="Ghost Writers South Africa"
-        title="Ghost Writers in South Africa"
-        description="Work with professional ghost writers in South Africa to tell your story. Whether it is a memoir, biography, Christian testimony, business book, or personal narrative — our ghost writers capture your voice and create a compelling, publishable manuscript."
+        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
+        subtitle="Ghostwriters South Africa"
+        title="Professional Ghostwriters in South Africa"
+        description="Turn your story into a professionally written book with South Africa's expert ghostwriting team. Whether it's a memoir, business book, biography, or personal story — our experienced ghostwriters in Johannesburg capture your unique voice with complete confidentiality."
         features={[
-          { title: 'Memoir Ghostwriting', description: 'Tell your life story with authenticity and literary craft. Our memoir ghost writers conduct interviews and transform your experiences into a powerful narrative.' },
-          { title: 'Biography Writing', description: 'Professional biography writing through research, interviews, and expert storytelling to create a lasting tribute.' },
-          { title: 'Christian Book Writing', description: 'Faith-based ghostwriting for devotionals, testimonies, ministry books, and inspirational Christian works.' },
-          { title: 'Business Book Writing', description: 'Establish your authority with a professionally written business book. Ideal for entrepreneurs, executives, and thought leaders.' },
-          { title: 'Full Confidentiality', description: 'All ghostwriting services are completely confidential. The book is published in your name with you as the author.' },
-          { title: 'Your Voice, Your Story', description: 'We work closely with you through interviews and reviews to ensure the writing captures your authentic voice.' },
+          { title: 'Memoir Ghostwriting', description: 'Your life story, told compellingly. We interview you and craft your memoir in your authentic voice.' },
+          { title: 'Business Book Ghostwriting', description: 'Establish your authority with a professionally ghostwritten business or leadership book.' },
+          { title: 'Biography Writing', description: 'Comprehensive biographies for executives, public figures, and individuals with important stories to tell.' },
+          { title: 'Christian Book Writing', description: 'Faith-based books ghostwritten with spiritual sensitivity and literary excellence.' },
+          { title: 'Complete Confidentiality', description: 'All projects are covered by strict NDA. You receive full authorship credit. Your secret is safe.' },
+          { title: 'South African Voice', description: 'Ghostwriters who understand South African culture, context, and storytelling sensibilities.' },
         ]}
         processSteps={[
-          { title: 'Discovery Interview', description: 'We meet with you — in person or virtually — to understand your story, voice, and publishing goals.' },
-          { title: 'Outline & Agreement', description: 'We create a detailed chapter outline for your approval, then begin writing with regular milestone deliveries.' },
-          { title: 'Writing & Review', description: 'Chapters are submitted for your review. We refine based on your feedback until every section is right.' },
-          { title: 'Final Manuscript', description: 'The completed manuscript is delivered ready for professional editing, design, and publication.' },
+          { title: 'Discovery Interview', description: 'An in-depth consultation to understand your story, goals, audience, and desired tone.' },
+          { title: 'Outline & Approval', description: 'We create a detailed chapter outline for your approval before any writing begins.' },
+          { title: 'Drafting', description: 'Chapter-by-chapter drafts written in your voice, delivered for review and feedback.' },
+          { title: 'Revisions & Final Manuscript', description: 'Revisions applied until the manuscript perfectly captures your vision and voice.' },
         ]}
-        faqs={[
-          { question: 'What is ghostwriting?', answer: 'Ghostwriting is when a professional writer writes a book on your behalf — based on your ideas, experiences, and voice. The book is published in your name as the author.' },
-          { question: 'How much does ghostwriting cost in South Africa?', answer: 'Ghostwriting costs depend on the length and complexity of the book. Business books and memoirs typically range from R15,000 to R60,000. Contact us for a personalised quote.' },
-          { question: 'Is ghostwriting confidential?', answer: 'Absolutely. All our ghostwriting services are 100% confidential. We sign non-disclosure agreements and the book is published solely in your name.' },
-          { question: 'How long does ghostwriting take?', answer: 'A full-length book (50,000–80,000 words) typically takes 3–6 months from the first interview to the completed manuscript.' },
-          { question: 'What types of books can you ghostwrite?', answer: 'We ghostwrite memoirs, biographies, Christian books, business books, self-help books, and personal stories. Contact us to discuss your specific project.' },
-          { question: 'Can I still be involved in writing the book?', answer: 'Yes. Most clients are involved throughout the process — providing stories, reviewing chapters, and ensuring the writing captures their authentic voice.' },
-        ]}
+        faqs={faqs}
         relatedLinks={[
-          { label: 'Ghostwriting Services', path: '/ghostwriting' },
+          { label: 'Ghostwriting', path: '/ghostwriting' },
           { label: 'Memoir Writing', path: '/memoirwriting' },
           { label: 'Biography Writing', path: '/biographywriting' },
           { label: 'Christian Book Writing', path: '/christianbookwriting' },
           { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
           { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Cover Design', path: '/bookcoverdesign' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
-        ctaTitle="Start Your Ghostwriting Project"
-        ctaDescription="Speak to a ghostwriting consultant today to discuss your story and get a personalised quote."
+        ctaTitle="Tell Your Story With South Africa's Expert Ghostwriters"
+        ctaDescription="Get a free consultation for your ghostwriting project. Completely confidential. You retain all rights."
       />
     </>
   );

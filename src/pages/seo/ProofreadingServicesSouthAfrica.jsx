@@ -1,54 +1,76 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
+
+const faqs = [
+  { question: 'How much does proofreading cost in South Africa?', answer: 'Proofreading rates in South Africa typically range from R30–R60 per page depending on the condition of the manuscript and turnaround required. Contact us for a personalised quote based on your word count.' },
+  { question: 'What is the difference between proofreading and copy editing?', answer: 'Proofreading is the final quality check for spelling, grammar, punctuation, and formatting errors. Copy editing is more substantive — it addresses sentence structure, clarity, consistency, and style. We recommend copy editing before proofreading for best results.' },
+  { question: 'How long does proofreading take in South Africa?', answer: 'A standard proofreading turnaround is 5–10 business days for manuscripts up to 80,000 words. Rush turnaround is available.' },
+  { question: 'Do you proofread academic documents in South Africa?', answer: 'Yes. We offer academic proofreading and editing for theses, dissertations, research papers, and academic publications to South African university standards.' },
+  { question: 'What style guides do your South African proofreaders follow?', answer: 'We work with Chicago Manual of Style, APA, MLA, and custom house styles depending on your requirements.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceSchema({
+      name: 'Proofreading Services South Africa',
+      description: 'Professional proofreading services in South Africa. Expert proofreaders for books, academic work, theses and business documents based in Johannesburg.',
+      url: '/proofreadingservicessouthafrica',
+      areaServed: 'South Africa',
+    }),
+    faqSchema(faqs),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Book Editing', path: '/bookediting' },
+      { name: 'Proofreading Services South Africa', path: '/proofreadingservicessouthafrica' },
+    ]),
+  ],
+};
 
 export default function ProofreadingServicesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Proofreading Services South Africa | Creative Books SA"
-        description="Professional proofreading services in South Africa for books, manuscripts, academic writing, business documents and author projects."
-        keywords="proofreading services South Africa, proofreader South Africa, book proofreading"
+        title="Proofreading Services South Africa | Expert Proofreaders | Creative Books SA"
+        description="Professional proofreading services in South Africa. Expert proofreaders for books, theses, academic work & business documents. Based in Johannesburg. Fast turnaround. Free quote."
+        keywords="proofreading services South Africa, proofreading South Africa, book proofreading South Africa, academic proofreading South Africa, proofreader Johannesburg"
+        canonical="https://www.creativebookssa.co.za/proofreadingservicessouthafrica"
+        schema={schema}
       />
       <ServicePageTemplate
-        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/c42df8e32_generated_ce28133a.png"
+        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Proofreading Services South Africa"
-        title="Proofreading Services in South Africa"
-        description="Professional proofreading services in South Africa for books, manuscripts, academic writing, theses, dissertations, and business documents. Our South African proofreaders catch every error before your work goes to print or publication."
+        title="Professional Proofreading Services in South Africa"
+        description="South Africa's trusted proofreading specialists. Our expert proofreaders eliminate every spelling, grammar, punctuation, and formatting error from your book, thesis, academic paper, or business document — delivering a polished, error-free final product."
         features={[
-          { title: 'Book Proofreading', description: 'Final proofreading pass for novels, non-fiction, memoirs, children\'s books, and all genres before printing.' },
-          { title: 'Academic Proofreading', description: 'Proofreading for theses, dissertations, journal articles, and academic papers to meet institutional standards.' },
-          { title: 'Business Proofreading', description: 'Error-free business documents, reports, proposals, and marketing materials for professional presentation.' },
-          { title: 'Spelling & Grammar', description: 'Comprehensive checks for spelling, grammar, punctuation, capitalisation, and typographical errors.' },
-          { title: 'Consistency Checks', description: 'Ensuring consistent style, formatting, terminology, and hyphenation throughout your document.' },
-          { title: 'Fast Turnaround', description: 'Standard proofreading turnaround of 3–5 business days per 100 pages. Rush service available.' },
+          { title: 'Book Proofreading', description: 'Final-stage error elimination for novels, non-fiction, memoirs, and academic books before going to print.' },
+          { title: 'Academic Proofreading', description: 'Thesis, dissertation, and research paper proofreading to South African university and international standards.' },
+          { title: 'Business Document Proofreading', description: 'Annual reports, company profiles, proposals, and corporate communications proofread to professional standards.' },
+          { title: 'Style Guide Compliance', description: 'We work with Chicago, APA, MLA, and custom house styles to ensure consistency throughout your document.' },
+          { title: 'Fast Turnaround', description: 'Standard 5–10 day turnaround with rush options available for urgent projects.' },
+          { title: 'South African English', description: 'Our proofreaders are experts in South African English, spelling conventions, and local style preferences.' },
         ]}
         processSteps={[
-          { title: 'Submit Your Document', description: 'Send your manuscript or document in Word format. Tell us about your style guide preferences if any.' },
-          { title: 'Assessment & Quote', description: 'We assess your document and provide a fixed quote with a clear turnaround time.' },
-          { title: 'Professional Proofreading', description: 'Your proofreader works through the document using tracked changes in Microsoft Word.' },
-          { title: 'Delivery & Review', description: 'Receive the proofread document with all changes tracked. Accept or reject each change with confidence.' },
+          { title: 'Submit Your Document', description: 'Send your manuscript or document in Word or PDF format along with any style guide requirements.' },
+          { title: 'Quote & Turnaround', description: 'We provide a fixed quote and confirmed turnaround date based on your word count and deadline.' },
+          { title: 'Expert Proofreading', description: 'Your document is proofread by a qualified South African editor with tracked changes for transparency.' },
+          { title: 'Final Delivery', description: 'Receive your proofread document with all corrections clearly marked and a summary of changes.' },
         ]}
-        faqs={[
-          { question: 'What is the difference between proofreading and copy editing?', answer: 'Proofreading is a final check for surface errors — spelling, grammar, punctuation and formatting. Copy editing is more comprehensive, addressing style, tone, clarity, consistency, and sentence structure. Proofreading is the last step before printing.' },
-          { question: 'How much does proofreading cost in South Africa?', answer: 'Proofreading rates start from R30 per page for standard manuscripts. Academic and technical documents may be slightly higher. Contact us for a fixed quote based on your word count.' },
-          { question: 'How long does proofreading take?', answer: 'Standard turnaround is 3–5 business days per 100 pages. Rush proofreading (24–48 hours) is available at an additional cost.' },
-          { question: 'Do you proofread academic work?', answer: 'Yes. We proofread theses, dissertations, journal articles, and academic papers. Our academic proofreaders are familiar with APA, Harvard, and Chicago style guides.' },
-          { question: 'What format should I submit my document in?', answer: 'We accept Microsoft Word (.doc, .docx) files for proofreading with tracked changes. We can also work with Google Docs.' },
-          { question: 'Do I need proofreading if I already copy edited my manuscript?', answer: 'Yes. Proofreading should always be the final step. Copy editing can introduce new typos during revisions, so a separate proofread before printing is essential.' },
-        ]}
+        faqs={faqs}
         relatedLinks={[
           { label: 'Book Editing', path: '/bookediting' },
           { label: 'Copy Editing', path: '/copyediting' },
-          { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
           { label: 'Academic Editing', path: '/academicediting' },
           { label: 'Thesis Editing', path: '/thesisediting' },
-          { label: 'Editing Guide', path: '/editingguide' },
+          { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
+          { label: 'Book Cover Design', path: '/bookcoverdesign' },
           { label: 'Book Publishing', path: '/bookpublishing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
-        ctaTitle="Get a Professional Proofreading Quote"
-        ctaDescription="Send us your manuscript for a free assessment and fixed proofreading quote."
+        ctaTitle="Get a Proofreading Quote in South Africa"
+        ctaDescription="Submit your word count and receive a fixed proofreading quote from our South African editorial team within 24 hours."
       />
     </>
   );

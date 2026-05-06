@@ -1,53 +1,75 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
+
+const faqs = [
+  { question: 'Who are the best book publishers in South Africa?', answer: 'Creative Books SA is one of South Africa\'s leading self-publishing companies, offering full-service publishing including editing, cover design, typesetting, printing, and distribution. We are based in Johannesburg and serve authors nationwide.' },
+  { question: 'Do book publishers in South Africa help with editing?', answer: 'Yes. Creative Books SA provides professional proofreading, copy editing, developmental editing, and manuscript evaluation as part of our publishing packages.' },
+  { question: 'How do I find a book publisher in South Africa?', answer: 'Search for publishers who offer transparent pricing, full-service support, and allow authors to retain their rights. Creative Books SA ticks all these boxes — contact us for a free consultation.' },
+  { question: 'Do South African publishers handle ISBN registration?', answer: 'Yes. We handle ISBN registration with the National Library of South Africa on your behalf, included in all publishing packages.' },
+  { question: 'Can South African publishers distribute my book internationally?', answer: 'Yes. We distribute to Amazon KDP, Takealot, Apple Books, Google Play Books, and global retail platforms.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceSchema({
+      name: 'Book Publishers South Africa',
+      description: 'Professional book publishing services from one of South Africa\'s top publishers. Editing, design, printing and distribution with full author rights retention.',
+      url: '/bookpublisherssouthafrica',
+      areaServed: 'South Africa',
+    }),
+    faqSchema(faqs),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Book Publishers South Africa', path: '/bookpublisherssouthafrica' },
+    ]),
+  ],
+};
 
 export default function BookPublishersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Publishers in South Africa | Creative Books SA"
-        description="Creative Books SA supports authors across South Africa with professional book publishing, printing, editing, cover design and publishing packages."
-        keywords="book publishers in South Africa, book publishing South Africa, self publish South Africa"
+        title="Book Publishers South Africa | Professional Publishing Services | Creative Books SA"
+        description="Looking for book publishers in South Africa? Creative Books SA offers full-service publishing, editing, cover design, printing & global distribution. Authors keep 100% rights. Free quote."
+        keywords="book publishers South Africa, book publishers in South Africa, publishing company South Africa, South African book publishers, publish a book South Africa"
+        canonical="https://www.creativebookssa.co.za/bookpublisherssouthafrica"
+        schema={schema}
       />
       <ServicePageTemplate
-        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png"
+        heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Publishers South Africa"
         title="Book Publishers in South Africa"
-        description="Creative Books SA provides professional book publishing support to authors across South Africa. Whether you are publishing your first novel, a memoir, a business book, or a children's book — we have the expertise, tools and packages to bring your story to life."
+        description="Creative Books SA is one of South Africa's most experienced book publishers, offering full-service publishing for authors nationwide. From manuscript evaluation and professional editing to cover design, typesetting, printing, and global distribution — we bring your book to life while you keep 100% of your rights."
         features={[
-          { title: 'Fiction & Non-Fiction', description: 'We publish novels, memoirs, biographies, business books, children\'s books, poetry and more across all genres.' },
-          { title: 'Publishing Packages', description: 'Choose from our Mini, Standard or Premium publishing packages. All include ISBN registration and cover design.' },
-          { title: 'Professional Editing', description: 'Our South African editing team handles proofreading, copy editing, and developmental editing.' },
-          { title: 'Cover Design', description: 'Custom book cover design for every genre — fiction, non-fiction, children\'s, Christian, and academic books.' },
-          { title: 'Print & Digital', description: 'We produce high-quality printed books as well as eBook versions for Amazon Kindle, Apple Books and Kobo.' },
-          { title: 'Author Support', description: 'A dedicated project manager guides you through every stage of the publishing journey.' },
+          { title: 'Full-Service Publishing', description: 'Editing, design, typesetting, printing, ISBN, and distribution all handled under one roof in Johannesburg.' },
+          { title: '100% Author Rights', description: 'We are a service publisher — you own your book entirely, including all rights and royalties.' },
+          { title: 'Expert South African Editors', description: 'Qualified editors with deep knowledge of South African language, culture, and publishing standards.' },
+          { title: 'Professional Book Cover Design', description: 'Market-ready cover designs that compete on shelves and online platforms across South Africa and globally.' },
+          { title: 'ISBN & Legal Registration', description: 'Full NLSA ISBN registration and legal deposit management included in all publishing packages.' },
+          { title: 'SA & International Distribution', description: 'Books distributed to Takealot, Amazon, Apple Books, Google Play, and major South African retailers.' },
         ]}
         processSteps={[
-          { title: 'Submit Your Manuscript', description: 'Send us your completed manuscript for a free assessment. We will review it and recommend the best publishing approach.' },
-          { title: 'Select Your Package', description: 'Choose a publishing package that suits your goals and budget. All packages include ISBN registration.' },
-          { title: 'Production Begins', description: 'Editing, cover design, typesetting and printing are handled by our professional team.' },
-          { title: 'Publish Your Book', description: 'Receive your printed copies and digital files. We support distribution on South African and international platforms.' },
+          { title: 'Free Manuscript Review', description: 'Submit your manuscript and receive honest feedback, a project scope assessment, and package recommendation.' },
+          { title: 'Editing & Proofreading', description: 'Professional editing to polish your manuscript to publishing standards.' },
+          { title: 'Cover Design & Interior Layout', description: 'Beautiful cover art and professional interior typesetting for print and digital formats.' },
+          { title: 'Print, Register & Distribute', description: 'Your book is printed, ISBN-registered, and launched across South African and international channels.' },
         ]}
-        faqs={[
-          { question: 'Who are the best book publishers in South Africa?', answer: 'Creative Books SA is one of the most recommended publishing companies for self-publishing authors in South Africa, with 500+ published books and 15+ years of experience.' },
-          { question: 'How do I choose a book publisher in South Africa?', answer: 'Look for transparent pricing, quality samples, clear timelines, author testimonials, and full rights retention. Creative Books SA ticks all these boxes.' },
-          { question: 'What publishing packages do you offer?', answer: 'We offer Mini (from R4,999), Standard (from R12,999) and Premium (from R24,999) packages. Each includes editing, cover design, typesetting, ISBN, and printing.' },
-          { question: 'Do you publish all types of books?', answer: 'Yes. We publish fiction, non-fiction, memoirs, biographies, children\'s books, Christian books, poetry, business books, and academic works.' },
-          { question: 'Do you offer distribution?', answer: 'Yes. We help authors list their books on Takealot, Amazon, and other platforms. We also assist with distribution to local bookstores.' },
-        ]}
+        faqs={faqs}
         relatedLinks={[
           { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
           { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'Book Printing', path: '/bookprinting' },
+          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
+          { label: 'Best Publishers SA', path: '/bestpublishingcompaniesinsouthafrica' },
           { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Cover Design', path: '/bookcoverdesign' },
+          { label: 'ISBN Registration', path: '/isbnregistration' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
-        ctaTitle="Ready to Publish Your Book in South Africa?"
-        ctaDescription="Contact Creative Books SA for a free consultation and personalised publishing quote."
+        ctaTitle="Publish Your Book With South Africa's Trusted Publishers"
+        ctaDescription="Get a free consultation and personalised quote from Creative Books SA — South Africa's premier book publishing company."
       />
     </>
   );
