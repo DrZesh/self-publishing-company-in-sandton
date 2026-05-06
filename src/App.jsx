@@ -28,6 +28,7 @@ import Ghostwriting from './pages/services/Ghostwriting';
 import GenericServicePage from './pages/services/GenericServicePage';
 import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
+import ISBNRegistration from './pages/resources/ISBNRegistration';
 
 // SEO Landing Pages
 import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
@@ -141,7 +142,7 @@ const AuthenticatedApp = () => {
         <Route path="/bookcoverdesignjohannesburg" element={<LocationPage locationKey="bookcoverdesignjohannesburg" />} />
 
         {/* Resource Pages */}
-        <Route path="/isbnregistration" element={<ResourcePage resourceKey="isbnregistration" />} />
+        <Route path="/isbnregistration" element={<ISBNRegistration />} />
         <Route path="/howtopublishabook" element={<ResourcePage resourceKey="howtopublishabook" />} />
         <Route path="/publishingguide" element={<ResourcePage resourceKey="publishingguide" />} />
         <Route path="/printingguide" element={<ResourcePage resourceKey="printingguide" />} />
