@@ -1,190 +1,147 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Shield, Clock, Award, Heart, TrendingUp, Globe2, Star, Zap } from 'lucide-react';
+import { Shield, Clock, Award, Heart, TrendingUp, Zap } from 'lucide-react';
 
 const stats = [
-  { value: '500+', label: 'Books Published', icon: Star },
-  { value: '15+', label: 'Years Experience', icon: Award },
-  { value: '100%', label: 'Rights Retained', icon: Shield },
-  { value: '9', label: 'Provinces Served', icon: Globe2 },
+  { value: '500+', label: 'Books Published', sub: 'across SA & globally' },
+  { value: '15+', label: 'Years Experience', sub: 'Johannesburg based' },
+  { value: '100%', label: 'Rights Retained', sub: 'always, no exceptions' },
+  { value: '9', label: 'Provinces Served', sub: 'nationwide delivery' },
 ];
 
 const reasons = [
-  {
-    icon: Shield,
-    title: 'You Own 100% of Your Rights',
-    description: 'Unlike traditional publishers who take a cut of everything, we are purely a service provider. Every word, every idea, every royalty — yours.',
-  },
-  {
-    icon: Clock,
-    title: 'Industry-Leading Turnaround',
-    description: 'Streamlined workflows mean your book goes from manuscript to printed copies in weeks, not the 18-month delays of traditional publishing.',
-  },
-  {
-    icon: Award,
-    title: 'Award-Winning Production Quality',
-    description: 'Our books are indistinguishable from the world\'s best publishers. Premium paper, precision binding, and covers that stop browsers in their tracks.',
-  },
-  {
-    icon: Heart,
-    title: 'Proudly South African',
-    description: 'Based in Johannesburg, we understand the South African market, South African authors, and what South African readers want to read.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'From Print to Global Digital',
-    description: 'We don\'t just print your book — we put it on Amazon KDP, format it as an eBook, and help you reach readers in 70+ countries worldwide.',
-  },
-  {
-    icon: Zap,
-    title: 'One Partner. Everything.',
-    description: 'Editing, design, printing, ISBN, Amazon KDP, author website. Stop juggling multiple freelancers — we handle everything under one roof.',
-  },
+  { icon: Shield, code: 'RTS', title: '100% Rights Retained', desc: 'You own every word, every idea, every royalty. We are a service provider — never a rights holder.' },
+  { icon: Clock, code: 'SPD', title: 'Industry-Fast Turnaround', desc: 'Weeks — not the 18-month delays of traditional publishing. Streamlined from day one.' },
+  { icon: Award, code: 'QLT', title: 'Award-Winning Quality', desc: 'Books indistinguishable from global publishers. Premium paper, precision binding, stunning covers.' },
+  { icon: Heart, code: 'ZAF', title: 'Proudly South African', desc: 'Joburg-based, locally rooted. We know the SA market, the readers, the bookshops.' },
+  { icon: TrendingUp, code: 'DST', title: 'Print to Global Digital', desc: 'Amazon KDP, eBook, 70+ countries. We extend your reach far beyond local shelves.' },
+  { icon: Zap, code: 'UNI', title: 'One Partner. Everything.', desc: 'Editing, design, print, ISBN, KDP, author website — all under one roof, one invoice.' },
 ];
 
 export default function WhyChooseUs({ bookImage }) {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], [-30, 30]);
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [-20, 20]);
 
   return (
-    <section ref={containerRef} className="py-20 lg:py-28 bg-[#060504] relative overflow-hidden">
-      {/* Ambient glows */}
-      <motion.div
-        animate={{ opacity: [0.06, 0.14, 0.06], scale: [1, 1.1, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(184,115,51,0.25) 0%, transparent 60%)', filter: 'blur(80px)' }}
-      />
+    <section ref={ref} className="relative py-24 lg:py-32 bg-vellum overflow-hidden">
+      {/* Dot matrix */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        style={{ backgroundImage: 'radial-gradient(circle, #B87333 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
 
-        {/* Stats bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20"
-        >
-          {stats.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="relative text-center p-6 rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(184,115,51,0.1)' }}
-              >
-                <Icon className="w-5 h-5 text-copper mx-auto mb-3 opacity-60" />
-                <div className="font-heading text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-white/40 text-sm font-body">{stat.label}</div>
-              </motion.div>
-            );
-          })}
+        {/* System label */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          className="flex items-center gap-3 mb-6">
+          <div className="w-px h-6 bg-copper/40" />
+          <span className="font-mono text-xs text-copper/50 tracking-[0.25em] uppercase">WHY_US · PERFORMANCE_METRICS · CREATIVE_BOOKS_SA</span>
         </motion.div>
 
-        {/* Main grid */}
+        {/* Stats — HUD panels */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-20">
+          {stats.map((s, i) => (
+            <motion.div key={s.label}
+              initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+              className="relative p-5 overflow-hidden"
+              style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(184,115,51,0.15)', backdropFilter: 'blur(10px)' }}>
+              <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-copper/40" />
+              <div className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F] mb-0.5">{s.value}</div>
+              <div className="font-mono text-[10px] text-copper tracking-widest uppercase mb-0.5">{s.label}</div>
+              <div className="text-[#0F0F0F]/35 text-[10px] font-body">{s.sub}</div>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5"
+                style={{ background: 'linear-gradient(90deg, rgba(184,115,51,0.4), transparent)' }} />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Main block */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
-          {/* Left: Image with parallax */}
-          <motion.div style={{ y }} className="relative">
-            <div className="absolute -inset-6 rounded-3xl pointer-events-none"
-              style={{ background: 'radial-gradient(circle at 50% 50%, rgba(184,115,51,0.15) 0%, transparent 70%)' }} />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
-              {/* Decorative frame */}
-              <div className="absolute -top-3 -left-3 w-24 h-24 rounded-tl-2xl pointer-events-none"
-                style={{ border: '2px solid rgba(184,115,51,0.3)', borderRight: 'none', borderBottom: 'none' }} />
-              <div className="absolute -bottom-3 -right-3 w-24 h-24 rounded-br-2xl pointer-events-none"
-                style={{ border: '2px solid rgba(184,115,51,0.3)', borderLeft: 'none', borderTop: 'none' }} />
+
+          {/* Image */}
+          <motion.div style={{ y }} className="relative order-2 lg:order-1">
+            <div className="absolute -inset-4 rounded-2xl pointer-events-none"
+              style={{ background: 'radial-gradient(circle, rgba(184,115,51,0.08) 0%, transparent 70%)' }} />
+
+            {/* HUD frame */}
+            <div className="relative">
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className={`absolute w-6 h-6 pointer-events-none z-10 ${i === 0 ? 'top-0 left-0' : i === 1 ? 'top-0 right-0' : i === 2 ? 'bottom-0 left-0' : 'bottom-0 right-0'}`}
+                  style={{
+                    borderTop: i < 2 ? '2px solid rgba(184,115,51,0.7)' : 'none',
+                    borderBottom: i >= 2 ? '2px solid rgba(184,115,51,0.7)' : 'none',
+                    borderLeft: i % 2 === 0 ? '2px solid rgba(184,115,51,0.7)' : 'none',
+                    borderRight: i % 2 === 1 ? '2px solid rgba(184,115,51,0.7)' : 'none',
+                  }} />
+              ))}
               <img
                 src={bookImage || 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png'}
-                alt="Premium book production by Creative Books SA"
-                className="rounded-2xl w-full shadow-2xl"
-                style={{ boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}
+                alt="Premium book production — Creative Books SA"
+                className="w-full rounded object-cover shadow-2xl"
               />
-              {/* Floating badge */}
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -bottom-5 -left-5 px-5 py-3 rounded-2xl"
-                style={{
-                  background: 'rgba(10,8,6,0.9)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(184,115,51,0.3)',
-                  boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
-                }}
-              >
-                <div className="text-copper font-heading font-bold text-xl">500+</div>
-                <div className="text-white/60 text-xs font-body">Books Published</div>
-              </motion.div>
+              {/* Scan line overlay */}
+              <div className="absolute inset-0 pointer-events-none rounded"
+                style={{ background: 'linear-gradient(to bottom, rgba(184,115,51,0.04) 0%, transparent 50%, rgba(184,115,51,0.06) 100%)' }} />
+              <div className="absolute bottom-3 left-3 font-mono text-[9px] text-copper/40 tracking-widest">[VISUAL · PROD_QUALITY · PREMIUM]</div>
+            </div>
+
+            {/* Floating data chip */}
+            <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -bottom-4 -right-4 p-4"
+              style={{ background: 'rgba(249,247,242,0.95)', border: '1px solid rgba(184,115,51,0.3)', backdropFilter: 'blur(12px)', boxShadow: '0 12px 30px rgba(0,0,0,0.12)' }}>
+              <div className="font-heading text-2xl font-bold text-[#0F0F0F]">500+</div>
+              <div className="font-mono text-[10px] text-copper tracking-widest">BOOKS_PUBLISHED</div>
             </motion.div>
           </motion.div>
 
-          {/* Right: Text */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="text-copper text-sm font-body tracking-[0.3em] uppercase mb-4 block">Why Creative Books SA</span>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              South Africa's Most<br />Trusted Publishing Partner
+          {/* Text */}
+          <motion.div className="order-1 lg:order-2"
+            initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <span className="font-mono text-xs text-copper/50 tracking-[0.25em] uppercase block mb-4">WHY_CREATIVE_BOOKS_SA</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-[#0F0F0F] leading-tight mb-6">
+              South Africa's Most<br />
+              <span className="text-gradient-copper">Trusted Partner</span>
             </h2>
-            <p className="text-white/50 font-body leading-relaxed mb-8 text-lg">
-              For over 15 years, we've helped hundreds of South African authors turn their manuscripts into beautifully published books — while keeping every right and every rand of royalty.
+            <p className="text-[#0F0F0F]/55 font-body leading-relaxed text-base mb-8">
+              For over 15 years, we've helped hundreds of South African authors turn manuscripts into beautifully published books — while keeping every right and every rand of royalty.
             </p>
-            <div className="space-y-4">
-              {['You retain 100% of all rights and royalties', 'Professional publishing quality — indistinguishable from global publishers', 'Complete service: editing, design, print, digital, distribution', 'Serving all 9 provinces with courier delivery nationwide'].map((point, i) => (
-                <motion.div
-                  key={point}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                  className="flex items-start gap-3"
-                >
-                  <div className="w-5 h-5 rounded-full bg-copper/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-copper" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span className="text-white/70 font-body text-sm leading-relaxed">{point}</span>
+            <div className="space-y-3">
+              {['You retain 100% of all rights and royalties', 'Production quality matching global publishers', 'Complete service: editing, design, print, digital', 'All 9 provinces served with courier delivery'].map((p, i) => (
+                <motion.div key={p} initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ delay: 0.1 + i * 0.08 }}
+                  className="flex items-start gap-3">
+                  <div className="mt-0.5 shrink-0 font-mono text-[10px] text-copper/50 w-5">▸</div>
+                  <span className="text-[#0F0F0F]/65 text-sm font-body leading-relaxed">{p}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
 
-        {/* Reasons grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {reasons.map((reason, i) => {
-            const Icon = reason.icon;
+        {/* Reasons grid — terminal cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {reasons.map((r, i) => {
+            const Icon = r.icon;
             return (
-              <motion.div
-                key={reason.title}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -4, transition: { duration: 0.25 } }}
-                className="p-6 rounded-2xl group cursor-default"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-all group-hover:scale-110"
-                  style={{ background: 'rgba(184,115,51,0.1)', border: '1px solid rgba(184,115,51,0.15)' }}>
-                  <Icon className="w-5 h-5 text-copper" />
+              <motion.div key={r.code}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                className="relative p-6 cursor-default group overflow-hidden"
+                style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(184,115,51,0.12)', backdropFilter: 'blur(8px)' }}>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-9 h-9 rounded flex items-center justify-center transition-transform group-hover:scale-110"
+                    style={{ background: 'rgba(184,115,51,0.08)', border: '1px solid rgba(184,115,51,0.15)' }}>
+                    <Icon className="w-4 h-4 text-copper" />
+                  </div>
+                  <span className="font-mono text-[9px] text-copper/30 tracking-widest">[{r.code}]</span>
                 </div>
-                <h3 className="font-heading text-base font-semibold text-white mb-2">{reason.title}</h3>
-                <p className="text-white/45 text-sm font-body leading-relaxed">{reason.description}</p>
+                <h3 className="font-heading text-sm font-bold text-[#0F0F0F] mb-1.5">{r.title}</h3>
+                <p className="text-[#0F0F0F]/45 text-xs font-body leading-relaxed">{r.desc}</p>
+                <div className="absolute bottom-0 left-0 w-0 group-hover:w-full h-px transition-all duration-500"
+                  style={{ background: 'rgba(184,115,51,0.35)' }} />
               </motion.div>
             );
           })}
