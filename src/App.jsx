@@ -29,6 +29,9 @@ import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks2
 
 // Service Silo Pages
 import BookPublishing from './pages/services/BookPublishing';
+import MiniPublishingPackage from './pages/services/MiniPublishingPackage';
+import A5BookPublishing from './pages/services/A5BookPublishing';
+import SixByNinePublishing from './pages/services/SixByNinePublishing';
 import BookPrinting from './pages/services/BookPrinting';
 import BookEditing from './pages/services/BookEditing';
 import BookCoverDesign from './pages/services/BookCoverDesign';
@@ -119,7 +122,9 @@ const AuthenticatedApp = () => {
         <Route path="/bookpublishing" element={<BookPublishing />} />
         <Route path="/selfpublishing" element={<GenericServicePage serviceKey="selfpublishing" />} />
         <Route path="/publishingpackages" element={<GenericServicePage serviceKey="publishingpackages" />} />
-        <Route path="/minipublishingpackage" element={<GenericServicePage serviceKey="minipublishingpackage" />} />
+        <Route path="/minipublishingpackage" element={<MiniPublishingPackage />} />
+        <Route path="/a5bookpublishing" element={<A5BookPublishing />} />
+        <Route path="/6x9bookpublishing" element={<SixByNinePublishing />} />
         <Route path="/premiumpublishingpackage" element={<GenericServicePage serviceKey="premiumpublishingpackage" />} />
         <Route path="/christianbookpublishing" element={<GenericServicePage serviceKey="christianbookpublishing" />} />
         <Route path="/childrensbookpublishing" element={<GenericServicePage serviceKey="childrensbookpublishing" />} />
