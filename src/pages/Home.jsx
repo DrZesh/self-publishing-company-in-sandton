@@ -6,7 +6,6 @@ import AboutSection from '../components/home/AboutSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import ProcessTimeline from '../components/home/ProcessTimeline';
 import PackagesPreview from '../components/home/PackagesPreview';
-import TestimonialsSection from '../components/shared/TestimonialsSection';
 import FAQSection from '../components/shared/FAQSection';
 import CTASection from '../components/shared/CTASection';
 
@@ -45,7 +44,6 @@ export default function Home() {
       <WhyChooseUs bookImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" />
       <ProcessTimeline />
       <PackagesPreview />
-      <TestimonialsSection />
       <FAQSection faqs={homeFaqs} light />
       <CTASection />
     </div>

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Award, Heart } from 'lucide-react';
 import SectionHeading from '../components/shared/SectionHeading';
 import CTASection from '../components/shared/CTASection';
-import TestimonialsSection from '../components/shared/TestimonialsSection';
 
 const values = [
   { icon: BookOpen, title: 'Excellence', description: 'Every book we publish meets the highest standards of quality in editing, design, and print.' },
@@ -85,7 +84,6 @@ export default function About() {
         </div>
       </section>
 
-      <TestimonialsSection light />
       <CTASection title="Ready to Start Your Journey?" description="Connect with our publishing experts for a free consultation and personalised quote." />
     </div>
   );

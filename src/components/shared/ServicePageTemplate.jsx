@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import CTASection from './CTASection';
 import FAQSection from './FAQSection';
-import TestimonialsSection from './TestimonialsSection';
 import InternalLinks from './InternalLinks';
 
 export default function ServicePageTemplate({
@@ -126,9 +125,6 @@ export default function ServicePageTemplate({
 
       {/* Custom content slot */}
       {children}
-
-      {/* Testimonials */}
-      <TestimonialsSection light />
 
       {/* FAQ */}
       <FAQSection faqs={faqs} />
