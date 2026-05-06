@@ -1,6 +1,7 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PremiumPricingTable from '../../components/pricing/PremiumPricingTable';
+import EditingPricingTable from '../../components/pricing/EditingPricingTable';
 import { BookOpen, Zap, Star } from 'lucide-react';
 
 // Publishing packages for pricing tables
@@ -191,10 +192,11 @@ const serviceData = {
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/c42df8e32_generated_ce28133a.png',
   },
   copyediting: {
-    subtitle: 'Copy Editing South Africa',
-    title: 'Copy Editing Services',
-    description: 'Comprehensive copy editing for style, tone, clarity, and consistency. Elevate your manuscript to professional publishing standards.',
+    subtitle: 'Book Editing Company South Africa',
+    title: 'Book Editing South Africa',
+    description: 'Comprehensive editing services for style, tone, clarity, and consistency. Elevate your manuscript to professional publishing standards with our expert editors.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/c42df8e32_generated_ce28133a.png',
+    showEditingPricing: true,
   },
   manuscriptevaluation: {
     subtitle: 'Manuscript Evaluation',
@@ -331,6 +333,8 @@ export default function GenericServicePage({ serviceKey }) {
             title="Choose Your Publishing Package"
             subtitle="Transparent Pricing"
           />
+        ) : data.showEditingPricing ? (
+          <EditingPricingTable />
         ) : null
       }
       faqs={defaultFaqs}
