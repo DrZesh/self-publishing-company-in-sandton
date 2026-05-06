@@ -170,15 +170,15 @@ const serviceData = {
   },
   // DESIGN SILO
   typesetting: {
-    subtitle: 'Book Typesetting',
-    title: 'Professional Typesetting',
-    description: 'Expert book typesetting and interior layout design. Beautiful typography, page design, and formatting that makes your book a pleasure to read.',
+    subtitle: 'Book Typesetting & Layout Design',
+    title: 'Book Layout Design & Typesetting',
+    description: 'Professional interior book layout design and typesetting. From chapter openers and headers to beautiful typography and page design — we make your book a pleasure to read.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/63376ef11_generated_5bcb307c.png',
   },
   booklayoutdesign: {
-    subtitle: 'Book Layout Services',
-    title: 'Book Layout Design',
-    description: 'Professional interior book layout and page design. Headers, footers, chapter openers, and decorative elements that elevate your book.',
+    subtitle: 'Book Typesetting & Layout Design',
+    title: 'Book Layout Design & Typesetting',
+    description: 'Professional interior book layout design and typesetting. From chapter openers and headers to beautiful typography and page design — we make your book a pleasure to read.',
     heroImage: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/63376ef11_generated_5bcb307c.png',
   },
   ebookformatting: {

@@ -45,8 +45,7 @@ const navItems = [
     label: 'Design', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
       { label: 'Cover Design SA', path: '/bookcoverdesignsouthafrica' },
-      { label: 'Typesetting', path: '/typesetting' },
-      { label: 'Book Layout Design', path: '/booklayoutdesign' },
+      { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
       { label: 'Author Websites', path: '/authorwebsites' },
     ]
