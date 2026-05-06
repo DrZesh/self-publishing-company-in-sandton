@@ -7,9 +7,13 @@ const footerSilos = [
     title: 'Publishing',
     links: [
       { label: 'Book Publishing', path: '/bookpublishing' },
+      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+      { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
+      { label: 'Memoir Publishing', path: '/memoirpublishing' },
+      { label: 'Poetry Publishing', path: '/poetrypublishing' },
+      { label: 'Business Book Publishing', path: '/businessbookpublishing' },
       { label: 'Publishers in South Africa', path: '/bookpublisherssouthafrica' },
       { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
     ]
@@ -28,6 +32,8 @@ const footerSilos = [
     title: 'Editing & Design',
     links: [
       { label: 'Book Editing', path: '/bookediting' },
+      { label: 'Technical Editing', path: '/technicalediting' },
+      { label: 'Language Editing', path: '/languageediting' },
       { label: 'Proofreading Services SA', path: '/proofreadingservicessouthafrica' },
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
       { label: 'Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },

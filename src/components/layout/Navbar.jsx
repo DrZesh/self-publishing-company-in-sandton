@@ -8,14 +8,8 @@ const navItems = [
   { label: 'About Us', path: '/aboutus' },
   {
     label: 'Publishing', children: [
-      { label: 'Book Publishing', path: '/bookpublishing' },
       { label: 'Publishing Packages', path: '/publishingpackages' },
-      { label: 'Self Publishing', path: '/selfpublishing' },
-      { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
-      { label: 'Memoir Publishing', path: '/memoirpublishing' },
-      { label: 'Poetry Publishing', path: '/poetrypublishing' },
-      { label: 'Business Book Publishing', path: '/businessbookpublishing' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
       { label: 'Amazon KDP', path: '/amazonkdp' },
     ]
@@ -35,15 +29,12 @@ const navItems = [
   },
   {
     label: 'Editing', children: [
-      { label: 'Book Editing', path: '/bookediting' },
       { label: 'Proofreading', path: '/proofreading' },
       { label: 'Copy Editing', path: '/copyediting' },
       { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
       { label: 'Academic Editing', path: '/academicediting' },
       { label: 'Thesis Editing', path: '/thesisediting' },
       { label: 'Dissertation Editing', path: '/dissertationediting' },
-      { label: 'Technical Editing', path: '/technicalediting' },
-      { label: 'Language Editing', path: '/languageediting' },
     ]
   },
   {
