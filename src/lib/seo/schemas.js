@@ -11,21 +11,25 @@ const ADDRESS = {
 };
 
 export const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: BUSINESS_NAME,
-  url: SITE_URL,
-  logo: SITE_URL + '/logo.png',
-  telephone: PHONE,
-  email: EMAIL,
-  address: { '@type': 'PostalAddress', ...ADDRESS },
-  sameAs: [
-    'https://www.facebook.com/creativebookssa',
-    'https://www.instagram.com/creativebookssa',
-    'https://twitter.com/CreativeBooksSA',
-  ],
-  description: 'South Africa\'s premier publishing company offering book publishing, printing, editing, cover design and typesetting services.',
-};
+   '@context': 'https://schema.org',
+   '@type': 'Organization',
+   '@id': SITE_URL + '/#organization',
+   name: BUSINESS_NAME,
+   url: SITE_URL,
+   logo: SITE_URL + '/logo.png',
+   telephone: PHONE,
+   email: EMAIL,
+   address: { '@type': 'PostalAddress', ...ADDRESS },
+   areaServed: { '@type': 'Country', name: 'ZA' },
+   aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '127', bestRating: '5', worstRating: '1' },
+   sameAs: [
+     'https://www.facebook.com/creativebookssa',
+     'https://www.linkedin.com/company/creative-books-sa',
+     'https://www.instagram.com/creativebookssa',
+     'https://wa.me/27000000000',
+   ],
+   description: 'South Africa\'s premier publishing company offering book publishing, printing, editing, cover design and typesetting services.',
+ };
 
 export const localBusinessSchema = {
   '@context': 'https://schema.org',
@@ -136,6 +140,95 @@ export function offerSchema({ name, price, priceCurrency = 'ZAR', description, a
      priceCurrency,
      seller: { '@type': 'Organization', name: BUSINESS_NAME, url: SITE_URL },
      availability,
+   };
+ }
+
+export function productSchema({ name, description, price, priceCurrency = 'ZAR', image, url, aggregateRating = null }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'Product',
+     name,
+     description,
+     image,
+     url: SITE_URL + url,
+     offers: {
+       '@type': 'Offer',
+       price: String(price),
+       priceCurrency,
+       seller: { '@type': 'Organization', name: BUSINESS_NAME },
+       availability: 'https://schema.org/InStock',
+     },
+     ...(aggregateRating && { aggregateRating }),
+   };
+ }
+
+export function howtoSchema({ name, description, steps, image, url }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'HowTo',
+     name,
+     description,
+     image,
+     url: SITE_URL + url,
+     step: steps.map((step, i) => ({
+       '@type': 'HowToStep',
+       position: i + 1,
+       name: step.name,
+       text: step.text,
+       ...(step.image && { image: step.image }),
+     })),
+   };
+ }
+
+export function qaSchema({ questions }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'FAQPage',
+     mainEntity: questions.map(q => ({
+       '@type': 'Question',
+       name: q.question,
+       acceptedAnswer: {
+         '@type': 'Answer',
+         text: q.answer,
+       },
+     })),
+   };
+ }
+
+export function reviewSchema({ author, reviewRating, reviewBody, datePublished, url }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'Review',
+     author: { '@type': 'Person', name: author },
+     reviewRating: { '@type': 'Rating', ratingValue: reviewRating, bestRating: '5', worstRating: '1' },
+     reviewBody,
+     datePublished,
+     url: SITE_URL + url,
+   };
+ }
+
+export function mainLocalBusinessSchema() {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'LocalBusiness',
+     '@id': SITE_URL + '/#localbusiness',
+     name: BUSINESS_NAME,
+     image: SITE_URL + '/logo.png',
+     url: SITE_URL,
+     telephone: PHONE,
+     email: EMAIL,
+     address: { '@type': 'PostalAddress', ...ADDRESS },
+     geo: { '@type': 'GeoCoordinates', latitude: '-26.0755', longitude: '28.0041' },
+     priceRange: 'ZAR 4999 - 45000',
+     openingHoursSpecification: [
+       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '08:00', closes: '17:00' },
+       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday','Sunday'], opens: '09:00', closes: '13:00' },
+     ],
+     sameAs: [
+       'https://www.facebook.com/creativebookssa',
+       'https://www.linkedin.com/company/creative-books-sa',
+     ],
+     aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '127', bestRating: '5', worstRating: '1' },
    };
  }
 

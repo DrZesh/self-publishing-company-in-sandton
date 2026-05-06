@@ -1,6 +1,6 @@
 import React from 'react';
 import PageMeta from '../components/shared/PageMeta';
-import { faqSchema } from '../lib/seo/schemas';
+import { faqSchema, mainLocalBusinessSchema } from '../lib/seo/schemas';
 import HeroSlider from '../components/home/HeroSlider';
 import ServicesGrid from '../components/home/ServicesGrid';
 import AboutSection from '../components/home/AboutSection';
@@ -22,15 +22,15 @@ const homeFaqs = [
 const faqSchemas = [faqSchema(homeFaqs)];
 
 export default function Home() {
-  return (
-    <div>
-      <PageMeta
-         title="Publishing Company South Africa | Book Publishing, Printing & Editing | Creative Books SA"
-         description="Creative Books SA — South Africa's premier publishing company in Johannesburg. Professional book publishing, printing, editing, cover design & ISBN support. Free quote today."
-         keywords="publishing company South Africa, book publishers South Africa, self publishing South Africa, book printing Johannesburg, book editing South Africa, ISBN registration"
-         canonical="https://www.creativebookssa.co.za/"
-         schema={{ '@graph': faqSchemas }}
-       />
+   return (
+     <div>
+       <PageMeta
+          title="Book Publishing & Printing Company South Africa | Creative Books SA"
+          description="Leading book publishing & printing company in South Africa. Self-publishing packages, professional editing, cover design, ISBN registration. Johannesburg-based. Free quote."
+          keywords="book publishing South Africa, self publishing, book printing, book editing, cover design, ISBN registration, Johannesburg"
+          canonical="https://www.creativebookssa.co.za/"
+          schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}
+        />
       <HeroSlider />
       <ServicesGrid />
       <AboutSection />

@@ -128,6 +128,7 @@ export default function HeroSlider() {
           loading="eager"
           width="1800"
           height="1000"
+          decoding="async"
         />
       </AnimatePresence>
 
