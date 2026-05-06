@@ -134,10 +134,8 @@ function ServiceCard({ svc }) {
 
   return (
     <motion.article variants={cardVariants}>
-      <Link
-        to={svc.link}
-        aria-label={svc.aria}
-        className="group flex flex-col h-full p-8 rounded-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+      <div
+        className="group flex flex-col h-full p-8 rounded-2xl transition-all duration-300 relative overflow-hidden"
         style={{
           background: 'rgba(255,255,255,0.03)',
           backdropFilter: 'blur(24px)',
@@ -187,7 +185,7 @@ function ServiceCard({ svc }) {
         <p className="text-white/45 text-sm font-body leading-relaxed flex-1">
           {svc.desc}
         </p>
-      </Link>
+      </div>
     </motion.article>
   );
 }
