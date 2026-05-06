@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
 import PageMeta from '../../components/shared/PageMeta';
+import PageHero from '../../components/shared/PageHero';
 
 const steps = [
   {
@@ -116,35 +117,17 @@ export default function ISBNRegistration() {
       />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-obsidian overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #B87333 0%, transparent 50%)' }} />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="inline-flex items-center gap-2 text-copper text-sm font-body tracking-[0.25em] uppercase mb-6">
-              <Hash className="w-4 h-4" /> ISBN South Africa
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              How to Get an ISBN<br />
-              <span className="text-gradient-copper">in South Africa</span>
-            </h1>
-            <p className="text-white/60 text-lg leading-relaxed font-body max-w-2xl mx-auto mb-10">
-              ISBNs in South Africa are issued free of charge by the National Library of South Africa (NLSA). Follow these three simple steps to get yours.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <a
-                href={`mailto:${emailAddress}?subject=ISBN%20Application&body=${encodeURIComponent(emailBody)}`}
-                className="group inline-flex items-center gap-2 px-7 py-3.5 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all shadow-lg shadow-copper/20"
-              >
-                Apply via Email <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <Link to="/getquote"
-                className="inline-flex items-center gap-2 px-7 py-3.5 border border-white/20 text-white rounded-full hover:border-copper hover:text-copper transition-all">
-                Let Us Handle It
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        icon={Hash}
+        subtitle="ISBN South Africa"
+        title="How to Get an ISBN"
+        titleHighlight="in South Africa"
+        description="ISBNs in South Africa are issued free of charge by the National Library of South Africa (NLSA). Follow these three simple steps to get yours."
+        primaryLabel="Apply via Email"
+        primaryLink="#"
+        secondaryLabel="Let Us Handle It"
+        secondaryLink="/getquote"
+      />
 
       {/* 3-Step Process */}
       <section className="py-20 lg:py-28 bg-vellum">
