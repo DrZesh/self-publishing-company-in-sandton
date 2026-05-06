@@ -32,6 +32,9 @@ import BookPublishing from './pages/services/BookPublishing';
 import MiniPublishingPackage from './pages/services/MiniPublishingPackage';
 import A5BookPublishing from './pages/services/A5BookPublishing';
 import SixByNinePublishing from './pages/services/SixByNinePublishing';
+import FullPackagesA5 from './pages/publishing/FullPackagesA5';
+import FullPackages6x9 from './pages/publishing/FullPackages6x9';
+import MiniPackages from './pages/publishing/MiniPackages';
 import BookPrinting from './pages/services/BookPrinting';
 import BookEditing from './pages/services/BookEditing';
 import BookCoverDesign from './pages/services/BookCoverDesign';
@@ -122,9 +125,9 @@ const AuthenticatedApp = () => {
         <Route path="/bookpublishing" element={<BookPublishing />} />
         <Route path="/selfpublishing" element={<GenericServicePage serviceKey="selfpublishing" />} />
         <Route path="/publishingpackages" element={<GenericServicePage serviceKey="publishingpackages" />} />
-        <Route path="/publishingpackages/mini" element={<MiniPublishingPackage />} />
-        <Route path="/publishingpackages/a5" element={<A5BookPublishing />} />
-        <Route path="/publishingpackages/6x9" element={<SixByNinePublishing />} />
+        <Route path="/publishingpackages/mini" element={<MiniPackages />} />
+        <Route path="/publishingpackages/a5" element={<FullPackagesA5 />} />
+        <Route path="/publishingpackages/6x9" element={<FullPackages6x9 />} />
         <Route path="/premiumpublishingpackage" element={<GenericServicePage serviceKey="premiumpublishingpackage" />} />
         <Route path="/christianbookpublishing" element={<GenericServicePage serviceKey="christianbookpublishing" />} />
         <Route path="/childrensbookpublishing" element={<GenericServicePage serviceKey="childrensbookpublishing" />} />
