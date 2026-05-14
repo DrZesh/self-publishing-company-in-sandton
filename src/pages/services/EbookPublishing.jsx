@@ -94,9 +94,9 @@ export default function EbookPublishing() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request an eBook Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <a href="#pricing" className="inline-flex items-center gap-2 px-8 py-4 text-white/80 text-sm font-medium" style={{ border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
-                View eBook Packages
-              </a>
+              <Link to="/printing/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/80 text-sm font-medium" style={{ border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+                I Need to Print My Book
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -227,11 +227,11 @@ export default function EbookPublishing() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
-        { label: 'Book Layout & Typesetting', path: '/typesetting' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-        { label: 'Request a Quote', path: '/getquote' },
+      { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Book Layout & Typesetting', path: '/typesetting' },
+      { label: 'I Need a Complete Package', path: '/selfpublishingpackagesinsouthafrica' },
+      { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+      { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>
   );
