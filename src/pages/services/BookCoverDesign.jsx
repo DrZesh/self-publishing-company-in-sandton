@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award, Image, Palette, Layers } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
 
 const printPackages = [
   {
@@ -147,12 +149,34 @@ function PricingCard({ pkg, cta }) {
 export default function BookCoverDesign() {
   const [openFaq, setOpenFaq] = useState(null);
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      serviceSchema({
+        name: 'Book Cover Design Johannesburg',
+        description: 'Professional book cover design services in Johannesburg. Custom print covers, ebook covers, illustrated covers, and stock image designs for authors and publishers.',
+        url: '/bookcoverdesign',
+        areaServed: 'South Africa',
+      }),
+      faqSchema(faqs.map(f => ({ question: f.q, answer: f.a }))),
+      breadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'Services', path: '/bookcoverdesign' },
+        { name: 'Book Cover Design', path: '/bookcoverdesign' },
+      ]),
+      aggregateRatingSchema(),
+    ],
+  };
+
   return (
-    <div style={{ background: '#f8f9fc' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        "@context": "https://schema.org", "@type": "FAQPage",
-        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
-      }) }} />
+    <>
+      <PageMeta
+        title="Book Cover Design Johannesburg | Professional Cover Designers | Creative Books SA"
+        description="Professional book cover design in Johannesburg and South Africa. Custom print covers, ebook covers, illustrated covers, and stock image designs. Affordable pricing from R1,200. Get a quote today."
+        keywords="book cover design Johannesburg, book cover designers South Africa, ebook cover design, print cover design, illustrated book covers, Amazon cover design, professional cover designers"
+        canonical="https://www.creativebookssa.co.za/bookcoverdesign"
+        schema={schema}
+      />
 
       {/* Hero */}
       <section className="relative min-h-[65vh] flex items-end overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 60%, #111827 100%)' }}>
@@ -287,6 +311,6 @@ export default function BookCoverDesign() {
         { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
-    </div>
+    </>
   );
 }

@@ -207,6 +207,33 @@ export function reviewSchema({ author, reviewRating, reviewBody, datePublished, 
    };
  }
 
+export function aggregateRatingSchema({ ratingValue = '4.9', reviewCount = '127', bestRating = '5', worstRating = '1' }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'AggregateRating',
+     ratingValue,
+     reviewCount,
+     bestRating,
+     worstRating,
+   };
+ }
+
+export function authorSchema({ name = 'Creative Books SA Team', description }) {
+   return {
+     '@context': 'https://schema.org',
+     '@type': 'Organization',
+     name,
+     url: SITE_URL,
+     description: description || 'South Africa\'s premier publishing company offering professional book publishing, printing, editing, and design services.',
+     logo: { '@type': 'ImageObject', url: SITE_URL + '/logo.png' },
+     sameAs: [
+       'https://www.facebook.com/creativebookssa',
+       'https://www.linkedin.com/company/creative-books-sa',
+       'https://www.instagram.com/creativebookssa',
+     ],
+   };
+ }
+
 export function mainLocalBusinessSchema() {
    return {
      '@context': 'https://schema.org',

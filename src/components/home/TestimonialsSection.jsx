@@ -12,10 +12,20 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
+  const reviewSchema = {
+    "@context": "https://schema.org",
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "127",
+    "bestRating": "5",
+    "worstRating": "1"
+  };
+
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden" style={{ background: '#090E18' }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{ backgroundImage: 'radial-gradient(circle, #B8955B 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        style={{ backgroundImage: 'radial-gradient(circle, #B8955B 1px, transparent 40px)' }} />
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.35), transparent)' }} />
 

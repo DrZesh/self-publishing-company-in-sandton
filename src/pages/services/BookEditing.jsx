@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, Plus, Minus, BookOpen, Eye, AlignLeft, Feather, Users, Shield, Star, Award } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
+import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema, authorSchema } from '../../lib/seo/schemas';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const faqs = [
@@ -126,8 +128,36 @@ function FAQItem({ faq, i, open, setOpen }) {
 export default function BookEditing() {
   const [openFaq, setOpenFaq] = useState(null);
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      serviceSchema({
+        name: 'Book Editing Services South Africa',
+        description: 'Professional book editing services including copy editing, line editing, content editing, and manuscript evaluation for authors in Johannesburg and across South Africa.',
+        url: '/bookediting',
+        areaServed: 'South Africa',
+      }),
+      faqSchema(faqs.map(f => ({ question: f.q, answer: f.a }))),
+      breadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'Services', path: '/bookediting' },
+        { name: 'Book Editing', path: '/bookediting' },
+      ]),
+      aggregateRatingSchema(),
+      authorSchema(),
+    ],
+  };
+
   return (
-    <div style={{ background: '#f8f9fc' }}>
+    <>
+      <PageMeta
+        title="Book Editing Services South Africa | Professional Editors | Creative Books SA"
+        description="Professional book editing services in Johannesburg and South Africa. Copy editing, line editing, content editing, and manuscript evaluation. Expert editors for novels, memoirs, business books, and more. Get a quote today."
+        keywords="book editing South Africa, book editors Johannesburg, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
+        canonical="https://www.creativebookssa.co.za/bookediting"
+        schema={schema}
+      />
+      <div style={{ background: '#f8f9fc' }}>
 
       {/* ── Hero ── */}
       <section className="relative min-h-[65vh] flex items-end overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 60%, #111827 100%)' }}>
@@ -450,13 +480,8 @@ export default function BookEditing() {
         { label: 'Publishing Packages', path: '/publishingpackages' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
-      }) }} />
     </div>
+    </>
   );
 }
 
