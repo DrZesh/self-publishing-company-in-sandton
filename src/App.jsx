@@ -37,6 +37,7 @@ import FullPackages6x9 from './pages/publishing/FullPackages6x9';
 import MiniPackages from './pages/publishing/MiniPackages';
 import BookPrinting from './pages/services/BookPrinting';
 import BookEditing from './pages/services/BookEditing';
+import Proofreading from './pages/services/Proofreading';
 import BookCoverDesign from './pages/services/BookCoverDesign';
 import AnnualReportDesign from './pages/AnnualReportDesign';
 import EbookPublishing from './pages/services/EbookPublishing';
@@ -160,7 +161,7 @@ const AuthenticatedApp = () => {
 
         {/* Editing Silo */}
         <Route path="/bookediting" element={<BookEditing />} />
-        <Route path="/proofreading" element={<GenericServicePage serviceKey="proofreading" />} />
+        <Route path="/proofreading" element={<Proofreading />} />
         <Route path="/copyediting" element={<GenericServicePage serviceKey="copyediting" />} />
         <Route path="/manuscriptevaluation" element={<GenericServicePage serviceKey="manuscriptevaluation" />} />
         <Route path="/academicediting" element={<GenericServicePage serviceKey="academicediting" />} />
