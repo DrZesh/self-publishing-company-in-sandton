@@ -207,16 +207,16 @@ export function reviewSchema({ author, reviewRating, reviewBody, datePublished, 
    };
  }
 
-export function aggregateRatingSchema({ ratingValue = '4.9', reviewCount = '127', bestRating = '5', worstRating = '1' }) {
-   return {
-     '@context': 'https://schema.org',
-     '@type': 'AggregateRating',
-     ratingValue,
-     reviewCount,
-     bestRating,
-     worstRating,
-   };
- }
+export function aggregateRatingSchema({ ratingValue = '4.9', reviewCount = '127', bestRating = '5', worstRating = '1' } = {}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AggregateRating',
+    ratingValue,
+    reviewCount,
+    bestRating,
+    worstRating,
+  };
+}
 
 export function authorSchema({ name = 'Creative Books SA Team', description }) {
    return {
