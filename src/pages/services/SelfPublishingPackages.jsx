@@ -118,6 +118,26 @@ const faqs = [
   { q: 'Do you work with authors outside Johannesburg?', a: 'Yes. Creative Books SA supports authors in Johannesburg, Gauteng and across South Africa.' },
   { q: 'Can you help me choose the right package?', a: 'Yes. Send us your manuscript details, page count and publishing goals and we will guide you to the most suitable package.' },
   { q: 'Can I use these for a poetry book, memoir, Christian or business book?', a: 'Yes. These packages are suitable for poetry books, memoirs, Christian books, business books, novels and inspirational titles.' },
+  // Editing FAQs
+  { q: 'What type of editing is included in the packages?', a: 'The packages include two rounds of editing drafts focused on grammar, spelling, punctuation, sentence structure, readability and consistency. This is comprehensive copy editing support to prepare your manuscript for publication.' },
+  { q: 'Do you offer developmental or structural editing?', a: 'The included editing focuses on copy editing. If your manuscript needs developmental or structural editing (plot, pacing, chapter organization, character development), contact us for a separate quote based on your manuscript\'s needs.' },
+  { q: 'Can I skip editing if my manuscript is already edited?', a: 'Yes. If you have already worked with a professional editor, we can discuss adjusting the package. However, we strongly recommend at least one professional editing round before layout and printing.' },
+  { q: 'How long does the editing process take?', a: 'Editing typically takes 2 to 4 weeks depending on manuscript length, complexity and the editor\'s schedule. This is included in the overall production timeline.' },
+  // Printing FAQs
+  { q: 'What is the print quality of the books?', a: 'We use professional printing equipment and high-quality cream paper. The print is sharp, clear and suitable for both personal distribution and commercial sales through bookshops and online retailers.' },
+  { q: 'Can I order additional printed copies later?', a: 'Yes. After your initial package copies, you can order additional print runs at competitive rates. Contact us for a reprint quote based on your quantity needs.' },
+  { q: 'Do you offer hardcover printing options?', a: 'The standard packages include softcover books. If you want hardcover options, contact us for a custom quote. We also offer hardcover printing as a separate service.' },
+  { q: 'How long does printing and delivery take?', a: 'Printing typically takes 2 to 3 weeks after final approval. Delivery timelines depend on your location within South Africa. We will provide an estimated delivery date when your project begins.' },
+  // ISBN FAQs
+  { q: 'Is ISBN registration included in the packages?', a: 'ISBN registration is not included in the standard packages. However, we can assist you with ISBN registration through the National Library of South Africa. Contact us for ISBN registration support or visit our ISBN registration service page.' },
+  { q: 'Do I need an ISBN to sell my book?', a: 'An ISBN is required if you want to sell your book through bookshops, distributors or major online retailers like Takealot. If you are only printing for personal use (family, friends, events), an ISBN is not mandatory.' },
+  { q: 'Who owns the ISBN if I use your services?', a: 'The ISBN is registered in your name or your publishing company\'s name. You retain full ownership and control of your ISBN and publishing rights.' },
+  { q: 'Can you help me register my ISBN?', a: 'Yes. We offer ISBN registration assistance as a separate service. We can guide you through the application process with the National Library of South Africa or handle the registration on your behalf.' },
+  // General Publishing FAQs
+  { q: 'Do I retain the copyright to my book?', a: 'Yes. You retain full copyright and ownership of your book. Our packages are service-based — we provide professional production support, but you remain the rights holder.' },
+  { q: 'Can you help me distribute my book to bookshops?', a: 'We can provide guidance on distribution channels and help you prepare files for distribution. However, active distribution and sales representation are separate services. Contact us for distribution advice.' },
+  { q: 'Do you help with Amazon KDP or eBook platform uploads?', a: 'The Gold package includes ebook conversion suitable for all platforms. We can provide guidance on uploading to Amazon KDP or other platforms, but account setup and uploads are typically handled by the author.' },
+  { q: 'What file formats will I receive?', a: 'You will receive print-ready PDF files for printing, high-resolution JPG files for your cover, and ebook files (EPUB or MOBI) if included in your package. All files are suitable for professional printing and digital distribution.' },
 ];
 
 // ─── Sub-components ────────────────────────────────────────────────────────────
