@@ -15,7 +15,7 @@ const navItems = [
         ]
       },
       { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-      { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
+      { label: "Children's Book Publishing", path: '/printing/childrensbooks' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
       { label: 'Amazon KDP', path: '/amazonkdp' },
     ]
