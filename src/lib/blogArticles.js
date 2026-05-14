@@ -8,7 +8,7 @@ export const blogArticles = {
     description: 'Understand how print on demand works in South Africa, when it makes sense and when bulk printing is the better option for self published authors.',
     category: 'Printing Guides',
     readTime: '7 min read',
-    datePublished: '2024-03-01',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Print on demand is one of the most attractive publishing options for new authors because it sounds simple: a copy of the book is printed only when someone orders it. This means the author does not have to print boxes of books upfront, store stock at home, or worry about hundreds of unsold copies. For a writer who is testing the market, this can be useful, especially when the goal is to make the book available online before investing in a larger print run.' },
       { heading: null, text: 'However, print on demand is not automatically the best choice for every self published author. The convenience comes with trade offs. Because every copy is printed individually, the cost per book can be higher than bulk printing. This matters if the author wants to sell at launches, churches, schools, business events, book fairs, workshops or through direct orders. A book that costs too much to produce leaves little room for profit.' },
@@ -41,7 +41,7 @@ export const blogArticles = {
     description: 'A practical guide for South African authors on the real costs of self publishing on Amazon Kindle, from editing and formatting to cover design and marketing.',
     category: 'Publishing Tips',
     readTime: '7 min read',
-    datePublished: '2024-03-05',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Publishing on Amazon Kindle can look free at first because Kindle Direct Publishing does not charge an upfront upload fee to publish an eBook. This is one of the reasons many first time authors are attracted to Amazon. You can create an account, upload a manuscript, add a cover, set a price and make the book available to readers in different marketplaces.' },
       { heading: null, text: 'The real cost, however, is not the upload. The real cost is preparing the book properly before it reaches readers. A book that is uploaded without editing, professional formatting, a strong cover and a clear description may be available online, but it may not convert into sales. Readers judge quality quickly, and Amazon reviews can be unforgiving when a book feels unfinished.' },
@@ -74,7 +74,7 @@ export const blogArticles = {
     description: 'Learn what professional copy editing includes, how it differs from proofreading and why South African authors need editing before layout and printing.',
     category: 'Editing Guides',
     readTime: '7 min read',
-    datePublished: '2024-03-08',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Professional copy editing is one of the most important steps in preparing a book for publishing. It improves the quality of the writing before the manuscript moves to layout, cover design and printing. Many authors think editing is only about fixing spelling mistakes, but copy editing goes much deeper. It deals with grammar, sentence flow, punctuation, consistency, word choice, paragraph structure and readability.' },
       { heading: null, text: 'A manuscript can have a strong message and still feel unprofessional if the writing is not clean. Readers may not know the technical language of editing, but they can feel when a book is difficult to read. They notice repeated words, confusing sentences, inconsistent names, spelling errors and awkward transitions.' },
@@ -105,7 +105,7 @@ export const blogArticles = {
     description: 'Understand what ghostwriting is, who needs a ghostwriter and how the process works for memoir, business, Christian and inspirational books in South Africa.',
     category: 'Writing Tips',
     readTime: '7 min read',
-    datePublished: '2024-03-12',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Ghostwriting is the process of writing a book, speech, article or manuscript on behalf of another person. The ideas, memories, knowledge and message belong to the client, while the ghostwriter helps turn them into a structured and readable piece of writing. In most cases, the ghostwriter does not receive public credit. The book is published under the client\'s name because the client is the source of the story or expertise.' },
       { heading: null, text: 'Ghostwriting is common in memoirs, business books, leadership books, Christian books, speeches, biographies and thought leadership content. Many people have powerful stories or valuable knowledge, but they do not always have the time, confidence or writing skill to turn those ideas into a complete manuscript.' },
@@ -136,7 +136,7 @@ export const blogArticles = {
     description: 'Learn how to write a meaningful book dedication with examples for memoir, business, Christian and children\'s books.',
     category: 'Writing Tips',
     readTime: '5 min read',
-    datePublished: '2024-03-15',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'A book dedication is a short personal message that honours someone important to the author. It may be written for a parent, spouse, child, mentor, teacher, friend, community, church, organisation or even a group of readers. Although it is usually brief, it can carry deep emotional meaning because it tells readers who inspired the book or who stood behind the author during the journey.' },
       { heading: null, text: 'The dedication usually appears in the front matter of a book, often after the copyright page and before the table of contents or first chapter. It is not the same as an acknowledgment page. A dedication is focused and symbolic, while an acknowledgment page allows the author to thank several people in more detail.' },
@@ -168,7 +168,7 @@ export const blogArticles = {
     description: 'Learn how to write a professional book acknowledgment page with examples and a clear structure for South African authors.',
     category: 'Writing Tips',
     readTime: '6 min read',
-    datePublished: '2024-03-18',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'A book acknowledgment page is where the author thanks the people who helped make the book possible. It can include family, friends, editors, designers, mentors, researchers, spiritual leaders, interviewees, publishing teams and early readers. Unlike a dedication, which is usually short and focused on one person or group, an acknowledgment page can be broader and more detailed.' },
       { heading: null, text: 'The acknowledgment page gives readers a glimpse into the support system behind the book. It also shows professionalism and gratitude. A book may carry one author\'s name on the cover, but most books are completed with help from several people.' },
@@ -200,7 +200,7 @@ export const blogArticles = {
     description: 'Learn how to choose the right book title by matching it to your genre, message and target reader — practical tips for South African authors.',
     category: 'Writing Tips',
     readTime: '6 min read',
-    datePublished: '2024-03-20',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'The name of your book is one of the most important decisions you will make as an author. It is often the first thing a reader sees, even before they read the back cover or open the first page. A strong title can create curiosity, communicate the book\'s promise and help the right reader feel that the book is meant for them. A weak title can confuse readers, make the book difficult to remember or give the wrong impression about the genre.' },
       { heading: 'Start With the Main Message of the Book', text: 'Before choosing a title, ask what the book is really about. Is it about healing, leadership, identity, faith, business, love, grief, parenting, money, discipline, survival or transformation? The title should connect to the core message. A memoir about overcoming poverty could have a title that suggests resilience and movement. A business book about pricing should sound clear and practical. A poetry collection may allow more symbolism, but it should still create interest.' },
@@ -232,7 +232,7 @@ export const blogArticles = {
     description: 'A complete step by step guide for self published authors on how to prepare and print a book professionally in South Africa.',
     category: 'Printing Guides',
     readTime: '8 min read',
-    datePublished: '2024-03-22',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Printing a self published book in South Africa is a serious step. It turns your manuscript from a private document into a physical product that readers can buy, hold, gift and keep. Because printing costs money, authors should avoid rushing into production before the book is properly edited, designed and prepared. A professional printed book needs more than a Word document.' },
       { heading: 'Step 1: Finish and Edit the Manuscript', text: 'Before printing, the manuscript must be complete. Printing should not begin while chapters are still being added or rewritten. After the manuscript is complete, it should go through editing and proofreading. For example, an author may think the manuscript is finished because the story is complete, but an editor may still find repeated sections, inconsistent names, missing transitions or spelling errors. If those errors are only noticed after printing, every copy will carry the mistake.' },
@@ -266,7 +266,7 @@ export const blogArticles = {
     description: "A guide for children's book authors on illustrations, layout, colour printing and how to prepare your book professionally in South Africa.",
     category: 'Printing Guides',
     readTime: '7 min read',
-    datePublished: '2024-03-25',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: "Children's books are judged by more than words. The illustrations, colours, layout, paper and print quality all shape the reading experience. A child may connect with a character before understanding the full story. A parent may decide to buy the book because the cover looks warm, clear and age appropriate. This is why children's book production must be planned carefully from the beginning." },
       { heading: null, text: "Many first time authors underestimate how much illustrations affect cost and production. A children's book may have fewer words than a novel, but it can require more design work because each page must balance text and image. If the book is printed in full colour, the printing cost will also be higher than a black and white interior." },
@@ -299,7 +299,7 @@ export const blogArticles = {
     description: 'Compare eBook and print book self publishing for South African authors to decide which format suits your audience, genre and sales strategy.',
     category: 'Publishing Tips',
     readTime: '7 min read',
-    datePublished: '2024-03-28',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'One of the biggest decisions for a self published author is whether to release an eBook, a printed book or both. Each format has advantages, and the right choice depends on your audience, budget, genre and sales plan. An eBook gives digital reach, while a printed book gives physical presence and local selling power.' },
       { heading: null, text: 'For many South African authors, the strongest strategy is not choosing one format over the other. It is understanding how each format works and using them for different purposes. A Kindle eBook can reach readers outside South Africa, while printed copies can be sold at launches, churches, schools, workshops, markets and direct author events.' },
@@ -332,7 +332,7 @@ export const blogArticles = {
     description: 'Understand the realistic timeline for self publishing a book in South Africa, from manuscript completion to printing and launch.',
     category: 'Publishing Tips',
     readTime: '6 min read',
-    datePublished: '2024-04-01',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'The time it takes to self publish a book depends on the condition of the manuscript, the services required and how quickly the author approves each stage. Some books can be prepared faster than others, but a professional publishing process should not be rushed. A book that is rushed often carries errors into print, and those errors can affect reviews, sales and credibility.' },
       { heading: null, text: 'Self publishing is not one task. It includes writing, editing, proofreading, layout, cover design, ISBN registration where needed, final proofing, printing and marketing. Each stage protects the quality of the final book.' },
@@ -365,7 +365,7 @@ export const blogArticles = {
     description: 'A complete guide to the real costs of self publishing on Amazon for South African authors, covering eBooks, paperbacks and professional preparation.',
     category: 'Publishing Tips',
     readTime: '7 min read',
-    datePublished: '2024-04-05',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Self publishing on Amazon can be free to start, but professional publishing is not free. Amazon KDP allows authors to upload eBooks, paperbacks and hardcovers without an upfront platform fee. The costs come from preparing the book properly and from how royalties are calculated after sales.' },
       { heading: null, text: 'This distinction is important. An author can upload a rough manuscript for free, but that does not mean the book is ready for readers. The real investment is in editing, proofreading, formatting, cover design, metadata, marketing and, for print books, the print cost deducted from royalties.' },
@@ -398,7 +398,7 @@ export const blogArticles = {
     description: 'A practical guide for aspiring writers in South Africa on how to build a writing career through self publishing, editing and author brand development.',
     category: 'Writing Tips',
     readTime: '7 min read',
-    datePublished: '2024-04-08',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Becoming a writer in South Africa is no longer limited to waiting for a traditional publisher to approve your manuscript. Self publishing gives writers the opportunity to write, produce and sell their own books while keeping creative control. This does not mean the process is easy, but it does mean the path is more accessible.' },
       { heading: null, text: 'A writer becomes serious by finishing work, improving the manuscript, preparing the book professionally and building a readership. Self publishing is not just about printing a book. It is about taking responsibility for the full publishing journey.' },
@@ -431,7 +431,7 @@ export const blogArticles = {
     description: 'Everything South African authors need to know about ISBN registration, who issues ISBNs, where the ISBN goes and how it fits into professional book publishing.',
     category: 'Publishing Tips',
     readTime: '6 min read',
-    datePublished: '2024-04-10',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'An ISBN is an International Standard Book Number. It is a unique identifier used for books and certain book formats. It helps libraries, bookshops, distributors, publishers and book systems identify a specific title and edition. For self published authors, an ISBN makes the book look more formal and easier to track in publishing systems.' },
       { heading: null, text: 'In South Africa, ISBNs are issued by the National Library of South Africa. The NLSA states that eligible South African authors and publishers can apply online, and that ISBNs are assigned free of charge. Authors should not be misled into paying unnecessary fees for the ISBN itself.' },
@@ -464,7 +464,7 @@ export const blogArticles = {
     description: 'A step by step guide for South African authors on how to apply for an ISBN through the National Library of South Africa and where to place it in the book.',
     category: 'Publishing Tips',
     readTime: '6 min read',
-    datePublished: '2024-04-12',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Getting an ISBN is an important step for many authors preparing to publish a book. An ISBN identifies your book and helps bookshops, libraries, distributors and publishing systems recognise the title and format. In South Africa, ISBNs are issued through the National Library of South Africa.' },
       { heading: null, text: 'The NLSA states that eligible South African authors and publishers can apply online and receive an ISBN free of charge. Authors should apply early enough because processing takes time and the ISBN needs to be added before final layout and cover files are completed.' },
@@ -498,7 +498,7 @@ export const blogArticles = {
     description: 'A complete beginner\'s guide to self publishing a book in South Africa covering writing, editing, cover design, ISBN, printing and selling.',
     category: 'Publishing Tips',
     readTime: '8 min read',
-    datePublished: '2024-04-15',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Self publishing is the process of publishing your book independently instead of waiting for a traditional publisher to accept it. It gives authors more control over the manuscript, design, printing, pricing, marketing and sales. This freedom is powerful, but it also means the author must take the publishing process seriously.' },
       { heading: null, text: 'A professional self published book should not look rushed or homemade. Readers compare books based on quality, not on whether the author used a traditional publisher. This means editing, cover design, layout and printing matter.' },
@@ -534,7 +534,7 @@ export const blogArticles = {
     description: "A complete guide to self publishing a children's book in South Africa covering age groups, illustrations, layout, colour printing and selling.",
     category: 'Publishing Tips',
     readTime: '8 min read',
-    datePublished: '2024-04-18',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: "Self publishing a children's book is exciting, but it requires careful planning. A children's book is not only judged by the story. It is judged by the illustrations, page layout, colours, paper quality, cover design and how enjoyable it is to read aloud. Parents, teachers and children all experience the book differently, so the author must think beyond the words." },
       { heading: null, text: "Children's books can also be more expensive to produce than authors expect. Even though the word count is usually lower, illustrations and colour printing can increase the budget. A professional plan helps the author avoid costly mistakes." },
@@ -569,7 +569,7 @@ export const blogArticles = {
     description: 'Understand what self publishing means, how it works, what it costs and how South African authors can publish professionally without a traditional publisher.',
     category: 'Publishing Tips',
     readTime: '7 min read',
-    datePublished: '2024-04-20',
+    datePublished: '2026-02-05',
     sections: [
       { heading: null, text: 'Self publishing is the process of publishing a book independently instead of relying on a traditional publishing house to accept, produce and distribute it. The author takes responsibility for the manuscript, editing, cover design, layout, printing, distribution, pricing and marketing. This gives the author more control, but it also requires more planning.' },
       { heading: null, text: 'Self publishing has opened the door for many writers who may never have received a traditional publishing contract. Authors can now publish memoirs, poetry, novels, Christian books, business books, children\'s books, academic work and specialist guides on their own terms. The opportunity is real, but the quality still matters.' },
