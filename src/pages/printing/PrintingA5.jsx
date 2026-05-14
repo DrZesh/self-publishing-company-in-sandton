@@ -88,16 +88,13 @@ function PricingCard({ pkg, paperType }) {
         <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
           style={{ color: pkg.popular ? '#B8955B' : 'rgba(11,18,32,0.4)' }}>{pkg.name}</p>
 
-        {/* Page count — big hero */}
-        <div className="mb-1">
-          <span className="font-heading text-3xl font-bold text-[#0B1220]">{pkg.pages}</span>
-        </div>
-        <p className="text-xs text-[#2B2B2B]/45 font-body mb-5">pages</p>
-
         {/* Price */}
-        <div className="mb-6">
+        <div className="mb-2">
           <span className="font-heading text-4xl font-bold text-[#0B1220]">{pkg.price}</span>
         </div>
+
+        {/* Page count — smaller, below price */}
+        <p className="text-xs text-[#2B2B2B]/45 font-body mb-5">{pkg.pages} pages</p>
 
         <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(0,0,0,0.06)' }} />
 
@@ -176,14 +173,10 @@ function DarkPricingCard({ pkg, paperType, i }) {
         <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
           style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.4)' }}>{pkg.name}</p>
 
-        <div className="mb-1">
-          <span className="font-heading text-3xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.pages}</span>
-        </div>
-        <p className="text-xs font-body mb-5" style={{ color: pkg.popular ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.35)' }}>pages</p>
-
-        <div className="mb-6">
+        <div className="mb-2">
           <span className="font-heading text-4xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.price}</span>
         </div>
+        <p className="text-xs font-body mb-5" style={{ color: pkg.popular ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.35)' }}>{pkg.pages} pages</p>
 
         <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(255,255,255,0.08)' }} />
 
