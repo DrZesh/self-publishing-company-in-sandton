@@ -1,0 +1,97 @@
+import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
+import { faqSchema, mainLocalBusinessSchema, serviceSchema, breadcrumbSchema, localBusinessSchemaForCity } from '../lib/seo/schemas';
+
+// Hero — customized per location
+import HeroSlider from '../components/home/HeroSlider';
+
+// All homepage sections
+import TrustStrip from '../components/home/TrustStrip';
+import PublishingPath from '../components/home/PublishingPath';
+import CoreServices from '../components/home/CoreServices';
+import PublishingPackagesSection from '../components/home/PublishingPackagesSection';
+import CalculatorCTA from '../components/home/CalculatorCTA';
+import WhyChooseUsNew from '../components/home/WhyChooseUsNew';
+import BookTypes from '../components/home/BookTypes';
+import PublishingProcess from '../components/home/PublishingProcess';
+import LocationSEO from '../components/home/LocationSEO';
+import HomeFAQ from '../components/home/HomeFAQ';
+import FinalCTA from '../components/home/FinalCTA';
+
+const homeFaqs = [
+  { question: 'Do you help first-time authors?', answer: 'Yes. Creative Books SA helps first-time authors with editing, book cover design, typesetting, printing and self-publishing support.' },
+  { question: 'Do I keep ownership of my book?', answer: 'Yes. Our self-publishing support allows you to remain in control of your book, your rights and your profits. We are a service provider, not a rights holder.' },
+  { question: 'Do you charge royalties?', answer: 'No. Creative Books SA works with once-off service charges for selected services, which means you do not have to deal with ongoing royalty deductions.' },
+  { question: 'What is the minimum quantity for book printing?', answer: 'Our minimum quantity for book printing is 100 copies.' },
+  { question: 'Can you help with ebooks?', answer: 'Yes. We assist with ebook cover design, ebook formatting and digital publishing support.' },
+  { question: 'Do you work with authors outside Johannesburg?', answer: 'Yes. We assist authors across South Africa and can support authors outside South Africa depending on the service required.' },
+];
+
+export default function LocationPage({ locationData }) {
+  if (!locationData) return null;
+
+  const { city, province, serviceType, pageTitle, pageDescription, pageKeywords, canonical } = locationData;
+
+  return (
+    <div>
+      <PageMeta
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonical={canonical}
+        schema={{ '@graph': [
+          mainLocalBusinessSchema(),
+          serviceSchema({ 
+            name: `${serviceType} ${city}`, 
+            description: `Professional ${serviceType.toLowerCase()} services for ${city} and ${province}.`, 
+            url: canonical, 
+            areaServed: `${city}, ${province}, South Africa` 
+          }),
+          localBusinessSchemaForCity({ cityName: city, latitude: -26.2041, longitude: 28.0473 }),
+          faqSchema(homeFaqs),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: serviceType, path: serviceType === 'Book Printing' ? '/bookprinting' : '/selfpublishingsouthafrica' },
+            { name: `${serviceType} ${city}`, path: canonical.replace('https://www.creativebookssa.co.za', '') }
+          ])
+        ]}}
+      />
+
+      {/* 1. Hero — design completely unchanged (uses HeroSlider) */}
+      <HeroSlider />
+
+      {/* 2. Trust Strip */}
+      <TrustStrip />
+
+      {/* 3. Choose Your Publishing Path */}
+      <PublishingPath />
+
+      {/* 4. Core Services */}
+      <CoreServices />
+
+      {/* 5. Publishing Packages */}
+      <PublishingPackagesSection />
+
+      {/* 6. Book Printing Calculator CTA */}
+      <CalculatorCTA />
+
+      {/* 7. Why Choose Us */}
+      <WhyChooseUsNew />
+
+      {/* 8. Book Types */}
+      <BookTypes />
+
+      {/* 9. Publishing Process */}
+      <PublishingProcess />
+
+      {/* 10. Location SEO */}
+      <LocationSEO />
+
+      {/* 11. FAQ */}
+      <HomeFAQ />
+
+      {/* 12. Final CTA */}
+      <FinalCTA />
+    </div>
+  );
+}
