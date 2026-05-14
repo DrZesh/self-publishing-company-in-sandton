@@ -45,6 +45,13 @@ import BookCoverDesign from './pages/services/BookCoverDesign';
 import AnnualReportDesign from './pages/AnnualReportDesign';
 import EbookPublishing from './pages/services/EbookPublishing';
 import Ghostwriting from './pages/services/Ghostwriting';
+import BookTypesetting from './pages/services/BookTypesetting';
+import SelfPublishingPackages from './pages/services/SelfPublishingPackages';
+import AuthorWebsites from './pages/services/AuthorWebsites';
+import ChildrensBookPackages from './pages/services/ChildrensBookPackages';
+import MemoirWriting from './pages/services/MemoirWriting';
+import BiographyWriting from './pages/services/BiographyWriting';
+import ChristianBookWriting from './pages/services/ChristianBookWriting';
 import GenericServicePage from './pages/services/GenericServicePage';
 import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
@@ -140,6 +147,8 @@ const AuthenticatedApp = () => {
         <Route path="/poetrypublishing" element={<GenericServicePage serviceKey="poetrypublishing" />} />
         <Route path="/businessbookpublishing" element={<GenericServicePage serviceKey="businessbookpublishing" />} />
 
+        <Route path="/selfpublishingpackagesinsouthafrica" element={<SelfPublishingPackages />} />
+
         {/* Printing Sub-Pages (full content) */}
         <Route path="/printing/a5" element={<PrintingA5 />} />
         <Route path="/printing/6x9" element={<Printing6x9 />} />
@@ -176,10 +185,10 @@ const AuthenticatedApp = () => {
         {/* Design Silo */}
         <Route path="/bookcoverdesign" element={<BookCoverDesign />} />
         <Route path="/annualreportdesignsandton" element={<AnnualReportDesign />} />
-        <Route path="/typesetting" element={<GenericServicePage serviceKey="typesetting" />} />
-        <Route path="/booklayoutdesign" element={<GenericServicePage serviceKey="booklayoutdesign" />} />
-        <Route path="/ebookformatting" element={<GenericServicePage serviceKey="ebookformatting" />} />
-        <Route path="/authorwebsites" element={<GenericServicePage serviceKey="authorwebsites" />} />
+        <Route path="/typesetting" element={<BookTypesetting />} />
+        <Route path="/booklayoutdesign" element={<BookTypesetting />} />
+        <Route path="/ebookformatting" element={<EbookPublishing />} />
+        <Route path="/authorwebsites" element={<AuthorWebsites />} />
 
         {/* Digital Silo */}
         <Route path="/ebookpublishing" element={<EbookPublishing />} />
@@ -188,9 +197,10 @@ const AuthenticatedApp = () => {
 
         {/* Writing Silo */}
         <Route path="/ghostwriting" element={<Ghostwriting />} />
-        <Route path="/memoirwriting" element={<GenericServicePage serviceKey="memoirwriting" />} />
-        <Route path="/biographywriting" element={<GenericServicePage serviceKey="biographywriting" />} />
-        <Route path="/christianbookwriting" element={<GenericServicePage serviceKey="christianbookwriting" />} />
+        <Route path="/memoirwriting" element={<MemoirWriting />} />
+        <Route path="/biographywriting" element={<BiographyWriting />} />
+        <Route path="/christianbookwriting" element={<ChristianBookWriting />} />
+        <Route path="/childrensbookpackages" element={<ChildrensBookPackages />} />
 
         {/* Existing SEO Landing Pages */}
         <Route path="/publishingcompaniessouthafrica" element={<PublishingCompaniesSouthAfrica />} />
