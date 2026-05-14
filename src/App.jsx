@@ -38,6 +38,7 @@ import MiniPackages from './pages/publishing/MiniPackages';
 import BookPrinting from './pages/services/BookPrinting';
 import BookEditing from './pages/services/BookEditing';
 import Proofreading from './pages/services/Proofreading';
+import AcademicEditing from './pages/services/AcademicEditing';
 import BookCoverDesign from './pages/services/BookCoverDesign';
 import AnnualReportDesign from './pages/AnnualReportDesign';
 import EbookPublishing from './pages/services/EbookPublishing';
@@ -164,7 +165,7 @@ const AuthenticatedApp = () => {
         <Route path="/proofreading" element={<Proofreading />} />
         <Route path="/copyediting" element={<GenericServicePage serviceKey="copyediting" />} />
         <Route path="/manuscriptevaluation" element={<GenericServicePage serviceKey="manuscriptevaluation" />} />
-        <Route path="/academicediting" element={<GenericServicePage serviceKey="academicediting" />} />
+        <Route path="/academicediting" element={<AcademicEditing />} />
         <Route path="/thesisediting" element={<GenericServicePage serviceKey="thesisediting" />} />
         <Route path="/dissertationediting" element={<GenericServicePage serviceKey="dissertationediting" />} />
         <Route path="/technicalediting" element={<GenericServicePage serviceKey="technicalediting" />} />
