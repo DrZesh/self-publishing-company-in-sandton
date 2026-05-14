@@ -76,6 +76,8 @@ import HowToGetISBN from './pages/blog/HowToGetISBN';
 import BeginnersGuideSelfPublishing from './pages/blog/BeginnersGuideSelfPublishing';
 import SelfPublishChildrensBooks from './pages/blog/SelfPublishChildrensBooks';
 import WhatIsSelfPublishing from './pages/blog/WhatIsSelfPublishing';
+import CopyrightFAQsAuthors from './pages/blog/CopyrightFAQsAuthors';
+import QuestionsToAskPublisher from './pages/blog/QuestionsToAskPublisher';
 
 // Existing SEO Landing Pages
 import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
@@ -387,6 +389,8 @@ const AuthenticatedApp = () => {
         <Route path="/abeginnersguide" element={<BeginnersGuideSelfPublishing />} />
         <Route path="/howtoselfpublishchildrensbooks" element={<SelfPublishChildrensBooks />} />
         <Route path="/whatisselfpublishing" element={<WhatIsSelfPublishing />} />
+        <Route path="/copyrightfaqsforauthors" element={<CopyrightFAQsAuthors />} />
+        <Route path="/questionstoaskapublisher" element={<QuestionsToAskPublisher />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Route>

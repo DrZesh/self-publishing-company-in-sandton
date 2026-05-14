@@ -44,6 +44,8 @@ const articles = [
   { title: "A Beginner's Guide to Self Publishing a Book in South Africa", excerpt: 'A complete beginner\'s guide covering writing, editing, cover design, ISBN, printing and selling your book.', category: 'Publishing Tips', path: '/abeginnersguide', readTime: '8 min' },
   { title: "How to Self Publish Children's Books in South Africa", excerpt: "A complete guide to self publishing a children's book covering age groups, illustrations, layout and colour printing.", category: 'Publishing Tips', path: '/howtoselfpublishchildrensbooks', readTime: '8 min' },
   { title: 'What Is Self Publishing? A Complete Guide for New Authors', excerpt: 'Understand what self publishing means, how it works and how South African authors can publish professionally.', category: 'Publishing Tips', path: '/whatisselfpublishing', readTime: '7 min' },
+  { title: 'Copyright FAQs for Authors, Publishers and Self Publishers in South Africa', excerpt: 'Practical answers to common copyright questions covering ownership, protection, infringement and publishing rights in South Africa.', category: 'Publishing Tips', path: '/copyrightfaqsforauthors', readTime: '12 min' },
+  { title: 'Questions to Ask a Publisher Before Publishing Your Book in South Africa', excerpt: 'The essential questions every South African author should ask any publisher or self publishing company before paying a deposit or signing paperwork.', category: 'Publishing Tips', path: '/questionstoaskapublisher', readTime: '14 min' },
 ];
 
 export default function Blog() {
