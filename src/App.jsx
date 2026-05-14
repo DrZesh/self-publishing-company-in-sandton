@@ -78,6 +78,43 @@ import SelfPublishChildrensBooks from './pages/blog/SelfPublishChildrensBooks';
 import WhatIsSelfPublishing from './pages/blog/WhatIsSelfPublishing';
 import CopyrightFAQsAuthors from './pages/blog/CopyrightFAQsAuthors';
 import QuestionsToAskPublisher from './pages/blog/QuestionsToAskPublisher';
+import HowDoIGetMyBookPublished from './pages/blog/HowDoIGetMyBookPublished';
+import DoSouthAfricanPublishersChargeAuthors from './pages/blog/DoSouthAfricanPublishersChargeAuthors';
+import HowMuchWillIEarnFromMyFirstBook from './pages/blog/HowMuchWillIEarnFromMyFirstBook';
+import WhatIsAFairBookDeal from './pages/blog/WhatIsAFairBookDeal';
+import DoINeedAnEditorBeforePublishing from './pages/blog/DoINeedAnEditorBeforePublishing';
+import HowToFindALiteraryAgentSA from './pages/blog/HowToFindALiteraryAgentSA';
+import HowToPublishChildrensBookSA from './pages/blog/HowToPublishChildrensBookSA';
+import CanIPublishAComicBookSA from './pages/blog/CanIPublishAComicBookSA';
+import HowToMarketSelfPublishedBookSA from './pages/blog/HowToMarketSelfPublishedBookSA';
+import HowDoPublishersFindAuthors from './pages/blog/HowDoPublishersFindAuthors';
+import WhatFreelanceProfessionalsDoINeed from './pages/blog/WhatFreelanceProfessionalsDoINeed';
+import IsSelling3000CopiesGood from './pages/blog/IsSelling3000CopiesGood';
+import HowDoIKnowIfMyBookIsReady from './pages/blog/HowDoIKnowIfMyBookIsReady';
+import WhatPublishingJobsAreAvailable from './pages/blog/WhatPublishingJobsAreAvailable';
+import HowLongToGetPublishedSA from './pages/blog/HowLongToGetPublishedSA';
+import DoPublishersProvideCoverDesign from './pages/blog/DoPublishersProvideCoverDesign';
+import WhatIs9010RuleAuthors from './pages/blog/WhatIs9010RuleAuthors';
+import HowToChooseBetweenPublishingOffers from './pages/blog/HowToChooseBetweenPublishingOffers';
+import CanYouMakeALivingAsAuthorSA from './pages/blog/CanYouMakeALivingAsAuthorSA';
+import WhatToLookForInPublishingContract from './pages/blog/WhatToLookForInPublishingContract';
+import HowToProtectBookIdeaSA from './pages/blog/HowToProtectBookIdeaSA';
+import DoAuthorsNeedInternationalDistribution from './pages/blog/DoAuthorsNeedInternationalDistribution';
+import HowMuchToSpendOnCoverDesign from './pages/blog/HowMuchToSpendOnCoverDesign';
+import BestPlatformsToSelfPublishSA from './pages/blog/BestPlatformsToSelfPublishSA';
+import HowToBuildAuthorPlatform from './pages/blog/HowToBuildAuthorPlatform';
+import TraditionalVsSelfPublishingRoyalties from './pages/blog/TraditionalVsSelfPublishingRoyalties';
+import CanIPublishInOtherLanguagesSA from './pages/blog/CanIPublishInOtherLanguagesSA';
+import HowToFindBetaReadersSA from './pages/blog/HowToFindBetaReadersSA';
+import WhatTaxesDoAuthorsPaySA from './pages/blog/WhatTaxesDoAuthorsPaySA';
+import HowToGetBookReviewedSA from './pages/blog/HowToGetBookReviewedSA';
+import ShouldIHirePublishingCoachSA from './pages/blog/ShouldIHirePublishingCoachSA';
+import CommonPublishingMistakesSA from './pages/blog/CommonPublishingMistakesSA';
+import HowToLaunchYourBookSA from './pages/blog/HowToLaunchYourBookSA';
+import CanIPublishMultipleGenresSA from './pages/blog/CanIPublishMultipleGenresSA';
+import HowDebutAuthorsGetBetterDeals from './pages/blog/HowDebutAuthorsGetBetterDeals';
+import RoleLiteraryAgentSA from './pages/blog/RoleLiteraryAgentSA';
+import HowToStartPublishingCareerSA from './pages/blog/HowToStartPublishingCareerSA';
 
 // Existing SEO Landing Pages
 import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
@@ -391,6 +428,43 @@ const AuthenticatedApp = () => {
         <Route path="/whatisselfpublishing" element={<WhatIsSelfPublishing />} />
         <Route path="/copyrightfaqsforauthors" element={<CopyrightFAQsAuthors />} />
         <Route path="/questionstoaskapublisher" element={<QuestionsToAskPublisher />} />
+        <Route path="/howdoigetmybookpublishedinsouthafrica" element={<HowDoIGetMyBookPublished />} />
+        <Route path="/dosouthafricanpublisherschargeauthors" element={<DoSouthAfricanPublishersChargeAuthors />} />
+        <Route path="/howmuchwilliearnfrommyfirstbook" element={<HowMuchWillIEarnFromMyFirstBook />} />
+        <Route path="/whatisafairbookdealforsouthafricanauthors" element={<WhatIsAFairBookDeal />} />
+        <Route path="/doineedaneditorbeforepublishing" element={<DoINeedAnEditorBeforePublishing />} />
+        <Route path="/howtofindliteraryagentinsouthafrica" element={<HowToFindALiteraryAgentSA />} />
+        <Route path="/howtopublishachildrensbookinsouthafrica" element={<HowToPublishChildrensBookSA />} />
+        <Route path="/canipublishacomicbookinsouthafrica" element={<CanIPublishAComicBookSA />} />
+        <Route path="/howtomarketandsellyourselfpublishedbookinsouthafrica" element={<HowToMarketSelfPublishedBookSA />} />
+        <Route path="/howdosouthafricanpublishinghousesfindnewauthors" element={<HowDoPublishersFindAuthors />} />
+        <Route path="/whatfreelanceprofessionalsdoineedtoselfpublish" element={<WhatFreelanceProfessionalsDoINeed />} />
+        <Route path="/isselling3000copiesofabookgoodinsouthafrica" element={<IsSelling3000CopiesGood />} />
+        <Route path="/howdoiknowifmybookisreadytopublish" element={<HowDoIKnowIfMyBookIsReady />} />
+        <Route path="/whatpublishingjobsareavailableinsouthafrica" element={<WhatPublishingJobsAreAvailable />} />
+        <Route path="/howlongdoesittaketogetpublishedinsouthafrica" element={<HowLongToGetPublishedSA />} />
+        <Route path="/dosouthafricanpublishersprovdecoverdesign" element={<DoPublishersProvideCoverDesign />} />
+        <Route path="/whatis9010ruleforauthorsandroyalties" element={<WhatIs9010RuleAuthors />} />
+        <Route path="/howtochoosebetweenmultiplebookpublishingoffers" element={<HowToChooseBetweenPublishingOffers />} />
+        <Route path="/canyoumakealivingasaselfpublishedauthorinsouthafrica" element={<CanYouMakeALivingAsAuthorSA />} />
+        <Route path="/whattolookforinsouthafricanpublishingcontract" element={<WhatToLookForInPublishingContract />} />
+        <Route path="/howtoprotectmybookideabeforepublishinginsouthafrica" element={<HowToProtectBookIdeaSA />} />
+        <Route path="/dosouthafricanauthorsneedinternationaldistribution" element={<DoAuthorsNeedInternationalDistribution />} />
+        <Route path="/howmuchdoispendonbookcoverdesigninsouthafrica" element={<HowMuchToSpendOnCoverDesign />} />
+        <Route path="/bestplatformstoselfpublishinsouthafrica" element={<BestPlatformsToSelfPublishSA />} />
+        <Route path="/howtobuildanauthorplatformbeforepublishing" element={<HowToBuildAuthorPlatform />} />
+        <Route path="/traditionalvsselfpublishingroyaltiesinsouthafrica" element={<TraditionalVsSelfPublishingRoyalties />} />
+        <Route path="/canipublishabookinsouthafricaifenglishisnotmyfirstlanguage" element={<CanIPublishInOtherLanguagesSA />} />
+        <Route path="/howtofindbetrareadersformybookinsouthafrica" element={<HowToFindBetaReadersSA />} />
+        <Route path="/whattaxesdoselfpublishedauthorspayinsouthafrica" element={<WhatTaxesDoAuthorsPaySA />} />
+        <Route path="/howtogetyourbookreviewedbysouthafricanpublications" element={<HowToGetBookReviewedSA />} />
+        <Route path="/shouldihirepublishingcoachinsouthafrica" element={<ShouldIHirePublishingCoachSA />} />
+        <Route path="/mostcommonpublishingmistadebysouthafricanauthors" element={<CommonPublishingMistakesSA />} />
+        <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
+        <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
+        <Route path="/howdebutauthorsgetbetterbookdealsinsouthafrica" element={<HowDebutAuthorsGetBetterDeals />} />
+        <Route path="/whatistheroleliteraryagentinsouthafrica" element={<RoleLiteraryAgentSA />} />
+        <Route path="/howtostartpublishingcareerfromzeroinsouthafrica" element={<HowToStartPublishingCareerSA />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Route>
