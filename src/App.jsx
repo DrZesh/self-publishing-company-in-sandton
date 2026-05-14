@@ -61,6 +61,13 @@ import ISBNRegistration from './pages/resources/ISBNRegistration';
 import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
 import PublishingCompaniesSouthAfricaNew from './pages/seo/PublishingCompaniesSouthAfricaNew';
 import BookPublishersSouthAfricaNew from './pages/seo/BookPublishersSouthAfricaNew';
+import SelfPublishingCompaniesSouthAfrica from './pages/seo/SelfPublishingCompaniesSouthAfrica';
+import BookPrintingJohannesburgNew from './pages/seo/BookPrintingJohannesburgNew';
+import BookCoverDesignPriceSouthAfrica from './pages/seo/BookCoverDesignPriceSouthAfrica';
+import BookEditorsSouthAfrica from './pages/seo/BookEditorsSouthAfrica';
+import BookLayoutTypesetting from './pages/seo/BookLayoutTypesetting';
+import ISBNNumberSouthAfrica from './pages/seo/ISBNNumberSouthAfrica';
+import BookDistributionSouthAfrica from './pages/seo/BookDistributionSouthAfrica';
 import CostToSelfPublishKindle from './pages/blog/CostToSelfPublishKindle';
 import ProfessionalCopyEditing from './pages/blog/ProfessionalCopyEditing';
 import WhatIsGhostwriting from './pages/blog/WhatIsGhostwriting';
@@ -468,6 +475,13 @@ const AuthenticatedApp = () => {
         {/* New SEO Blog Articles */}
         <Route path="/publishingcompaniesinsouthafrica" element={<PublishingCompaniesSouthAfricaNew />} />
         <Route path="/bookpublishersinsouthafrica" element={<BookPublishersSouthAfricaNew />} />
+        <Route path="/selfpublishingcompaniesinsouthafrica" element={<SelfPublishingCompaniesSouthAfrica />} />
+        <Route path="/bookprintingjohannesburgnew" element={<BookPrintingJohannesburgNew />} />
+        <Route path="/bookcoverdesignpricesouthafrica" element={<BookCoverDesignPriceSouthAfrica />} />
+        <Route path="/bookeditorsinsouthafrica" element={<BookEditorsSouthAfrica />} />
+        <Route path="/booklayoutandtypesetting" element={<BookLayoutTypesetting />} />
+        <Route path="/isbnnumbersouthafrica" element={<ISBNNumberSouthAfrica />} />
+        <Route path="/bookdistributioninsouthafrica" element={<BookDistributionSouthAfrica />} />
         <Route path="/howdebutauthorsgetbetterbookdealsinsouthafrica" element={<HowDebutAuthorsGetBetterDeals />} />
         <Route path="/whatistheroleliteraryagentinsouthafrica" element={<RoleLiteraryAgentSA />} />
         <Route path="/howtostartpublishingcareerfromzeroinsouthafrica" element={<HowToStartPublishingCareerSA />} />
