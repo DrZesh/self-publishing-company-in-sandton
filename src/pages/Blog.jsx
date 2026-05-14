@@ -15,6 +15,7 @@ const categories = [
 ];
 
 const articles = [
+  // Existing articles
   { title: 'How Much Does It Cost to Publish a Book in South Africa?', excerpt: 'A detailed breakdown of publishing costs in South Africa, from editing to printing to distribution.', category: 'Publishing Tips', path: '/howmuchdoesitcosttopublishabook', readTime: '8 min' },
   { title: 'How to Get an ISBN in South Africa', excerpt: 'Step-by-step guide to registering your ISBN with the National Library of South Africa.', category: 'Publishing Tips', path: '/howtogetanisbn', readTime: '5 min' },
   { title: 'How to Write a Book: A Complete Guide', excerpt: 'From first idea to finished manuscript — practical tips for aspiring authors.', category: 'Writing Tips', path: '/howtowriteabook', readTime: '12 min' },
@@ -24,6 +25,25 @@ const articles = [
   { title: 'How to Sell a Book in South Africa', excerpt: 'Distribution channels, marketing strategies, and sales tips for South African authors.', category: 'Publishing Tips', path: '/howtosellabookinsouthafrica', readTime: '10 min' },
   { title: 'How to Make a Book Cover', excerpt: 'Design principles and tips for creating a book cover that sells.', category: 'Publishing Tips', path: '/howtomakeabookcover', readTime: '6 min' },
   { title: 'Book Editing Explained', excerpt: 'Understanding the different types of editing and when you need each one.', category: 'Editing Guides', path: '/bookeditingexplained', readTime: '5 min' },
+  // New articles from content pack
+  { title: 'Print on Demand Books in South Africa: What Authors Should Know Before Printing', excerpt: 'Understand how print on demand works, when it makes sense and when bulk printing is the better option for South African authors.', category: 'Printing Guides', path: '/printondemandbooksinsouthafrica', readTime: '7 min' },
+  { title: 'How Much Does It Cost to Self Publish on Amazon Kindle?', excerpt: 'The real costs of publishing on Amazon Kindle — from editing and formatting to cover design and marketing.', category: 'Publishing Tips', path: '/howmuchdoesitcosttoselfpublishonamazonkindle', readTime: '7 min' },
+  { title: 'Professional Copy Editing Services for Authors in South Africa', excerpt: 'What copy editing includes, how it differs from proofreading and why it matters before layout and printing.', category: 'Editing Guides', path: '/professionalcopyeditingservices', readTime: '7 min' },
+  { title: 'What Is Ghostwriting and What Does a Ghostwriter Do?', excerpt: 'Understand what ghostwriting is, who needs a ghostwriter and how the process works for memoir, business and Christian books.', category: 'Writing Tips', path: '/whatisghostwriting', readTime: '7 min' },
+  { title: 'Writing a Book Dedication: Meaning, Examples and Practical Tips', excerpt: 'Learn how to write a meaningful book dedication with examples for memoir, business, Christian and children\'s books.', category: 'Writing Tips', path: '/writingabookdedication', readTime: '5 min' },
+  { title: 'Writing a Book Acknowledgment Page: Examples and Structure for Authors', excerpt: 'How to write a professional acknowledgment page with a clear structure and examples for South African authors.', category: 'Writing Tips', path: '/writingabookacknowledgment', readTime: '6 min' },
+  { title: 'How to Decide a Name for Your Book: A Practical Guide for Authors', excerpt: 'Choose the right book title by matching it to your genre, message and target reader.', category: 'Writing Tips', path: '/howtonameyourbook', readTime: '6 min' },
+  { title: 'How to Print Your Self Published Book in South Africa', excerpt: 'A complete step by step guide on how to prepare and print a book professionally in South Africa.', category: 'Printing Guides', path: '/howtoprintyourselfpublishedbookinsouthafrica', readTime: '8 min' },
+  { title: "Children's Book Illustrations and Printing in South Africa", excerpt: "A guide for children's book authors on illustrations, layout, colour printing and professional production.", category: 'Printing Guides', path: '/childrensbookillustrationsprinting', readTime: '7 min' },
+  { title: 'eBook vs Print Book Self Publishing: Which Option Is Better?', excerpt: 'Compare eBook and print book self publishing to decide which format suits your audience and sales strategy.', category: 'Publishing Tips', path: '/ebookvsprintbookselfpublishing', readTime: '7 min' },
+  { title: 'How Long Does It Take to Self Publish a Book?', excerpt: 'Understand the realistic timeline for self publishing a book in South Africa, from manuscript to printing.', category: 'Publishing Tips', path: '/howlongdoesittaketoselfpublish', readTime: '6 min' },
+  { title: 'How Much Does It Cost to Self Publish on Amazon?', excerpt: 'A complete guide to the real costs of self publishing on Amazon for South African authors.', category: 'Publishing Tips', path: '/howmuchdoesitcosttoselfpublishonamazon', readTime: '7 min' },
+  { title: 'How to Become a Writer in South Africa Through Self Publishing', excerpt: 'A practical guide for aspiring writers on how to build a writing career through self publishing.', category: 'Writing Tips', path: '/howtobecomeawriterinsouthafrica', readTime: '7 min' },
+  { title: 'ISBN Registration in South Africa: A Complete Guide for Authors', excerpt: 'Everything South African authors need to know about ISBN registration, who issues ISBNs and where they go.', category: 'Publishing Tips', path: '/isbnregistrationsouthafrica', readTime: '6 min' },
+  { title: 'How to Get an ISBN for Your Book in South Africa', excerpt: 'A step by step guide on how to apply for an ISBN through the National Library of South Africa.', category: 'Publishing Tips', path: '/howtogetanisbnforyourbook', readTime: '6 min' },
+  { title: "A Beginner's Guide to Self Publishing a Book in South Africa", excerpt: 'A complete beginner\'s guide covering writing, editing, cover design, ISBN, printing and selling your book.', category: 'Publishing Tips', path: '/abeginnersguide', readTime: '8 min' },
+  { title: "How to Self Publish Children's Books in South Africa", excerpt: "A complete guide to self publishing a children's book covering age groups, illustrations, layout and colour printing.", category: 'Publishing Tips', path: '/howtoselfpublishchildrensbooks', readTime: '8 min' },
+  { title: 'What Is Self Publishing? A Complete Guide for New Authors', excerpt: 'Understand what self publishing means, how it works and how South African authors can publish professionally.', category: 'Publishing Tips', path: '/whatisselfpublishing', readTime: '7 min' },
 ];
 
 export default function Blog() {
