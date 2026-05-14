@@ -40,6 +40,7 @@ import BookEditing from './pages/services/BookEditing';
 import Proofreading from './pages/services/Proofreading';
 import AcademicEditing from './pages/services/AcademicEditing';
 import ThesisEditing from './pages/services/ThesisEditing';
+import DissertationEditing from './pages/services/DissertationEditing';
 import BookCoverDesign from './pages/services/BookCoverDesign';
 import AnnualReportDesign from './pages/AnnualReportDesign';
 import EbookPublishing from './pages/services/EbookPublishing';
@@ -168,7 +169,7 @@ const AuthenticatedApp = () => {
         <Route path="/manuscriptevaluation" element={<GenericServicePage serviceKey="manuscriptevaluation" />} />
         <Route path="/academicediting" element={<AcademicEditing />} />
         <Route path="/thesisediting" element={<ThesisEditing />} />
-        <Route path="/dissertationediting" element={<GenericServicePage serviceKey="dissertationediting" />} />
+        <Route path="/dissertationediting" element={<DissertationEditing />} />
         <Route path="/technicalediting" element={<GenericServicePage serviceKey="technicalediting" />} />
         <Route path="/languageediting" element={<GenericServicePage serviceKey="languageediting" />} />
 
