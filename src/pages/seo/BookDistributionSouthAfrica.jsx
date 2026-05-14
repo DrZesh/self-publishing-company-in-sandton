@@ -8,7 +8,7 @@ import InternalLinks from '../../components/shared/InternalLinks';
 
 const faqs = [
   { q: 'Can self-published authors get into bookstores?', a: 'Yes, but it is not automatic. Bookshops consider demand, pricing, stock management and commercial fit.' },
-  { q: 'What is the best way to sell a self-published book?', a: 'The best method depends on the author's audience. Direct sales, events, websites, speaking engagements and online platforms can all work.' },
+  { q: "What is the best way to sell a self-published book?", a: "The best method depends on the author's audience. Direct sales, events, websites, speaking engagements and online platforms can all work." },
   { q: 'Do I need marketing before distribution?', a: 'Yes. Distribution makes the book available, but marketing makes readers aware of it.' },
   { q: 'Should I print before I have a sales plan?', a: 'It is better to create a sales plan first, then decide how many copies to print.' },
 ];

@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PageMeta from '../../components/shared/PageMeta';
-import CTASection';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
 
