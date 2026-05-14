@@ -1,8 +1,8 @@
 import React from 'react';
-import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
-import PageMeta from '../../components/shared/PageMeta';
-import CTASection from '../../components/shared/CTASection';
-import InternalLinks from '../../components/shared/InternalLinks';
+import ServicePageTemplate from '../../../components/shared/ServicePageTemplate';
+import PageMeta from '../../../components/shared/PageMeta';
+import CTASection from '../../../components/shared/CTASection';
+import InternalLinks from '../../../components/shared/InternalLinks';
 
 export default function BookPrintingSandton() {
   const schema = {
