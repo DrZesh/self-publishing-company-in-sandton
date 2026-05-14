@@ -24,12 +24,13 @@ const whitePricing = [
 ];
 
 const creamPricing = [
-  { name: 'Bronze',   pages: '50 – 100',   price: 'R5 000',  popular: true  },
-  { name: 'Silver',   pages: '115 – 150',  price: 'R5 800',  popular: false },
-  { name: 'Gold',     pages: '160 – 200',  price: 'R7 200',  popular: false },
-  { name: 'Platinum', pages: '215 – 300',  price: 'R8 600',  popular: false },
-  { name: 'Diamond',  pages: '315 – 350',  price: 'R9 500',  popular: false },
-  { name: 'Elite',    pages: '360 – 400',  price: 'R10 800', popular: false },
+  { name: 'Bronze',   pages: '50 – 100',   price: 'R5 500',  popular: true  },
+  { name: 'Silver',   pages: '115 – 150',  price: 'R6 250',  popular: false },
+  { name: 'Gold',     pages: '160 – 200',  price: 'R7 500',  popular: false },
+  { name: 'Platinum', pages: '210 – 250',  price: 'R8 750',  popular: false },
+  { name: 'Diamond',  pages: '260 – 300',  price: 'R9 600',  popular: false },
+  { name: 'Elite',    pages: '310 – 350',  price: 'R11 500', popular: false },
+  { name: 'Glam',     pages: '360 – 400',  price: 'R12 500', popular: false },
 ];
 
 const features = [
@@ -435,7 +436,7 @@ export default function PrintingA5() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {creamPricing.map((pkg, i) => (
               <DarkPricingCard key={pkg.name + '-cream'} pkg={pkg} paperType="Cream Paper" i={i} />
             ))}
