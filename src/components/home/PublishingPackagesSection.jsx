@@ -12,6 +12,9 @@ const pkgs = [
     label: 'View A5 Packages',
     to: '/publishingpackages/a5',
     featured: false,
+    gradient: 'linear-gradient(135deg, #1a2a6c 0%, #1e3a8a 50%, #1e40af 100%)',
+    border: 'rgba(59,130,246,0.3)',
+    topLine: 'rgba(96,165,250,0.5)',
   },
   {
     tag: 'Most Popular',
@@ -21,6 +24,9 @@ const pkgs = [
     label: 'View 6×9 Packages',
     to: '/publishingpackages/6x9',
     featured: true,
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
+    border: 'rgba(96,165,250,0.5)',
+    topLine: 'rgba(147,197,253,0.9)',
   },
   {
     tag: 'Starter',
@@ -30,21 +36,24 @@ const pkgs = [
     label: 'View Mini Packages',
     to: '/publishingpackages/mini',
     featured: false,
+    gradient: 'linear-gradient(135deg, #0f172a 0%, #1e2d5a 50%, #1e3a8a 100%)',
+    border: 'rgba(59,130,246,0.25)',
+    topLine: 'rgba(96,165,250,0.4)',
   },
 ];
 
 export default function PublishingPackagesSection() {
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden" style={{ background: '#090E18' }}>
-      {/* Ambient */}
+      {/* Ambient blue glow */}
       <motion.div
-        animate={{ opacity: [0.08, 0.16, 0.08] }}
-        transition={{ duration: 9, repeat: Infinity }}
-        className="absolute bottom-0 left-0 w-[500px] h-[500px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(184,149,91,0.2) 0%, transparent 65%)', filter: 'blur(80px)' }}
+        animate={{ opacity: [0.15, 0.28, 0.15] }}
+        transition={{ duration: 8, repeat: Infinity }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, rgba(30,64,175,0.35) 0%, transparent 70%)', filter: 'blur(60px)' }}
       />
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.4), transparent)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent)' }} />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
@@ -53,8 +62,8 @@ export default function PublishingPackagesSection() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <span className="inline-block text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body mb-4 border border-[#B8955B]/25 px-3 py-1 rounded-sm"
-            style={{ background: 'rgba(184,149,91,0.06)' }}>
+          <span className="inline-block text-blue-400 text-xs tracking-[0.3em] uppercase font-body mb-4 border border-blue-500/25 px-3 py-1 rounded-sm"
+            style={{ background: 'rgba(59,130,246,0.08)' }}>
             Publishing Packages
           </span>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
@@ -75,37 +84,38 @@ export default function PublishingPackagesSection() {
               transition={{ delay: i * 0.12, duration: 0.55 }}
               whileHover={{ y: -6, transition: { duration: 0.22 } }}
               className="relative flex flex-col p-8 overflow-hidden group"
-              style={pkg.featured ? {
-                background: 'rgba(184,149,91,0.08)',
-                border: '1px solid rgba(184,149,91,0.4)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(184,149,91,0.15)',
-              } : {
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                backdropFilter: 'blur(16px)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+              style={{
+                background: pkg.gradient,
+                border: `1px solid ${pkg.border}`,
+                boxShadow: pkg.featured
+                  ? '0 20px 60px rgba(29,78,216,0.4), 0 0 0 1px rgba(96,165,250,0.2)'
+                  : '0 8px 32px rgba(0,0,0,0.5)',
               }}
             >
+              {/* Top accent line */}
               <div className="absolute top-0 left-0 right-0 h-px"
-                style={{ background: pkg.featured ? 'linear-gradient(90deg, transparent, rgba(184,149,91,0.9), transparent)' : 'linear-gradient(90deg, transparent, rgba(184,149,91,0.3), transparent)' }} />
+                style={{ background: `linear-gradient(90deg, transparent, ${pkg.topLine}, transparent)` }} />
+
+              {/* Subtle inner glow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 60%)' }} />
 
               {pkg.featured && (
                 <div className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 rounded-sm"
-                  style={{ background: 'rgba(184,149,91,0.15)', border: '1px solid rgba(184,149,91,0.3)' }}>
-                  <Sparkles className="w-3 h-3 text-[#B8955B]" />
-                  <span className="text-[#B8955B] text-[10px] font-medium tracking-widest uppercase">Popular</span>
+                  style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)' }}>
+                  <Sparkles className="w-3 h-3 text-blue-300" />
+                  <span className="text-blue-200 text-[10px] font-medium tracking-widest uppercase">Popular</span>
                 </div>
               )}
 
-              <span className="text-[#B8955B]/70 text-[10px] tracking-[0.25em] uppercase font-body mb-4 block">{pkg.tag}</span>
+              <span className="text-blue-300/70 text-[10px] tracking-[0.25em] uppercase font-body mb-4 block">{pkg.tag}</span>
               <h3 className="font-heading text-xl font-bold text-white mb-3 leading-snug pr-16">{pkg.name}</h3>
-              <p className="text-white/45 font-body text-sm leading-relaxed mb-6">{pkg.desc}</p>
+              <p className="text-white/55 font-body text-sm leading-relaxed mb-6">{pkg.desc}</p>
 
               <ul className="space-y-2 mb-8 flex-1">
                 {pkg.points.map(pt => (
-                  <li key={pt} className="flex items-center gap-2.5 text-xs text-white/55 font-body">
-                    <span className="w-1 h-1 rounded-full bg-[#B8955B] shrink-0" />
+                  <li key={pt} className="flex items-center gap-2.5 text-xs text-white/65 font-body">
+                    <span className="w-1 h-1 rounded-full bg-blue-300 shrink-0" />
                     {pt}
                   </li>
                 ))}
@@ -113,11 +123,12 @@ export default function PublishingPackagesSection() {
 
               <Link
                 to={pkg.to}
-                className={`inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium transition-all group/btn ${
-                  pkg.featured
-                    ? 'bg-[#B8955B] text-white hover:bg-[#a0803f]'
-                    : 'border border-white/15 text-white hover:border-[#B8955B] hover:text-[#B8955B]'
-                }`}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-white transition-all group/btn"
+                style={{
+                  background: pkg.featured ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(8px)',
+                }}
               >
                 {pkg.label}
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -133,7 +144,7 @@ export default function PublishingPackagesSection() {
           className="text-center mt-8 text-white/30 text-xs font-body"
         >
           Not sure which package suits your book?{' '}
-          <Link to="/getquote" className="text-[#B8955B] hover:text-white transition-colors underline underline-offset-4">
+          <Link to="/getquote" className="text-blue-400 hover:text-white transition-colors underline underline-offset-4">
             Request a custom quote →
           </Link>
         </motion.p>
