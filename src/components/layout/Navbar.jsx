@@ -41,15 +41,6 @@ const navItems = [
   {
     label: 'Design & Writing', children: [
       { label: 'Book Cover Design', path: '/bookcoverdesign' },
-      { label: 'Book Cover Design Johannesburg', path: '/bookcoverdesignjohannesburg' },
-      { label: 'Book Cover Design Sandton', path: '/bookcoverdesignsandton' },
-      { label: 'Book Cover Design Randburg', path: '/bookcoverdesignrandburg' },
-      { label: 'Book Cover Design Midrand', path: '/bookcoverdesignmidrand' },
-      { label: 'Book Cover Design Pretoria', path: '/bookcoverdesignpretoria' },
-      { label: 'Book Cover Design Centurion', path: '/bookcoverdesigncenturion' },
-      { label: 'Book Cover Design Roodepoort', path: '/bookcoverdesignroodepoort' },
-      { label: 'Book Cover Design Cape Town', path: '/bookcoverdesigncapetown' },
-      { label: 'Book Cover Design Durban', path: '/bookcoverdesigndurban' },
       { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
