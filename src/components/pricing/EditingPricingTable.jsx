@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 const packages = [
   {
     name: 'Copy Edit',
-    price: 'R200',
-    priceLabel: 'Per 1000 Words',
+    price: 'R0.25',
+    priceLabel: '25c per word',
     icon: FileText,
     includes: [
       'Spelling',
@@ -31,8 +31,8 @@ const packages = [
   },
   {
     name: 'Line Edit',
-    price: 'R250',
-    priceLabel: 'Per 1000 Words',
+    price: 'R0.40',
+    priceLabel: '40c per word',
     icon: PenTool,
     includes: [
       'Copy Edit',
@@ -55,8 +55,8 @@ const packages = [
   },
   {
     name: 'Content Edit',
-    price: 'R350',
-    priceLabel: 'Per 1000 Words',
+    price: 'R0.50',
+    priceLabel: '50c per word',
     icon: BookOpen,
     includes: [
       'Structure Feedback',
@@ -79,8 +79,8 @@ const packages = [
   },
   {
     name: 'Full Package Copy Edit',
-    price: 'R450',
-    priceLabel: 'Per 1000 Words',
+    price: 'R0.65',
+    priceLabel: '65c per word',
     icon: Sparkles,
     includes: [
       'Full Content Edit',
@@ -103,8 +103,8 @@ const packages = [
   },
   {
     name: 'Full Package Line Edit',
-    price: 'R500',
-    priceLabel: 'Per 1000 Words',
+    price: 'R0.75',
+    priceLabel: '75c per word',
     icon: Crown,
     includes: [
       'Full Content Edit',
