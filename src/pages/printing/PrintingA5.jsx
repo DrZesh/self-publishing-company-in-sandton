@@ -6,82 +6,30 @@ import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import InternalLinks from '../../components/shared/InternalLinks';
 
 // ─── Pricing Data ────────────────────────────────────────────────────────────
-const creamPricing = [
-  {
-    name: 'Silver',
-    pages: '100 – 150',
-    qty100: 'R5 000',
-    qty200: 'R7 000',
-    qty300: 'R8 500',
-    qty500: 'R12 000',
-    popular: false,
-  },
-  {
-    name: 'Bronze',
-    pages: '151 – 200',
-    qty100: 'R5 800',
-    qty200: 'R8 200',
-    qty300: 'R9 800',
-    qty500: 'R14 000',
-    popular: true,
-  },
-  {
-    name: 'Gold',
-    pages: '201 – 250',
-    qty100: 'R6 500',
-    qty200: 'R9 200',
-    qty300: 'R11 200',
-    qty500: 'R16 000',
-    popular: false,
-  },
-  {
-    name: 'Platinum',
-    pages: '251 – 300',
-    qty100: 'R7 200',
-    qty200: 'R10 200',
-    qty300: 'R12 500',
-    qty500: 'R18 000',
-    popular: false,
-  },
+const packageFeatures = [
+  'A5 Format',
+  '100 Copies',
+  'Gloss / Matte Cover',
+  'Perfect Binding',
+  'Black & White Inners',
 ];
 
 const whitePricing = [
-  {
-    name: 'Silver',
-    pages: '100 – 150',
-    qty100: 'R4 500',
-    qty200: 'R6 200',
-    qty300: 'R7 500',
-    qty500: 'R10 500',
-    popular: false,
-  },
-  {
-    name: 'Bronze',
-    pages: '151 – 200',
-    qty100: 'R5 200',
-    qty200: 'R7 200',
-    qty300: 'R8 800',
-    qty500: 'R12 500',
-    popular: true,
-  },
-  {
-    name: 'Gold',
-    pages: '201 – 250',
-    qty100: 'R5 900',
-    qty200: 'R8 200',
-    qty300: 'R10 000',
-    qty500: 'R14 200',
-    popular: false,
-  },
-  {
-    name: 'Platinum',
-    pages: '251 – 300',
-    qty100: 'R6 500',
-    qty200: 'R9 000',
-    qty300: 'R11 000',
-    qty500: 'R16 000',
-    popular: false,
-  },
+  { name: 'Bronze',   pages: '50 – 100',   price: 'R4 500',  popular: true  },
+  { name: 'Silver',   pages: '115 – 150',  price: 'R5 100',  popular: false },
+  { name: 'Gold',     pages: '160 – 200',  price: 'R6 500',  popular: false },
+  { name: 'Platinum', pages: '215 – 300',  price: 'R7 800',  popular: false },
+  { name: 'Diamond',  pages: '315 – 350',  price: 'R8 500',  popular: false },
+  { name: 'Elite',    pages: '360 – 400',  price: 'R9 600',  popular: false },
+];
+
+const creamPricing = [
+  { name: 'Bronze',   pages: '50 – 100',   price: 'R5 000',  popular: true  },
+  { name: 'Silver',   pages: '115 – 150',  price: 'R5 800',  popular: false },
+  { name: 'Gold',     pages: '160 – 200',  price: 'R7 200',  popular: false },
+  { name: 'Platinum', pages: '215 – 300',  price: 'R8 600',  popular: false },
+  { name: 'Diamond',  pages: '315 – 350',  price: 'R9 500',  popular: false },
+  { name: 'Elite',    pages: '360 – 400',  price: 'R10 800', popular: false },
 ];
 
 const features = [
@@ -104,8 +52,8 @@ const specs = [
   { label: 'Min. Quantity', value: '100 copies' },
 ];
 
-// ─── Pricing Card ─────────────────────────────────────────────────────────────
-function PricingCard({ pkg }) {
+// ─── Pricing Card (light bg) ──────────────────────────────────────────────────
+function PricingCard({ pkg, paperType }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
@@ -114,91 +62,161 @@ function PricingCard({ pkg }) {
       whileHover={{ y: -6, transition: { duration: 0.22 } }}
       className="relative flex flex-col overflow-hidden"
       style={{
-        background: pkg.popular
-          ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)'
-          : 'rgba(255,255,255,0.72)',
+        background: pkg.popular ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)' : 'rgba(255,255,255,0.72)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        border: pkg.popular
-          ? '1.5px solid rgba(184,149,91,0.55)'
-          : '1px solid rgba(255,255,255,0.85)',
+        border: pkg.popular ? '1.5px solid rgba(184,149,91,0.55)' : '1px solid rgba(255,255,255,0.85)',
         boxShadow: pkg.popular
-          ? '0 24px 60px rgba(184,149,91,0.18), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)'
+          ? '0 24px 60px rgba(184,149,91,0.18), inset 0 1px 0 rgba(255,255,255,1)'
           : '0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)',
         borderRadius: '16px',
       }}
     >
-      {/* Specular top edge */}
       <div className="absolute top-0 left-4 right-4 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,1), transparent)' }} />
 
-      {/* Popular badge */}
       {pkg.popular && (
-        <div className="absolute top-5 right-5">
-          <span className="inline-flex items-center gap-1 px-3 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase"
-            style={{
-              background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
-              color: '#D4AF72',
-              border: '1px solid rgba(212,175,114,0.3)',
-              boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
-              borderRadius: '4px',
-            }}>
-            <Award className="w-2.5 h-2.5" />
-            Popular
+        <div className="absolute top-4 right-4">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase"
+            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)', color: '#D4AF72', border: '1px solid rgba(212,175,114,0.3)', borderRadius: '4px' }}>
+            <Award className="w-2.5 h-2.5" />Popular
           </span>
         </div>
       )}
 
-      <div className="p-7 pb-0">
-        {/* Package name */}
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase font-body mb-3"
-          style={{ color: pkg.popular ? '#B8955B' : '#0B1220' + '60' }}>
-          {pkg.name} Package
-        </p>
+      <div className="p-6 flex-1">
+        <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
+          style={{ color: pkg.popular ? '#B8955B' : 'rgba(11,18,32,0.4)' }}>{pkg.name}</p>
 
-        {/* Page count */}
+        {/* Page count — big hero */}
+        <div className="mb-1">
+          <span className="font-heading text-3xl font-bold text-[#0B1220]">{pkg.pages}</span>
+        </div>
+        <p className="text-xs text-[#2B2B2B]/45 font-body mb-5">pages</p>
+
+        {/* Price */}
         <div className="mb-6">
-          <span className="font-heading text-2xl font-bold text-[#0B1220]">{pkg.pages}</span>
-          <span className="text-[#2B2B2B]/50 font-body text-sm ml-2">pages</span>
+          <span className="font-heading text-4xl font-bold text-[#0B1220]">{pkg.price}</span>
         </div>
 
-        {/* Divider */}
-        <div className="h-px mb-6" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(0,0,0,0.06)' }} />
+        <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(0,0,0,0.06)' }} />
 
-        {/* Quantity pricing */}
-        <div className="space-y-3 mb-7">
-          {[
-            { label: '100 copies', price: pkg.qty100 },
-            { label: '200 copies', price: pkg.qty200 },
-            { label: '300 copies', price: pkg.qty300 },
-            { label: '500 copies', price: pkg.qty500 },
-          ].map(row => (
-            <div key={row.label} className="flex items-center justify-between">
-              <span className="text-xs font-body text-[#2B2B2B]/55">{row.label}</span>
-              <span className="font-heading text-sm font-bold text-[#0B1220]">{row.price}</span>
-            </div>
+        {/* Features */}
+        <ul className="space-y-2.5 mb-6">
+          {packageFeatures.map(f => (
+            <li key={f} className="flex items-center gap-2.5">
+              <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(11,18,32,0.06)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(11,18,32,0.1)'}` }}>
+                <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : '#0B1220' }} strokeWidth={2.5} />
+              </div>
+              <span className="text-xs font-body text-[#2B2B2B]/70">{f}</span>
+            </li>
           ))}
-        </div>
+          <li className="flex items-center gap-2.5">
+            <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(11,18,32,0.06)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(11,18,32,0.1)'}` }}>
+              <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : '#0B1220' }} strokeWidth={2.5} />
+            </div>
+            <span className="text-xs font-body text-[#2B2B2B]/70">{paperType}</span>
+          </li>
+        </ul>
       </div>
 
-      {/* CTA */}
-      <div className="mt-auto p-7 pt-4">
-        <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.15)' : 'rgba(0,0,0,0.05)' }} />
-        <Link
-          to="/getquote"
+      <div className="p-6 pt-0">
+        <Link to="/getquote"
           className="block text-center py-3 px-5 text-sm font-semibold font-body transition-all"
           style={pkg.popular ? {
             background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
-            color: '#fff',
-            boxShadow: '0 8px 24px rgba(11,18,32,0.25)',
-            borderRadius: '8px',
+            color: '#fff', boxShadow: '0 8px 24px rgba(11,18,32,0.25)', borderRadius: '8px',
           } : {
-            background: 'rgba(11,18,32,0.05)',
-            color: '#0B1220',
-            border: '1px solid rgba(11,18,32,0.12)',
-            borderRadius: '8px',
-          }}
-        >
+            background: 'rgba(11,18,32,0.05)', color: '#0B1220',
+            border: '1px solid rgba(11,18,32,0.12)', borderRadius: '8px',
+          }}>
+          Request This Printing Quote
+        </Link>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Dark Pricing Card (for cream section on dark bg) ─────────────────────────
+function DarkPricingCard({ pkg, paperType, i }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: i * 0.08 }}
+      whileHover={{ y: -6, transition: { duration: 0.22 } }}
+      className="relative flex flex-col overflow-hidden"
+      style={{
+        background: pkg.popular ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)' : 'rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: pkg.popular ? '1.5px solid rgba(184,149,91,0.6)' : '1px solid rgba(255,255,255,0.1)',
+        boxShadow: pkg.popular
+          ? '0 24px 60px rgba(184,149,91,0.22), inset 0 1px 0 rgba(255,255,255,1)'
+          : '0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+        borderRadius: '16px',
+      }}
+    >
+      <div className="absolute top-0 left-4 right-4 h-px"
+        style={{ background: pkg.popular ? 'linear-gradient(90deg, transparent, rgba(184,149,91,0.8), transparent)' : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }} />
+
+      {pkg.popular && (
+        <div className="absolute top-4 right-4">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase"
+            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)', color: '#D4AF72', border: '1px solid rgba(212,175,114,0.3)', borderRadius: '4px' }}>
+            <Award className="w-2.5 h-2.5" />Popular
+          </span>
+        </div>
+      )}
+
+      <div className="p-6 flex-1">
+        <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
+          style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.4)' }}>{pkg.name}</p>
+
+        <div className="mb-1">
+          <span className="font-heading text-3xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.pages}</span>
+        </div>
+        <p className="text-xs font-body mb-5" style={{ color: pkg.popular ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.35)' }}>pages</p>
+
+        <div className="mb-6">
+          <span className="font-heading text-4xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.price}</span>
+        </div>
+
+        <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(255,255,255,0.08)' }} />
+
+        <ul className="space-y-2.5 mb-6">
+          {packageFeatures.map(f => (
+            <li key={f} className="flex items-center gap-2.5">
+              <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(255,255,255,0.08)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(255,255,255,0.15)'}` }}>
+                <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.7)' }} strokeWidth={2.5} />
+              </div>
+              <span className="text-xs font-body" style={{ color: pkg.popular ? 'rgba(11,18,32,0.65)' : 'rgba(255,255,255,0.55)' }}>{f}</span>
+            </li>
+          ))}
+          <li className="flex items-center gap-2.5">
+            <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(255,255,255,0.08)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(255,255,255,0.15)'}` }}>
+              <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.7)' }} strokeWidth={2.5} />
+            </div>
+            <span className="text-xs font-body" style={{ color: pkg.popular ? 'rgba(11,18,32,0.65)' : 'rgba(255,255,255,0.55)' }}>{paperType}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div className="p-6 pt-0">
+        <Link to="/getquote"
+          className="block text-center py-3 px-5 text-sm font-semibold font-body transition-all"
+          style={pkg.popular ? {
+            background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
+            color: '#fff', boxShadow: '0 8px 24px rgba(11,18,32,0.3)', borderRadius: '8px',
+          } : {
+            background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)',
+            border: '1px solid rgba(255,255,255,0.14)', borderRadius: '8px',
+          }}>
           Request This Printing Quote
         </Link>
       </div>
@@ -329,9 +347,83 @@ export default function PrintingA5() {
         </div>
       </section>
 
+      {/* ── White Paper: Why Section ── */}
+      <section id="pricing" className="relative py-20 lg:py-24 overflow-hidden" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #eef1f7 100%)' }}>
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(100,120,220,0.07) 0%, transparent 65%)', filter: 'blur(60px)' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-px" style={{ background: '#B8955B' }} />
+              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">White Paper</span>
+            </div>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0B1220] mb-3 leading-tight">
+              Why Print with White Paper?
+            </h2>
+            <p className="text-[#2B2B2B]/55 font-body text-sm max-w-2xl leading-relaxed">
+              White paper maintains consistency across different editions or reprints of the same book, ensuring that readers receive a uniform reading experience regardless of when or where they obtain the book.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+            {[
+              { title: 'Tradition', body: 'White paper has been the standard for book printing for centuries, and this tradition has been maintained due to its effectiveness.' },
+              { title: 'Accessibility', body: "White paper is generally more accessible to a wider audience, as it doesn't interfere with readability for individuals with visual impairments or colour blindness." },
+              { title: 'Versatility', body: 'White paper provides a neutral background that complements various genres and styles, making it suitable for a wide range of content.' },
+              { title: 'Consistency', body: 'White paper ensures a uniform reading experience across different print runs, editions and distribution channels.' },
+            ].map((item, i) => (
+              <motion.div key={item.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                className="p-6"
+                style={{
+                  background: 'rgba(255,255,255,0.75)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255,255,255,0.9)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)',
+                  borderRadius: '14px',
+                }}>
+                <div className="w-8 h-0.5 mb-4" style={{ background: '#B8955B' }} />
+                <h3 className="font-heading text-base font-bold text-[#0B1220] mb-2">{item.title}</h3>
+                <p className="text-xs font-body text-[#2B2B2B]/55 leading-relaxed">{item.body}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* White Paper Pricing Header */}
+          <div className="mb-8">
+            <p className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body mb-3">Printing Packages</p>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0B1220] mb-1">Save time. Save money.</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {whitePricing.map((pkg, i) => (
+              <motion.div key={pkg.name + '-white'} transition={{ delay: i * 0.07 }}>
+                <PricingCard pkg={pkg} paperType="White Paper" />
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-8 py-6"
+            style={{ background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.9)', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', borderRadius: '12px' }}>
+            <p className="text-[#2B2B2B]/60 font-body text-sm leading-relaxed max-w-xl">
+              Prefer white paper book printing? Send your details and we will guide you on the best package for your book.
+            </p>
+            <Link to="/getquote"
+              className="shrink-0 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white transition-all group"
+              style={{ background: '#0B1220', borderRadius: '8px', boxShadow: '0 8px 20px rgba(11,18,32,0.2)' }}>
+              Request a Quote
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Cream Paper Pricing ── */}
-      <section id="pricing" className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 100%)' }}>
-        {/* Ambient */}
+      <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 100%)' }}>
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.4), transparent)' }} />
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse, rgba(184,149,91,0.08) 0%, transparent 65%)', filter: 'blur(60px)' }} />
@@ -340,7 +432,7 @@ export default function PrintingA5() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-px" style={{ background: '#B8955B' }} />
-              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">Pricing</span>
+              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">Cream Paper</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
               A5 Cream Paper Printing
@@ -350,90 +442,12 @@ export default function PrintingA5() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {creamPricing.map((pkg, i) => (
-              <motion.div key={pkg.name}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6, transition: { duration: 0.22 } }}
-                className="relative flex flex-col overflow-hidden"
-                style={{
-                  background: pkg.popular
-                    ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)'
-                    : 'rgba(255,255,255,0.07)',
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  border: pkg.popular
-                    ? '1.5px solid rgba(184,149,91,0.6)'
-                    : '1px solid rgba(255,255,255,0.1)',
-                  boxShadow: pkg.popular
-                    ? '0 24px 60px rgba(184,149,91,0.2), inset 0 1px 0 rgba(255,255,255,1)'
-                    : '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
-                  borderRadius: '16px',
-                }}>
-                <div className="absolute top-0 left-4 right-4 h-px"
-                  style={{ background: pkg.popular ? 'linear-gradient(90deg, transparent, rgba(184,149,91,0.8), transparent)' : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)' }} />
-
-                {pkg.popular && (
-                  <div className="absolute top-5 right-5">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase"
-                      style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)', color: '#D4AF72', border: '1px solid rgba(212,175,114,0.3)', boxShadow: '0 2px 12px rgba(0,0,0,0.3)', borderRadius: '4px' }}>
-                      <Award className="w-2.5 h-2.5" />
-                      Popular
-                    </span>
-                  </div>
-                )}
-
-                <div className="p-7 pb-0">
-                  <p className="text-xs font-semibold tracking-[0.25em] uppercase font-body mb-3"
-                    style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.4)' }}>
-                    {pkg.name} Package
-                  </p>
-                  <div className="mb-6">
-                    <span className="font-heading text-2xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.pages}</span>
-                    <span className="font-body text-sm ml-2" style={{ color: pkg.popular ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.4)' }}>pages</span>
-                  </div>
-                  <div className="h-px mb-6" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(255,255,255,0.08)' }} />
-                  <div className="space-y-3 mb-7">
-                    {[
-                      { label: '100 copies', price: pkg.qty100 },
-                      { label: '200 copies', price: pkg.qty200 },
-                      { label: '300 copies', price: pkg.qty300 },
-                      { label: '500 copies', price: pkg.qty500 },
-                    ].map(row => (
-                      <div key={row.label} className="flex items-center justify-between">
-                        <span className="text-xs font-body" style={{ color: pkg.popular ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.45)' }}>{row.label}</span>
-                        <span className="font-heading text-sm font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{row.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-auto p-7 pt-4">
-                  <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.15)' : 'rgba(255,255,255,0.06)' }} />
-                  <Link to="/getquote"
-                    className="block text-center py-3 px-5 text-sm font-semibold font-body transition-all"
-                    style={pkg.popular ? {
-                      background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
-                      color: '#fff',
-                      boxShadow: '0 8px 24px rgba(11,18,32,0.3)',
-                      borderRadius: '8px',
-                    } : {
-                      background: 'rgba(255,255,255,0.08)',
-                      color: 'rgba(255,255,255,0.8)',
-                      border: '1px solid rgba(255,255,255,0.14)',
-                      borderRadius: '8px',
-                    }}>
-                    Request This Printing Quote
-                  </Link>
-                </div>
-              </motion.div>
+              <DarkPricingCard key={pkg.name + '-cream'} pkg={pkg} paperType="Cream Paper" i={i} />
             ))}
           </div>
 
-          {/* Cream paper CTA nudge */}
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-8 py-6"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', backdropFilter: 'blur(12px)' }}>
@@ -443,56 +457,6 @@ export default function PrintingA5() {
             <Link to="/getquote"
               className="shrink-0 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white transition-all group"
               style={{ background: '#B8955B', borderRadius: '8px', boxShadow: '0 8px 20px rgba(184,149,91,0.3)' }}>
-              Request a Quote
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── White Paper Pricing ── */}
-      <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #eef1f7 50%, #f4f0ff 100%)' }}>
-        <div className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(100,120,220,0.07) 0%, transparent 65%)', filter: 'blur(80px)' }} />
-        <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(184,149,91,0.06) 0%, transparent 65%)', filter: 'blur(80px)' }} />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-px" style={{ background: '#B8955B' }} />
-              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">Pricing</span>
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1220] mb-4 leading-tight">
-              A5 White Paper Printing
-            </h2>
-            <p className="text-[#2B2B2B]/55 font-body text-sm max-w-lg leading-relaxed">
-              White paper gives your book a crisp, clean interior — ideal for workbooks, manuals, business books and educational titles. Prices include softcover perfect binding and a full-colour cover.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {whitePricing.map((pkg, i) => (
-              <PricingCard key={pkg.name + '-white'} pkg={pkg} />
-            ))}
-          </div>
-
-          {/* White paper CTA nudge */}
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-8 py-6"
-            style={{
-              background: 'rgba(255,255,255,0.72)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.9)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              borderRadius: '12px',
-            }}>
-            <p className="text-[#2B2B2B]/60 font-body text-sm leading-relaxed max-w-xl">
-              Prefer white paper book printing? Send your details and we will guide you on the best package for your book.
-            </p>
-            <Link to="/getquote"
-              className="shrink-0 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white transition-all group"
-              style={{ background: '#0B1220', borderRadius: '8px', boxShadow: '0 8px 20px rgba(11,18,32,0.2)' }}>
               Request a Quote
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
