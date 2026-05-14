@@ -1,22 +1,22 @@
 import React from 'react';
-import PageMeta from '../../../components/shared/PageMeta';
-import { faqSchema } from '../../../lib/seo/schemas';
+import PageMeta from '../../components/shared/PageMeta';
+import { faqSchema } from '../../lib/seo/schemas';
 
 // Hero — same as home page
-import HeroSlider from '../../../components/home/HeroSlider';
+import HeroSlider from '../../components/home/HeroSlider';
 
 // All home page sections
-import TrustStrip from '../../../components/home/TrustStrip';
-import PublishingPath from '../../../components/home/PublishingPath';
-import CoreServices from '../../../components/home/CoreServices';
-import PublishingPackagesSection from '../../../components/home/PublishingPackagesSection';
-import CalculatorCTA from '../../../components/home/CalculatorCTA';
-import WhyChooseUsNew from '../../../components/home/WhyChooseUsNew';
-import BookTypes from '../../../components/home/BookTypes';
-import PublishingProcess from '../../../components/home/PublishingProcess';
-import LocationSEO from '../../../components/home/LocationSEO';
-import HomeFAQ from '../../../components/home/HomeFAQ';
-import FinalCTA from '../../../components/home/FinalCTA';
+import TrustStrip from '../../components/home/TrustStrip';
+import PublishingPath from '../../components/home/PublishingPath';
+import CoreServices from '../../components/home/CoreServices';
+import PublishingPackagesSection from '../../components/home/PublishingPackagesSection';
+import CalculatorCTA from '../../components/home/CalculatorCTA';
+import WhyChooseUsNew from '../../components/home/WhyChooseUsNew';
+import BookTypes from '../../components/home/BookTypes';
+import PublishingProcess from '../../components/home/PublishingProcess';
+import LocationSEO from '../../components/home/LocationSEO';
+import HomeFAQ from '../../components/home/HomeFAQ';
+import FinalCTA from '../../components/home/FinalCTA';
 
 const locationFaqs = [
   { question: 'Do you offer book printing in Johannesburg?', answer: 'Yes. Creative Books SA provides professional book printing services for authors and businesses in Johannesburg and throughout Gauteng.' },

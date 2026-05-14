@@ -19,10 +19,10 @@ import HomeFAQ from '../../../components/home/HomeFAQ';
 import FinalCTA from '../../../components/home/FinalCTA';
 
 const locationFaqs = [
-  { question: 'Do you offer book printing in Sandton?', answer: 'Yes. Creative Books SA provides professional book printing services for authors and businesses in Sandton, Johannesburg, and throughout Gauteng.' },
+  { question: 'Do you offer book printing in Sandton?', answer: 'Yes. Creative Books SA provides professional book printing services for authors and businesses in Sandton and throughout Gauteng.' },
   { question: 'What is the minimum print run?', answer: 'Our minimum order is 50 copies for offset printing. For print-on-demand, you can order as few as 1 copy.' },
   { question: 'How much does book printing cost?', answer: 'Pricing depends on page count, size, paper type, cover type, and quantity. A 200-page softcover A5 book starts from approximately R45 per copy for 100 copies. Request a detailed quote for your specs.' },
-  { question: 'How fast is delivery to Sandton?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available at an additional cost. We deliver to Sandton and throughout Gauteng.' },
+  { question: 'How fast is delivery to Sandton?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available. We deliver to Sandton within 1–2 business days.' },
   { question: 'Can you help with layout before printing?', answer: 'Yes. We offer book layout and typesetting services to prepare your manuscript for professional printing.' },
   { question: 'Can you design my book cover before printing?', answer: 'Yes. Our book cover design team creates professional print-ready covers with front, spine, and back cover integration.' },
 ];
@@ -32,7 +32,7 @@ export default function BookPrintingSandton() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     'name': 'Book Printing Sandton',
-    'description': 'Professional book printing services in Sandton, Johannesburg. High-quality printing for authors and businesses.',
+    'description': 'Professional book printing services in Sandton, Gauteng. High-quality printing for authors and businesses.',
     'areaServed': 'Sandton, Gauteng, South Africa',
   };
 
@@ -40,7 +40,7 @@ export default function BookPrintingSandton() {
     <div>
       <PageMeta
         title="Book Printing in Sandton | Creative Books SA"
-        description="Looking for book printing in Sandton? Creative Books SA helps South African authors with high-quality softcover, hardcover, and specialty book printing. Request a quote today."
+        description="Looking for book printing in Sandton? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
         keywords="book printing Sandton, book printers Sandton, Sandton book printing, printing services Sandton, book publishing Sandton"
         canonical="https://www.creativebookssa.co.za/bookprintingsandton"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
