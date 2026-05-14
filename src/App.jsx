@@ -144,6 +144,16 @@ import BookPrintingPretoria from './pages/seo/location/BookPrintingPretoria.jsx'
 import BookPrintingCenturion from './pages/seo/location/BookPrintingCenturion.jsx';
 import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.jsx';
 
+// Book Cover Design Location Pages
+import BookCoverDesignSandton from './pages/seo/location/BookCoverDesignSandton';
+import BookCoverDesignRandburg from './pages/seo/location/BookCoverDesignRandburg';
+import BookCoverDesignMidrand from './pages/seo/location/BookCoverDesignMidrand';
+import BookCoverDesignPretoria from './pages/seo/location/BookCoverDesignPretoria';
+import BookCoverDesignCenturion from './pages/seo/location/BookCoverDesignCenturion';
+import BookCoverDesignRoodepoort from './pages/seo/location/BookCoverDesignRoodepoort';
+import BookCoverDesignCapeTown from './pages/seo/location/BookCoverDesignCapeTown';
+import BookCoverDesignDurban from './pages/seo/location/BookCoverDesignDurban';
+
 // City Pages (scalable component)
 import { CityPrintingPage } from './pages/seo/location/CityPrintingPage.jsx';
 import SelfPublishingCityPage from './pages/seo/location/SelfPublishingCityPage';
@@ -291,6 +301,16 @@ const AuthenticatedApp = () => {
         <Route path="/bookprintingpretoria" element={<BookPrintingPretoria />} />
         <Route path="/bookprintingcenturion" element={<BookPrintingCenturion />} />
         <Route path="/bookprintingroodepoort" element={<BookPrintingRoodepoort />} />
+
+        {/* Book Cover Design Location Pages */}
+        <Route path="/bookcoverdesignsandton" element={<BookCoverDesignSandton />} />
+        <Route path="/bookcoverdesignrandburg" element={<BookCoverDesignRandburg />} />
+        <Route path="/bookcoverdesignmidrand" element={<BookCoverDesignMidrand />} />
+        <Route path="/bookcoverdesignpretoria" element={<BookCoverDesignPretoria />} />
+        <Route path="/bookcoverdesigncenturion" element={<BookCoverDesignCenturion />} />
+        <Route path="/bookcoverdesignroodepoort" element={<BookCoverDesignRoodepoort />} />
+        <Route path="/bookcoverdesigncapetown" element={<BookCoverDesignCapeTown />} />
+        <Route path="/bookcoverdesigndurban" element={<BookCoverDesignDurban />} />
 
         {/* National City Printing Pages */}
         <Route path="/bookprintingcapetown" element={<CityPrintingPage cityKey="capetown" />} />
