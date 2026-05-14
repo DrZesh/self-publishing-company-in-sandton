@@ -59,8 +59,23 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   size: 2 + (i % 4),
 }));
 
-export default function HeroSlider() {
+export default function HeroSlider({ locationData }) {
   const [current, setCurrent] = useState(0);
+  
+  // If locationData is provided, use a single location-specific slide
+  const locationSlide = locationData ? {
+    id: 'location',
+    eyebrow: `${locationData.serviceType} · ${locationData.city}`,
+    heading: [locationData.serviceType, `in ${locationData.city}`],
+    accentLine: 1,
+    subheading: `Professional ${locationData.serviceType.toLowerCase()} services for ${locationData.city} and ${locationData.province}. Fast turnaround, competitive pricing, and expert support for authors and businesses.`,
+    primary: { label: 'Get a Quote', to: '/getquote' },
+    secondary: { label: 'View Services', to: locationData.serviceType === 'Book Printing' ? '/bookprinting' : '/selfpublishingsouthafrica' },
+    bg: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1800&q=80',
+  } : null;
+  
+  const activeSlides = locationSlide ? [locationSlide] : slides;
+  const currentSlide = activeSlides[current];
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
@@ -71,8 +86,8 @@ export default function HeroSlider() {
     setCurrent(index);
   }, []);
 
-  const next = useCallback(() => goTo((current + 1) % slides.length, 1), [current, goTo]);
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length, -1), [current, goTo]);
+  const next = useCallback(() => goTo((current + 1) % activeSlides.length, 1), [current, goTo, activeSlides.length]);
+  const prev = useCallback(() => goTo((current - 1 + activeSlides.length) % activeSlides.length, -1), [current, goTo, activeSlides.length]);
 
   useEffect(() => {
     if (paused) return;
@@ -93,7 +108,7 @@ export default function HeroSlider() {
     if (e.key === 'ArrowLeft') prev();
   };
 
-  const slide = slides[current];
+  const slide = currentSlide;
 
   const bgVariants = {
     enter: (d) => ({ opacity: 0, scale: 1.08, x: d > 0 ? 40 : -40 }),
@@ -276,7 +291,7 @@ export default function HeroSlider() {
         </motion.div>
 
         <div className="flex items-center gap-2.5" role="tablist" aria-label="Slider navigation">
-          {slides.map((s, i) => (
+          {activeSlides.map((s, i) => (
             <motion.button key={s.id} role="tab" aria-selected={i === current} aria-label={`Slide ${i + 1}`}
               onClick={() => goTo(i, i > current ? 1 : -1)}
               whileHover={{ scale: 1.4 }}

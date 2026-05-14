@@ -57,8 +57,8 @@ export default function LocationPage({ locationData }) {
         ]}}
       />
 
-      {/* 1. Hero — design completely unchanged (uses HeroSlider) */}
-      <HeroSlider />
+      {/* 1. Hero — customized for location */}
+      <HeroSlider locationData={locationData} />
 
       {/* 2. Trust Strip */}
       <TrustStrip />
