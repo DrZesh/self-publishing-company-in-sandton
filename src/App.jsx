@@ -57,8 +57,10 @@ import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
 import ISBNRegistration from './pages/resources/ISBNRegistration';
 
-// New Blog Article Pages
+// New SEO Blog Article Pages
 import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
+import PublishingCompaniesSouthAfricaNew from './pages/seo/PublishingCompaniesSouthAfricaNew';
+import BookPublishersSouthAfricaNew from './pages/seo/BookPublishersSouthAfricaNew';
 import CostToSelfPublishKindle from './pages/blog/CostToSelfPublishKindle';
 import ProfessionalCopyEditing from './pages/blog/ProfessionalCopyEditing';
 import WhatIsGhostwriting from './pages/blog/WhatIsGhostwriting';
@@ -462,6 +464,10 @@ const AuthenticatedApp = () => {
         <Route path="/mostcommonpublishingmistadebysouthafricanauthors" element={<CommonPublishingMistakesSA />} />
         <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
         <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
+        
+        {/* New SEO Blog Articles */}
+        <Route path="/publishingcompaniesinsouthafrica" element={<PublishingCompaniesSouthAfricaNew />} />
+        <Route path="/bookpublishersinsouthafrica" element={<BookPublishersSouthAfricaNew />} />
         <Route path="/howdebutauthorsgetbetterbookdealsinsouthafrica" element={<HowDebutAuthorsGetBetterDeals />} />
         <Route path="/whatistheroleliteraryagentinsouthafrica" element={<RoleLiteraryAgentSA />} />
         <Route path="/howtostartpublishingcareerfromzeroinsouthafrica" element={<HowToStartPublishingCareerSA />} />
