@@ -15,8 +15,12 @@ export default function HomeFAQ() {
   const [open, setOpen] = useState(null);
 
   return (
-    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: '#F5F5F5' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(160deg, #0d1526 0%, #0a0f1e 100%)' }}>
+      {/* Glass orb */}
+      <div className="absolute top-0 right-0 w-96 h-96 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
           <motion.div
@@ -26,10 +30,10 @@ export default function HomeFAQ() {
             className="lg:sticky lg:top-28"
           >
             <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body block mb-5">FAQ</span>
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1220] mb-6 leading-tight">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               Frequently Asked<br />Questions
             </h2>
-            <p className="text-[#2B2B2B]/55 font-body text-sm leading-relaxed max-w-sm">
+            <p className="text-white/45 font-body text-sm leading-relaxed max-w-sm">
               Have more questions about publishing, printing or our services? Contact us directly for a personalised answer.
             </p>
             <div className="mt-6 h-px w-24" style={{ background: '#B8955B' }} />
@@ -44,19 +48,28 @@ export default function HomeFAQ() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07, duration: 0.4 }}
                 className="overflow-hidden"
-                style={{ border: '1px solid rgba(0,0,0,0.08)', background: '#fff' }}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255,255,255,0.09)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
+                }}
               >
                 <button
                   className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left"
                   onClick={() => setOpen(open === i ? null : i)}
                   aria-expanded={open === i}
                 >
-                  <span className="font-heading text-sm font-semibold text-[#0B1220] leading-snug">{faq.q}</span>
-                  <span className="shrink-0 w-6 h-6 flex items-center justify-center"
-                    style={{ background: open === i ? '#0B1220' : 'rgba(11,18,32,0.06)', transition: 'background 0.25s' }}>
+                  <span className="font-heading text-sm font-semibold text-white leading-snug">{faq.q}</span>
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center transition-all"
+                    style={{
+                      background: open === i ? 'rgba(184,149,91,0.2)' : 'rgba(255,255,255,0.08)',
+                      border: open === i ? '1px solid rgba(184,149,91,0.4)' : '1px solid rgba(255,255,255,0.1)',
+                    }}>
                     {open === i
-                      ? <Minus className="w-3.5 h-3.5 text-white" />
-                      : <Plus className="w-3.5 h-3.5 text-[#0B1220]" />
+                      ? <Minus className="w-3.5 h-3.5 text-[#B8955B]" />
+                      : <Plus className="w-3.5 h-3.5 text-white/60" />
                     }
                   </span>
                 </button>
@@ -69,8 +82,8 @@ export default function HomeFAQ() {
                       transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     >
                       <div className="px-6 pb-5 pt-0"
-                        style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                        <p className="text-sm text-[#2B2B2B]/65 font-body leading-relaxed pt-4">{faq.a}</p>
+                        style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+                        <p className="text-sm text-white/50 font-body leading-relaxed pt-4">{faq.a}</p>
                       </div>
                     </motion.div>
                   )}

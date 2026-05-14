@@ -22,8 +22,12 @@ const bookTypes = [
 
 export default function BookTypes() {
   return (
-    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: '#F5F5F5' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(160deg, #0d1526 0%, #0a0f1e 100%)' }}>
+      {/* Orb glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -32,14 +36,14 @@ export default function BookTypes() {
         >
           <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body block mb-4">Genres and Types</span>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1220] leading-tight">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
               Books We Help Authors Publish
             </h2>
-            <p className="text-[#2B2B2B]/55 font-body text-sm max-w-xs leading-relaxed">
+            <p className="text-white/40 font-body text-sm max-w-xs leading-relaxed">
               We support authors across different genres, industries and publishing goals.
             </p>
           </div>
-          <div className="mt-6 h-px" style={{ background: 'linear-gradient(90deg, #B8955B, rgba(184,149,91,0.08))' }} />
+          <div className="mt-6 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02))' }} />
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
@@ -54,15 +58,26 @@ export default function BookTypes() {
               {book.to ? (
                 <Link
                   to={book.to}
-                  className="flex items-center justify-between gap-1 px-4 py-3 bg-white text-xs font-body font-medium text-[#0B1220] hover:bg-[#0B1220] hover:text-white transition-all group"
-                  style={{ border: '1px solid rgba(0,0,0,0.07)' }}
+                  className="flex items-center justify-between gap-1 px-4 py-3 text-xs font-body font-medium text-white/70 hover:text-white transition-all group"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                 >
                   <span className="leading-snug">{book.name}</span>
                   <ArrowUpRight className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               ) : (
-                <div className="px-4 py-3 bg-white text-xs font-body text-[#2B2B2B]/55 leading-snug"
-                  style={{ border: '1px solid rgba(0,0,0,0.07)' }}>
+                <div className="px-4 py-3 text-xs font-body text-white/30 leading-snug"
+                  style={{
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                  }}>
                   {book.name}
                 </div>
               )}
