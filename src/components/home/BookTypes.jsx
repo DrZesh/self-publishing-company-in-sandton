@@ -1,28 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 const bookTypes = [
-  { name: 'Novels', to: '/novelprintingjohannesburg' },
-  { name: 'Memoirs', to: '/memoirpublishing' },
-  { name: 'Autobiographies', to: null },
-  { name: 'Poetry Books', to: '/poetrypublishing' },
-  { name: 'Christian Books', to: '/christianbookpublishing' },
-  { name: "Children's Books", to: '/childrensbookpublishing' },
-  { name: 'Business Books', to: '/businessbookpublishing' },
-  { name: 'Inspirational Books', to: null },
-  { name: 'Educational Books', to: '/educationalbookprintingjohannesburg' },
-  { name: 'Academic Books', to: null },
-  { name: 'Workbooks and Guides', to: '/workbookprinting' },
-  { name: 'Personal Development Books', to: null },
-  { name: 'Training Manuals', to: '/trainingmanualprintingjohannesburg' },
+  { name: 'Novels',                  to: '/novelprintingjohannesburg' },
+  { name: 'Memoirs',                 to: '/memoirpublishing' },
+  { name: 'Autobiographies',         to: null },
+  { name: 'Poetry Books',            to: '/poetrypublishing' },
+  { name: 'Christian Books',         to: '/christianbookpublishing' },
+  { name: "Children's Books",        to: '/childrensbookpublishing' },
+  { name: 'Business Books',          to: '/businessbookpublishing' },
+  { name: 'Inspirational Books',     to: null },
+  { name: 'Educational Books',       to: '/educationalbookprintingjohannesburg' },
+  { name: 'Academic Books',          to: null },
+  { name: 'Workbooks and Guides',    to: '/workbookprinting' },
+  { name: 'Personal Development',    to: null },
+  { name: 'Training Manuals',        to: '/trainingmanualprintingjohannesburg' },
   { name: 'Short Story Collections', to: null },
 ];
 
 export default function BookTypes() {
   return (
-    <section className="py-20 lg:py-24 bg-[#F8F5EF]" aria-labelledby="book-types-heading">
+    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: '#F5F5F5' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -30,34 +30,39 @@ export default function BookTypes() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <span className="text-[#B8955B] text-xs font-body tracking-[0.25em] uppercase mb-3 block">Book Genres & Types</span>
-          <h2 id="book-types-heading" className="font-heading text-3xl md:text-4xl font-bold text-[#101826] mb-4">
-            Books We Help Authors Publish
-          </h2>
-          <p className="text-[#2B2B2B]/60 max-w-2xl font-body text-base leading-relaxed">
-            We support authors across different genres, industries and publishing goals.
-          </p>
+          <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body block mb-4">Genres and Types</span>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1220] leading-tight">
+              Books We Help Authors Publish
+            </h2>
+            <p className="text-[#2B2B2B]/55 font-body text-sm max-w-xs leading-relaxed">
+              We support authors across different genres, industries and publishing goals.
+            </p>
+          </div>
+          <div className="mt-6 h-px" style={{ background: 'linear-gradient(90deg, #B8955B, rgba(184,149,91,0.08))' }} />
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
           {bookTypes.map((book, i) => (
             <motion.div
               key={book.name}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.04, duration: 0.4 }}
             >
               {book.to ? (
                 <Link
                   to={book.to}
-                  className="flex items-center justify-between gap-1 px-4 py-3 bg-white rounded-xl border border-[#E8D8B8]/60 text-sm font-body text-[#101826] hover:border-[#B8955B]/60 hover:text-[#B8955B] transition-all group"
+                  className="flex items-center justify-between gap-1 px-4 py-3 bg-white text-xs font-body font-medium text-[#0B1220] hover:bg-[#0B1220] hover:text-white transition-all group"
+                  style={{ border: '1px solid rgba(0,0,0,0.07)' }}
                 >
-                  <span className="text-xs font-medium leading-snug">{book.name}</span>
-                  <ArrowRight className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="leading-snug">{book.name}</span>
+                  <ArrowUpRight className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               ) : (
-                <div className="px-4 py-3 bg-white rounded-xl border border-[#E8D8B8]/60 text-xs font-body text-[#2B2B2B]/70 font-medium leading-snug">
+                <div className="px-4 py-3 bg-white text-xs font-body text-[#2B2B2B]/55 leading-snug"
+                  style={{ border: '1px solid rgba(0,0,0,0.07)' }}>
                   {book.name}
                 </div>
               )}

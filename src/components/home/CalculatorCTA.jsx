@@ -1,30 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calculator, ArrowRight } from 'lucide-react';
+import { CalculatorIcon, ArrowRight } from 'lucide-react';
 
 export default function CalculatorCTA() {
   return (
-    <section className="py-16 bg-[#E8D8B8]/30 border-y border-[#E8D8B8]" aria-labelledby="calc-heading">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+    <section className="relative py-14 overflow-hidden" style={{ background: '#F5F5F5', borderTop: '1px solid rgba(0,0,0,0.06)', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center"
+          className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 md:p-10"
+          style={{
+            background: '#0B1220',
+            border: '1px solid rgba(184,149,91,0.2)',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
+          }}
         >
-          <div className="w-14 h-14 rounded-2xl bg-white border border-[#E8D8B8] flex items-center justify-center mb-6 shadow-sm">
-            <Calculator className="w-7 h-7 text-[#B8955B]" />
+          <div className="flex items-start gap-5">
+            <div className="shrink-0 w-14 h-14 flex items-center justify-center"
+              style={{ background: 'rgba(184,149,91,0.1)', border: '1px solid rgba(184,149,91,0.25)' }}>
+              <CalculatorIcon className="w-7 h-7 text-[#B8955B]" strokeWidth={1.5} />
+            </div>
+            <div>
+              <h2 className="font-heading text-xl md:text-2xl font-bold text-white mb-2">
+                Estimate Your Book Printing Needs
+              </h2>
+              <p className="text-white/50 font-body text-sm leading-relaxed max-w-lg">
+                Not sure which book size, paper type or format is right for your book? Use our book printing calculator to explore your options before requesting a quote.
+              </p>
+            </div>
           </div>
-          <h2 id="calc-heading" className="font-heading text-2xl md:text-3xl font-bold text-[#101826] mb-4">
-            Estimate Your Book Printing Needs
-          </h2>
-          <p className="text-[#2B2B2B]/65 max-w-xl mx-auto font-body text-base leading-relaxed mb-8">
-            Not sure which book size, paper type or format is right for your book? Use our book printing calculator to explore your options before requesting a quote.
-          </p>
           <Link
             to="/bookprintingcalculator"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#101826] text-white rounded-full font-medium text-sm hover:bg-[#1F2933] transition-colors group shadow-md"
+            className="shrink-0 inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-white transition-all group"
+            style={{ background: '#B8955B', boxShadow: '0 8px 24px rgba(184,149,91,0.3)' }}
           >
             Use the Book Printing Calculator
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
