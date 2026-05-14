@@ -14,6 +14,7 @@ const navItems = [
           { label: 'Full Packages (6x9)', path: '/publishingpackages/6x9' },
         ]
       },
+      { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
       { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
       { label: 'eBook Publishing', path: '/ebookpublishing' },
       { label: 'Amazon KDP', path: '/amazonkdp' },
