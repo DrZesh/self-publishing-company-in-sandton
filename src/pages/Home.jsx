@@ -1,44 +1,82 @@
 import React from 'react';
 import PageMeta from '../components/shared/PageMeta';
 import { faqSchema, mainLocalBusinessSchema } from '../lib/seo/schemas';
+
+// Hero — unchanged
 import HeroSlider from '../components/home/HeroSlider';
-import ServicesGrid from '../components/home/ServicesGrid';
-import AboutSection from '../components/home/AboutSection';
-import WhyChooseUs from '../components/home/WhyChooseUs';
-import ProcessTimeline from '../components/home/ProcessTimeline';
-import PackagesPreview from '../components/home/PackagesPreview';
-import FAQSection from '../components/shared/FAQSection';
-import CTASection from '../components/shared/CTASection';
+
+// New homepage sections
+import TrustStrip from '../components/home/TrustStrip';
+import PublishingPath from '../components/home/PublishingPath';
+import CoreServices from '../components/home/CoreServices';
+import PublishingPackagesSection from '../components/home/PublishingPackagesSection';
+import CalculatorCTA from '../components/home/CalculatorCTA';
+import WhyChooseUsNew from '../components/home/WhyChooseUsNew';
+import BookTypes from '../components/home/BookTypes';
+import PublishingProcess from '../components/home/PublishingProcess';
+import LocationSEO from '../components/home/LocationSEO';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import HomeFAQ from '../components/home/HomeFAQ';
+import FinalCTA from '../components/home/FinalCTA';
 
 const homeFaqs = [
-  { question: 'How much does it cost to publish a book in South Africa?', answer: 'Our publishing packages start from R4,999 for the Mini Package and go up to R24,999+ for the Premium Package. The exact cost depends on your manuscript length, design requirements, and chosen services. Contact us for a free personalised quote.' },
-  { question: 'How long does the publishing process take in South Africa?', answer: 'Depending on the package chosen, the publishing process typically takes 4–12 weeks from manuscript submission to final printed copies. We work efficiently while maintaining the highest quality standards.' },
-  { question: 'Do I keep the rights to my book?', answer: 'Absolutely. At Creative Books SA, you retain 100% of your intellectual property rights. We are a service provider, not a rights holder.' },
-  { question: 'Can you help with ISBN registration in South Africa?', answer: 'Yes, ISBN registration is included in all our publishing packages. We handle the entire process with the National Library of South Africa on your behalf.' },
-  { question: 'Do you offer book printing only without publishing services?', answer: 'Yes, we offer standalone book printing services in Johannesburg. Whether you need 50 or 5,000 copies, we provide high-quality printing in hardcover, softcover, and specialty formats.' },
-  { question: 'Where are you located?', answer: 'We are based in Johannesburg, Gauteng, and serve authors across South Africa and internationally. We welcome in-person consultations and also work remotely with authors nationwide.' },
+  { question: 'Do you help first-time authors?', answer: 'Yes. Creative Books SA helps first-time authors with editing, book cover design, typesetting, printing and self-publishing support.' },
+  { question: 'Do I keep ownership of my book?', answer: 'Yes. Our self-publishing support allows you to remain in control of your book, your rights and your profits. We are a service provider, not a rights holder.' },
+  { question: 'Do you charge royalties?', answer: 'No. Creative Books SA works with once-off service charges for selected services, which means you do not have to deal with ongoing royalty deductions.' },
+  { question: 'What is the minimum quantity for book printing?', answer: 'Our minimum quantity for book printing is 100 copies.' },
+  { question: 'Can you help with ebooks?', answer: 'Yes. We assist with ebook cover design, ebook formatting and digital publishing support.' },
+  { question: 'Do you work with authors outside Johannesburg?', answer: 'Yes. We assist authors across South Africa and can support authors outside South Africa depending on the service required.' },
 ];
 
-const faqSchemas = [faqSchema(homeFaqs)];
-
 export default function Home() {
-   return (
-     <div>
-       <PageMeta
-          title="Book Publishing & Printing Company South Africa | Creative Books SA"
-          description="Leading book publishing & printing company in South Africa. Self-publishing packages, professional editing, cover design, ISBN registration. Johannesburg-based. Free quote."
-          keywords="book publishing South Africa, self publishing, book printing, book editing, cover design, ISBN registration, Johannesburg"
-          canonical="https://www.creativebookssa.co.za/"
-          schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}
-        />
+  return (
+    <div>
+      <PageMeta
+        title="Self-Publishing, Book Printing and Author Services in South Africa | Creative Books SA"
+        description="Creative Books SA offers professional self-publishing, book printing, editing, proofreading, cover design, typesetting, ghostwriting and ebook publishing in South Africa. Johannesburg-based. Free quote."
+        keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
+        canonical="https://www.creativebookssa.co.za/"
+        schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}
+      />
+
+      {/* 1. Hero — design completely unchanged */}
       <HeroSlider />
-      <ServicesGrid />
-      <AboutSection />
-      <WhyChooseUs bookImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" />
-      <ProcessTimeline />
-      <PackagesPreview />
-      <FAQSection faqs={homeFaqs} light />
-      <CTASection />
+
+      {/* 2. Trust Strip */}
+      <TrustStrip />
+
+      {/* 3. Choose Your Publishing Path */}
+      <PublishingPath />
+
+      {/* 4. Core Services */}
+      <CoreServices />
+
+      {/* 5. Publishing Packages */}
+      <PublishingPackagesSection />
+
+      {/* 6. Book Printing Calculator CTA */}
+      <CalculatorCTA />
+
+      {/* 7. Why Choose Us */}
+      <WhyChooseUsNew />
+
+      {/* 8. Book Types */}
+      <BookTypes />
+
+      {/* 9. Publishing Process */}
+      <PublishingProcess />
+
+      {/* 10. Location SEO */}
+      <LocationSEO />
+
+      {/* 11. Testimonials */}
+      <TestimonialsSection />
+
+      {/* 12. FAQ */}
+      <HomeFAQ />
+
+      {/* 13. Final CTA */}
+      <FinalCTA />
     </div>
   );
 }
