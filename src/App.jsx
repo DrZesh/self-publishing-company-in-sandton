@@ -138,6 +138,7 @@ import BestPublishingCompaniesSouthAfrica from './pages/seo/BestPublishingCompan
 
 // Gauteng Location Pages (dedicated)
 import BookPrintingSandton from './pages/seo/location/BookPrintingSandton.jsx';
+import BookEditingSandton from './pages/seo/location/BookEditingSandton.jsx';
 import BookPrintingRandburg from './pages/seo/location/BookPrintingRandburg.jsx';
 import BookPrintingMidrand from './pages/seo/location/BookPrintingMidrand.jsx';
 import BookPrintingPretoria from './pages/seo/location/BookPrintingPretoria.jsx';
@@ -296,6 +297,7 @@ const AuthenticatedApp = () => {
 
         {/* Gauteng Location Pages (dedicated) */}
         <Route path="/bookprintingsandton" element={<BookPrintingSandton />} />
+        <Route path="/bookeditingsandton" element={<BookEditingSandton />} />
         <Route path="/bookprintingrandburg" element={<BookPrintingRandburg />} />
         <Route path="/bookprintingmidrand" element={<BookPrintingMidrand />} />
         <Route path="/bookprintingpretoria" element={<BookPrintingPretoria />} />
