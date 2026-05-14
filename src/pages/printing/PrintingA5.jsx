@@ -49,8 +49,8 @@ const specs = [
   { label: 'Binding', value: 'Perfect Bound (Softcover)' },
   { label: 'Cover', value: 'Full Colour, 300gsm Gloss or Matt Laminate' },
   { label: 'Interior', value: 'Black & White on Cream or White Paper' },
-  { label: 'Paper Weight', value: '80gsm (cream or white)' },
-  { label: 'Min. Quantity', value: '100 copies' },
+  { label: 'White Paper', value: '80gsm Bond Paper' },
+  { label: 'Cream Paper', value: '78gsm Bulk Cream' },
 ];
 
 // ─── Pricing Card (light bg) ──────────────────────────────────────────────────
