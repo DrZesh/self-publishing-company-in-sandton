@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import SectionHeading from '../components/shared/SectionHeading';
 
 const contactInfo = [
-  { icon: Phone, label: 'Phone', value: '+27 (0) 00 000 0000', href: 'tel:+27000000000' },
-  { icon: Mail, label: 'Email', value: 'info@creativebookssa.co.za', href: 'mailto:info@creativebookssa.co.za' },
-  { icon: MapPin, label: 'Address', value: 'Johannesburg, Gauteng, South Africa' },
+  { icon: Phone, label: 'Landline', value: '010 500 3331', href: 'tel:0105003331' },
+  { icon: Phone, label: 'Cell Phone', value: '084 230 5393', href: 'tel:0842305393' },
+  { icon: Mail, label: 'Email', value: 'info@creativebooks.co.za', href: 'mailto:info@creativebooks.co.za' },
+  { icon: MapPin, label: 'Address', value: 'Prism Office Park, 1 Ruby Cl, Fourways, 2191', href: 'https://www.google.com/maps/search/?api=1&query=Prism+Office+Park+1+Ruby+Cl+Fourways+2191' },
   { icon: Clock, label: 'Hours', value: 'Mon–Fri: 8:00 AM – 5:00 PM' },
 ];
 
@@ -62,7 +63,7 @@ export default function Contact() {
                   );
                 })}
               </div>
-              <a href="https://wa.me/27000000000" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/270842305393" target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors">
                 <MessageCircle className="w-4 h-4" /> Chat on WhatsApp
               </a>
@@ -128,10 +129,24 @@ export default function Contact() {
       </section>
 
       {/* Map */}
-      <section className="h-80 bg-[#1a1a1a] flex items-center justify-center">
-        <div className="text-center">
-          <MapPin className="w-10 h-10 text-copper mx-auto mb-3" />
-          <p className="text-white/60 font-body">Johannesburg, Gauteng, South Africa</p>
+      <section className="py-20 bg-vellum">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+            <h2 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-2">Our Location</h2>
+            <p className="text-[#0F0F0F]/60 font-body">Creative Books SA - Prism Office Park, Fourways</p>
+          </motion.div>
+          <div className="rounded-2xl overflow-hidden shadow-xl border border-[#0F0F0F]/10" style={{ height: '450px' }}>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3581.942980532926!2d28.0061!3d-26.0167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9574c8b5b5b5b5%3A0x5b5b5b5b5b5b5b5b!2sPrism%20Office%20Park%2C%201%20Ruby%20Cl%2C%20Fourways%2C%202191%2C%20South%20Africa!5e0!3m2!1sen!2sza!4v1234567890"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Creative Books SA Location"
+            />
+          </div>
         </div>
       </section>
     </div>
