@@ -57,6 +57,26 @@ import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
 import ISBNRegistration from './pages/resources/ISBNRegistration';
 
+// New Blog Article Pages
+import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
+import CostToSelfPublishKindle from './pages/blog/CostToSelfPublishKindle';
+import ProfessionalCopyEditing from './pages/blog/ProfessionalCopyEditing';
+import WhatIsGhostwriting from './pages/blog/WhatIsGhostwriting';
+import WritingBookDedication from './pages/blog/WritingBookDedication';
+import WritingBookAcknowledgment from './pages/blog/WritingBookAcknowledgment';
+import HowToNameYourBook from './pages/blog/HowToNameYourBook';
+import HowToPrintSelfPublishedBook from './pages/blog/HowToPrintSelfPublishedBook';
+import ChildrensBookIllustrations from './pages/blog/ChildrensBookIllustrations';
+import EbookVsPrint from './pages/blog/EbookVsPrint';
+import HowLongSelfPublish from './pages/blog/HowLongSelfPublish';
+import CostToSelfPublishAmazon from './pages/blog/CostToSelfPublishAmazon';
+import BecomeAWriter from './pages/blog/BecomeAWriter';
+import ISBNRegistrationSA from './pages/blog/ISBNRegistrationSA';
+import HowToGetISBN from './pages/blog/HowToGetISBN';
+import BeginnersGuideSelfPublishing from './pages/blog/BeginnersGuideSelfPublishing';
+import SelfPublishChildrensBooks from './pages/blog/SelfPublishChildrensBooks';
+import WhatIsSelfPublishing from './pages/blog/WhatIsSelfPublishing';
+
 // Existing SEO Landing Pages
 import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
 import BookPublishersSouthAfrica from './pages/seo/BookPublishersSouthAfrica';
@@ -347,6 +367,26 @@ const AuthenticatedApp = () => {
         <Route path="/howtosellabookinsouthafrica" element={<BlogArticle />} />
         <Route path="/howtomakeabookcover" element={<BlogArticle />} />
         <Route path="/bookeditingexplained" element={<BlogArticle />} />
+
+        {/* New Blog Article Pages */}
+        <Route path="/printondemandbooksinsouthafrica" element={<PrintOnDemandSouthAfrica />} />
+        <Route path="/howmuchdoesitcosttoselfpublishonamazonkindle" element={<CostToSelfPublishKindle />} />
+        <Route path="/professionalcopyeditingservices" element={<ProfessionalCopyEditing />} />
+        <Route path="/whatisghostwriting" element={<WhatIsGhostwriting />} />
+        <Route path="/writingabookdedication" element={<WritingBookDedication />} />
+        <Route path="/writingabookacknowledgment" element={<WritingBookAcknowledgment />} />
+        <Route path="/howtonameyourbook" element={<HowToNameYourBook />} />
+        <Route path="/howtoprintyourselfpublishedbookinsouthafrica" element={<HowToPrintSelfPublishedBook />} />
+        <Route path="/childrensbookillustrationsprinting" element={<ChildrensBookIllustrations />} />
+        <Route path="/ebookvsprintbookselfpublishing" element={<EbookVsPrint />} />
+        <Route path="/howlongdoesittaketoselfpublish" element={<HowLongSelfPublish />} />
+        <Route path="/howmuchdoesitcosttoselfpublishonamazon" element={<CostToSelfPublishAmazon />} />
+        <Route path="/howtobecomeawriterinsouthafrica" element={<BecomeAWriter />} />
+        <Route path="/isbnregistrationsouthafrica" element={<ISBNRegistrationSA />} />
+        <Route path="/howtogetanisbnforyourbook" element={<HowToGetISBN />} />
+        <Route path="/abeginnersguide" element={<BeginnersGuideSelfPublishing />} />
+        <Route path="/howtoselfpublishchildrensbooks" element={<SelfPublishChildrensBooks />} />
+        <Route path="/whatisselfpublishing" element={<WhatIsSelfPublishing />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Route>
