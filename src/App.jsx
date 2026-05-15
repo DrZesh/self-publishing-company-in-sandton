@@ -55,6 +55,7 @@ import ChristianBookWriting from './pages/services/ChristianBookWriting';
 import GenericServicePage from './pages/services/GenericServicePage';
 import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
+import CompletePublishingGuide from './pages/resources/CompletePublishingGuide';
 import ISBNRegistration from './pages/resources/ISBNRegistration';
 
 // New SEO Blog Article Pages
@@ -414,7 +415,7 @@ const AuthenticatedApp = () => {
         {/* Resource Pages */}
         <Route path="/isbnregistration" element={<ISBNRegistration />} />
         <Route path="/howtopublishabook" element={<ResourcePage resourceKey="howtopublishabook" />} />
-        <Route path="/publishingguide" element={<ResourcePage resourceKey="publishingguide" />} />
+        <Route path="/publishingguide" element={<CompletePublishingGuide />} />
         <Route path="/printingguide" element={<ResourcePage resourceKey="printingguide" />} />
         <Route path="/editingguide" element={<ResourcePage resourceKey="editingguide" />} />
         <Route path="/bookmarketingguide" element={<ResourcePage resourceKey="bookmarketingguide" />} />
