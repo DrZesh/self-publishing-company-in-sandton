@@ -209,7 +209,7 @@ export default function GetQuote() {
         businessSubject: `New Quote Request from ${data.firstName} ${data.lastName} — ${serviceSummary}`,
         userSubject: "We've received your quote request — Creative Books SA",
         fields,
-        pageUrl: 'https://www.creativebookssa.co.za/getquote',
+        pageUrl: 'https://www.creativebooks.co.za/getquote',
         honeypot: '',
         loadedAt: null,
       });

@@ -57,7 +57,7 @@ export default function Contact() {
                            ['Subject', form.subject],
                            ['Message', form.message],
                          ],
-        pageUrl: 'https://www.creativebookssa.co.za/contact',
+        pageUrl: 'https://www.creativebooks.co.za/contact',
         honeypot: '',
         loadedAt: loadedAt.current,
       });
