@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const menuItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-  { label: 'Inbox', icon: Inbox, path: '/admin/inbox', badge: 0 },
+  { label: 'Inbox', icon: Inbox, path: '/admin/submissions' },
   { label: 'Leads', icon: BookOpen, path: '/admin/leads' },
   { label: 'Contacts', icon: Users, path: '/admin/contacts' },
   { label: 'Settings', icon: Settings, path: '/admin/settings' },

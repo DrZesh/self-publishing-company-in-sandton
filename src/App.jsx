@@ -167,6 +167,7 @@ import LocationsHub from './pages/seo/LocationsHub';
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminInbox from './pages/admin/AdminInbox';
 
 // Industry-Specific Printing Pages
 import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
@@ -532,6 +533,7 @@ const AuthenticatedApp = () => {
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/submissions" element={<AdminInbox />} />
     </Routes>
   );
 };
