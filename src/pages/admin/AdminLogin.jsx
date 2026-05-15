@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function AdminLogin() {
@@ -12,8 +12,31 @@ export default function AdminLogin() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
+
+  // Check if user is already authenticated as admin
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const isAuthenticated = await base44.auth.isAuthenticated();
+        if (isAuthenticated) {
+          const user = await base44.auth.me();
+          if (user?.role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            setError('You do not have admin access. Contact your administrator.');
+          }
+        }
+      } catch (err) {
+        console.error('Auth check failed:', err);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,15 +55,21 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // Attempt login via base44 auth
-      // Note: This is a placeholder — actual implementation depends on Base44's auth system
-      const result = await base44.auth.login(email, password);
-
-      if (result && result.role === 'admin') {
-        // Successful admin login
+      // Use Base44's redirectToLogin for OAuth/SSO authentication
+      // For now, we check if user exists and has admin role after they log in
+      // Base44 handles the actual authentication
+      
+      // Redirect to Base44's login page
+      // The user will be redirected back here after login via redirectToLogin callback
+      await base44.auth.redirectToLogin('/admin/login');
+      
+      // After redirect back, check role
+      const user = await base44.auth.me();
+      
+      if (user?.role === 'admin') {
         if (rememberMe) {
           localStorage.setItem('adminRememberMe', 'true');
-          localStorage.setItem('adminEmail', email);
+          localStorage.setItem('adminEmail', user.email);
         }
         navigate('/admin/dashboard');
       } else {
@@ -48,13 +77,14 @@ export default function AdminLogin() {
           const newAttempts = prev + 1;
           if (newAttempts >= 5) {
             setLocked(true);
-            setTimeout(() => setLocked(false), 15 * 60 * 1000); // 15 minutes
+            setTimeout(() => setLocked(false), 15 * 60 * 1000);
           }
           return newAttempts;
         });
-        setError('Invalid credentials or insufficient permissions.');
+        setError('You do not have admin access. Contact your administrator.');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setLoginAttempts(prev => {
         const newAttempts = prev + 1;
         if (newAttempts >= 5) {
@@ -68,6 +98,17 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f9fc] to-[#eef1f7]">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-[#B8955B]" />
+          <span className="text-[#2B2B2B]">Checking authentication...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f9fc] to-[#eef1f7] p-4">
