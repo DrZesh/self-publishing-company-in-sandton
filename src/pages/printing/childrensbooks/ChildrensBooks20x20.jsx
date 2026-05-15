@@ -73,28 +73,32 @@ const PricingCard = ({ pkg }) => (
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    className="p-8 rounded-2xl border-2 border-copper/20 bg-white"
-    style={{ boxShadow: '0 10px 40px rgba(184,115,51,0.08)' }}
+    className="p-8 rounded-2xl border border-white/20 backdrop-blur-xl"
+    style={{
+      background: 'rgba(255, 255, 255, 0.08)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+    }}
   >
-    <h3 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-2">{pkg.name}</h3>
+    <h3 className="font-heading text-2xl font-bold text-white mb-2">{pkg.name}</h3>
     <p className="text-copper text-sm font-semibold mb-6">{pkg.pageCount}</p>
 
     <div className="mb-6 space-y-2">
       <p className="text-2xl font-bold text-copper">Pricing to be confirmed</p>
-      <p className="text-[#0F0F0F]/60 text-sm">Contact us for current rates</p>
+      <p className="text-white/60 text-sm">Contact us for current rates</p>
     </div>
 
     <div className="mb-6 space-y-2">
-      <p className="text-[#0F0F0F]/70 text-xs font-semibold uppercase">Includes:</p>
+      <p className="text-white/70 text-xs font-semibold uppercase">Includes:</p>
       {['20 x 20 pages', 'Full colour', 'Gloss cover', 'Saddle stitch'].map((feature, i) => (
-        <div key={i} className="flex items-center gap-2 text-[#0F0F0F]/70 text-sm">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
+        <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           {feature}
         </div>
       ))}
     </div>
 
-    <p className="mb-6 p-3 rounded-lg bg-[#0F0F0F]/5 text-[#0F0F0F]/70 text-sm">
+    <p className="mb-6 p-3 rounded-lg backdrop-blur-sm border border-white/10 text-white/70 text-sm"
+      style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
       <span className="font-semibold">Best for:</span> {pkg.bestFor}
     </p>
 
@@ -153,14 +157,15 @@ export default function ChildrensBooks20x20() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="py-16 lg:py-24 bg-[#060504]">
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 75% 40%, rgba(184,115,51,0.12) 0%, transparent 55%)' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-16">
-            <div className="inline-block p-3 rounded-lg bg-blue-50 border border-blue-200 mb-8">
-              <p className="text-blue-900 text-sm font-semibold">Pricing for 20 x 20 cm is being finalised. Contact us for current rates.</p>
+            <div className="inline-block p-3 rounded-lg bg-blue-950 border border-blue-800 mb-8">
+              <p className="text-blue-200 text-sm font-semibold">Pricing for 20 x 20 cm is being finalised. Contact us for current rates.</p>
             </div>
-            <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-4">Pricing</h2>
-            <p className="text-[#0F0F0F]/60 font-body text-lg max-w-2xl mx-auto">
+            <h2 className="font-heading text-3xl font-bold text-white mb-4">Pricing</h2>
+            <p className="text-white/60 font-body text-lg max-w-2xl mx-auto">
               All packages include 20 x 20 cm format, full-colour interior printing, gloss cover finish, and saddle stitch binding.
             </p>
           </motion.div>
