@@ -64,36 +64,7 @@ const footerSilos = [
       { label: 'Printing Cost Calculator', path: '/bookprintingcalculator' },
     ]
   },
-  {
-    title: 'Johannesburg & Gauteng',
-    links: [
-      { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-      { label: 'Book Printing Sandton', path: '/bookprintingsandton' },
-      { label: 'Book Printing Pretoria', path: '/bookprintingpretoria' },
-      { label: 'Book Printing Midrand', path: '/bookprintingmidrand' },
-      { label: 'Book Printing Randburg', path: '/bookprintingrandburg' },
-      { label: 'Book Printing Centurion', path: '/bookprintingcenturion' },
-      { label: 'Book Printing Roodepoort', path: '/bookprintingroodepoort' },
-      { label: 'Book Printing Fourways', path: '/bookprintingfourways' },
-      { label: 'Book Printing Boksburg', path: '/bookprintingboksburg' },
-      { label: 'Book Printing Benoni', path: '/bookprintingbenoni' },
-    ]
-  },
-  {
-    title: 'National Locations',
-    links: [
-      { label: 'Book Printing Cape Town', path: '/bookprintingcapetown' },
-      { label: 'Book Printing Durban', path: '/bookprintingdurban' },
-      { label: 'Book Printing Bloemfontein', path: '/bookprintingbloemfontein' },
-      { label: 'Book Printing Polokwane', path: '/bookprintingpolokwane' },
-      { label: 'Book Printing Nelspruit', path: '/bookprintingnelspruit' },
-      { label: 'Self Publishing JHB', path: '/selfpublishingjohannesburg' },
-      { label: 'Self Publishing Cape Town', path: '/selfpublishingcapetown' },
-      { label: 'Self Publishing Durban', path: '/selfpublishingdurban' },
-      { label: 'Self Publishing Pretoria', path: '/selfpublishingpretoria' },
-      { label: 'Publishers in SA', path: '/bookpublisherssouthafrica' },
-    ]
-  },
+
   {
     title: 'Resources & Guides',
     links: [
@@ -163,7 +134,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Silo Columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
             {footerSilos.map((silo) => (
               <motion.div key={silo.title} variants={itemVariants}>
                 <h4 className="text-white font-heading text-xs font-semibold mb-4 tracking-wider uppercase flex items-center gap-2">
