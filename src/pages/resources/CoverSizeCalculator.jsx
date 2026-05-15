@@ -415,12 +415,6 @@ export default function CoverSizeCalculator() {
                     {/* Action Links */}
                     <div className="space-y-2 pt-2">
                       <Link
-                        to="/services/BookCoverDesign"
-                        className="w-full flex items-center justify-center gap-2 px-6 py-2 border-2 border-copper text-copper font-medium rounded-full hover:bg-copper/5 transition-all text-sm"
-                      >
-                        Get This Cover Designed
-                      </Link>
-                      <Link
                         to="/getquote"
                         className="w-full flex items-center justify-center gap-2 px-6 py-2 border-2 border-copper text-copper font-medium rounded-full hover:bg-copper/5 transition-all text-sm"
                       >
