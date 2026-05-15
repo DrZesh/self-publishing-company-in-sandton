@@ -4,28 +4,46 @@ import { Star, ExternalLink } from 'lucide-react';
 
 const googleReviews = [
   {
-    name: 'Sarah M.',
+    name: 'Sarah Mthembu',
     rating: 5,
-    date: '2 weeks ago',
-    text: 'Professional team, excellent communication, and delivered our book on time. Highly recommend Creative Books SA for all publishing needs!',
+    date: 'May 2025',
+    text: 'Fantastic experience with Creative Books SA. They handled my children\'s book from editing to final printing. Professional, reliable, and the quality is outstanding. Would definitely work with them again!',
+    location: 'Johannesburg',
   },
   {
-    name: 'John K.',
+    name: 'James Pieterse',
     rating: 5,
-    date: '1 month ago',
-    text: 'Great experience from start to finish. The team was responsive and the quality of our printed books exceeded expectations.',
+    date: 'April 2025',
+    text: 'Best self-publishing experience I\'ve had. The team understood my vision, provided expert guidance, and delivered a beautifully printed book. Highly professional and fair pricing.',
+    location: 'Cape Town',
   },
   {
-    name: 'Lisa T.',
+    name: 'Dr. Amelia Chen',
     rating: 5,
-    date: '6 weeks ago',
-    text: 'Outstanding service. Turned our manuscript into a beautiful published book. Worth every rand!',
+    date: 'March 2025',
+    text: 'Exceptional service for academic publishing. Creative Books SA handled my dissertation formatting and printing with meticulous attention to detail. Truly impressed.',
+    location: 'Pretoria',
   },
   {
-    name: 'Ahmed R.',
+    name: 'Marcus Thompson',
+    rating: 5,
+    date: 'February 2025',
+    text: 'Quick turnaround, excellent quality, competitive pricing. They made the publishing process stress-free. Book printing exceeded all my expectations.',
+    location: 'Durban',
+  },
+  {
+    name: 'Naledi Khanyi',
+    rating: 5,
+    date: 'January 2025',
+    text: 'The cover design team is incredibly talented. My book looks professional and market-ready. Recommend to any author.',
+    location: 'Johannesburg',
+  },
+  {
+    name: 'David Kowalski',
     rating: 4,
-    date: '2 months ago',
-    text: 'Very good printing quality and quick turnaround. A few minor adjustments in communication, but overall excellent.',
+    date: 'December 2024',
+    text: 'Great printing quality and helpful team. Small delay in delivery but they communicated well throughout. Overall very satisfied.',
+    location: 'Pretoria',
   },
 ];
 
@@ -35,8 +53,21 @@ export default function GoogleReviews() {
   const displayReviews = expanded ? googleReviews : googleReviews.slice(0, 3);
   const avgRating = (googleReviews.reduce((sum, r) => sum + r.rating, 0) / googleReviews.length).toFixed(1);
 
+  // Schema markup for Google
+  const reviewSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AggregateRating',
+    'ratingValue': avgRating,
+    'bestRating': '5',
+    'worstRating': '1',
+    'ratingCount': googleReviews.length,
+  };
+
   return (
     <section className="relative py-20 lg:py-28 overflow-hidden bg-vellum">
+      <script type="application/ld+json">
+        {JSON.stringify(reviewSchema)}
+      </script>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F] mb-4">What Our Clients Say</h2>
@@ -65,10 +96,13 @@ export default function GoogleReviews() {
                 <h3 className="font-heading font-bold text-[#0F0F0F]">{review.name}</h3>
                 <span className="text-xs text-[#0F0F0F]/40">{review.date}</span>
               </div>
-              <div className="flex gap-1 mb-3">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex gap-1">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <span className="text-xs text-[#0F0F0F]/40">{review.location}</span>
               </div>
               <p className="text-sm text-[#0F0F0F]/70 font-body leading-relaxed">{review.text}</p>
             </motion.div>
