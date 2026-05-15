@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, MessageCircle } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
@@ -209,16 +209,6 @@ export default function Navbar() {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <motion.a
-              href="https://wa.me/27842305393"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 text-sm text-white/80 hover:text-copper transition-colors"
-            >
-              <MessageCircle className="w-4 h-4" />
-            </motion.a>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}

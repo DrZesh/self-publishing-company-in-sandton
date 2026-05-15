@@ -17,6 +17,8 @@ import PublishingProcess from '../components/home/PublishingProcess';
 import LocationSEO from '../components/home/LocationSEO';
 import HomeFAQ from '../components/home/HomeFAQ';
 import FinalCTA from '../components/home/FinalCTA';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import FeaturedBlog from '../components/home/FeaturedBlog';
 
 const homeFaqs = [
   { question: 'Do you help first-time authors?', answer: 'Yes. Creative Books SA helps first-time authors with editing, book cover design, typesetting, printing and self-publishing support.' },
@@ -44,7 +46,10 @@ export default function Home() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3. Choose Your Publishing Path */}
+      {/* 3. Testimonials */}
+      <TestimonialsSection />
+
+      {/* 4. Choose Your Publishing Path */}
       <PublishingPath />
 
       {/* 4. Core Services */}
@@ -67,6 +72,9 @@ export default function Home() {
 
       {/* 10. Location SEO */}
       <LocationSEO />
+
+      {/* 11. Featured Blog */}
+      <FeaturedBlog />
 
       {/* 12. FAQ */}
       <HomeFAQ />
