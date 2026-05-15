@@ -460,8 +460,8 @@
 
 ### 61. Book Cover Design Johannesburg
 - **Route:** `/bookcoverdesignrandburg` (and other locations)
-- **Title:** Book Cover Design [Location] | Professional Design
-- **Meta Description:** Professional book cover design services in [location]. Custom design for your book.
+- **Title:** Book Cover Design Johannesburg | Professional Design
+- **Meta Description:** Professional book cover design services in Johannesburg Custom design for your book.
 
 ---
 
