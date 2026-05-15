@@ -15,6 +15,7 @@ import WhyChooseUsNew from '../components/home/WhyChooseUsNew';
 import BookTypes from '../components/home/BookTypes';
 import PublishingProcess from '../components/home/PublishingProcess';
 import LocationSEO from '../components/home/LocationSEO';
+import PortfolioPreview from '../components/home/PortfolioPreview';
 import HomeFAQ from '../components/home/HomeFAQ';
 import FinalCTA from '../components/home/FinalCTA';
 import FeaturedBlog from '../components/home/FeaturedBlog';
@@ -69,13 +70,16 @@ export default function Home() {
       {/* 10. Location SEO */}
       <LocationSEO />
 
-      {/* 11. Featured Blog */}
+      {/* 11. Portfolio Preview */}
+      <PortfolioPreview />
+
+      {/* 12. Featured Blog */}
       <FeaturedBlog />
 
-      {/* 12. FAQ */}
+      {/* 13. FAQ */}
       <HomeFAQ />
 
-      {/* 13. Final CTA */}
+      {/* 14. Final CTA */}
       <FinalCTA />
     </div>
   );
