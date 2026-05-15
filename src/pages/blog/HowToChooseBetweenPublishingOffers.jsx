@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtochoosebetweenmultiplebookpublishingoffers',
-  title: 'How to Choose Between Multiple Book Publishing Offers in South Africa',
-  description: "How to evaluate multiple publishing offers in South Africa — what to compare beyond the advance, red flags to watch for, and when self-publishing is the better deal.",
+  title: 'How to Choose Between Publishing Offers | Author Guide',
+  description: 'Multiple publishing offers? Here\'s how to compare contracts, royalties, rights and which deal is actually best for your book.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatis9010ruleforauthorsandroyalties',
-  title: "What is the 90/10 Rule for Authors and Royalties?",
-  description: "What the 90/10 rule means for authors and royalties, how it applies in South Africa, and how self-publishing changes the equation for local authors.",
+  title: 'The 90/10 Rule for Authors | What It Means for Your Career',
+  description: 'What is the 90/10 rule in publishing? How a small percentage of authors earn most of the money — and how to be in that 10%.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

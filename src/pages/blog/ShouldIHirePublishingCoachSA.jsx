@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/shouldihirepublishingcoachinsouthafrica',
-  title: 'Should I Hire a Publishing Coach or Consultant in South Africa?',
-  description: "When a publishing coach adds value for South African authors — and when working directly with Creative Books SA gives you the strategic support you need without extra cost.",
+  title: 'Should I Hire a Publishing Coach? | Honest Guide',
+  description: 'Is a publishing coach worth it? What they actually do, what they cost, and when South African authors benefit from one.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/canipublishmultiplegenresunderthesameauthorname',
-  title: 'Can I Publish Multiple Genres Under the Same Author Name in South Africa?',
-  description: "Whether South African authors should use one name or pen names for different genres — strategic considerations, practical challenges, and the importance of a focused author brand.",
+  title: 'Can I Publish in Multiple Genres? | Author Strategy Guide',
+  description: 'Yes, you can publish across multiple genres — but should you? Pen names, branding and audience considerations explained.',
   category: 'Writing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

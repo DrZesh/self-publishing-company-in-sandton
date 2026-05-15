@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtofindbetrareadersformybookinsouthafrica',
-  title: 'How Do I Find Beta Readers for My Book in South Africa?',
-  description: "Where to find beta readers in South Africa, how to work with them effectively, and the next steps after beta reading before professional publication.",
+  title: 'How to Find Beta Readers in South Africa | Author Guide',
+  description: 'Find quality beta readers for your book in South Africa — where to look, what to ask, and how to get useful feedback.',
   category: 'Writing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

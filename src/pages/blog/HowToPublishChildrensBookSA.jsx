@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtopublishachildrensbookinsouthafrica',
-  title: "How Do I Publish a Children's Book in South Africa?",
-  description: "Everything South African authors need to know about publishing a children's book — from the local market to illustrations, printing costs, and full-service publishing support.",
+  title: "How to Publish a Children's Book in South Africa",
+  description: "Complete guide to publishing a children's book in South Africa — illustration, printing, distribution and reaching young readers.",
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

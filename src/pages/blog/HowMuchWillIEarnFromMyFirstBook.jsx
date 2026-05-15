@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howmuchwilliearnfrommyfirstbook',
-  title: 'How Much Will I Earn From My First Book in South Africa?',
-  description: 'An honest guide to author income in South Africa — traditional royalties, self-publishing profits, realistic first-year earnings, and other income streams for authors.',
+  title: 'How Much Will I Earn From My First Book? | Honest Answer',
+  description: 'Realistic earnings for first-time authors in South Africa — royalties, advances, and what most debut books actually make.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

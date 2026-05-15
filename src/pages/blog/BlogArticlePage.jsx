@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Clock, ChevronRight, Plus, Minus } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
 import CTASection from '../../components/shared/CTASection';
+import PageMeta from '../../components/shared/PageMeta';
 
 // Shared layout for all blog articles
 export default function BlogArticlePage({ article }) {
@@ -13,6 +14,12 @@ export default function BlogArticlePage({ article }) {
 
   return (
     <div style={{ background: '#f8f5ef' }}>
+      <PageMeta
+        title={article.title}
+        description={article.description}
+        canonical={article.url ? `https://www.creativebookssa.co.za${article.url}` : undefined}
+        ogType="article"
+      />
       {/* JSON-LD Article Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org",

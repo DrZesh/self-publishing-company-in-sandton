@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/bestplatformstoselfpublishinsouthafrica',
-  title: 'What Are the Best Platforms to Self-Publish in South Africa?',
-  description: "The best self-publishing platforms for South African authors — Amazon KDP, Takealot, your own author website, and why professional production with Creative Books SA comes first.",
+  title: 'Best Self-Publishing Platforms in South Africa (2026)',
+  description: "Compare the best self-publishing platforms for South African authors — Amazon KDP, IngramSpark, local options and more.",
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

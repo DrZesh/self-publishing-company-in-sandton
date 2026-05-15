@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howmuchdoispendonbookcoverdesigninsouthafrica',
-  title: 'How Much Should I Spend on Cover Design for My Book in South Africa?',
-  description: "What South African authors should budget for book cover design — Creative Books SA pricing tiers, what to avoid, and why cover design is your most important investment.",
+  title: 'How Much Should You Spend on Book Cover Design?',
+  description: 'How much to budget for book cover design — what affects the price, and what cheap covers actually cost you in sales.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

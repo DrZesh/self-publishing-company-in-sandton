@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/dosouthafricanpublishersprvidecoverdesign',
-  title: 'Do South African Publishers Provide Cover Design?',
-  description: 'Whether traditional publishers or self-publishing services handle cover design in South Africa — and what makes a good book cover for the South African market.',
+  title: 'Do Publishers Provide Cover Design? | What to Expect',
+  description: 'Do publishers design your book cover? It depends — here\'s what traditional, hybrid and self-publishing options actually include.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

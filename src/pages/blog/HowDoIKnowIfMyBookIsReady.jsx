@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howdoiknowifmybookisreadytopublish',
-  title: 'How Do I Know If My Book is Ready to Publish?',
-  description: 'A practical framework for South African authors to evaluate whether their manuscript is truly ready to publish — self-assessment checklist, professional benchmarks, and red flags.',
+  title: 'How Do I Know If My Book Is Ready to Publish?',
+  description: 'Signs your manuscript is ready to publish — and signs it\'s not. A practical checklist for authors before hitting publish.',
   category: 'Writing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whattolookforinsouthafricanpublishingcontract',
-  title: 'What Should I Look for in a South African Publishing Contract?',
-  description: "A guide to South African publishing contract terms — royalties, rights, option clauses, reversion clauses, and what self-publishing avoids entirely.",
+  title: 'What to Look For in a Publishing Contract | Author Checklist',
+  description: 'Essential clauses every author should check in a publishing contract — rights, royalties, termination and red flags to spot.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

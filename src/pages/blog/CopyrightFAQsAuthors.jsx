@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/copyrightfaqsforauthors',
-  title: 'Copyright FAQs for Authors, Publishers and Self Publishers in South Africa',
-  description: 'Practical answers to common copyright questions for South African authors, self publishers and educators — covering ownership, protection, infringement and publishing rights.',
+  title: 'Copyright FAQs for Authors in South Africa',
+  description: 'Copyright explained for South African authors — what\'s protected, how to register, ownership, and protecting your book idea.',
   category: 'Publishing Tips',
   readTime: '12 min read',
   datePublished: '2026-02-05',

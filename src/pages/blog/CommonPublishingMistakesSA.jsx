@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/mostcommonpublishingmistadebysouthafricanauthors',
-  title: 'What Are the Most Common Publishing Mistakes Made by South African Authors?',
-  description: "The most common and costly publishing mistakes South African authors make — and how to avoid them with professional support from Creative Books SA.",
+  title: 'Common Publishing Mistakes South African Authors Make',
+  description: 'Avoid these common publishing mistakes that cost South African authors time, money and sales. Practical lessons from the industry.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

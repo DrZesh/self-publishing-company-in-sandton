@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howlongdoesittaketogetpublishedinsouthafrica',
   title: 'How Long Does It Take to Get Published in South Africa?',
-  description: 'The realistic publishing timeline in South Africa — from traditional publishing (12–30 months) to self-publishing with Creative Books SA (3–4 months).',
+  description: 'Realistic timelines for getting published in South Africa — traditional, hybrid and self-publishing routes compared.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

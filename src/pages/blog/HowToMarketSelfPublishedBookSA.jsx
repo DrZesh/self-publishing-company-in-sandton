@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtomarketandsellyourselfpublishedbookinsouthafrica',
-  title: 'How to Market and Sell Your Self-Published Book in South Africa',
-  description: 'Marketing and distribution strategies for self-published South African authors — from bookshops and Takealot to social media, book launches, and eBook platforms.',
+  title: 'How to Market a Self-Published Book in South Africa',
+  description: 'Practical book marketing strategies for self-published South African authors — free and paid tactics that actually drive sales.',
   category: 'Publishing Tips',
   readTime: '8 min read',
   datePublished: '2026-02-05',

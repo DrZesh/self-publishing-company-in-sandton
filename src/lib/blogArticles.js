@@ -4,8 +4,8 @@ export const blogArticles = {
 
   '/printondemandbooksinsouthafrica': {
     url: '/printondemandbooksinsouthafrica',
-    title: 'Print on Demand Books in South Africa: What Authors Should Know Before Printing',
-    description: 'Understand how print on demand works in South Africa, when it makes sense and when bulk printing is the better option for self published authors.',
+    title: 'Print on Demand in South Africa | Author\'s Guide',
+    description: 'How print-on-demand works for South African authors — costs, quality, distribution and the best POD services available locally.',
     category: 'Printing Guides',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -37,8 +37,8 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazonkindle': {
     url: '/howmuchdoesitcosttoselfpublishonamazonkindle',
-    title: 'How Much Does It Cost to Self Publish on Amazon Kindle?',
-    description: 'A practical guide for South African authors on the real costs of self publishing on Amazon Kindle, from editing and formatting to cover design and marketing.',
+    title: 'Cost to Self-Publish on Kindle | 2026 Pricing Guide',
+    description: 'What does it cost to self-publish on Kindle? Full breakdown of fees, royalties and production costs for new authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -70,8 +70,8 @@ export const blogArticles = {
 
   '/professionalcopyeditingservices': {
     url: '/professionalcopyeditingservices',
-    title: 'Professional Copy Editing Services for Authors in South Africa',
-    description: 'Learn what professional copy editing includes, how it differs from proofreading and why South African authors need editing before layout and printing.',
+    title: 'Professional Copy Editing | What It Is & Why You Need It',
+    description: 'What is professional copy editing? The difference between copy editing, line editing and proofreading — and what to expect.',
     category: 'Editing Guides',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -101,8 +101,8 @@ export const blogArticles = {
 
   '/whatisghostwriting': {
     url: '/whatisghostwriting',
-    title: 'What Is Ghostwriting and What Does a Ghostwriter Do?',
-    description: 'Understand what ghostwriting is, who needs a ghostwriter and how the process works for memoir, business, Christian and inspirational books in South Africa.',
+    title: 'What Is Ghostwriting? | How It Works & What It Costs',
+    description: 'Ghostwriting explained — what ghostwriters do, how the process works, what it costs, and when to hire one for your book.',
     category: 'Writing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -132,8 +132,8 @@ export const blogArticles = {
 
   '/writingabookdedication': {
     url: '/writingabookdedication',
-    title: 'Writing a Book Dedication: Meaning, Examples and Practical Tips',
-    description: 'Learn how to write a meaningful book dedication with examples for memoir, business, Christian and children\'s books.',
+    title: 'How to Write a Book Dedication | Tips & Examples',
+    description: 'How to write a beautiful book dedication — short, meaningful examples and what to say (and avoid) for fiction and non-fiction.',
     category: 'Writing Tips',
     readTime: '5 min read',
     datePublished: '2026-02-05',
@@ -164,8 +164,8 @@ export const blogArticles = {
 
   '/writingabookacknowledgment': {
     url: '/writingabookacknowledgment',
-    title: 'Writing a Book Acknowledgment Page: Examples and Structure for Authors',
-    description: 'Learn how to write a professional book acknowledgment page with examples and a clear structure for South African authors.',
+    title: 'How to Write Book Acknowledgements | Tips & Examples',
+    description: 'How to write book acknowledgements that feel sincere — who to thank, what to say, and examples from real published books.',
     category: 'Writing Tips',
     readTime: '6 min read',
     datePublished: '2026-02-05',
@@ -196,8 +196,8 @@ export const blogArticles = {
 
   '/howtonameyourbook': {
     url: '/howtonameyourbook',
-    title: 'How to Decide a Name for Your Book: A Practical Guide for Authors',
-    description: 'Learn how to choose the right book title by matching it to your genre, message and target reader — practical tips for South African authors.',
+    title: 'How to Name Your Book | Title Tips That Sell',
+    description: 'How to choose a book title that sells — proven tips, formulas and mistakes to avoid when naming your novel or non-fiction book.',
     category: 'Writing Tips',
     readTime: '6 min read',
     datePublished: '2026-02-05',
@@ -228,8 +228,8 @@ export const blogArticles = {
 
   '/howtoprintyourselfpublishedbookinsouthafrica': {
     url: '/howtoprintyourselfpublishedbookinsouthafrica',
-    title: 'How to Print Your Self Published Book in South Africa',
-    description: 'A complete step by step guide for self published authors on how to prepare and print a book professionally in South Africa.',
+    title: 'How to Print a Self-Published Book | Author Guide',
+    description: 'Step-by-step guide to printing your self-published book — file prep, paper choices, print runs and choosing a printer.',
     category: 'Printing Guides',
     readTime: '8 min read',
     datePublished: '2026-02-05',
@@ -262,8 +262,8 @@ export const blogArticles = {
 
   '/childrensbookillustrationsprinting': {
     url: '/childrensbookillustrationsprinting',
-    title: "Children's Book Illustrations and Printing in South Africa",
-    description: "A guide for children's book authors on illustrations, layout, colour printing and how to prepare your book professionally in South Africa.",
+    title: "Children's Book Illustrations | Costs, Styles & Process",
+    description: "Everything authors need to know about children's book illustrations — costs, choosing an illustrator, styles and the process.",
     category: 'Printing Guides',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -295,8 +295,8 @@ export const blogArticles = {
 
   '/ebookvsprintbookselfpublishing': {
     url: '/ebookvsprintbookselfpublishing',
-    title: 'eBook vs Print Book Self Publishing: Which Option Is Better?',
-    description: 'Compare eBook and print book self publishing for South African authors to decide which format suits your audience, genre and sales strategy.',
+    title: 'Ebook vs Print | Which Format Should You Publish First?',
+    description: 'Ebook vs print compared — costs, royalties, reach and which format new authors should publish first.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -328,8 +328,8 @@ export const blogArticles = {
 
   '/howlongdoesittaketoselfpublish': {
     url: '/howlongdoesittaketoselfpublish',
-    title: 'How Long Does It Take to Self Publish a Book?',
-    description: 'Understand the realistic timeline for self publishing a book in South Africa, from manuscript completion to printing and launch.',
+    title: 'How Long Does It Take to Self-Publish a Book?',
+    description: 'Realistic self-publishing timelines — from finished manuscript to launch day. What each stage takes and how to speed it up.',
     category: 'Publishing Tips',
     readTime: '6 min read',
     datePublished: '2026-02-05',
@@ -361,8 +361,8 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazon': {
     url: '/howmuchdoesitcosttoselfpublishonamazon',
-    title: 'How Much Does It Cost to Self Publish on Amazon?',
-    description: 'A complete guide to the real costs of self publishing on Amazon for South African authors, covering eBooks, paperbacks and professional preparation.',
+    title: 'Cost to Self-Publish on Amazon | Full Breakdown 2026',
+    description: 'Complete cost breakdown of self-publishing on Amazon KDP — editing, design, printing, ISBN and marketing for South African authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -394,8 +394,8 @@ export const blogArticles = {
 
   '/howtobecomeawriterinsouthafrica': {
     url: '/howtobecomeawriterinsouthafrica',
-    title: 'How to Become a Writer in South Africa Through Self Publishing',
-    description: 'A practical guide for aspiring writers in South Africa on how to build a writing career through self publishing, editing and author brand development.',
+    title: 'How to Become a Writer in South Africa | Career Guide',
+    description: 'Practical steps to become a writer in South Africa — from honing your craft and finding your niche to getting paid and published.',
     category: 'Writing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -427,8 +427,8 @@ export const blogArticles = {
 
   '/isbnregistrationsouthafrica': {
     url: '/isbnregistrationsouthafrica',
-    title: 'ISBN Registration in South Africa: A Complete Guide for Authors',
-    description: 'Everything South African authors need to know about ISBN registration, who issues ISBNs, where the ISBN goes and how it fits into professional book publishing.',
+    title: 'ISBN Registration in South Africa | Free Step-by-Step',
+    description: 'Register your ISBN in South Africa for free through the National Library. Step-by-step process, requirements and timelines.',
     category: 'Publishing Tips',
     readTime: '6 min read',
     datePublished: '2026-02-05',
@@ -460,8 +460,8 @@ export const blogArticles = {
 
   '/howtogetanisbnforyourbook': {
     url: '/howtogetanisbnforyourbook',
-    title: 'How to Get an ISBN for Your Book in South Africa',
-    description: 'A step by step guide for South African authors on how to apply for an ISBN through the National Library of South Africa and where to place it in the book.',
+    title: 'How to Get an ISBN for Your Book | South Africa Guide',
+    description: 'Step-by-step guide to getting an ISBN in South Africa — free registration via the National Library, plus tips on barcodes.',
     category: 'Publishing Tips',
     readTime: '6 min read',
     datePublished: '2026-02-05',
@@ -494,8 +494,8 @@ export const blogArticles = {
 
   '/abeginnersguide': {
     url: '/abeginnersguide',
-    title: "A Beginner's Guide to Self Publishing a Book in South Africa",
-    description: 'A complete beginner\'s guide to self publishing a book in South Africa covering writing, editing, cover design, ISBN, printing and selling.',
+    title: "Beginner's Guide to Self-Publishing in South Africa",
+    description: "New to self-publishing? This beginner's guide walks South African authors through every step — from manuscript to printed book.",
     category: 'Publishing Tips',
     readTime: '8 min read',
     datePublished: '2026-02-05',
@@ -530,8 +530,8 @@ export const blogArticles = {
 
   '/howtoselfpublishchildrensbooks': {
     url: '/howtoselfpublishchildrensbooks',
-    title: "How to Self Publish Children's Books in South Africa",
-    description: "A complete guide to self publishing a children's book in South Africa covering age groups, illustrations, layout, colour printing and selling.",
+    title: "How to Self-Publish a Children's Book | Complete Guide",
+    description: "Self-publish a children's book step by step — illustration, layout, printing, ISBN and distribution. Bring your story to life.",
     category: 'Publishing Tips',
     readTime: '8 min read',
     datePublished: '2026-02-05',
@@ -565,8 +565,8 @@ export const blogArticles = {
 
   '/whatisselfpublishing': {
     url: '/whatisselfpublishing',
-    title: 'What Is Self Publishing? A Complete Guide for New Authors',
-    description: 'Understand what self publishing means, how it works, what it costs and how South African authors can publish professionally without a traditional publisher.',
+    title: 'What Is Self-Publishing? | A Complete Beginner\'s Guide',
+    description: 'Self-publishing explained — how it works, what it costs, the pros and cons, and how it compares to traditional publishing.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',

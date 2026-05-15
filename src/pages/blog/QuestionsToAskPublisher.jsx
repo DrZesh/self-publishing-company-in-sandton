@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/questionstoaskapublisher',
-  title: 'Questions to Ask a Publisher Before Publishing Your Book in South Africa',
-  description: 'A practical guide for South African authors on the essential questions to ask any publisher or self publishing company before paying a deposit or signing paperwork.',
+  title: 'Questions to Ask a Publisher Before You Sign | Checklist',
+  description: 'Essential questions every author should ask a publisher before signing a contract. Protect your rights and your royalties.',
   category: 'Publishing Tips',
   readTime: '14 min read',
   datePublished: '2026-02-05',

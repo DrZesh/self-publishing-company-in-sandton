@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatistheroleliteraryagentinsouthafrica',
-  title: "What's the Role of a Literary Agent in South Africa?",
-  description: "What literary agents do in South Africa, how they are paid, whether you need one, and how South African authors can work with international agents for global rights.",
+  title: 'The Role of a Literary Agent in South Africa | Explained',
+  description: 'What does a literary agent actually do? How agents work in South Africa, what they charge and whether you need one.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtoprotectmybookideabeforepublishinginsouthafrica',
-  title: 'How Do I Protect My Book Idea Before Publishing in South Africa?',
-  description: "What South African copyright law says about protecting your book idea — practical steps for authors, retaining copyright when self-publishing, and what to do before signing a contract.",
+  title: 'How to Protect Your Book Idea in South Africa',
+  description: 'Can you copyright a book idea? Practical advice for South African authors on protecting concepts, manuscripts and intellectual property.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

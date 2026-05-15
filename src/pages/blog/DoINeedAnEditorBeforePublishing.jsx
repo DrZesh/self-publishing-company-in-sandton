@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/doineedaneditorbeforepublishing',
-  title: 'Do I Need an Editor Before Publishing in South Africa?',
-  description: 'Why professional editing is essential before publishing in South Africa — the different types of editing, what each costs, and how editing is included in full publishing packages.',
+  title: 'Do I Need an Editor Before Publishing My Book?',
+  description: 'Why every author needs an editor before publishing — the difference editing makes and the types of editing explained.',
   category: 'Editing Guides',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/canipublishacomicbookinsouthafrica',
-  title: 'Can I Publish a Comic Book in South Africa?',
-  description: 'How South African comic creators and graphic novelists can self-publish their work — from printing options to audience building and professional production.',
+  title: 'Can I Publish a Comic Book in South Africa? | Guide',
+  description: 'Yes — here\'s how to publish a comic book or graphic novel in South Africa. Printing options, distribution and getting started.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

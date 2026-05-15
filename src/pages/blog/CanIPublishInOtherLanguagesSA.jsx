@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/canipublishabookinsouthafricaifenglishisnotmyfirstlanguage',
-  title: "Can I Publish a Book in South Africa if English Isn't My First Language?",
-  description: "Publishing in South Africa's indigenous languages, writing in English as a second language, and how Creative Books SA supports multilingual South African authors.",
+  title: 'Publishing Books in Other Languages in South Africa',
+  description: 'Can you publish a book in Zulu, Xhosa, Afrikaans or other SA languages? Yes — here\'s how, plus tips on reach and distribution.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

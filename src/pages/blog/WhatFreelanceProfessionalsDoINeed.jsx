@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatfreelanceprofessionalsdoineedtoselfpublish',
-  title: 'What Freelance Professionals Do I Need to Self-Publish in South Africa?',
-  description: 'A guide to every professional needed to self-publish a book in South Africa — and why using a full-service provider like Creative Books SA saves time and money.',
+  title: 'Which Freelance Professionals Do Authors Need?',
+  description: 'The freelancers every self-publishing author needs — editors, designers, proofreaders, marketers and what each actually costs.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',
