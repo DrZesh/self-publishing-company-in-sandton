@@ -1,0 +1,41 @@
+{
+  "name": "ActivityLog",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "submission",
+        "contact",
+        "lead"
+      ],
+      "description": "Type of entity"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the entity"
+    },
+    "action": {
+      "type": "string",
+      "description": "Action performed (created, updated, stage_changed, etc.)"
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "User who performed the action"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the action"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional action metadata (old/new values, etc.)"
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "action",
+    "actor_id"
+  ]
+}

@@ -164,6 +164,10 @@ import { CityPrintingPage } from './pages/seo/location/CityPrintingPage.jsx';
 import SelfPublishingCityPage from './pages/seo/location/SelfPublishingCityPage';
 import LocationsHub from './pages/seo/LocationsHub';
 
+// Admin pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+
 // Industry-Specific Printing Pages
 import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
 import MemoirBookPrinting from './pages/seo/industry/MemoirBookPrinting.jsx';
@@ -524,6 +528,10 @@ const AuthenticatedApp = () => {
 
         <Route path="*" element={<PageNotFound />} />
       </Route>
+
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
     </Routes>
   );
 };

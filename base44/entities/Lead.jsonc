@@ -1,0 +1,98 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked contact ID"
+    },
+    "source_submission_id": {
+      "type": "string",
+      "description": "Source submission ID"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "quoted",
+        "negotiating",
+        "won",
+        "lost"
+      ],
+      "default": "new",
+      "description": "Lead stage"
+    },
+    "stage_changed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When stage last changed"
+    },
+    "service_interest": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services of interest"
+    },
+    "estimated_value": {
+      "type": "number",
+      "description": "Estimated value in ZAR"
+    },
+    "probability_percent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Probability percentage"
+    },
+    "weighted_value": {
+      "type": "number",
+      "description": "Calculated: estimated_value \u00d7 probability / 100"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected close date"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "Owner user ID"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lead tags"
+    },
+    "next_action": {
+      "type": "string",
+      "description": "Next action to take"
+    },
+    "next_action_due": {
+      "type": "string",
+      "format": "date",
+      "description": "Due date for next action"
+    },
+    "lost_reason": {
+      "type": "string",
+      "enum": [
+        "price",
+        "timing",
+        "competitor",
+        "no_response",
+        "not_a_fit",
+        "other"
+      ],
+      "description": "Reason lost"
+    },
+    "lost_reason_detail": {
+      "type": "string",
+      "description": "Detailed reason for loss"
+    }
+  },
+  "required": [
+    "contact_id"
+  ]
+}

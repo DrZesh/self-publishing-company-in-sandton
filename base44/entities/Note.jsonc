@@ -1,0 +1,28 @@
+{
+  "name": "Note",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "submission",
+        "contact",
+        "lead"
+      ],
+      "description": "Type of entity this note is attached to"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the entity"
+    },
+    "content": {
+      "type": "string",
+      "description": "Note content"
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "content"
+  ]
+}

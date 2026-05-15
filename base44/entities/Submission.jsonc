@@ -1,0 +1,160 @@
+{
+  "name": "Submission",
+  "type": "object",
+  "properties": {
+    "form_type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "quote",
+        "newsletter",
+        "package_order",
+        "service_enquiry",
+        "other"
+      ],
+      "description": "Type of form submitted"
+    },
+    "source_page": {
+      "type": "string",
+      "description": "URL of the page where form was submitted"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Submitter's full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Submitter's email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Submitter's phone number"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message or enquiry content"
+    },
+    "service_interest": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services of interest"
+    },
+    "budget": {
+      "type": "string",
+      "description": "Budget indication"
+    },
+    "book_title": {
+      "type": "string",
+      "description": "Book title if applicable"
+    },
+    "book_genre": {
+      "type": "string",
+      "description": "Book genre"
+    },
+    "book_page_count": {
+      "type": "number",
+      "description": "Book page count"
+    },
+    "book_word_count": {
+      "type": "number",
+      "description": "Book word count"
+    },
+    "additional_fields": {
+      "type": "object",
+      "description": "Any extra form fields as JSON"
+    },
+    "marketing_source": {
+      "type": "string",
+      "enum": [
+        "organic_search",
+        "direct",
+        "social",
+        "referral",
+        "paid",
+        "email",
+        "other"
+      ],
+      "description": "How the visitor found the site"
+    },
+    "search_keywords": {
+      "type": "string",
+      "description": "Search keywords from referrer"
+    },
+    "referrer_url": {
+      "type": "string",
+      "description": "Full referrer URL"
+    },
+    "landing_page": {
+      "type": "string",
+      "description": "First page visited in session"
+    },
+    "pages_viewed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs visited in session"
+    },
+    "session_duration_seconds": {
+      "type": "number",
+      "description": "Time spent on site before submission"
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "desktop",
+        "mobile",
+        "tablet"
+      ],
+      "description": "Device type"
+    },
+    "browser": {
+      "type": "string",
+      "description": "Browser name"
+    },
+    "city": {
+      "type": "string",
+      "description": "Visitor city"
+    },
+    "country": {
+      "type": "string",
+      "description": "Visitor country"
+    },
+    "ip_address_hash": {
+      "type": "string",
+      "description": "Hashed IP address for POPIA compliance"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "read",
+        "converted_to_lead",
+        "spam",
+        "archived"
+      ],
+      "default": "new",
+      "description": "Submission status"
+    },
+    "internal_notes": {
+      "type": "string",
+      "description": "Private notes for admin"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked contact ID"
+    },
+    "lead_id": {
+      "type": "string",
+      "description": "Linked lead ID"
+    }
+  },
+  "required": [
+    "form_type",
+    "source_page",
+    "full_name",
+    "email"
+  ]
+}

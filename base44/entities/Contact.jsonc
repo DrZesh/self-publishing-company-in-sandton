@@ -1,0 +1,129 @@
+{
+  "name": "Contact",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Contact's full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Primary email address"
+    },
+    "email_secondary": {
+      "type": "string",
+      "description": "Secondary email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Primary phone number"
+    },
+    "phone_secondary": {
+      "type": "string",
+      "description": "Secondary phone number"
+    },
+    "whatsapp_number": {
+      "type": "string",
+      "description": "WhatsApp contact number"
+    },
+    "company": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "author",
+        "publisher",
+        "agent",
+        "other"
+      ],
+      "description": "Contact role"
+    },
+    "street_address": {
+      "type": "string",
+      "description": "Street address"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "province": {
+      "type": "string",
+      "description": "Province"
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "Postal code"
+    },
+    "country": {
+      "type": "string",
+      "default": "South Africa",
+      "description": "Country"
+    },
+    "author_bio": {
+      "type": "string",
+      "description": "Author biography"
+    },
+    "website_url": {
+      "type": "string",
+      "description": "Website URL"
+    },
+    "social_links": {
+      "type": "object",
+      "description": "Social media links"
+    },
+    "how_heard": {
+      "type": "string",
+      "enum": [
+        "google",
+        "referral",
+        "social",
+        "event",
+        "other"
+      ],
+      "description": "How they found us"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Contact tags"
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": [
+        "subscriber",
+        "lead",
+        "customer",
+        "repeat_customer",
+        "past_customer"
+      ],
+      "default": "lead",
+      "description": "Lifecycle stage"
+    },
+    "profile_photo_url": {
+      "type": "string",
+      "description": "Profile photo URL"
+    },
+    "first_contact_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "First contact date"
+    },
+    "last_contact_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last contact date"
+    },
+    "custom_fields": {
+      "type": "object",
+      "description": "Custom fields"
+    }
+  },
+  "required": [
+    "full_name",
+    "email"
+  ]
+}
