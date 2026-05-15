@@ -72,7 +72,7 @@ export default function AboutSection() {
               ))}
               <img
                 src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png"
-                alt="Creative Books SA — Johannesburg publishing team"
+                alt="Creative Books SA publishing team working in Johannesburg studio"
                 className="w-full object-cover"
                 style={{ aspectRatio: '16/7', objectPosition: 'center' }}
               />

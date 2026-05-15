@@ -132,7 +132,7 @@ export default function HeroSlider({ locationData }) {
         <motion.img
           key={`bg-${current}`}
           src={slide.bg}
-          alt={slide.heading.join(' ')}
+          alt=""
           aria-hidden="true"
           custom={direction}
           variants={bgVariants}

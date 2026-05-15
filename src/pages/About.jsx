@@ -24,7 +24,7 @@ export default function About() {
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center pt-20">
         <div className="absolute inset-0">
-          <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/6adea615f_generated_9d9037e5.png" alt="About Creative Books SA" className="w-full h-full object-cover" />
+          <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/6adea615f_generated_9d9037e5.png" alt="Books and publishing materials at Creative Books SA Johannesburg office" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F]/95 via-[#0F0F0F]/80 to-[#0F0F0F]/60" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28">
@@ -64,7 +64,7 @@ export default function About() {
               </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-              <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" alt="Creative Books SA team" className="rounded-2xl shadow-xl w-full" />
+              <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/ab1a9cc57_generated_1cd0c953.png" alt="Creative Books SA team members at work in Johannesburg" className="rounded-2xl shadow-xl w-full" />
             </motion.div>
           </div>
         </div>

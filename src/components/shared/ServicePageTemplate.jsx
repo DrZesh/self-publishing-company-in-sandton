@@ -26,7 +26,7 @@ export default function ServicePageTemplate({
       {/* Hero with background image overlay */}
       <div className="relative min-h-[60vh] flex items-center pt-20 bg-obsidian overflow-hidden">
         <div className="absolute inset-0">
-          {heroImage && <img src={heroImage} alt={title} className="w-full h-full object-cover" width="1600" height="900" loading="eager" decoding="async" />}
+          {heroImage && <img src={heroImage} alt="" className="w-full h-full object-cover" width="1600" height="900" loading="eager" decoding="async" />}
           <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F]/95 via-[#0F0F0F]/80 to-[#0F0F0F]/60" />
         </div>
         <PageHero
