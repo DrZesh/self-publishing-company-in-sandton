@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, ArrowUpRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowUpRight, Instagram, Linkedin, Facebook } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const footerSilos = [
@@ -163,19 +163,29 @@ export default function Footer() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           <p className="text-white/40">&copy; {new Date().getFullYear()} Creative Books SA. All rights reserved. Johannesburg, South Africa.</p>
           <div className="flex items-center gap-6">
-            {[
-              { label: 'About', to: '/aboutus' },
-              { label: 'Portfolio', to: '/portfolio' },
-              { label: 'Contact', to: '/contact' },
-              { label: 'Get Quote', to: '/getquote' },
-              { label: 'Printing Calculator', to: '/bookprintingcalculator' },
-            ].map((item) => (
-              <Link key={item.to} to={item.to} onClick={scrollToTop} className="text-white/40 hover:text-copper transition-colors">
-                {item.label}
-              </Link>
-            ))}
-
-          </div>
+             {[
+               { label: 'About', to: '/aboutus' },
+               { label: 'Portfolio', to: '/portfolio' },
+               { label: 'Contact', to: '/contact' },
+               { label: 'Get Quote', to: '/getquote' },
+               { label: 'Printing Calculator', to: '/bookprintingcalculator' },
+             ].map((item) => (
+               <Link key={item.to} to={item.to} onClick={scrollToTop} className="text-white/40 hover:text-copper transition-colors">
+                 {item.label}
+               </Link>
+             ))}
+             <div className="flex items-center gap-3 ml-3 pl-3" style={{ borderLeft: '1px solid rgba(184,115,51,0.2)' }}>
+               <motion.a href="https://www.instagram.com/creativebookssa/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.15 }} className="text-white/40 hover:text-copper transition-colors">
+                 <Instagram className="w-4 h-4" />
+               </motion.a>
+               <motion.a href="https://za.linkedin.com/company/creativebookssa" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.15 }} className="text-white/40 hover:text-copper transition-colors">
+                 <Linkedin className="w-4 h-4" />
+               </motion.a>
+               <motion.a href="https://www.facebook.com/CreativeBooks01" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.15 }} className="text-white/40 hover:text-copper transition-colors">
+                 <Facebook className="w-4 h-4" />
+               </motion.a>
+             </div>
+           </div>
         </div>
       </div>
     </footer>
