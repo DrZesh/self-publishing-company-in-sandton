@@ -26,7 +26,7 @@ function generatePDF(dimensions, trimSize, pages, paper, binding) {
   try {
     if (!dimensions || isNaN(dimensions.fullWidth) || isNaN(dimensions.fullHeight)) return;
     
-    const doc = new jsPDF({ unit: 'mm', format: [dimensions.fullWidth, dimensions.fullHeight] });
+    const doc = new jsPDF({ unit: 'mm', format: [dimensions.fullWidth, dimensions.fullHeight], orientation: 'landscape' });
     const padding = 10;
 
     // Background
