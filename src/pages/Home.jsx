@@ -17,7 +17,6 @@ import PublishingProcess from '../components/home/PublishingProcess';
 import LocationSEO from '../components/home/LocationSEO';
 import HomeFAQ from '../components/home/HomeFAQ';
 import FinalCTA from '../components/home/FinalCTA';
-import TestimonialsSection from '../components/home/TestimonialsSection';
 import FeaturedBlog from '../components/home/FeaturedBlog';
 
 const homeFaqs = [
@@ -46,10 +45,7 @@ export default function Home() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3. Testimonials */}
-      <TestimonialsSection />
-
-      {/* 4. Choose Your Publishing Path */}
+      {/* 3. Choose Your Publishing Path */}
       <PublishingPath />
 
       {/* 4. Core Services */}
