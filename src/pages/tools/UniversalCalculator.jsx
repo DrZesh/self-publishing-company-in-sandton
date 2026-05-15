@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
+import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2, Download } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
+import CostBreakdownChart from '../../components/shared/CostBreakdownChart';
 import { MASTER_PRICING, QUANTITY_MULTIPLIERS, getPrintingPrice } from '../../lib/pricing-extractor';
+import { generateEstimatePDF } from '../../lib/estimate-pdf-generator';
 
 export default function UniversalCalculator() {
   // Service selection
@@ -124,6 +126,11 @@ export default function UniversalCalculator() {
     setEstimateTotal(total);
     setBreakdown(items);
   }, [selectedServices, formData]);
+
+  // Download PDF
+  const downloadPDF = () => {
+    generateEstimatePDF(clientInfo, breakdown, estimateTotal);
+  };
 
   // Submit estimate
   const submitEstimate = async () => {
@@ -504,6 +511,9 @@ export default function UniversalCalculator() {
                   </motion.div>
                 </motion.div>
 
+                {/* Cost Breakdown Chart */}
+                <CostBreakdownChart breakdown={breakdown} total={estimateTotal} />
+
                 {/* Info Box */}
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -571,6 +581,15 @@ export default function UniversalCalculator() {
                     ← Back
                   </motion.button>
                   <motion.button
+                    onClick={downloadPDF}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-6 py-3 border-2 border-copper text-copper rounded-full hover:bg-copper/5 font-medium inline-flex items-center justify-center gap-2 text-sm sm:text-base transition-all"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download PDF
+                  </motion.button>
+                  <motion.button
                     onClick={submitEstimate}
                     disabled={loading || !clientInfo.name || !clientInfo.email}
                     whileHover={{ scale: 1.02 }}
@@ -580,11 +599,11 @@ export default function UniversalCalculator() {
                     {loading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Generating...
+                        Sending...
                       </>
                     ) : (
                       <>
-                        Generate & Send Estimate
+                        Generate & Send
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
