@@ -11,7 +11,7 @@ const slides = [
     accentLine: 1,
     subheading: 'From manuscript to printed book, we help authors publish professionally with expert support.',
     primary: { label: 'Request a Quote', to: '/getquote' },
-    secondary: { label: 'View Packages', to: '/publishingpackages' },
+    secondary: { label: 'View Services', to: '/bookpublishing' },
     bg: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1800&q=80',
   },
   {
@@ -21,7 +21,7 @@ const slides = [
     accentLine: 1,
     subheading: 'High-quality A5, 6×9, hardcover, and children\'s book printing for authors and publishers.',
     primary: { label: 'Get Printing Quote', to: '/getquote' },
-    secondary: { label: 'Explore Printing', to: '/bookprinting' },
+    secondary: { label: 'View Services', to: '/bookprinting' },
     bg: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1800&q=80',
   },
   {
@@ -31,7 +31,7 @@ const slides = [
     accentLine: 1,
     subheading: 'Give your manuscript a professional finish with editing, typesetting, and custom book cover design.',
     primary: { label: 'Start Your Project', to: '/getquote' },
-    secondary: { label: 'View Services', to: '/bookediting' },
+    secondary: { label: 'View Services', to: '/bookcoverdesign' },
     bg: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1800&q=80',
   },
   {
@@ -41,7 +41,7 @@ const slides = [
     accentLine: 1,
     subheading: 'We help authors with publishing support, author websites, book design, and launch-ready presentation.',
     primary: { label: 'Book a Consultation', to: '/contact' },
-    secondary: { label: 'Learn More', to: '/bookpublishing' },
+    secondary: { label: 'View Services', to: '/bookpublishing' },
     bg: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1800&q=80',
   },
 ];
