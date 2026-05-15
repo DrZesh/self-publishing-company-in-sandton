@@ -3,6 +3,7 @@ import PageMeta from '../components/shared/PageMeta';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2, Sparkles, BookOpen, Star, Shield, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import QuoteStep1 from '../components/quote/QuoteStep1';
 import QuoteStep2 from '../components/quote/QuoteStep2';
 import QuoteStep3 from '../components/quote/QuoteStep3';
@@ -137,10 +138,55 @@ export default function GetQuote() {
 
   const submit = async () => {
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1200));
-    try { localStorage.removeItem(STORAGE_KEY); } catch {}
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      const fields = [
+        ['Full Name', `${data.firstName} ${data.lastName}`.trim()],
+        ['Email Address', data.email],
+        ['Phone Number', data.phone],
+        ['Address', [data.address, data.city, data.province, data.postalCode].filter(Boolean).join(', ')],
+        ['Book Size', data.bookSize],
+        ['Number of Pages', data.numberOfPages],
+        ['Genre', data.bookGenre],
+        ['Word Count', data.wordCount],
+        ['Needs Cover Design', data.needCover === 'yes' ? `Yes — ${data.coverType}` : 'No'],
+        ['Needs Printing', data.needPrinting === 'yes' ? 'Yes' : 'No'],
+        data.needPrinting === 'yes' ? ['Print Copies', data.printCopies] : null,
+        data.needPrinting === 'yes' ? ['Paper Type', data.paperType] : null,
+        data.needPrinting === 'yes' ? ['Cover Finish', data.coverFinish] : null,
+        data.needPrinting === 'yes' ? ['Colour Images', data.hasColourImages === 'yes' ? `Yes — ${data.colourImageCount} images, ${data.colourImagePrint}` : 'No'] : null,
+        ['Needs Typesetting', data.needTypesetting === 'yes' ? `Yes — ${data.typesettingType}` : 'No'],
+        ['Needs Editing', data.needEditing === 'yes' ? 'Yes' : 'No'],
+        data.needEditing === 'yes' ? ['Editing Word Count', data.editingWordCount] : null,
+        ['Start Date', data.startDate],
+        ['How Did You Hear About Us', data.howFound],
+        ['Additional Notes', data.additionalNotes],
+      ].filter(Boolean);
+
+      const serviceSummary = [
+        data.needCover === 'yes' && 'Cover Design',
+        data.needPrinting === 'yes' && 'Printing',
+        data.needTypesetting === 'yes' && 'Typesetting',
+        data.needEditing === 'yes' && 'Editing',
+      ].filter(Boolean).join(', ') || 'General Publishing';
+
+      await base44.functions.invoke('sendFormEmail', {
+        formType: 'Quote Request',
+        submitterName: `${data.firstName} ${data.lastName}`.trim(),
+        submitterEmail: data.email,
+        businessSubject: `New Quote Request from ${data.firstName} ${data.lastName} — ${serviceSummary}`,
+        userSubject: "We've received your quote request — Creative Books SA",
+        fields,
+        pageUrl: 'https://www.creativebookssa.co.za/getquote',
+        honeypot: '',
+        loadedAt: null,
+      });
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const stepProps = { data, update, errors };
@@ -194,20 +240,20 @@ export default function GetQuote() {
               <CheckCircle className="w-10 h-10 text-copper" />
             </motion.div>
             <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-4">
-              Quote Request Received!
+              Thanks, {data.firstName}! Your quote request has been received.
             </h2>
-            <p className="text-white/50 font-body leading-relaxed mb-8">
-              Thank you. Your quote request has been received. Creative Books SA will review your information and get back to you within 24 hours.
+            <p className="text-white/50 font-body leading-relaxed mb-3 text-sm">
+              We'll be in touch within 24 hours during business days. We've also sent a confirmation to <strong className="text-white/70">{data.email}</strong> — please check your inbox (and spam folder, just in case).
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="https://wa.me/27842305393" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors text-sm">
-                <MessageCircle className="w-4 h-4" /> WhatsApp Us
-              </a>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
               <Link to="/"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all text-white bg-copper hover:bg-copper/90">
+                <Home className="w-4 h-4" /> Back to Home
+              </Link>
+              <Link to="/selfpublishingpackagesinsouthafrica"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all text-white/70 hover:text-white"
                 style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
-                <Home className="w-4 h-4" /> Back to Home
+                Explore Our Services <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>

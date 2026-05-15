@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PageMeta from '../components/shared/PageMeta';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send, CheckCircle, Home, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import SectionHeading from '../components/shared/SectionHeading';
+import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 
 const contactInfo = [
   { icon: Phone, label: 'Landline', value: '010 500 3331', href: 'tel:0105003331' },
@@ -19,10 +20,38 @@ const contactInfo = [
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const loadedAt = useRef(Date.now());
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    setSubmitting(true);
+    try {
+      await base44.functions.invoke('sendFormEmail', {
+        formType: 'Contact Form',
+        submitterName: form.name,
+        submitterEmail: form.email,
+        businessSubject: `New Contact Form Submission from ${form.name}`,
+        userSubject: 'Thanks for reaching out to Creative Books SA',
+        fields: [
+          ['Full Name', form.name],
+          ['Email Address', form.email],
+          ['Phone Number', form.phone],
+          ['Service Interested In', form.service],
+          ['Message', form.message],
+        ],
+        pageUrl: 'https://www.creativebookssa.co.za/contact',
+        honeypot: '',
+        loadedAt: loadedAt.current,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError('Something went wrong. Please try again or email us directly at info@creativebookssa.co.za');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -79,12 +108,25 @@ export default function Contact() {
             <div className="lg:col-span-3">
               <div className="bg-white rounded-2xl border border-[#0F0F0F]/5 shadow-sm p-8">
                 {submitted ? (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-4">
-                      <Send className="w-8 h-8 text-copper" />
+                  <div className="text-center py-10">
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 180 }}
+                      className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-5 border border-green-200">
+                      <CheckCircle className="w-8 h-8 text-green-500" />
+                    </motion.div>
+                    <h3 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-3">
+                      Thanks, {form.name.split(' ')[0]}! Your message has been received.
+                    </h3>
+                    <p className="text-[#0F0F0F]/60 font-body mb-2 text-sm leading-relaxed max-w-sm mx-auto">
+                      We'll be in touch within 24 hours during business days. We've also sent a confirmation to <strong>{form.email}</strong> — please check your inbox (and spam folder, just in case).
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center mt-7">
+                      <Link to="/" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-copper text-white rounded-full font-medium text-sm hover:bg-copper/90 transition-colors">
+                        <Home className="w-4 h-4" /> Back to Home
+                      </Link>
+                      <Link to="/selfpublishingpackagesinsouthafrica" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm text-[#0F0F0F]/60 hover:text-copper transition-colors" style={{ border: '1px solid rgba(0,0,0,0.12)' }}>
+                        Explore Our Services <ArrowRight className="w-4 h-4" />
+                      </Link>
                     </div>
-                    <h3 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-2">Message Sent!</h3>
-                    <p className="text-[#0F0F0F]/60 font-body">We'll get back to you within 24 hours.</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
@@ -123,8 +165,16 @@ export default function Contact() {
                       <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Message</label>
                       <Textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Tell us about your project..." rows={5} required />
                     </div>
-                    <Button type="submit" className="w-full bg-copper hover:bg-copper/90 text-white py-3 rounded-full font-medium">
-                      Send Message
+                    {error && (
+                      <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200">
+                        <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                        <p className="text-red-600 text-sm font-body">{error}</p>
+                      </div>
+                    )}
+                    {/* Honeypot - hidden from real users */}
+                    <input type="text" name="website" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+                    <Button type="submit" disabled={submitting} className="w-full bg-copper hover:bg-copper/90 text-white py-3 rounded-full font-medium">
+                      {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Sending...</> : 'Send Message'}
                     </Button>
                   </form>
                 )}
