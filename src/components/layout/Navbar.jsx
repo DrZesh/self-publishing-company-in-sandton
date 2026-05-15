@@ -53,6 +53,7 @@ const navItems = [
   },
   {
     label: 'Resources', children: [
+      { label: 'Publishing Roadmap', path: '/publishingroadmap' },
       { label: 'Cover Size Calculator', path: '/resources/CoverSizeCalculator' },
       { label: 'Book Printing Calculator', path: '/bookprintingcalculator' },
       { label: 'ISBN Registration', path: '/isbnregistration' },
