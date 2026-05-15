@@ -55,6 +55,8 @@ const navItems = [
     label: 'Resources', children: [
       { label: 'ISBN Registration', path: '/isbnregistration' },
       { label: 'Publishing Guide', path: '/publishingguide' },
+      { label: 'Portfolio', path: '/portfolio' },
+      { label: 'NDA', path: '/nda' },
       { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
     ]

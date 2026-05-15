@@ -168,6 +168,7 @@ export default function Footer() {
           <div className="flex items-center gap-6">
             {[
               { label: 'About', to: '/aboutus' },
+              { label: 'Portfolio', to: '/portfolio' },
               { label: 'Contact', to: '/contact' },
               { label: 'Get Quote', to: '/getquote' },
               { label: 'Printing Calculator', to: '/bookprintingcalculator' },

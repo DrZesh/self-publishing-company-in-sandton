@@ -58,6 +58,7 @@ import ResourcePage from './pages/resources/ResourcePage';
 import CompletePublishingGuide from './pages/resources/CompletePublishingGuide';
 import ISBNRegistration from './pages/resources/ISBNRegistration';
 import NDA from './pages/resources/NDA';
+import Portfolio from './pages/Portfolio';
 
 // New SEO Blog Article Pages
 import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
@@ -421,6 +422,7 @@ const AuthenticatedApp = () => {
         <Route path="/editingguide" element={<ResourcePage resourceKey="editingguide" />} />
         <Route path="/bookmarketingguide" element={<ResourcePage resourceKey="bookmarketingguide" />} />
         <Route path="/nda" element={<NDA />} />
+        <Route path="/portfolio" element={<Portfolio />} />
 
         {/* Blog */}
         <Route path="/blog" element={<Blog />} />
