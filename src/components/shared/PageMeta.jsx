@@ -12,7 +12,7 @@ export default function PageMeta({
   noindex = false,
 }) {
   useEffect(() => {
-    const siteUrl = 'https://www.creativebookssa.co.za';
+    const siteUrl = 'https://www.creativebooks.co.za';
 
     // Add hreflang tags
     const addHreflang = (lang, href) => {
@@ -61,7 +61,7 @@ export default function PageMeta({
     setOg('og:image', ogImage);
     setOg('og:image:width', '1200');
     setOg('og:image:height', '630');
-    setOg('og:site_name', 'Creative Books SA');
+    setOg('og:site_name', 'Creative Books');
     setOg('og:locale', 'en_ZA');
 
     // Twitter Cards
