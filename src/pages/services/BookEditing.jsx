@@ -144,7 +144,7 @@ export default function BookEditing() {
         { name: 'Book Editing', path: '/bookediting' },
       ]),
       aggregateRatingSchema(),
-      authorSchema(),
+      authorSchema({ name: 'Creative Books SA', description: 'Professional book editing services in South Africa' }),
     ],
   };
 
