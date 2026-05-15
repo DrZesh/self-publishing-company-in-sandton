@@ -107,15 +107,12 @@ export default function Footer() {
           {/* Brand Row */}
           <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 pb-12 mb-12" style={{ borderBottom: '1px solid rgba(184,115,51,0.1)' }}>
             <div className="max-w-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <motion.div whileHover={{ scale: 1.05, rotate: 5 }} className="w-12 h-12 rounded-full bg-gradient-to-br from-copper to-[#8a5a2a] flex items-center justify-center shadow-lg shadow-copper/20">
-                  <span className="text-white font-heading font-bold text-xl">C</span>
-                </motion.div>
-                <div>
-                  <span className="text-white font-heading text-lg font-semibold">Creative Books</span>
-                  <span className="text-copper text-xs block tracking-[0.3em] uppercase">South Africa</span>
-                </div>
-              </div>
+              <motion.img
+                src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png"
+                alt="Creative Books SA"
+                whileHover={{ scale: 1.05 }}
+                className="h-12 w-auto mb-4"
+              />
               <p className="text-white/50 text-sm leading-relaxed">
                 South Africa's premier publishing and printing company. Professional book printing, publishing, editing, and design services from Johannesburg to Cape Town.
               </p>

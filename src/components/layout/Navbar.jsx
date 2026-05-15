@@ -102,19 +102,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-copper to-[#8a5a2a] flex items-center justify-center shadow-lg shadow-copper/30"
-            >
-              <span className="text-white font-heading font-bold text-lg">C</span>
-            </motion.div>
-            <div className="hidden sm:block">
-              <span className="text-white font-heading text-lg font-semibold tracking-wide group-hover:text-copper transition-colors">Creative Books</span>
-              <span className="text-copper text-xs block tracking-[0.3em] uppercase">South Africa</span>
-            </div>
-          </Link>
+           <Link to="/" className="flex items-center gap-2 group">
+             <motion.img
+               src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png"
+               alt="Creative Books SA"
+               whileHover={{ scale: 1.05 }}
+               transition={{ type: 'spring', stiffness: 300 }}
+               className="h-10 w-auto"
+             />
+           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
