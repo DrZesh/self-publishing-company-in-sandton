@@ -45,14 +45,24 @@ export default function CalculatorCTA() {
               </p>
             </div>
           </div>
-          <Link
-            to="/bookprintingcalculator"
-            className="relative shrink-0 inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-white transition-all group"
-            style={{ background: '#B8955B', boxShadow: '0 8px 24px rgba(184,149,91,0.3)' }}
-          >
-            Use the Book Printing Calculator
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="relative shrink-0 inline-flex gap-3">
+            <Link
+              to="/bookprintingcalculator"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white transition-all group"
+              style={{ background: '#B8955B', boxShadow: '0 8px 24px rgba(184,149,91,0.3)' }}
+            >
+              Book Printing Calculator
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              to="/calculator"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white transition-all group border-2"
+              style={{ borderColor: '#B8955B', background: 'transparent', color: '#B8955B' }}
+            >
+              All Services Calculator
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
