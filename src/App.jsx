@@ -185,6 +185,7 @@ import HowToSelfPublishABook from './pages/seo/longtail/HowToSelfPublishABook.js
 // Interactive Tools
 import BookPrintingCalculator from './pages/tools/BookPrintingCalculator.jsx';
 import PublishingRoadmap from './pages/tools/PublishingRoadmap.jsx';
+import UniversalCalculator from './pages/tools/UniversalCalculator.jsx';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -417,6 +418,7 @@ const AuthenticatedApp = () => {
         {/* Interactive Tools */}
         <Route path="/bookprintingcalculator" element={<BookPrintingCalculator />} />
         <Route path="/publishingroadmap" element={<PublishingRoadmap />} />
+        <Route path="/calculator" element={<UniversalCalculator />} />
 
         {/* Resource Pages */}
         <Route path="/isbnregistration" element={<ISBNRegistration />} />

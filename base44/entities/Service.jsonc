@@ -1,0 +1,100 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "printing",
+        "editing",
+        "design",
+        "writing",
+        "publishing",
+        "other"
+      ],
+      "description": "Service category"
+    },
+    "serviceName": {
+      "type": "string",
+      "description": "Main service name (e.g., 'Book Printing')"
+    },
+    "packageName": {
+      "type": "string",
+      "description": "Package name if applicable"
+    },
+    "description": {
+      "type": "string",
+      "description": "Service description"
+    },
+    "price": {
+      "type": "number",
+      "description": "Fixed price if applicable"
+    },
+    "pricingType": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "per_page",
+        "per_word",
+        "per_copy",
+        "per_colour_page",
+        "custom"
+      ],
+      "description": "How pricing is calculated"
+    },
+    "basePrice": {
+      "type": "number",
+      "description": "Base price for per-unit calculations"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Quantity this price applies to"
+    },
+    "bookSizeCondition": {
+      "type": "string",
+      "description": "Book size requirement (e.g., 'A5', '6x9', 'any')"
+    },
+    "pageCountMin": {
+      "type": "number",
+      "description": "Minimum page count"
+    },
+    "pageCountMax": {
+      "type": "number",
+      "description": "Maximum page count"
+    },
+    "wordCountMin": {
+      "type": "number",
+      "description": "Minimum word count"
+    },
+    "wordCountMax": {
+      "type": "number",
+      "description": "Maximum word count"
+    },
+    "copyQuantityMin": {
+      "type": "number",
+      "description": "Minimum copy quantity"
+    },
+    "copyQuantityMax": {
+      "type": "number",
+      "description": "Maximum copy quantity"
+    },
+    "addOnCondition": {
+      "type": "string",
+      "description": "Add-on or condition"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this pricing is active"
+    }
+  },
+  "required": [
+    "category",
+    "serviceName",
+    "pricingType"
+  ]
+}
