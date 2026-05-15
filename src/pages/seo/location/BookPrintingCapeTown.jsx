@@ -39,8 +39,8 @@ export default function BookPrintingCapeTown() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Cape Town | Creative Books SA"
-        description="Looking for book printing in Cape Town? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Cape Town | Nationwide Delivery"
+        description="Professional book printing for Cape Town authors. Hardcover, paperback and children's books with delivery across the Western Cape."
         keywords="book printing Cape Town, book printers Cape Town, Cape Town book printing, printing services Cape Town, book publishing Cape Town, Western Cape book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingcapetown"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

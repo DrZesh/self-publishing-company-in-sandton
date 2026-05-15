@@ -33,8 +33,8 @@ export default function SelfPublishingSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self Publishing South Africa | Self Publish Your Book | Creative Books SA"
-        description="Self-publish your book in South Africa with expert support. Retain 100% rights & royalties. Editing, cover design, ISBN, printing & Amazon distribution. Free quote today."
+        title="Self-Publishing in South Africa | Complete Guide"
+        description="Everything South African authors need to know about self-publishing. Costs, platforms, ISBNs, royalties and step-by-step guidance."
         keywords="self publishing South Africa, self publish a book South Africa, self publishing services South Africa, how to self publish in South Africa"
         canonical="https://www.creativebookssa.co.za/selfpublishingsouthafrica"
         schema={schema}

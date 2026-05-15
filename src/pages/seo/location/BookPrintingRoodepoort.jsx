@@ -39,8 +39,8 @@ export default function BookPrintingRoodepoort() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Roodepoort | Creative Books SA"
-        description="Looking for book printing in Roodepoort? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Roodepoort | Quality, Local Service"
+        description="Professional book printing for Roodepoort authors. Hardcover, paperback and children's books with quick local turnaround."
         keywords="book printing Roodepoort, book printers Roodepoort, Roodepoort book printing, printing services Roodepoort, book publishing Roodepoort"
         canonical="https://www.creativebookssa.co.za/bookprintingroodepoort"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

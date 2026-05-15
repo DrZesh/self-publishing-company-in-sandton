@@ -39,8 +39,8 @@ export default function BookPrintingDurban() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Durban | Creative Books SA"
-        description="Looking for book printing in Durban? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Durban | Fast, Affordable Quality"
+        description="Book printing services for Durban authors. Quality paperback, hardcover and children's book printing with nationwide delivery."
         keywords="book printing Durban, book printers Durban, Durban book printing, printing services Durban, book publishing Durban, KwaZulu-Natal book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingdurban"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

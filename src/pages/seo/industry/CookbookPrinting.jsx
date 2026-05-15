@@ -23,8 +23,8 @@ export default function CookbookPrinting() {
   return (
     <>
       <PageMeta
-        title="Cookbook Printing Johannesburg | Full-Colour Recipe Book Printing | Creative Books SA"
-        description="Professional cookbook and recipe book printing in Johannesburg. Full-colour, A4, wire-o binding. Food photography printing specialists. Small and large runs. Get a free quote."
+        title="Cookbook Printing South Africa | Full-Colour Quality"
+        description="High-quality cookbook printing in South Africa. Full-colour, durable cookbooks with premium paper and bindings."
         keywords="cookbook printing Johannesburg, recipe book printing South Africa, full colour cookbook printing, food book printing Johannesburg, family cookbook printing"
         canonical="https://www.creativebookssa.co.za/cookbookprintingjohannesburg"
         schema={schema}

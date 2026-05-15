@@ -32,8 +32,8 @@ export default function BestPublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Best Publishing Companies in South Africa 2024 | Creative Books SA"
-        description="Discover the best publishing companies in South Africa. Creative Books SA offers full-service publishing, editing, printing & distribution. Authors keep 100% rights. Get a free quote."
+        title="Best Publishing Companies in South Africa (2026 Guide)"
+        description="Compare the best publishing companies in South Africa. Services, pricing and reviews to help authors choose the right publisher."
         keywords="best publishing companies in South Africa, best book publishers South Africa, top publishing companies South Africa, best self publishing company South Africa"
         canonical="https://www.creativebookssa.co.za/bestpublishingcompaniesinsouthafrica"
         schema={schema}

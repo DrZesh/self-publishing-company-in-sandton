@@ -98,8 +98,8 @@ export default function A5BookPublishing() {
   return (
     <>
       <PageMeta
-        title="A5 Book Publishing | Compact Format Publishing | Creative Books SA"
-        description="Professional A5 (5x8) book publishing services. Perfect for poetry, short stories, and specialty publications. Includes design, printing, and distribution."
+        title="A5 Book Publishing & Printing South Africa"
+        description="Specialised A5 book publishing and printing in South Africa. Popular size for novels, memoirs and non-fiction. Get a quote today."
         keywords="A5 book publishing, pocket book format, poetry publishing, short story publishing South Africa"
       />
 

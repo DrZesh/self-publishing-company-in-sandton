@@ -102,8 +102,8 @@ export default function SixByNinePublishing() {
   return (
     <>
       <PageMeta
-        title="6x9 Book Publishing | Professional Trade Format | Creative Books SA"
-        description="Professional 6x9 inch book publishing. Industry standard format for novels, non-fiction, and trade paperbacks. Amazon KDP optimized. Includes design, printing, and distribution."
+        title="6x9 Book Publishing & Printing South Africa"
+        description="Specialised 6x9 inch book publishing and printing in South Africa. The international standard for novels and non-fiction. Free quote."
         keywords="6x9 book publishing, trade paperback, novel publishing, Amazon KDP publishing South Africa"
       />
 

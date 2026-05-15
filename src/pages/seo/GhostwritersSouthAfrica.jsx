@@ -25,8 +25,8 @@ export default function GhostwritersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Ghostwriters in South Africa | Turn Your Story Into a Book"
-        description="Learn how ghostwriters in South Africa help authors, speakers, pastors, coaches and entrepreneurs turn ideas into complete manuscripts."
+        title="Ghostwriters in South Africa | Hire a Professional Writer"
+        description="Hire professional ghostwriters in South Africa for memoirs, business books and novels. Confidential, skilled writers for every genre."
         keywords="ghostwriters in South Africa, ghost writer near me, ghostwriting services, book writer South Africa"
         canonical="https://www.creativebooks.co.za/ghostwritersinsouthafrica"
         schema={schema}

@@ -39,8 +39,8 @@ export default function BookPrintingPretoria() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Pretoria | Creative Books SA"
-        description="Looking for book printing in Pretoria? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Pretoria | Quality Printing & Delivery"
+        description="Professional book printing for Pretoria authors. Hardcover, paperback, A5 and 6x9 with fast Gauteng delivery."
         keywords="book printing Pretoria, book printers Pretoria, Pretoria book printing, printing services Pretoria, book publishing Pretoria, Tshwane book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingpretoria"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

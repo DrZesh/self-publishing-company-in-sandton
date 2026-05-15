@@ -18,8 +18,8 @@ export default function BookCoverDesignCapeTown() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Cape Town | Professional Cover Designers | Creative Books SA"
-        description="Professional book cover design in Cape Town. Custom print and eBook cover designs for authors in Western Cape and across South Africa."
+        title="Book Cover Design in Cape Town | Custom Covers"
+        description="Custom book cover design for Cape Town authors. Cinematic, market-ready covers for self-published novels, memoirs and more."
         keywords="book cover design Cape Town, book cover designer Cape Town, book cover design Western Cape, professional book covers Cape Town"
         canonical="https://www.creativebookssa.co.za/bookcoverdesigncapetown"
         schema={schema}

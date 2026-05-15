@@ -1,8 +1,17 @@
 import React from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
+
+const locationMeta = {
+  editingservicesjohannesburg: {
+    title: 'Book Editing Services in Johannesburg | Expert Editors',
+    description: 'Professional book editing services in Johannesburg. Developmental, copy and line editing by experienced South African editors.',
+    canonical: 'https://www.creativebookssa.co.za/editingservicesjohannesburg',
+  },
+};
 
 const locationData = {
   bookpublishersjohannesburg: {

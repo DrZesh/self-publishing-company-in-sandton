@@ -18,8 +18,8 @@ export default function BookCoverDesignDurban() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Durban | Professional Cover Designers | Creative Books SA"
-        description="Professional book cover design in Durban. Custom print and eBook cover designs for authors in KwaZulu-Natal and across South Africa."
+        title="Book Cover Design in Durban | Professional Designers"
+        description="Professional book cover design for Durban authors. Custom covers that sell, designed by experienced South African designers."
         keywords="book cover design Durban, book cover designer Durban, book cover design KwaZulu-Natal, professional book covers Durban"
         canonical="https://www.creativebookssa.co.za/bookcoverdesigndurban"
         schema={schema}

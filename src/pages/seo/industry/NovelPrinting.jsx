@@ -23,8 +23,8 @@ export default function NovelPrinting() {
   return (
     <>
       <PageMeta
-        title="Novel Printing Johannesburg | Fiction Book Printing South Africa | Creative Books SA"
-        description="Professional novel and fiction book printing in Johannesburg. A5 softcover, cream paper, hardcover editions. Self-publishing support for South African novelists. Get a free quote."
+        title="Novel Printing South Africa | Paperback & Hardcover"
+        description="Professional novel printing in South Africa. Paperback and hardcover fiction printing with international-standard quality."
         keywords="novel printing Johannesburg, fiction book printing South Africa, novel publishing South Africa, print my novel Johannesburg, self publish novel South Africa"
         canonical="https://www.creativebookssa.co.za/novelprintingjohannesburg"
         schema={schema}

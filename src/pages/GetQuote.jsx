@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -158,6 +159,12 @@ export default function GetQuote() {
 
   if (submitted) {
     return (
+      <>
+        <PageMeta
+          title="Get a Free Publishing Quote | Creative Books SA"
+          description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
+          canonical="https://www.creativebookssa.co.za/getquote"
+        />
       <div className="min-h-screen bg-vellum flex items-center justify-center px-4 pt-24 pb-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -185,10 +192,17 @@ export default function GetQuote() {
           </div>
         </motion.div>
       </div>
+      </>
     );
   }
 
   return (
+    <>
+      <PageMeta
+        title="Get a Free Publishing Quote | Creative Books SA"
+        description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
+        canonical="https://www.creativebookssa.co.za/getquote"
+      />
     <div className="min-h-screen bg-vellum pt-24 pb-16 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
@@ -253,5 +267,6 @@ export default function GetQuote() {
         </div>
       </div>
     </div>
+    </>
   );
 }

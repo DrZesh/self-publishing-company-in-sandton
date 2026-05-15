@@ -23,8 +23,8 @@ export default function SchoolBookPrinting() {
   return (
     <>
       <PageMeta
-        title="School Book Printing Johannesburg | Textbook & Workbook Printing | Creative Books SA"
-        description="School textbook and workbook printing for Johannesburg schools and tutors. A4 softcover, full-colour, and study guide printing. Small and large runs. Get a free quote."
+        title="School Book Printing South Africa | Textbooks & More"
+        description="Textbook and school book printing in South Africa. Reliable quality and quick turnaround for schools and educators."
         keywords="school book printing Johannesburg, textbook printing South Africa, workbook printing Johannesburg, educational book printing, study guide printing"
         canonical="https://www.creativebookssa.co.za/schoolbookprintingjohannesburg"
         schema={schema}

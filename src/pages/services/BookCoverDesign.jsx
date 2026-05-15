@@ -171,8 +171,8 @@ export default function BookCoverDesign() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Johannesburg | Professional Cover Designers | Creative Books SA"
-        description="Professional book cover design in Johannesburg and South Africa. Custom print covers, ebook covers, illustrated covers, and stock image designs. Affordable pricing from R1,200. Get a quote today."
+        title="Book Cover Design South Africa | Custom Covers"
+        description="Custom, market-ready book cover design in South Africa. Cinematic covers that sell — for novels, memoirs, children's books and non-fiction."
         keywords="book cover design Johannesburg, book cover designers South Africa, ebook cover design, print cover design, illustrated book covers, Amazon cover design, professional cover designers"
         canonical="https://www.creativebookssa.co.za/bookcoverdesign"
         schema={schema}

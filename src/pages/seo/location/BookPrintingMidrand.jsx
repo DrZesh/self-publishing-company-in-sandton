@@ -39,8 +39,8 @@ export default function BookPrintingMidrand() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Midrand | Creative Books SA"
-        description="Looking for book printing in Midrand? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Midrand | Quality & Convenience"
+        description="Book printing services for Midrand authors. Quality paperback, hardcover and short runs with quick local delivery."
         keywords="book printing Midrand, book printers Midrand, Midrand book printing, printing services Midrand, book publishing Midrand"
         canonical="https://www.creativebookssa.co.za/bookprintingmidrand"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

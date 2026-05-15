@@ -34,8 +34,8 @@ export default function BookPrinting() {
   return (
     <>
       <PageMeta
-        title="Book Printing Johannesburg | Professional Printing Services | Creative Books SA"
-        description="High-quality book printing in Johannesburg. Hardcover, softcover, children's books, workbooks, and specialty formats. From 50 to 50,000 copies with fast turnaround and competitive pricing. Get a quote today."
+        title="Book Printing Services South Africa | Print Your Book"
+        description="Professional book printing in South Africa. Hardcover, paperback, A5, 6x9 and children's books. Short and long runs with nationwide delivery."
         keywords="book printing Johannesburg, book printing South Africa, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
         canonical="https://www.creativebookssa.co.za/bookprinting"
         schema={schema}

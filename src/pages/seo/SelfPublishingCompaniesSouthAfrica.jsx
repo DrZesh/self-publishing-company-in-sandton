@@ -25,8 +25,8 @@ export default function SelfPublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self-Publishing Companies in South Africa | Author Services"
-        description="Compare self-publishing companies in South Africa and learn what editing, layout, cover design, ISBN support and printing should include."
+        title="Self-Publishing Companies South Africa | Top Picks"
+        description="Compare leading self-publishing companies in South Africa. Pricing, packages and services for authors ready to publish their book."
         keywords="self-publishing companies in South Africa, self publishing services, self publish a book South Africa"
         canonical="https://www.creativebooks.co.za/selfpublishingcompaniesinsouthafrica"
         schema={schema}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,11 @@ export default function Contact() {
 
   return (
     <div>
+      <PageMeta
+        title="Contact Creative Books SA | Publishing Help in Johannesburg"
+        description="Get in touch with Creative Books SA for book publishing, editing, printing and cover design. Based in Johannesburg, serving all of South Africa."
+        canonical="https://www.creativebookssa.co.za/contact"
+      />
       {/* Hero */}
       <section className="relative pt-32 pb-20 bg-obsidian">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

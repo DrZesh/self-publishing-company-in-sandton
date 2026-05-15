@@ -39,8 +39,8 @@ export default function BookPrintingSandton() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Sandton | Creative Books SA"
-        description="Looking for book printing in Sandton? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Sandton | Premium Printing Services"
+        description="Premium book printing for Sandton-based authors and businesses. High-quality hardcover and paperback with fast turnaround."
         keywords="book printing Sandton, book printers Sandton, Sandton book printing, printing services Sandton, book publishing Sandton"
         canonical="https://www.creativebookssa.co.za/bookprintingsandton"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

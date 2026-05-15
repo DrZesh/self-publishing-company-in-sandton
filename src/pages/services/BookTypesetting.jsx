@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award, AlignLeft, BookOpen, Layers } from 'lucide-react';
@@ -79,6 +80,11 @@ export default function BookTypesetting() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Book Typesetting & Layout Services South Africa"
+        description="Professional book typesetting and interior layout in South Africa. Print-ready files for paperback, hardcover and ebook formats."
+        canonical="https://www.creativebookssa.co.za/typesetting"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

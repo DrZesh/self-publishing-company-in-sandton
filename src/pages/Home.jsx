@@ -31,8 +31,8 @@ export default function Home() {
   return (
     <div>
       <PageMeta
-        title="Self-Publishing, Book Printing and Author Services in South Africa | Creative Books SA"
-        description="Creative Books SA offers professional self-publishing, book printing, editing, proofreading, cover design, typesetting, ghostwriting and ebook publishing in South Africa. Johannesburg-based. Free quote."
+        title="Book Publishing South Africa | Creative Books SA"
+        description="Premium book publishing, editing, printing & cover design in South Africa. Self-publishing packages from Johannesburg. Get a free quote today."
         keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
         canonical="https://www.creativebookssa.co.za/"
         schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}

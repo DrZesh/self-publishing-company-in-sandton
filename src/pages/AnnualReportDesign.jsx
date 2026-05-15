@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Users, FileText, Edit3, Calendar, Camera, Printer, Award } from 'lucide-react';
@@ -58,6 +59,11 @@ export default function AnnualReportDesign() {
 
   return (
     <div style={{ background: '#090E18' }}>
+      <PageMeta
+        title="Annual Report Design in Sandton | Premium Reports"
+        description="Premium annual report design and printing in Sandton. Professionally designed reports for companies, NGOs and institutions."
+        canonical="https://www.creativebookssa.co.za/annualreportdesignsandton"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

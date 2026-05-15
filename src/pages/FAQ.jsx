@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import FAQSection from '../components/shared/FAQSection';
@@ -42,6 +43,11 @@ const faqCategories = [
 export default function FAQ() {
   return (
     <div>
+      <PageMeta
+        title="Self-Publishing FAQ South Africa | Creative Books SA"
+        description="Answers to common questions about self-publishing in South Africa — costs, ISBNs, royalties, timelines, printing and distribution."
+        canonical="https://www.creativebookssa.co.za/faq"
+      />
       {/* Hero */}
       <section className="relative pt-32 pb-16 bg-obsidian">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

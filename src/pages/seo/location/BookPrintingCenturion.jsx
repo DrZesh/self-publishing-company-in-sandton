@@ -39,8 +39,8 @@ export default function BookPrintingCenturion() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Centurion | Creative Books SA"
-        description="Looking for book printing in Centurion? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Centurion | Professional Quality"
+        description="Professional book printing for Centurion authors and businesses. Hardcover, paperback and short runs with fast delivery."
         keywords="book printing Centurion, book printers Centurion, Centurion book printing, printing services Centurion, book publishing Centurion"
         canonical="https://www.creativebookssa.co.za/bookprintingcenturion"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

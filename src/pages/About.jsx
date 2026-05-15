@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Users, Award, Heart } from 'lucide-react';
@@ -15,6 +16,11 @@ const values = [
 export default function About() {
   return (
     <div>
+      <PageMeta
+        title="About Creative Books SA | Premium SA Publishing Company"
+        description="Meet Creative Books SA — a Johannesburg-based publishing house helping South African authors self-publish with cinematic quality and care."
+        canonical="https://www.creativebookssa.co.za/aboutus"
+      />
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center pt-20">
         <div className="absolute inset-0">

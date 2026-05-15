@@ -23,8 +23,8 @@ export default function BusinessBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Business Book Printing Johannesburg | Corporate Book Printing | Creative Books SA"
-        description="Professional business book printing in Johannesburg. Leadership, entrepreneurship, and corporate book printing with softcover and hardcover options. Get a free quote today."
+        title="Business Book Printing South Africa | Corporate Quality"
+        description="Professional printing for business books, leadership titles and corporate publications in South Africa."
         keywords="business book printing Johannesburg, corporate book printing, leadership book printing South Africa, entrepreneur book printing, business publishing Johannesburg"
         canonical="https://www.creativebookssa.co.za/businessbookprintingjohannesburg"
         schema={schema}

@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PremiumPricingTable from '../../components/pricing/PremiumPricingTable';
 import { BookOpen, Zap, Star } from 'lucide-react';
@@ -63,7 +64,13 @@ const publishingPackages = [
 
 export default function BookPublishing() {
   return (
-    <ServicePageTemplate
+    <>
+      <PageMeta
+        title="Book Publishing Services South Africa | Creative Books SA"
+        description="Full-service book publishing in South Africa. Editing, design, ISBN, printing and distribution in one package. Free consultation for authors."
+        canonical="https://www.creativebookssa.co.za/bookpublishing"
+      />
+      <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png"
       subtitle="Book Publishing South Africa"
       title="Professional Book Publishing Services"
@@ -108,6 +115,7 @@ export default function BookPublishing() {
       ]}
       ctaTitle="Ready to Publish Your Book?"
       ctaDescription="Get a free consultation and personalised publishing quote from South Africa's trusted publishing partner."
-    />
-  );
-}
+      />
+      </>
+      );
+      }

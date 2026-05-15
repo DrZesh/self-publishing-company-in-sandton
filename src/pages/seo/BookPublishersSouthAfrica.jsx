@@ -32,8 +32,8 @@ export default function BookPublishersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Publishers South Africa | Professional Publishing Services | Creative Books SA"
-        description="Looking for book publishers in South Africa? Creative Books SA offers full-service publishing, editing, cover design, printing & global distribution. Authors keep 100% rights. Free quote."
+        title="Book Publishers South Africa | Top Publishing Company"
+        description="Leading book publishers in South Africa. Full-service publishing for fiction, non-fiction, memoirs and children's books. Free consultation."
         keywords="book publishers South Africa, book publishers in South Africa, publishing company South Africa, South African book publishers, publish a book South Africa"
         canonical="https://www.creativebookssa.co.za/bookpublisherssouthafrica"
         schema={schema}

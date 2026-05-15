@@ -23,8 +23,8 @@ export default function MemoirBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Memoir Book Printing Johannesburg | Print Your Memoir | Creative Books SA"
-        description="Professional memoir printing in Johannesburg. Softcover, hardcover, and family memoir printing for South African authors. Complete memoir publishing packages. Get a free quote."
+        title="Memoir Printing Services South Africa | Tell Your Story"
+        description="Beautiful memoir printing in South Africa. Quality hardcover and paperback printing for personal histories and life stories."
         keywords="memoir book printing Johannesburg, memoir printing South Africa, print memoir book, memoir publishing Johannesburg, biography printing South Africa"
         canonical="https://www.creativebookssa.co.za/memoirbookprintingjohannesburg"
         schema={schema}

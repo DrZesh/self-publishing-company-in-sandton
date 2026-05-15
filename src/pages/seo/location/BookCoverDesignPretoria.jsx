@@ -18,8 +18,8 @@ export default function BookCoverDesignPretoria() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Pretoria | Professional Cover Designers | Creative Books SA"
-        description="Professional book cover design in Pretoria. Custom print and eBook cover designs for authors in Gauteng and across South Africa."
+        title="Book Cover Design in Pretoria | Custom Book Covers"
+        description="Custom book cover design for Pretoria authors. Market-ready, professional covers for novels, memoirs and non-fiction."
         keywords="book cover design Pretoria, book cover designer Pretoria, book cover design Gauteng, professional book covers Pretoria"
         canonical="https://www.creativebookssa.co.za/bookcoverdesignpretoria"
         schema={schema}

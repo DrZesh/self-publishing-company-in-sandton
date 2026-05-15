@@ -23,8 +23,8 @@ export default function PoetryBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Poetry Book Printing Johannesburg | Print Your Poetry Collection | Creative Books SA"
-        description="Professional poetry book printing in Johannesburg. A5 softcover, cream paper, quality binding. Small and large runs for South African poets. Get a free quote today."
+        title="Poetry Book Printing South Africa | Beautiful Editions"
+        description="Specialist poetry book printing in South Africa. Beautiful, considered editions for poets and small presses."
         keywords="poetry book printing Johannesburg, poetry collection printing, print poetry book South Africa, poetry publishing Johannesburg"
         canonical="https://www.creativebookssa.co.za/poetrybookprintingjohannesburg"
         schema={schema}

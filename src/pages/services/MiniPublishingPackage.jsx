@@ -98,8 +98,8 @@ export default function MiniPublishingPackage() {
   return (
     <>
       <PageMeta
-        title="Mini Publishing Package | Affordable Book Publishing | Creative Books SA"
-        description="Start your publishing journey with our affordable Mini Package. Includes proofreading, cover design, typesetting, ISBN, and eBook conversion from R4,999."
+        title="Mini Publishing Package South Africa | Budget-Friendly"
+        description="Affordable mini self-publishing package for South African authors. Essential services bundled to get your book published without the full cost."
         keywords="affordable book publishing, self publishing package, book editing, cover design, ISBN registration South Africa"
       />
 

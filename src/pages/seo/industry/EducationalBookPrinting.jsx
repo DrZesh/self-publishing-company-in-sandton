@@ -23,8 +23,8 @@ export default function EducationalBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Educational Book Printing Johannesburg | Textbook & Workbook Printing | Creative Books SA"
-        description="Professional educational book printing in Johannesburg. Textbooks, workbooks, learner guides, and study materials for South African schools and publishers. Get a free quote."
+        title="Educational Book Printing South Africa | Schools & Authors"
+        description="Educational book printing for South African schools, tutors and authors. Textbooks, workbooks and study guides printed to spec."
         keywords="educational book printing Johannesburg, textbook printing South Africa, learner guide printing, educational publisher printing, school book printing"
         canonical="https://www.creativebookssa.co.za/educationalbookprintingjohannesburg"
         schema={schema}

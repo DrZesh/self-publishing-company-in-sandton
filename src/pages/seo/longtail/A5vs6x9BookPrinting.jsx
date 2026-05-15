@@ -22,8 +22,8 @@ export default function A5vs6x9BookPrinting() {
 
   return (
     <LongTailArticlePage
-      metaTitle="A5 vs 6×9 Book Printing — Which Size is Right For You? | Creative Books SA"
-      metaDescription="A5 vs 6×9 book printing compared. Size, cost, page count, market reach, Amazon KDP compatibility. Choose the right format for your South African book."
+      metaTitle="A5 vs 6x9 Book Size | Which Should You Choose?"
+      metaDescription="A5 vs 6x9 book size compared — pros, cons, costs and which is best for your novel, memoir or non-fiction book."
       metaKeywords="A5 vs 6x9 book printing, A5 or 6x9 for self publishing, book size comparison, A5 vs trade paperback, Amazon KDP size South Africa"
       canonical="https://www.creativebookssa.co.za/a5vs6x9bookprinting"
       schema={schema}

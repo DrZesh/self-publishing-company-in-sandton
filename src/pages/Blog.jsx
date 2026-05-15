@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Tag } from 'lucide-react';
@@ -88,6 +89,7 @@ const articles = [
 
 export default function Blog() {
   const location = useLocation();
+  // PageMeta is rendered unconditionally for the main /blog route
   const currentPath = location.pathname;
   const isCategory = categories.some(c => c.path === currentPath && c.path !== '/blog');
   const categoryName = categories.find(c => c.path === currentPath)?.label;
@@ -98,6 +100,11 @@ export default function Blog() {
 
   return (
     <div>
+      <PageMeta
+        title="Self-Publishing Blog South Africa | Creative Books SA"
+        description="Expert guides on self-publishing, book marketing, editing and printing for South African authors. Practical advice from publishing professionals."
+        canonical="https://www.creativebookssa.co.za/blog"
+      />
       {/* Hero */}
       <section className="relative pt-32 pb-16 bg-obsidian">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

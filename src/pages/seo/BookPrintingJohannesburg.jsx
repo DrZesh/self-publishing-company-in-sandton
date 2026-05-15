@@ -39,8 +39,8 @@ export default function BookPrintingJohannesburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Johannesburg | Creative Books SA"
-        description="Looking for book printing in Johannesburg? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Johannesburg | Fast Quality Printing"
+        description="Professional book printing in Johannesburg. Hardcover, paperback, children's books and short runs with quick turnaround."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
         canonical="https://www.creativebookssa.co.za/bookprintingjohannesburg"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

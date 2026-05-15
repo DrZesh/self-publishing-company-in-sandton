@@ -1,4 +1,5 @@
 import React from 'react';
+import PageMeta from '../components/shared/PageMeta';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
@@ -101,8 +102,23 @@ export default function BlogArticle() {
 
   if (!article) return null;
 
+  const metaMap = {
+    '/howmuchdoesitcosttopublishabook': {
+      title: 'How Much Does It Cost to Publish a Book in South Africa?',
+      description: 'Complete breakdown of book publishing costs in South Africa — editing, design, printing, ISBN, distribution and marketing.',
+    },
+  };
+  const pageMeta = metaMap[location.pathname];
+
   return (
     <div>
+      {pageMeta && (
+        <PageMeta
+          title={pageMeta.title}
+          description={pageMeta.description}
+          canonical={`https://www.creativebookssa.co.za${location.pathname}`}
+        />
+      )}
       {/* Hero */}
       <section className="relative pt-32 pb-16 bg-obsidian">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">

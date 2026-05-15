@@ -39,8 +39,8 @@ export default function BookPrintingRandburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Randburg | Creative Books SA"
-        description="Looking for book printing in Randburg? Creative Books SA helps South African authors print self-published books, novels, memoirs, poetry books, business books and more. Request a book printing quote today."
+        title="Book Printing in Randburg | Quality Local Printing"
+        description="Book printing services for Randburg authors. Professional paperback, hardcover and children's book printing."
         keywords="book printing Randburg, book printers Randburg, Randburg book printing, printing services Randburg, book publishing Randburg"
         canonical="https://www.creativebookssa.co.za/bookprintingrandburg"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
