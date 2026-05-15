@@ -32,7 +32,7 @@ export default function PricingButtons({ mailtoUrl, quoteOnly = false }) {
             className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-sm font-medium transition-all text-[#0F0F0F]/70 hover:text-copper hover:border-copper"
             style={{ border: '1px solid rgba(0,0,0,0.15)' }}
           >
-            <Mail className="w-3.5 h-3.5" /> Order This As-Is
+            <Mail className="w-3.5 h-3.5" /> Email Now
           </a>
         </motion.div>
       )}
