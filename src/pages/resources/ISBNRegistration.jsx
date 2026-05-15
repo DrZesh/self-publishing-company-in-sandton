@@ -36,11 +36,10 @@ const steps = [
     title: 'Await Your ISBN',
     description: 'The NLSA typically responds within 3–5 working days with your ISBN and a form to complete for each number.',
     tips: [
-      'Each format (eBook, Softcover, Hardcover) requires its own separate ISBN.',
-      'You will need to fill in a form for each ISBN number you are assigned.',
-      'Keep your ISBN(s) safe — they are unique identifiers permanently linked to your book edition.',
-      'Creative Books SA can handle this entire process on your behalf.',
-    ],
+       'Each format (eBook, Softcover, Hardcover) requires its own separate ISBN.',
+       'You will need to fill in a form for each ISBN number you are assigned.',
+       'Keep your ISBN(s) safe — they are unique identifiers permanently linked to your book edition.',
+     ],
   },
 ];
 
