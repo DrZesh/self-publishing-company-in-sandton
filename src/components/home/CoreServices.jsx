@@ -153,7 +153,7 @@ function GlassCard({ service, i }) {
 
 export default function CoreServices() {
   return (
-    <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #f8f9fb 0%, #eef1f7 100%)' }}>
+    <section id="our-services" className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #f8f9fb 0%, #eef1f7 100%)' }}>
       {/* Decorative background elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] pointer-events-none rounded-full"
         style={{ background: 'radial-gradient(ellipse, rgba(184,149,91,0.06) 0%, transparent 70%)', filter: 'blur(80px)' }} />

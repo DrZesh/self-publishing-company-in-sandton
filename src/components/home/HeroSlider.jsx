@@ -261,10 +261,16 @@ export default function HeroSlider({ locationData }) {
                   {slide.primary.label}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to={slide.secondary.to}
+                <button
+                  onClick={() => {
+                    const servicesSection = document.getElementById('our-services');
+                    if (servicesSection) {
+                      servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/20 text-white/90 rounded-full hover:border-copper hover:text-copper transition-all text-sm md:text-base">
                   {slide.secondary.label}
-                </Link>
+                </button>
               </motion.div>
             </motion.div>
 

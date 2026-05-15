@@ -319,14 +319,17 @@ export function renderFormSubmissionEmail(data) {
     let html = FormSubmissionEmailTemplate;
     
     Object.entries(data).forEach(([key, value]) => {
-        const regex = new RegExp(\`{{\\s*\${key}\\s*}}\`, 'g');
+        const pattern = `{{\\s*${key}\\s*}}`;
+        const regex = new RegExp(pattern, 'g');
         html = html.replace(regex, value || '');
     });
     
     // Remove conditional sections if data is empty
-    html = html.replace(/{{#if \\w+}}.*?{{\/if}}/gs, (match) => {
-        const key = match.match(/{{#if (\\w+)}}/)[1];
-        return data[key] ? match.replace(/{{#if \\w+}}|{{\/if}}/g, '') : '';
+    html = html.replace(/\{\{#if\s+\w+\}\}.*?\{\{\/if\}\}/gs, (match) => {
+        const keyMatch = match.match(/\{\{#if\s+(\w+)\}\}/);
+        if (!keyMatch) return match;
+        const key = keyMatch[1];
+        return data[key] ? match.replace(/\{\{#if\s+\w+\}\}|\{\{\/if\}\}/g, '') : '';
     });
     
     return html;
