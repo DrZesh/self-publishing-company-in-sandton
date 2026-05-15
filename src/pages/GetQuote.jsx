@@ -353,14 +353,16 @@ export default function GetQuote() {
             transition={{ duration: 0.5 }}
             className="mt-6 rounded-3xl overflow-hidden"
             style={{
-              background: '#ffffff',
-              border: '1px solid rgba(0,0,0,0.06)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.08)',
+              background: 'rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(184,115,51,0.15)',
+              boxShadow: '0 24px 60px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8)',
             }}
           >
             {/* Card Header */}
             <div className="px-6 py-4 flex items-center justify-between"
-              style={{ background: '#0F0F0F' }}>
+              style={{ background: 'rgba(15,15,15,0.92)', backdropFilter: 'blur(12px)' }}>
               <div className="flex items-center gap-3">
                 <div className="flex gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
