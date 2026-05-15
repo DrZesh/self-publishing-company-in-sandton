@@ -18,7 +18,7 @@ const contactInfo = [
 ];
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -36,12 +36,13 @@ export default function Contact() {
         businessSubject: `New Contact Form Submission from ${form.name}`,
         userSubject: 'Thanks for reaching out to Creative Books SA',
         fields: [
-          ['Full Name', form.name],
-          ['Email Address', form.email],
-          ['Phone Number', form.phone],
-          ['Service Interested In', form.service],
-          ['Message', form.message],
-        ],
+                           ['Full Name', form.name],
+                           ['Email Address', form.email],
+                           ['Phone Number', form.phone],
+                           ['Service Interested In', form.service],
+                           ['Subject', form.subject],
+                           ['Message', form.message],
+                         ],
         pageUrl: 'https://www.creativebookssa.co.za/contact',
         honeypot: '',
         loadedAt: loadedAt.current,
@@ -138,26 +139,30 @@ export default function Contact() {
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div>
-                        <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Phone</label>
-                        <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+27..." />
-                      </div>
-                      <div>
-                        <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Service</label>
-                        <Select value={form.service} onValueChange={(v) => setForm({ ...form, service: v })}>
-                          <SelectTrigger><SelectValue placeholder="Select a service" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="publishing">Book Publishing</SelectItem>
-                            <SelectItem value="printing">Book Printing</SelectItem>
-                            <SelectItem value="editing">Editing Services</SelectItem>
-                            <SelectItem value="design">Design Services</SelectItem>
-                            <SelectItem value="ebook">eBook Publishing</SelectItem>
-                            <SelectItem value="ghostwriting">Ghostwriting</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                       <div>
+                         <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Phone</label>
+                         <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+27..." />
+                       </div>
+                       <div>
+                         <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Service</label>
+                         <Select value={form.service} onValueChange={(v) => setForm({ ...form, service: v })}>
+                           <SelectTrigger><SelectValue placeholder="Select a service" /></SelectTrigger>
+                           <SelectContent>
+                             <SelectItem value="publishing">Book Publishing</SelectItem>
+                             <SelectItem value="printing">Book Printing</SelectItem>
+                             <SelectItem value="editing">Editing Services</SelectItem>
+                             <SelectItem value="design">Design Services</SelectItem>
+                             <SelectItem value="ebook">eBook Publishing</SelectItem>
+                             <SelectItem value="ghostwriting">Ghostwriting</SelectItem>
+                             <SelectItem value="other">Other</SelectItem>
+                           </SelectContent>
+                         </Select>
+                       </div>
+                     </div>
+                     <div>
+                       <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Subject</label>
+                       <Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="What is this about?" required />
+                     </div>
                     <div>
                       <label className="text-sm font-body font-medium text-[#0F0F0F] mb-1.5 block">Message</label>
                       <Textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Tell us about your project..." rows={5} required />
