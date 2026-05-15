@@ -43,7 +43,7 @@ export default function Contact() {
       }).catch(err => console.error('Form capture failed:', err));
 
       // Send confirmation emails (primary action)
-      await base44.functions.invoke('sendFormEmail', {
+      await base44.functions.invoke('sendFormEmailResend', {
         formType: 'Contact Form',
         submitterName: form.name,
         submitterEmail: form.email,

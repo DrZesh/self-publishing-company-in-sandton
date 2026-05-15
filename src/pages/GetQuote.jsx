@@ -202,7 +202,7 @@ export default function GetQuote() {
       }).catch(err => console.error('Form capture failed:', err));
 
       // Send confirmation emails (primary action)
-      await base44.functions.invoke('sendFormEmail', {
+      await base44.functions.invoke('sendFormEmailResend', {
         formType: 'Quote Request',
         submitterName: `${data.firstName} ${data.lastName}`.trim(),
         submitterEmail: data.email,
