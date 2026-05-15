@@ -11,11 +11,9 @@ import { downloadEstimatePDF } from '../../lib/estimate-pdf-generator';
 export default function UniversalCalculator() {
   // Service selection
   const [selectedServices, setSelectedServices] = useState([]);
-  const [currentStep, setCurrentStep] = useState('services'); // services, details, review, confirmation
+  const [currentStep, setCurrentStep] = useState('services');
   const [formData, setFormData] = useState({});
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '' });
-  const [estimateTotal, setEstimateTotal] = useState(0);
-  const [breakdown, setBreakdown] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,8 +36,8 @@ export default function UniversalCalculator() {
     setFormData(prev => ({ ...prev, [serviceId]: { ...prev[serviceId], ...data } }));
   };
 
-  // Calculate totals
-  const calculateEstimate = useCallback(() => {
+  // Calculate estimate (live update)
+  const { estimateTotal, breakdown } = useMemo(() => {
     let total = 0;
     let items = [];
 
@@ -47,9 +45,10 @@ export default function UniversalCalculator() {
       const data = formData[serviceId] || {};
 
       if (serviceId === 'printing') {
+        const wordCount = data.wordCount || 0;
         const result = getPrintingPrice(
           data.bookSize || 'a5',
-          data.paperType || 'white80',
+          `${data.bookSize === 'a5' ? 'a5' : '6x9'}_${data.paperType || 'white'}`,
           data.pages || 150,
           data.copies || 100
         );
@@ -57,19 +56,18 @@ export default function UniversalCalculator() {
           total += result.totalPrice;
           items.push({
             name: 'Book Printing',
-            description: `${data.copies} × ${data.pages}p book @ R${result.pricePerBook}/book`,
+            description: `${data.copies} copies × ${data.pages} pages @ R${result.pricePerBook}/book`,
             amount: result.totalPrice,
           });
         }
       } else if (serviceId === 'editing') {
-        // Get editing rates from master pricing
-        const rates = {
-          copyediting: MASTER_PRICING.editing.copy_editing[0]?.price || 0.25,
-          lineedit: MASTER_PRICING.editing.line_edit[0]?.price || 0.40,
-          contentedit: MASTER_PRICING.editing.content_edit[0]?.price || 0.50,
-        };
-        const amount = Math.ceil((data.wordCount || 0) * (rates[data.editingType] || 0.25));
-        if (amount > 0) {
+        if (data.wordCount) {
+          const rates = {
+            copyediting: MASTER_PRICING.editing.copy_editing[0]?.price || 0.25,
+            lineedit: MASTER_PRICING.editing.line_edit[0]?.price || 0.40,
+            contentedit: MASTER_PRICING.editing.content_edit[0]?.price || 0.50,
+          };
+          const amount = Math.ceil((data.wordCount) * (rates[data.editingType] || 0.25));
           total += amount;
           const typeLabel = {
             copyediting: 'Copy Editing',
@@ -78,12 +76,11 @@ export default function UniversalCalculator() {
           };
           items.push({
             name: typeLabel[data.editingType] || 'Copy Editing',
-            description: `${data.wordCount || 0} words @ R${rates[data.editingType]}/word`,
+            description: `${data.wordCount.toLocaleString()} words @ R${rates[data.editingType]}/word`,
             amount,
           });
         }
       } else if (serviceId === 'design-cover') {
-        // Get design pricing from master pricing
         const coverDesigns = MASTER_PRICING.design.book_cover || [];
         const packages = {
           authors: coverDesigns.find(s => s.packageName === 'Authors Book Cover')?.price || 1700,
@@ -103,16 +100,15 @@ export default function UniversalCalculator() {
           amount,
         });
       } else if (serviceId === 'typesetting') {
-        // Get typesetting rates from master pricing
-        const typesetServices = MASTER_PRICING.design.typesetting || [];
-        const rates = {
-          basic: typesetServices[0]?.price || 10.5,
-          standard: typesetServices[1]?.price || 12.5,
-          premium: typesetServices[2]?.price || 19.5,
-        };
-        const ratePerPage = rates[data.typesetLevel] || 10.5;
-        const amount = Math.ceil((data.pages || 0) * ratePerPage);
-        if (amount > 0) {
+        if (data.pages) {
+          const typesetServices = MASTER_PRICING.design.typesetting || [];
+          const rates = {
+            basic: typesetServices[0]?.price || 10.5,
+            standard: typesetServices[1]?.price || 12.5,
+            premium: typesetServices[2]?.price || 19.5,
+          };
+          const ratePerPage = rates[data.typesetLevel] || 10.5;
+          const amount = Math.ceil((data.pages) * ratePerPage);
           total += amount;
           const typeLabel = {
             basic: 'Basic Typesetting',
@@ -128,8 +124,7 @@ export default function UniversalCalculator() {
       }
     });
 
-    setEstimateTotal(total);
-    setBreakdown(items);
+    return { estimateTotal: total, breakdown: items };
   }, [selectedServices, formData]);
 
   // Generate quote number
@@ -145,14 +140,46 @@ export default function UniversalCalculator() {
     downloadEstimatePDF(clientInfo, breakdown, estimateTotal, quoteNumber);
   };
 
+  // Validation
+  const validateServices = () => {
+    let isValid = true;
+    let msgs = [];
+
+    selectedServices.forEach(serviceId => {
+      const data = formData[serviceId] || {};
+      
+      if (serviceId === 'printing' && (!data.pages || !data.copies)) {
+        msgs.push('Please set page count and copies for printing');
+        isValid = false;
+      }
+      if (serviceId === 'editing' && !data.wordCount) {
+        msgs.push('Please enter word count for editing');
+        isValid = false;
+      }
+      if (serviceId === 'typesetting' && !data.pages) {
+        msgs.push('Please set page count for typesetting');
+        isValid = false;
+      }
+    });
+
+    if (msgs.length) {
+      setError(msgs.join(' | '));
+    }
+    return isValid;
+  };
+
   // Submit estimate
   const submitEstimate = async () => {
+    if (!validateServices()) return;
+    if (!clientInfo.name || !clientInfo.email) {
+      setError('Please enter your name and email');
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
       const quoteNumber = generateQuoteNumber();
-      
-      // Send to admin
       const response = await base44.functions.invoke('sendEstimateNotification', {
         clientInfo,
         breakdown,
@@ -366,29 +393,44 @@ export default function UniversalCalculator() {
                       <span>✏️</span> Editing & Proofreading
                     </h3>
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Word Count</label>
-                          <input
-                            type="number"
-                            value={formData.editing?.wordCount || 50000}
-                            onChange={(e) => updateServiceData('editing', { wordCount: Number(e.target.value) })}
-                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Service Type</label>
-                          <select
-                            value={formData.editing?.editingType || 'copyediting'}
-                            onChange={(e) => updateServiceData('editing', { editingType: e.target.value })}
-                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
-                          >
-                            <option value="copyediting">Copy Editing (R0.25/word)</option>
-                            <option value="lineedit">Line Edit (R0.40/word)</option>
-                            <option value="contentedit">Content Edit (R0.50/word)</option>
-                          </select>
-                        </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Word Count *</label>
+                        <input
+                          type="number"
+                          placeholder="Enter your manuscript word count (e.g., 50000)"
+                          value={formData.editing?.wordCount || ''}
+                          onChange={(e) => updateServiceData('editing', { wordCount: e.target.value ? Number(e.target.value) : null })}
+                          className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
+                          min="1000"
+                        />
+                        {formData.editing?.wordCount && (
+                          <div className="text-xs text-[#0F0F0F]/60 mt-2">
+                            ≈ {Math.ceil(formData.editing.wordCount / 250)} pages (250 words/page)
+                          </div>
+                        )}
                       </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Service Type</label>
+                        <select
+                          value={formData.editing?.editingType || 'copyediting'}
+                          onChange={(e) => updateServiceData('editing', { editingType: e.target.value })}
+                          className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                        >
+                          <option value="copyediting">Copy Editing - R0.25/word</option>
+                          <option value="lineedit">Line Edit - R0.40/word</option>
+                          <option value="contentedit">Content Edit - R0.50/word</option>
+                        </select>
+                      </div>
+                      {formData.editing?.wordCount && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-3 bg-emerald-100 rounded-lg">
+                          <div className="text-xs sm:text-sm font-semibold text-emerald-900">
+                            Estimated Cost: R{(() => {
+                              const rates = { copyediting: 0.25, lineedit: 0.40, contentedit: 0.50 };
+                              return Math.ceil(formData.editing.wordCount * (rates[formData.editing.editingType] || 0.25)).toLocaleString();
+                            })()}
+                          </div>
+                        </motion.div>
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -432,12 +474,14 @@ export default function UniversalCalculator() {
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Page Count</label>
+                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Page Count *</label>
                         <input
                           type="number"
-                          value={formData.typesetting?.pages || 200}
-                          onChange={(e) => updateServiceData('typesetting', { pages: Number(e.target.value) })}
+                          placeholder="Enter page count (e.g., 200)"
+                          value={formData.typesetting?.pages || ''}
+                          onChange={(e) => updateServiceData('typesetting', { pages: e.target.value ? Number(e.target.value) : null })}
                           className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
+                          min="1"
                         />
                       </div>
                       <div>
@@ -447,10 +491,35 @@ export default function UniversalCalculator() {
                           onChange={(e) => updateServiceData('typesetting', { typesetLevel: e.target.value })}
                           className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
                         >
-                          <option value="basic">Basic Typesetting (R10.50/page)</option>
-                          <option value="standard">Standard Typesetting (R12.50/page)</option>
-                          <option value="premium">Premium Layout (R19.50/page)</option>
+                          <option value="basic">Basic Typesetting - R10.50/page</option>
+                          <option value="standard">Standard Typesetting - R12.50/page</option>
+                          <option value="premium">Premium Layout - R19.50/page</option>
                         </select>
+                      </div>
+                      {formData.typesetting?.pages && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-3 bg-blue-100 rounded-lg">
+                          <div className="text-xs sm:text-sm font-semibold text-blue-900">
+                            Estimated Cost: R{(() => {
+                              const rates = { basic: 10.5, standard: 12.5, premium: 19.5 };
+                              return Math.ceil(formData.typesetting.pages * (rates[formData.typesetting.typesetLevel] || 10.5)).toLocaleString();
+                            })()}
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Live Cost Summary */}
+                {selectedServices.length > 0 && estimateTotal > 0 && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 sm:p-6 bg-gradient-to-r from-copper/10 to-copper/5 rounded-2xl border-2 border-copper/20">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-xs sm:text-sm text-[#0F0F0F]/60 mb-1">Estimated Total Cost</div>
+                        <div className="font-heading text-2xl sm:text-3xl font-bold text-copper">R{estimateTotal.toLocaleString()}</div>
+                      </div>
+                      <div className="text-right text-xs sm:text-sm text-[#0F0F0F]/60">
+                        {breakdown.length} service{breakdown.length !== 1 ? 's' : ''} selected
                       </div>
                     </div>
                   </motion.div>
@@ -467,13 +536,11 @@ export default function UniversalCalculator() {
                     ← Back
                   </motion.button>
                   <motion.button
-                    onClick={() => {
-                      calculateEstimate();
-                      setCurrentStep('review');
-                    }}
+                    onClick={() => setCurrentStep('review')}
+                    disabled={estimateTotal === 0}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 font-medium shadow-lg text-sm sm:text-base"
+                    className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg text-sm sm:text-base"
                   >
                     Review Estimate <ChevronRight className="w-4 h-4 inline ml-2" />
                   </motion.button>
@@ -654,8 +721,6 @@ export default function UniversalCalculator() {
                     setSelectedServices([]);
                     setFormData({});
                     setClientInfo({ name: '', email: '', phone: '' });
-                    setEstimateTotal(0);
-                    setBreakdown([]);
                   }}
                   className="px-8 py-3 bg-copper text-white rounded-full hover:bg-copper/90 font-medium shadow-lg inline-flex items-center gap-2 text-sm sm:text-base"
                 >
