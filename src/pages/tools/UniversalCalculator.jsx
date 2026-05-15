@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Calculator, ArrowRight, AlertCircle, Download, Mail } from 'lucide-react';
+import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import { MASTER_PRICING, QUANTITY_MULTIPLIERS, getPrintingPrice } from '../../lib/pricing-extractor';
@@ -146,322 +146,469 @@ export default function UniversalCalculator() {
         </div>
       </section>
 
-      {/* Main Calculator */}
-      <section className="py-16 lg:py-20 bg-vellum min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {currentStep === 'services' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <div>
-                <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-2">Step 1: Select Services</h2>
-                <p className="text-[#0F0F0F]/60">Choose the services you need for your publishing project.</p>
-              </div>
-
-              {/* Service Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { id: 'printing', icon: '📚', title: 'Book Printing', description: 'Print your finished manuscript' },
-                  { id: 'editing', icon: '✏️', title: 'Editing & Proofreading', description: 'Professional manuscript review' },
-                  { id: 'design-cover', icon: '🎨', title: 'Cover Design', description: 'Custom book cover design' },
-                  { id: 'typesetting', icon: '📄', title: 'Typesetting', description: 'Professional layout & formatting' },
-                ].map(service => (
-                  <motion.button
-                    key={service.id}
-                    onClick={() => toggleService(service.id)}
-                    className={`p-6 rounded-xl border-2 transition-all text-left ${
-                      selectedServices.includes(service.id)
-                        ? 'border-copper bg-copper/10'
-                        : 'border-[#0F0F0F]/10 bg-white hover:border-copper/40'
+      {/* Progress Bar */}
+      {currentStep !== 'confirmation' && (
+        <section className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-[#0F0F0F]/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <div className="flex items-center justify-between">
+              {['services', 'details', 'review'].map((step, idx) => (
+                <div key={step} className="flex items-center flex-1">
+                  <motion.div
+                    className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-medium text-sm ${
+                      currentStep === step
+                        ? 'bg-copper text-white'
+                        : ['services', 'details', 'review'].indexOf(currentStep) > idx
+                        ? 'bg-green-500 text-white'
+                        : 'bg-[#0F0F0F]/10 text-[#0F0F0F]/50'
                     }`}
                   >
-                    <div className="text-3xl mb-3">{service.icon}</div>
-                    <h3 className="font-heading font-bold text-[#0F0F0F]">{service.title}</h3>
-                    <p className="text-sm text-[#0F0F0F]/60 mt-1">{service.description}</p>
-                  </motion.button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setCurrentStep(selectedServices.length > 0 ? 'details' : null)}
-                disabled={selectedServices.length === 0}
-                className="w-full px-6 py-3 bg-copper text-white font-medium rounded-full hover:bg-copper/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                Continue to Details →
-              </button>
-            </motion.div>
-          )}
-
-          {currentStep === 'details' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h2 className="font-heading text-3xl font-bold text-[#0F0F0F]">Step 2: Service Details</h2>
-
-              {/* Printing Details */}
-              {selectedServices.includes('printing') && (
-                <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                  <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Book Printing</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Book Size</label>
-                      <select
-                        value={formData.printing?.bookSize || 'a5'}
-                        onChange={(e) => updateServiceData('printing', { bookSize: e.target.value })}
-                        className="w-full p-2 border rounded"
-                      >
-                        <option value="a5">A5 (148×210mm)</option>
-                        <option value="6x9">6×9 inches</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Paper Type</label>
-                      <select
-                        value={formData.printing?.paperType || 'cream78'}
-                        onChange={(e) => updateServiceData('printing', { paperType: e.target.value })}
-                        className="w-full p-2 border rounded"
-                      >
-                        <option value="cream78">Cream Paper 78 gsm</option>
-                        <option value="white80">White Paper 80 gsm</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Page Count</label>
-                      <input
-                        type="number"
-                        min={50}
-                        max={400}
-                        value={formData.printing?.pages || 150}
-                        onChange={(e) => updateServiceData('printing', { pages: Number(e.target.value) })}
-                        className="w-full p-2 border rounded"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Number of Copies</label>
-                      <select
-                        value={formData.printing?.copies || 100}
-                        onChange={(e) => updateServiceData('printing', { copies: Number(e.target.value) })}
-                        className="w-full p-2 border rounded"
-                      >
-                        {Object.keys(QUANTITY_MULTIPLIERS).map(qty => (
-                          <option key={qty} value={qty}>{qty} copies</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                    {['services', 'details', 'review'].indexOf(currentStep) > idx ? (
+                      <CheckCircle2 className="w-5 h-5" />
+                    ) : (
+                      idx + 1
+                    )}
+                  </motion.div>
+                  {idx < 2 && (
+                    <div
+                      className={`flex-1 h-1 mx-2 sm:mx-4 rounded-full ${
+                        ['services', 'details', 'review'].indexOf(currentStep) > idx
+                          ? 'bg-green-500'
+                          : 'bg-[#0F0F0F]/10'
+                      }`}
+                    />
+                  )}
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-              {/* Editing Details */}
-              {selectedServices.includes('editing') && (
-                <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                  <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Editing & Proofreading</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Word Count</label>
-                      <input
-                        type="number"
-                        value={formData.editing?.wordCount || 50000}
-                        onChange={(e) => updateServiceData('editing', { wordCount: Number(e.target.value) })}
-                        className="w-full p-2 border rounded"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Service Type</label>
-                      <select
-                        value={formData.editing?.editingType || 'proofreading'}
-                        onChange={(e) => {
-                          const type = e.target.value;
-                          const rates = { proofreading: 0.04, copyediting: 0.08, academic: 0.12 };
-                          updateServiceData('editing', {
-                            editingType: type,
-                            ratePerWord: rates[type],
-                          });
-                        }}
-                        className="w-full p-2 border rounded"
-                      >
-                        <option value="proofreading">Proofreading (R0.04/word)</option>
-                        <option value="copyediting">Copy Editing (R0.08/word)</option>
-                        <option value="academic">Academic Editing (R0.12/word)</option>
-                      </select>
-                    </div>
-                  </div>
+      {/* Main Calculator */}
+      <section className="py-8 lg:py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <AnimatePresence mode="wait">
+            {currentStep === 'services' && (
+              <motion.div key="services" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+                <div className="text-center mb-10">
+                  <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#0F0F0F] mb-3">What services do you need?</h2>
+                  <p className="text-[#0F0F0F]/60 text-sm sm:text-base">Select all the services for your publishing project</p>
                 </div>
-              )}
 
-              {/* Cover Design */}
-              {selectedServices.includes('design-cover') && (
-                <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                  <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Book Cover Design</h3>
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { id: 'starter', label: 'Starter - R3,850' },
-                      { id: 'standard', label: 'Standard - R5,500' },
-                      { id: 'premium', label: 'Premium - R7,700' },
-                    ].map(pkg => (
-                      <button
-                        key={pkg.id}
-                        onClick={() => updateServiceData('design-cover', { packageLevel: pkg.id })}
-                        className={`p-3 rounded border-2 transition-all ${
-                          formData['design-cover']?.packageLevel === pkg.id
-                            ? 'border-copper bg-copper/10'
-                            : 'border-[#0F0F0F]/10'
-                        }`}
-                      >
-                        {pkg.label}
-                      </button>
-                    ))}
-                  </div>
+                {/* Service Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                  {[
+                    { id: 'printing', icon: '📚', title: 'Book Printing', description: 'Print your finished manuscript' },
+                    { id: 'editing', icon: '✏️', title: 'Editing & Proofreading', description: 'Professional manuscript review' },
+                    { id: 'design-cover', icon: '🎨', title: 'Cover Design', description: 'Custom book cover design' },
+                    { id: 'typesetting', icon: '📄', title: 'Typesetting', description: 'Professional layout & formatting' },
+                  ].map((service, idx) => (
+                    <motion.button
+                      key={service.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      onClick={() => toggleService(service.id)}
+                      whileHover={{ scale: 1.02, translateY: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`p-5 sm:p-6 rounded-2xl border-2 transition-all text-left ${
+                        selectedServices.includes(service.id)
+                          ? 'border-copper bg-gradient-to-br from-copper/15 to-copper/5 shadow-lg'
+                          : 'border-[#0F0F0F]/10 bg-white hover:border-copper/50 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="text-3xl sm:text-4xl mb-3">{service.icon}</div>
+                      <h3 className="font-heading font-bold text-[#0F0F0F] mb-1">{service.title}</h3>
+                      <p className="text-xs sm:text-sm text-[#0F0F0F]/60">{service.description}</p>
+                      {selectedServices.includes(service.id) && (
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="mt-4 flex justify-end">
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-copper flex items-center justify-center">
+                            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                          </div>
+                        </motion.div>
+                      )}
+                    </motion.button>
+                  ))}
                 </div>
-              )}
 
-              {/* Typesetting */}
-              {selectedServices.includes('typesetting') && (
-                <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                  <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Typesetting</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Page Count</label>
-                      <input
-                        type="number"
-                        value={formData.typesetting?.pages || 200}
-                        onChange={(e) => updateServiceData('typesetting', { pages: Number(e.target.value) })}
-                        className="w-full p-2 border rounded"
-                      />
+                <motion.button
+                  onClick={() => setCurrentStep(selectedServices.length > 0 ? 'details' : null)}
+                  disabled={selectedServices.length === 0}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-6 py-3 sm:py-4 bg-copper text-white font-medium rounded-full hover:bg-copper/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg text-sm sm:text-base"
+                >
+                  Continue to Details <ChevronRight className="w-4 h-4 inline ml-2" />
+                </motion.button>
+              </motion.div>
+            )}
+
+            {currentStep === 'details' && (
+              <motion.div key="details" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
+                <div className="text-center mb-8">
+                  <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#0F0F0F] mb-2">Service Details</h2>
+                  <p className="text-[#0F0F0F]/60 text-sm sm:text-base">Customize your selections</p>
+                </div>
+
+                {/* Printing Details */}
+                {selectedServices.includes('printing') && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 sm:p-6 bg-gradient-to-br from-copper/5 to-transparent rounded-2xl border border-copper/20">
+                    <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
+                      <span>📚</span> Book Printing
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Book Size</label>
+                          <select
+                            value={formData.printing?.bookSize || 'a5'}
+                            onChange={(e) => updateServiceData('printing', { bookSize: e.target.value })}
+                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                          >
+                            <option value="a5">A5 (148×210mm)</option>
+                            <option value="6x9">6×9 inches</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Paper Type</label>
+                          <select
+                            value={formData.printing?.paperType || 'cream78'}
+                            onChange={(e) => updateServiceData('printing', { paperType: e.target.value })}
+                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                          >
+                            <option value="cream78">Cream Paper 78 gsm</option>
+                            <option value="white80">White Paper 80 gsm</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Page Count: <span className="text-copper font-bold">{formData.printing?.pages || 150}</span></label>
+                          <input
+                            type="range"
+                            min={50}
+                            max={400}
+                            step={10}
+                            value={formData.printing?.pages || 150}
+                            onChange={(e) => updateServiceData('printing', { pages: Number(e.target.value) })}
+                            className="w-full accent-copper"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Number of Copies</label>
+                          <select
+                            value={formData.printing?.copies || 100}
+                            onChange={(e) => updateServiceData('printing', { copies: Number(e.target.value) })}
+                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                          >
+                            {Object.keys(QUANTITY_MULTIPLIERS).map(qty => (
+                              <option key={qty} value={qty}>{qty} copies</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="flex items-center gap-2 mt-6">
+                  </motion.div>
+                )}
+
+                {/* Editing Details */}
+                {selectedServices.includes('editing') && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50 to-transparent rounded-2xl border border-emerald-200">
+                    <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
+                      <span>✏️</span> Editing & Proofreading
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Word Count</label>
+                          <input
+                            type="number"
+                            value={formData.editing?.wordCount || 50000}
+                            onChange={(e) => updateServiceData('editing', { wordCount: Number(e.target.value) })}
+                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Service Type</label>
+                          <select
+                            value={formData.editing?.editingType || 'proofreading'}
+                            onChange={(e) => {
+                              const type = e.target.value;
+                              const rates = { proofreading: 0.04, copyediting: 0.08, academic: 0.12 };
+                              updateServiceData('editing', {
+                                editingType: type,
+                                ratePerWord: rates[type],
+                              });
+                            }}
+                            className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                          >
+                            <option value="proofreading">Proofreading (R0.04/word)</option>
+                            <option value="copyediting">Copy Editing (R0.08/word)</option>
+                            <option value="academic">Academic Editing (R0.12/word)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Cover Design */}
+                {selectedServices.includes('design-cover') && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 sm:p-6 bg-gradient-to-br from-purple-50 to-transparent rounded-2xl border border-purple-200">
+                    <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
+                      <span>🎨</span> Book Cover Design
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: 'starter', label: 'Starter', price: 'R3,850' },
+                        { id: 'standard', label: 'Standard', price: 'R5,500' },
+                        { id: 'premium', label: 'Premium', price: 'R7,700' },
+                      ].map(pkg => (
+                        <motion.button
+                          key={pkg.id}
+                          onClick={() => updateServiceData('design-cover', { packageLevel: pkg.id })}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`p-4 rounded-xl border-2 transition-all text-center ${
+                            formData['design-cover']?.packageLevel === pkg.id
+                              ? 'border-purple-500 bg-purple-50'
+                              : 'border-[#0F0F0F]/10 hover:border-purple-300'
+                          }`}
+                        >
+                          <div className="font-semibold text-[#0F0F0F]">{pkg.label}</div>
+                          <div className="text-sm text-copper font-bold mt-1">{pkg.price}</div>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Typesetting */}
+                {selectedServices.includes('typesetting') && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 sm:p-6 bg-gradient-to-br from-blue-50 to-transparent rounded-2xl border border-blue-200">
+                    <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
+                      <span>📄</span> Typesetting
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Page Count</label>
+                        <input
+                          type="number"
+                          value={formData.typesetting?.pages || 200}
+                          onChange={(e) => updateServiceData('typesetting', { pages: Number(e.target.value) })}
+                          className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
+                        />
+                      </div>
+                      <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-white/50 transition-all">
                         <input
                           type="checkbox"
                           checked={formData.typesetting?.complexFormatting || false}
                           onChange={(e) => updateServiceData('typesetting', { complexFormatting: e.target.checked })}
+                          className="w-4 h-4 accent-copper"
                         />
-                        <span className="text-sm">Complex formatting (images, tables, footnotes)</span>
+                        <span className="text-sm font-medium text-[#0F0F0F]">Complex formatting (images, tables, footnotes) — +R5/page</span>
                       </label>
                     </div>
-                  </div>
+                  </motion.div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 sticky bottom-0 bg-white/80 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-4 sm:py-0">
+                  <motion.button
+                    onClick={() => setCurrentStep('services')}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-6 py-3 border-2 border-copper text-copper rounded-full hover:bg-copper/5 font-medium text-sm sm:text-base"
+                  >
+                    ← Back
+                  </motion.button>
+                  <motion.button
+                    onClick={() => {
+                      calculateEstimate();
+                      setCurrentStep('review');
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 font-medium shadow-lg text-sm sm:text-base"
+                  >
+                    Review Estimate <ChevronRight className="w-4 h-4 inline ml-2" />
+                  </motion.button>
                 </div>
-              )}
+              </motion.div>
+            )}
 
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setCurrentStep('services')}
-                  className="px-6 py-3 border-2 border-copper text-copper rounded-full hover:bg-copper/5"
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={() => {
-                    calculateEstimate();
-                    setCurrentStep('review');
-                  }}
-                  className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90"
-                >
-                  Review Estimate →
-                </button>
-              </div>
-            </motion.div>
-          )}
+            {currentStep === 'review' && (
+              <motion.div key="review" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
+                <div className="text-center mb-8">
+                  <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#0F0F0F] mb-2">Review & Confirm</h2>
+                  <p className="text-[#0F0F0F]/60 text-sm sm:text-base">Almost there! Let us know how to contact you</p>
+                </div>
 
-          {currentStep === 'review' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h2 className="font-heading text-3xl font-bold text-[#0F0F0F]">Step 3: Review & Client Info</h2>
-
-              {/* Estimate Breakdown */}
-              <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Estimate Breakdown</h3>
-                <div className="space-y-2 mb-4">
-                  {breakdown.map((item, idx) => (
-                    <div key={idx} className="flex justify-between text-sm">
-                      <span>{item.name}</span>
-                      <span className="font-semibold">R{item.amount.toLocaleString()}</span>
+                {/* Estimate Breakdown */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 sm:p-8 bg-gradient-to-br from-copper/10 to-transparent rounded-2xl border-2 border-copper/30">
+                  <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-5">Your Estimate</h3>
+                  <div className="space-y-3 mb-6">
+                    {breakdown.map((item, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="flex justify-between items-center pb-3 border-b border-copper/20 last:border-0"
+                      >
+                        <div>
+                          <div className="font-medium text-[#0F0F0F]">{item.name}</div>
+                          <div className="text-xs text-[#0F0F0F]/60">{item.description}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-copper">R{item.amount.toLocaleString()}</div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="pt-6 border-t-2 border-copper/40"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-heading text-xl font-bold text-[#0F0F0F]">Estimated Total</span>
+                      <span className="font-heading text-3xl font-bold text-copper">R{estimateTotal.toLocaleString()}</span>
                     </div>
-                  ))}
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Estimated Total:</span>
-                    <span className="text-copper">R{estimateTotal.toLocaleString()}</span>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                  <p className="text-xs text-blue-900">
-                    <strong>Disclaimer:</strong> This is an automated estimate based on website pricing. Final quotation will be confirmed after Creative Books SA reviews your files and requirements.
+                  </motion.div>
+                </motion.div>
+
+                {/* Info Box */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="p-4 sm:p-5 bg-blue-50 border border-blue-200 rounded-xl"
+                >
+                  <p className="text-xs sm:text-sm text-blue-900">
+                    <span className="font-bold">ℹ️ Disclaimer:</span> This is an automated estimate based on website pricing. Final quotation will be confirmed after Creative Books SA reviews your files and requirements within 24 hours.
                   </p>
+                </motion.div>
+
+                {/* Client Information */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="p-6 sm:p-8 bg-white rounded-2xl border border-[#0F0F0F]/10">
+                  <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-5">Your Contact Information</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Full Name *</label>
+                      <input
+                        type="text"
+                        placeholder="John Doe"
+                        value={clientInfo.name}
+                        onChange={(e) => setClientInfo({ ...clientInfo, name: e.target.value })}
+                        className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Email *</label>
+                      <input
+                        type="email"
+                        placeholder="john@example.com"
+                        value={clientInfo.email}
+                        onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
+                        className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Phone (Optional)</label>
+                      <input
+                        type="tel"
+                        placeholder="+27 11 234 5678"
+                        value={clientInfo.phone}
+                        onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
+                        className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper transition-colors"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {error && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 bg-red-50 border border-red-200 rounded-xl flex gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800">{error}</p>
+                  </motion.div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 sticky bottom-0 bg-white/80 backdrop-blur -mx-4 sm:mx-0 px-4 sm:px-0 py-4 sm:py-0">
+                  <motion.button
+                    onClick={() => setCurrentStep('details')}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-6 py-3 border-2 border-copper text-copper rounded-full hover:bg-copper/5 font-medium text-sm sm:text-base"
+                  >
+                    ← Back
+                  </motion.button>
+                  <motion.button
+                    onClick={submitEstimate}
+                    disabled={loading || !clientInfo.name || !clientInfo.email}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg inline-flex items-center justify-center gap-2 text-sm sm:text-base transition-all"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        Generate & Send Estimate
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
+            )}
 
-              {/* Client Information */}
-              <div className="p-6 bg-white rounded-xl border border-[#0F0F0F]/10">
-                <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-4">Your Contact Information</h3>
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={clientInfo.name}
-                    onChange={(e) => setClientInfo({ ...clientInfo, name: e.target.value })}
-                    className="w-full p-3 border rounded"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={clientInfo.email}
-                    onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
-                    className="w-full p-3 border rounded"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Phone"
-                    value={clientInfo.phone}
-                    onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
-                    className="w-full p-3 border rounded"
-                  />
-                </div>
-              </div>
-
-              {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                  <p className="text-red-800">{error}</p>
-                </div>
-              )}
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setCurrentStep('details')}
-                  className="px-6 py-3 border-2 border-copper text-copper rounded-full hover:bg-copper/5"
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={submitEstimate}
-                  disabled={loading || !clientInfo.name || !clientInfo.email}
-                  className="flex-1 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 disabled:opacity-50 inline-flex items-center justify-center gap-2"
-                >
-                  {loading ? 'Generating...' : 'Generate & Send Estimate'}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {currentStep === 'confirmation' && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center max-w-2xl mx-auto">
-              <div className="text-6xl mb-6">✓</div>
-              <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-4">Estimate Sent!</h2>
-              <p className="text-[#0F0F0F]/60 mb-8">
-                Your estimate has been generated and sent to <strong>{clientInfo.email}</strong>. 
-                Our team will review your requirements and send a final quotation within 24 hours.
-              </p>
-              <button
-                onClick={() => {
-                  setCurrentStep('services');
-                  setSelectedServices([]);
-                  setFormData({});
-                  setClientInfo({ name: '', email: '', phone: '' });
-                }}
-                className="px-8 py-3 bg-copper text-white rounded-full hover:bg-copper/90"
+            {currentStep === 'confirmation' && (
+              <motion.div
+                key="confirmation"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center max-w-2xl mx-auto py-12 sm:py-20"
               >
-                Calculate Another Estimate
-              </button>
-            </motion.div>
-          )}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+                  className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center"
+                >
+                  <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
+                </motion.div>
+                <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#0F0F0F] mb-4">Estimate Sent!</h2>
+                <p className="text-[#0F0F0F]/60 mb-6 text-sm sm:text-base">
+                  We've sent your estimate to <strong className="text-copper">{clientInfo.email}</strong>
+                </p>
+                <p className="text-[#0F0F0F]/50 mb-8 text-xs sm:text-sm">
+                  Our team will review your requirements and send a final quotation within 24 hours.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setCurrentStep('services');
+                    setSelectedServices([]);
+                    setFormData({});
+                    setClientInfo({ name: '', email: '', phone: '' });
+                    setEstimateTotal(0);
+                    setBreakdown([]);
+                  }}
+                  className="px-8 py-3 bg-copper text-white rounded-full hover:bg-copper/90 font-medium shadow-lg inline-flex items-center gap-2 text-sm sm:text-base"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Calculate Another Estimate
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
