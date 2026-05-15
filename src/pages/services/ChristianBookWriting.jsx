@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, BookOpen, Star, PenTool, Heart } from 'lucide-react';
@@ -57,6 +58,11 @@ export default function ChristianBookWriting() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Christian Book Writing Services South Africa | Faith-Based Ghostwriters"
+        description="Professional Christian book writing services in South Africa. We help pastors, ministry leaders and believers write testimonies, devotionals and faith-based books."
+        canonical="https://www.creativebookssa.co.za/christianbookwriting"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

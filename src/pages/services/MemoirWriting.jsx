@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, BookOpen, PenTool, Edit3, Star } from 'lucide-react';
@@ -55,6 +56,11 @@ export default function MemoirWriting() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Memoir Writing Services South Africa | Professional Memoir Writers"
+        description="Professional memoir writing services in South Africa. We help you turn your life story into a published book — ghostwritten, structured and ready to print."
+        canonical="https://www.creativebookssa.co.za/memoirwriting"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

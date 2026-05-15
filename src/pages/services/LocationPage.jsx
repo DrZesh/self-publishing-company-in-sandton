@@ -45,8 +45,18 @@ export default function LocationPage({ locationKey }) {
   const data = locationData[locationKey];
   if (!data) return null;
 
+  const meta = locationMeta[locationKey];
+
   return (
-    <ServicePageTemplate
+    <>
+      {meta && (
+        <PageMeta
+          title={meta.title}
+          description={meta.description}
+          canonical={meta.canonical}
+        />
+      )}
+      <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
       subtitle={data.subtitle}
       title={data.title}
@@ -82,5 +92,6 @@ export default function LocationPage({ locationKey }) {
       ctaTitle={`Get Started in ${locationKey.includes('johannesburg') ? 'Johannesburg' : 'South Africa'}`}
       ctaDescription="Contact our team for a free consultation and personalised quote."
     />
+    </>
   );
 }

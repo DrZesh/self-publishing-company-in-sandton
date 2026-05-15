@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Users, Briefcase, BookOpen, Star } from 'lucide-react';
@@ -55,6 +56,11 @@ export default function BiographyWriting() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Biography Writing Services South Africa | Professional Biographers"
+        description="Professional biography writing services in South Africa. We document the lives of leaders, founders, families and public figures in published books."
+        canonical="https://www.creativebookssa.co.za/biographywriting"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award } from 'lucide-react';
@@ -73,6 +74,11 @@ export default function ChildrensBookPackages() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Children's Book Illustration Packages South Africa | Creative Books SA"
+        description="Professional children's book illustration packages in South Africa. Character development, cover design and print-ready files for self-published authors."
+        canonical="https://www.creativebookssa.co.za/childrensbookpackages"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
