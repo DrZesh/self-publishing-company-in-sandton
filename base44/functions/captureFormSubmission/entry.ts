@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
     // Auto-create or link contact
     let contact = null;
     try {
-      const existingContact = await base44.entities.Contact.filter(
+      const existingContact = await base44.asServiceRole.entities.Contact.filter(
         { email },
         '-created_date',
         1
@@ -113,12 +113,12 @@ Deno.serve(async (req) => {
       if (existingContact && existingContact.length > 0) {
         contact = existingContact[0];
         // Update last_contact_date
-        await base44.entities.Contact.update(contact.id, {
+        await base44.asServiceRole.entities.Contact.update(contact.id, {
           last_contact_date: new Date().toISOString(),
         });
       } else {
         // Create new contact
-        contact = await base44.entities.Contact.create({
+        contact = await base44.asServiceRole.entities.Contact.create({
           full_name: fullName,
           email,
           phone: phone || null,
@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
 
     // Log activity
     try {
-      await base44.entities.ActivityLog.create({
+      await base44.asServiceRole.entities.ActivityLog.create({
         entity_type: 'submission',
         entity_id: submission.id,
         action: 'created',
