@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://www.creativebookssa.co.za/sitemap.xml
-
-# Disallow admin/system paths
+Disallow: /admin
 Disallow: /api/
 Disallow: /__base44/
+
+Sitemap: https://www.creativebookssa.co.za/sitemap.xml
