@@ -5,6 +5,7 @@ import { ArrowRight, Check, Plus, Minus, Award, Image, Palette, Layers, Mail } f
 import PricingButtons from '../../components/shared/PricingButtons';
 import InternalLinks from '../../components/shared/InternalLinks';
 import PageMeta from '../../components/shared/PageMeta';
+import QuoteFormSection from '../../components/shared/QuoteFormSection';
 import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
 
 const printPackages = [
@@ -288,6 +289,19 @@ export default function BookCoverDesign() {
           </div>
         </div>
       </section>
+
+      {/* Quick Quote Form */}
+      <QuoteFormSection
+        title="Get a Quick Book Cover Quote"
+        description="Fill out the form below and we'll send you a personalised quote based on your requirements."
+        services={[
+          { value: 'paperback-cover', label: 'Paperback Cover (Front, Spine, Back)' },
+          { value: 'ebook-cover', label: 'eBook Cover (Amazon)' },
+          { value: 'author-image-cover', label: 'Cover with Author Image' },
+          { value: 'stock-image-cover', label: 'Stock Image Cover' },
+          { value: 'illustrated-cover', label: 'Illustrated Cover Design' },
+        ]}
+      />
 
       {/* Final CTA */}
       <section className="relative py-20 overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 100%)' }}>

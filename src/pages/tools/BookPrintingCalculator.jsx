@@ -5,6 +5,7 @@ import { Calculator, ArrowRight, AlertCircle } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
+import QuoteFormSection from '../../components/shared/QuoteFormSection';
 
 // Exact pricing data from Creative Books SA
 const PRICING_TIERS = {
@@ -440,6 +441,20 @@ export default function BookPrintingCalculator() {
           </div>
         </div>
       </section>
+
+      {/* Quick Quote Form */}
+      <QuoteFormSection
+        title="Quick Book Printing Quote"
+        description="Use the form below to request a quote for your specific book printing project."
+        services={[
+          { value: 'a5-printing', label: 'A5 Book Printing' },
+          { value: '6x9-printing', label: '6×9 Book Printing' },
+          { value: 'hardcover-printing', label: 'Hardcover Printing' },
+          { value: 'childrens-printing', label: "Children's Book Printing" },
+          { value: 'cream-paper', label: 'Cream Paper (78 gsm)' },
+          { value: 'white-paper', label: 'White Paper (80 gsm)' },
+        ]}
+      />
 
       <InternalLinks
         links={[
