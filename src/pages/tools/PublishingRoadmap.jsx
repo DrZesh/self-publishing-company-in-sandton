@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, CheckCircle2, Circle, ArrowRight, AlertCircle } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
@@ -12,6 +12,7 @@ const STAGES = [
     label: 'Manuscript Ready',
     description: 'You have a completed manuscript',
     daysFromStart: 0,
+    durationDays: 0,
     order: 1,
   },
   {
@@ -58,19 +59,10 @@ const STAGES = [
 
 export default function PublishingRoadmap() {
   const [currentStage, setCurrentStage] = useState('manuscript');
-  const [includeServices, setIncludeServices] = useState({
-    editing: false,
-    cover: true,
-    typesetting: true,
-  });
-
-  const selectedStageObj = useMemo(() => {
-    return STAGES.find((s) => s.id === currentStage);
-  }, [currentStage]);
 
   const timeline = useMemo(() => {
     const baselineDate = new Date();
-    const stages = STAGES.map((stage) => {
+    return STAGES.map((stage) => {
       const startDate = new Date(baselineDate);
       startDate.setDate(startDate.getDate() + stage.daysFromStart);
 
@@ -85,26 +77,18 @@ export default function PublishingRoadmap() {
         endDate,
         isCompleted: STAGES.findIndex((s) => s.id === stage.id) < STAGES.findIndex((s) => s.id === currentStage),
         isActive: stage.id === currentStage,
+        isFuture: STAGES.findIndex((s) => s.id === stage.id) > STAGES.findIndex((s) => s.id === currentStage),
       };
     });
-
-    return stages;
   }, [currentStage]);
 
-  const currentStageEndDate = useMemo(() => {
-    const current = timeline.find((s) => s.isActive);
-    return current?.endDate || new Date();
-  }, [timeline]);
+  const currentStageObj = timeline.find((s) => s.isActive);
+  const currentStageEndDate = currentStageObj?.endDate || new Date();
 
   const daysToCompletion = useMemo(() => {
     const today = new Date();
     return Math.ceil((currentStageEndDate - today) / (1000 * 60 * 60 * 24));
   }, [currentStageEndDate]);
-
-  const remainingStages = useMemo(() => {
-    const currentIndex = timeline.findIndex((s) => s.isActive);
-    return timeline.slice(currentIndex);
-  }, [timeline]);
 
   return (
     <div>
@@ -116,215 +100,158 @@ export default function PublishingRoadmap() {
       />
 
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center pt-20 bg-[#060504]">
+      <section className="relative min-h-[45vh] flex items-center pt-20 bg-[#060504]">
         <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 25% 60%, rgba(184,115,51,0.18) 0%, transparent 55%)' }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ background: 'rgba(184,115,51,0.1)', border: '1px solid rgba(184,115,51,0.2)' }}>
               <Calendar className="w-4 h-4 text-copper" />
               <span className="text-copper text-sm font-medium">Free Tool</span>
             </div>
             <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Publishing Roadmap</h1>
-            <p className="text-white/60 text-lg font-body">
-              See your path to publication. Select your current stage and get an estimated timeline for when your book will be ready to launch.
+            <p className="text-white/60 text-lg font-body max-w-2xl">
+              Select where you are in the publishing process to see your personalized timeline to book release.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Tool */}
-      <section className="py-16 lg:py-20 bg-vellum">
+      {/* Main Tool Section */}
+      <section className="py-16 lg:py-24 bg-vellum">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Stage Selection */}
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:col-span-2 space-y-6">
-              <div>
-                <h2 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-2">Where are you in the process?</h2>
-                <p className="text-[#0F0F0F]/60 font-body text-sm mb-6">
-                  Select your current publishing stage to see your timeline to launch.
-                </p>
-
-                <div className="space-y-3">
-                  {STAGES.map((stage) => {
-                    const isSelected = stage.id === currentStage;
-                    return (
-                      <motion.button
-                        key={stage.id}
-                        onClick={() => setCurrentStage(stage.id)}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: stage.order * 0.05 }}
-                        className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                          isSelected
-                            ? 'border-copper bg-copper/10'
-                            : 'border-[#0F0F0F]/10 bg-white hover:border-copper/40'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="mt-1">
-                            {isSelected ? (
-                              <div className="w-6 h-6 rounded-full bg-copper flex items-center justify-center">
-                                <CheckCircle2 className="w-4 h-4 text-white" />
-                              </div>
-                            ) : (
-                              <div className="w-6 h-6 rounded-full border-2 border-[#0F0F0F]/20" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-[#0F0F0F]">{stage.label}</h3>
-                            <p className="text-sm text-[#0F0F0F]/60 font-body">{stage.description}</p>
-                          </div>
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Services Selection */}
-              <div className="pt-6 border-t border-[#0F0F0F]/10">
-                <h3 className="font-heading font-bold text-[#0F0F0F] mb-4">Services Included in Timeline</h3>
-                <div className="space-y-2">
-                  {[
-                    { id: 'editing', label: 'Professional Editing (add 9 days)', default: false },
-                    { id: 'cover', label: 'Professional Cover Design (add 7 days)', default: true },
-                    { id: 'typesetting', label: 'Professional Typesetting (add 4 days)', default: true },
-                  ].map(({ id, label, default: defaultVal }) => (
-                    <label key={id} className="flex items-center gap-3 p-3 border border-[#0F0F0F]/10 rounded-lg cursor-pointer hover:bg-copper/5 transition-all" style={{ borderColor: includeServices[id] ? '#B87333' : '#0F0F0F10' }}>
-                      <input
-                        type="checkbox"
-                        checked={includeServices[id]}
-                        onChange={(e) => setIncludeServices({ ...includeServices, [id]: e.target.checked })}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-sm text-[#0F0F0F]/80 font-body">{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right Column - Timeline Summary */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:sticky lg:top-20 lg:h-fit"
-            >
-              <div className="p-8 rounded-2xl bg-white border-2 border-copper/20" style={{ boxShadow: '0 10px 40px rgba(184,115,51,0.1)' }}>
-                <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-6">Your Timeline</h3>
-
-                <div className="space-y-6">
-                  {/* Current Stage */}
-                  <div>
-                    <p className="text-[#0F0F0F]/60 text-xs font-body mb-2">Current Stage</p>
-                    <p className="font-heading text-lg font-bold text-copper">{selectedStageObj?.label}</p>
-                  </div>
-
-                  {/* Completion Date */}
-                  <div className="pt-4 border-t border-[#0F0F0F]/10">
-                    <p className="text-[#0F0F0F]/60 text-xs font-body mb-2">Current Stage Completion</p>
-                    <p className="font-heading text-2xl font-bold text-[#0F0F0F]">
-                      {currentStageEndDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </p>
-                    <p className="text-sm text-copper font-medium mt-1">{daysToCompletion} days from now</p>
-                  </div>
-
-                  {/* Remaining Stages */}
-                  <div className="pt-4 border-t border-[#0F0F0F]/10">
-                    <p className="text-xs font-semibold text-[#0F0F0F] mb-3">Remaining Stages</p>
-                    <div className="space-y-2">
-                      {remainingStages.map((stage, idx) => (
-                        <div key={stage.id} className="flex gap-2 text-xs">
-                          <span className="text-copper font-semibold w-5">{idx + 1}.</span>
-                          <div>
-                            <p className="text-[#0F0F0F] font-medium">{stage.label}</p>
-                            <p className="text-[#0F0F0F]/50">
-                              {stage.startDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' })}
-                              {stage.durationDays && ` · ~${stage.durationDays} days`}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA */}
-                  <div className="pt-4 border-t border-[#0F0F0F]/10">
-                    <Link
-                      to="/getquote"
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all"
-                    >
-                      Get a Quote
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Full Timeline Visualization */}
-          <div className="mt-12 pt-12 border-t border-[#0F0F0F]/10">
-            <h2 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-8">Complete Publishing Timeline</h2>
-            <div className="space-y-4">
-              {timeline.map((stage) => (
-                <motion.div
+          {/* Stage Selection */}
+          <div className="mb-16">
+            <h2 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-8 text-center">Where are you in your publishing journey?</h2>
+            
+            {/* Timeline visualization with clickable stages */}
+            <div className="flex flex-col space-y-4">
+              {timeline.map((stage, idx) => (
+                <motion.button
                   key={stage.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className={`p-4 rounded-lg border ${
-                    stage.isCompleted
-                      ? 'bg-green-50 border-green-200'
-                      : stage.isActive
-                      ? 'bg-copper/10 border-copper'
-                      : 'bg-white border-[#0F0F0F]/10'
+                  onClick={() => setCurrentStage(stage.id)}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className={`w-full text-left p-5 rounded-xl border-2 transition-all ${
+                    stage.isActive
+                      ? 'border-copper bg-copper/15 shadow-lg'
+                      : stage.isCompleted
+                      ? 'border-green-300 bg-green-50'
+                      : 'border-[#0F0F0F]/10 bg-white hover:border-copper/50'
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1">
+                  <div className="flex items-center gap-4">
+                    {/* Stage number/icon */}
+                    <div className="flex-shrink-0">
                       {stage.isCompleted ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-600" />
+                        <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+                          <CheckCircle2 className="w-6 h-6 text-white" />
+                        </div>
                       ) : stage.isActive ? (
-                        <Circle className="w-5 h-5 text-copper fill-copper" />
+                        <div className="w-10 h-10 rounded-full bg-copper flex items-center justify-center">
+                          <Clock className="w-6 h-6 text-white" />
+                        </div>
                       ) : (
-                        <Circle className="w-5 h-5 text-[#0F0F0F]/30" />
+                        <div className="w-10 h-10 rounded-full border-2 border-[#0F0F0F]/30 flex items-center justify-center text-[#0F0F0F]/60 font-semibold">
+                          {stage.order}
+                        </div>
                       )}
                     </div>
+
+                    {/* Stage info */}
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`font-heading font-bold ${stage.isCompleted ? 'text-green-700' : stage.isActive ? 'text-copper' : 'text-[#0F0F0F]'}`}>
+                      <div className="flex items-center gap-2">
+                        <h3 className={`font-heading font-bold text-lg ${
+                          stage.isCompleted ? 'text-green-700' : stage.isActive ? 'text-copper' : 'text-[#0F0F0F]'
+                        }`}>
                           {stage.label}
                         </h3>
-                        {stage.isCompleted && <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded">Completed</span>}
-                        {stage.isActive && <span className="text-xs font-semibold text-copper bg-copper/10 px-2 py-1 rounded">Current</span>}
+                        {stage.isCompleted && <span className="text-xs font-semibold text-green-700">✓ Completed</span>}
+                        {stage.isActive && <span className="text-xs font-semibold text-copper">• Current Stage</span>}
                       </div>
-                      <p className="text-sm text-[#0F0F0F]/60 font-body mb-2">{stage.description}</p>
-                      <div className="flex gap-4 text-xs text-[#0F0F0F]/50 font-body">
-                        <span>Starts: {stage.startDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                        {stage.durationDays && <span>Duration: ~{stage.durationDays} days</span>}
+                      <p className="text-[#0F0F0F]/60 text-sm font-body mt-1">{stage.description}</p>
+                      <div className="flex gap-4 mt-2 text-xs text-[#0F0F0F]/50">
+                        {stage.durationDays > 0 && <span>{stage.durationDays} days</span>}
+                        <span>Starts: {stage.startDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' })}</span>
                       </div>
                     </div>
+
+                    {/* Arrow indicator */}
+                    {stage.isActive && <ArrowRight className="w-5 h-5 text-copper flex-shrink-0" />}
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
             </div>
           </div>
+
+          {/* Summary Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto p-8 rounded-2xl bg-white border-2 border-copper/20"
+            style={{ boxShadow: '0 10px 40px rgba(184,115,51,0.1)' }}
+          >
+            <div className="text-center">
+              <p className="text-[#0F0F0F]/60 text-sm font-body mb-3">Current Stage</p>
+              <h3 className="font-heading text-2xl font-bold text-copper mb-6">{currentStageObj?.label}</h3>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="p-4 bg-copper/5 rounded-lg">
+                  <p className="text-[#0F0F0F]/60 text-xs font-body mb-1">Completion Date</p>
+                  <p className="font-heading text-2xl font-bold text-[#0F0F0F]">
+                    {currentStageEndDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' })}
+                  </p>
+                </div>
+                <div className="p-4 bg-copper/5 rounded-lg">
+                  <p className="text-[#0F0F0F]/60 text-xs font-body mb-1">Days Remaining</p>
+                  <p className="font-heading text-2xl font-bold text-copper">{daysToCompletion}</p>
+                </div>
+              </div>
+
+              {/* Next stages preview */}
+              {timeline.some((s) => s.isFuture) && (
+                <div className="mt-6 pt-6 border-t border-[#0F0F0F]/10 text-left">
+                  <p className="text-[#0F0F0F]/60 text-xs font-body mb-3 font-semibold">What's Next:</p>
+                  <div className="space-y-2">
+                    {timeline
+                      .filter((s) => s.isFuture)
+                      .slice(0, 3)
+                      .map((stage, idx) => (
+                        <div key={stage.id} className="flex items-center gap-3 text-sm">
+                          <span className="text-copper font-semibold">{idx + 1}.</span>
+                          <div>
+                            <p className="text-[#0F0F0F] font-medium">{stage.label}</p>
+                            <p className="text-[#0F0F0F]/50 text-xs">{stage.durationDays} days</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              <Link
+                to="/getquote"
+                className="w-full mt-6 flex items-center justify-center gap-2 px-6 py-3 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all"
+              >
+                Get a Custom Quote
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-12">Frequently Asked Questions</h2>
+          <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-12 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
               { q: 'Is this timeline accurate for my book?', a: 'This roadmap shows typical timelines based on our service experience. Your actual timeline may vary based on your manuscript length, complexity, and revision requirements. Contact us for a personalized estimate.' },
               { q: 'Can I speed up the process?', a: 'Yes. Some stages can be shortened or run in parallel. Contact our team to discuss expedited options and rush services.' },
               { q: 'What if I already have a cover or typeset book?', a: 'You can select a later stage in the roadmap to adjust the timeline. If you have specific services completed, reach out for a custom quote.' },
               { q: 'Does this include ISBN registration?', a: 'ISBN registration is handled separately and typically takes 5-10 business days. You can start registering while other stages are in progress.' },
-              { q: 'What happens after the launch date?', a: 'Post-launch, we provide support for distribution setup, marketing coordination, and any reprints or updates needed for your book.' },
               { q: 'Are there extra costs if the timeline gets longer?', a: 'Service pricing is based on the scope of work, not the timeline. However, rush services or expedited turnarounds may incur additional fees.' },
             ].map((faq, i) => (
               <details key={i} className="group border border-[#0F0F0F]/10 rounded-lg p-4 hover:border-copper/40 transition-all">
