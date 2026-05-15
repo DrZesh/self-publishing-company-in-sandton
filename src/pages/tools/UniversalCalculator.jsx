@@ -6,7 +6,7 @@ import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import CostBreakdownChart from '../../components/shared/CostBreakdownChart';
 import { MASTER_PRICING, QUANTITY_MULTIPLIERS, getPrintingPrice } from '../../lib/pricing-extractor';
-import { generateEstimatePDF } from '../../lib/estimate-pdf-generator';
+import { downloadEstimatePDF } from '../../lib/estimate-pdf-generator';
 
 export default function UniversalCalculator() {
   // Service selection
@@ -145,9 +145,17 @@ export default function UniversalCalculator() {
     setBreakdown(items);
   }, [selectedServices, formData]);
 
+  // Generate quote number
+  const generateQuoteNumber = () => {
+    const now = new Date();
+    const timestamp = now.getTime().toString().slice(-6);
+    return `000${Math.floor(Math.random() * 1000000)}`.slice(-6);
+  };
+
   // Download PDF
   const downloadPDF = () => {
-    generateEstimatePDF(clientInfo, breakdown, estimateTotal);
+    const quoteNumber = generateQuoteNumber();
+    downloadEstimatePDF(clientInfo, breakdown, estimateTotal, quoteNumber);
   };
 
   // Submit estimate
@@ -155,18 +163,17 @@ export default function UniversalCalculator() {
     setLoading(true);
     setError('');
     try {
-      const response = await base44.functions.invoke('generateEstimateQuote', {
-        services: breakdown.map((item, idx) => ({
-          name: item.name,
-          estimatedCost: item.amount,
-          details: item.description,
-        })),
+      const quoteNumber = generateQuoteNumber();
+      
+      // Send to admin
+      const response = await base44.functions.invoke('sendEstimateNotification', {
         clientInfo,
         breakdown,
         total: estimateTotal,
+        quoteNumber,
       });
 
-      if (response.data) {
+      if (response.data?.success) {
         setCurrentStep('confirmation');
       }
     } catch (err) {
