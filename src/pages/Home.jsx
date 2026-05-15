@@ -20,7 +20,7 @@ import PortfolioPreview from '../components/home/PortfolioPreview';
 import HomeFAQ from '../components/home/HomeFAQ';
 import FinalCTA from '../components/home/FinalCTA';
 import FeaturedBlog from '../components/home/FeaturedBlog';
-import GoogleReviews from '../components/home/GoogleReviews';
+
 
 const homeFaqs = [
   { question: 'Do you help first-time authors?', answer: 'Yes. Creative Books SA helps first-time authors with editing, book cover design, typesetting, printing and self-publishing support.' },
@@ -81,8 +81,7 @@ export default function Home() {
       {/* 12. Featured Blog */}
       <FeaturedBlog />
 
-      {/* 12b. Google Reviews */}
-      <GoogleReviews />
+
 
       {/* 13. FAQ */}
       <HomeFAQ />
