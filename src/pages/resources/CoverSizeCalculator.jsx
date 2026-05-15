@@ -23,90 +23,94 @@ const PAPER_THICKNESS = {
 };
 
 function generatePDF(dimensions, trimSize, pages, paper, binding) {
-  if (!dimensions || isNaN(dimensions.fullWidth) || isNaN(dimensions.fullHeight)) return;
-  
-  const doc = new jsPDF({ unit: 'mm', format: [dimensions.fullWidth, dimensions.fullHeight] });
-  const padding = 10;
+  try {
+    if (!dimensions || isNaN(dimensions.fullWidth) || isNaN(dimensions.fullHeight)) return;
+    
+    const doc = new jsPDF({ unit: 'mm', format: [dimensions.fullWidth, dimensions.fullHeight] });
+    const padding = 10;
 
-  // Background
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, dimensions.fullWidth, dimensions.fullHeight, 'F');
+    // Background
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0, 0, dimensions.fullWidth, dimensions.fullHeight, 'F');
 
-  // Title
-  doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.text('Book Cover Template', padding, padding + 5);
-  doc.setFontSize(10);
-  doc.text('Creative Books SA', padding, padding + 12);
+    // Title
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('Book Cover Template', padding, padding + 5);
+    doc.setFontSize(10);
+    doc.text('Creative Books SA', padding, padding + 12);
 
-  // Summary
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'normal');
-  let yPos = padding + 25;
-  const summaryLines = [
-    `Trim Size: ${trimSize.label}`,
-    `Page Count: ${pages}`,
-    `Paper: ${PAPER_THICKNESS[paper].label}`,
-    `Binding: ${binding === 'paperback' ? 'Paperback (Perfect Bound)' : 'Hardcover (Case Bound)'}`,
-    `Spine Width: ${dimensions.spineWidth.toFixed(1)} mm`,
-    `Full Cover Width: ${dimensions.fullWidth.toFixed(1)} mm`,
-    `Full Cover Height: ${dimensions.fullHeight.toFixed(1)} mm`,
-  ];
-  summaryLines.forEach((line) => {
-    doc.text(line, padding, yPos);
-    yPos += 5;
-  });
+    // Summary
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    let yPos = padding + 25;
+    const summaryLines = [
+      `Trim Size: ${trimSize.label}`,
+      `Page Count: ${pages}`,
+      `Paper: ${PAPER_THICKNESS[paper].label}`,
+      `Binding: ${binding === 'paperback' ? 'Paperback (Perfect Bound)' : 'Hardcover (Case Bound)'}`,
+      `Spine Width: ${dimensions.spineWidth.toFixed(1)} mm`,
+      `Full Cover Width: ${dimensions.fullWidth.toFixed(1)} mm`,
+      `Full Cover Height: ${dimensions.fullHeight.toFixed(1)} mm`,
+    ];
+    summaryLines.forEach((line) => {
+      doc.text(line, padding, yPos);
+      yPos += 5;
+    });
 
-  // Trim line (solid)
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.5);
-  const backX = (dimensions.fullWidth - trimSize.width * 2 - dimensions.spineWidth) / 2;
-  const frontX = backX + trimSize.width + dimensions.spineWidth;
-  const trimY = (dimensions.fullHeight - trimSize.height) / 2;
+    // Trim line (solid)
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    const backX = (dimensions.fullWidth - trimSize.width * 2 - dimensions.spineWidth) / 2;
+    const frontX = backX + trimSize.width + dimensions.spineWidth;
+    const trimY = (dimensions.fullHeight - trimSize.height) / 2;
 
-  // Back cover trim
-  doc.rect(backX, trimY, trimSize.width, trimSize.height);
-  // Spine trim
-  doc.line(backX + trimSize.width, trimY, backX + trimSize.width, trimY + trimSize.height);
-  // Front cover trim
-  doc.rect(frontX, trimY, trimSize.width, trimSize.height);
+    // Back cover trim
+    doc.rect(backX, trimY, trimSize.width, trimSize.height);
+    // Spine trim
+    doc.line(backX + trimSize.width, trimY, backX + trimSize.width, trimY + trimSize.height);
+    // Front cover trim
+    doc.rect(frontX, trimY, trimSize.width, trimSize.height);
 
-  // Bleed lines (red dashed)
-  doc.setDrawColor(255, 0, 0);
-  doc.setLineDash([2, 2]);
-  const bleedW = trimSize.width * 2 + dimensions.spineWidth + 6;
-  const bleedH = trimSize.height + 6;
-  if (bleedW > 0 && bleedH > 0) {
-    doc.rect(backX - 3, trimY - 3, bleedW, bleedH);
+    // Bleed lines (red dashed)
+    doc.setDrawColor(255, 0, 0);
+    doc.setLineDash([2, 2]);
+    const bleedW = trimSize.width * 2 + dimensions.spineWidth + 6;
+    const bleedH = trimSize.height + 6;
+    if (bleedW > 0 && bleedH > 0) {
+      doc.rect(backX - 3, trimY - 3, bleedW, bleedH);
+    }
+
+    // Safety zone (green dashed)
+    doc.setDrawColor(0, 128, 0);
+    doc.setLineDash([3, 3]);
+    const safeZone = 6;
+    const safeW = Math.max(1, trimSize.width - safeZone * 2);
+    const safeH = Math.max(1, trimSize.height - safeZone * 2);
+    if (safeW > 0 && safeH > 0) {
+      doc.rect(backX + safeZone, trimY + safeZone, safeW, safeH);
+      doc.rect(frontX + safeZone, trimY + safeZone, safeW, safeH);
+    }
+
+    // Labels
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(8);
+    doc.setDrawColor(0, 0, 0);
+    doc.text('BACK COVER', backX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
+    doc.text('SPINE', backX + trimSize.width + dimensions.spineWidth / 2, trimY + trimSize.height / 2, { align: 'center' });
+    doc.text('FRONT COVER', frontX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
+
+    // Footer
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(7);
+    doc.text('Generated by Creative Books SA — creativebookssa.co.za — Need this cover designed? Request a quote at /getquote', dimensions.fullWidth / 2, dimensions.fullHeight - 5, { align: 'center' });
+
+    // Download the PDF
+    const filename = `cover-template-${trimSize.value}-${pages}p-${paper}.pdf`;
+    doc.save(filename);
+  } catch (error) {
+    console.error('PDF generation failed:', error);
   }
-
-  // Safety zone (green dashed)
-  doc.setDrawColor(0, 128, 0);
-  doc.setLineDash([3, 3]);
-  const safeZone = 6;
-  const safeW = Math.max(1, trimSize.width - safeZone * 2);
-  const safeH = Math.max(1, trimSize.height - safeZone * 2);
-  if (safeW > 0 && safeH > 0) {
-    doc.rect(backX + safeZone, trimY + safeZone, safeW, safeH);
-    doc.rect(frontX + safeZone, trimY + safeZone, safeW, safeH);
-  }
-
-  // Labels
-  doc.setFont(undefined, 'bold');
-  doc.setFontSize(8);
-  doc.setDrawColor(0, 0, 0);
-  doc.text('BACK COVER', backX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
-  doc.text('SPINE', backX + trimSize.width + dimensions.spineWidth / 2, trimY + trimSize.height / 2, { align: 'center' });
-  doc.text('FRONT COVER', frontX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
-
-  // Footer
-  doc.setFont(undefined, 'normal');
-  doc.setFontSize(7);
-  doc.text('Generated by Creative Books SA — creativebookssa.co.za — Need this cover designed? Request a quote at /getquote', dimensions.fullWidth / 2, dimensions.fullHeight - 5, { align: 'center' });
-
-  // Save
-  const filename = `book-cover-template-${trimSize.value}-${pages}p-${paper}-${binding}.pdf`;
-  doc.save(filename);
 }
 
 export default function CoverSizeCalculator() {
