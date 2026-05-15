@@ -414,7 +414,7 @@ const AuthenticatedApp = () => {
 
         {/* Resource Pages */}
         <Route path="/isbnregistration" element={<ISBNRegistration />} />
-        <Route path="/howtopublishabook" element={<ResourcePage resourceKey="howtopublishabook" />} />
+        <Route path="/howtopublishabook" element={<CompletePublishingGuide />} />
         <Route path="/publishingguide" element={<CompletePublishingGuide />} />
         <Route path="/printingguide" element={<ResourcePage resourceKey="printingguide" />} />
         <Route path="/editingguide" element={<ResourcePage resourceKey="editingguide" />} />
