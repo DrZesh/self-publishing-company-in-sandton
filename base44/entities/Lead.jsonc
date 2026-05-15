@@ -90,6 +90,11 @@
     "lost_reason_detail": {
       "type": "string",
       "description": "Detailed reason for loss"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description or summary of lead"
     }
   },
   "required": [

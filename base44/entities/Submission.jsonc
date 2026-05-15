@@ -142,6 +142,11 @@
       "type": "string",
       "description": "Private notes for admin"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description or summary of submission"
+    },
     "contact_id": {
       "type": "string",
       "description": "Linked contact ID"
