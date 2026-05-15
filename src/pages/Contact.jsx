@@ -29,6 +29,20 @@ export default function Contact() {
     setError('');
     setSubmitting(true);
     try {
+      // Capture to admin database (non-blocking)
+      base44.functions.invoke('captureFormSubmission', {
+        formType: 'contact',
+        fullName: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        sourcePage: window.location.pathname,
+        serviceInterest: form.service ? [form.service] : [],
+        additionalFields: { subject: form.subject },
+        sessionDuration: Math.floor((Date.now() - loadedAt.current) / 1000),
+      }).catch(err => console.error('Form capture failed:', err));
+
+      // Send confirmation emails (primary action)
       await base44.functions.invoke('sendFormEmail', {
         formType: 'Contact Form',
         submitterName: form.name,

@@ -169,6 +169,39 @@ export default function GetQuote() {
         data.needEditing === 'yes' && 'Editing',
       ].filter(Boolean).join(', ') || 'General Publishing';
 
+      // Capture to admin database (non-blocking)
+      base44.functions.invoke('captureFormSubmission', {
+        formType: 'quote',
+        fullName: `${data.firstName} ${data.lastName}`.trim(),
+        email: data.email,
+        phone: data.phone,
+        sourcePage: window.location.pathname,
+        serviceInterest: [
+          data.needCover === 'yes' && 'Cover Design',
+          data.needPrinting === 'yes' && 'Printing',
+          data.needTypesetting === 'yes' && 'Typesetting',
+          data.needEditing === 'yes' && 'Editing',
+        ].filter(Boolean),
+        budget: null,
+        bookTitle: null,
+        bookGenre: data.bookGenre,
+        bookPageCount: parseInt(data.numberOfPages),
+        bookWordCount: parseInt(data.wordCount),
+        additionalFields: {
+          bookSize: data.bookSize,
+          coverType: data.needCover === 'yes' ? data.coverType : null,
+          printCopies: data.printCopies,
+          paperType: data.paperType,
+          coverFinish: data.coverFinish,
+          typesettingType: data.typesettingType,
+          editingWordCount: data.editingWordCount,
+          startDate: data.startDate,
+          howFound: data.howFound,
+          notes: data.additionalNotes,
+        },
+      }).catch(err => console.error('Form capture failed:', err));
+
+      // Send confirmation emails (primary action)
       await base44.functions.invoke('sendFormEmail', {
         formType: 'Quote Request',
         submitterName: `${data.firstName} ${data.lastName}`.trim(),
