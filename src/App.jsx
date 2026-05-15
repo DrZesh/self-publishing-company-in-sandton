@@ -239,8 +239,11 @@ const AuthenticatedApp = () => {
         <Route path="/printing/hardcover" element={<PrintingHardcover />} />
         <Route path="/printing/childrensbooks" element={<PrintingChildrensBooks />} />
         <Route path="/printing/childrensbooks/15cmx15cm" element={<ChildrensBooks15x15 />} />
+        <Route path="/printing/childrensbooks/ChildrensBooks15x15" element={<ChildrensBooks15x15 />} />
         <Route path="/printing/childrensbooks/20cmx20cm" element={<ChildrensBooks20x20 />} />
+        <Route path="/printing/childrensbooks/ChildrensBooks20x20" element={<ChildrensBooks20x20 />} />
         <Route path="/printing/childrensbooks/21cmx21cm" element={<ChildrensBooks21x21 />} />
+        <Route path="/printing/childrensbooks/ChildrensBooks21x21" element={<ChildrensBooks21x21 />} />
 
         {/* Printing Silo (GenericServicePage) */}
         <Route path="/bookprinting" element={<BookPrinting />} />
