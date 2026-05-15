@@ -274,10 +274,10 @@ const AuthenticatedApp = () => {
         <Route path="/annualreportdesignsandton" element={<AnnualReportDesign />} />
         <Route path="/typesetting" element={<BookTypesetting />} />
         <Route path="/booklayoutdesign" element={<BookTypesetting />} />
-        <Route path="/ebookformatting" element={<EbookPublishing />} />
         <Route path="/authorwebsites" element={<AuthorWebsites />} />
 
         {/* Digital Silo */}
+        <Route path="/ebookformatting" element={<EbookPublishing />} />
         <Route path="/ebookpublishing" element={<EbookPublishing />} />
         <Route path="/amazonkdp" element={<GenericServicePage serviceKey="amazonkdp" />} />
         <Route path="/kindlepublishing" element={<GenericServicePage serviceKey="kindlepublishing" />} />
@@ -290,6 +290,7 @@ const AuthenticatedApp = () => {
         <Route path="/childrensbookpackages" element={<ChildrensBookPackages />} />
 
         {/* Existing SEO Landing Pages */}
+        <Route path="/publishingcompaniesinsouthafrica" element={<PublishingCompaniesSouthAfrica />} />
         <Route path="/publishingcompaniessouthafrica" element={<PublishingCompaniesSouthAfrica />} />
         <Route path="/bookpublisherssouthafrica" element={<BookPublishersSouthAfrica />} />
         <Route path="/bookpublishersjohannesburg" element={<BookPublishersJohannesburg />} />
@@ -428,6 +429,7 @@ const AuthenticatedApp = () => {
         <Route path="/editingguide" element={<ResourcePage resourceKey="editingguide" />} />
         <Route path="/bookmarketingguide" element={<ResourcePage resourceKey="bookmarketingguide" />} />
         <Route path="/nda" element={<NDA />} />
+        <Route path="/covercalculator" element={<CoverSizeCalculator />} />
         <Route path="/resources/CoverSizeCalculator" element={<CoverSizeCalculator />} />
         <Route path="/portfolio" element={<Portfolio />} />
 
