@@ -150,12 +150,12 @@ export default function Footer() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
-              <motion.a href="tel:+27000000000" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
-                <Phone className="w-4 h-4 text-copper" /> <span className="text-sm">+27 (0) 00 000 0000</span>
-              </motion.a>
-              <motion.a href="mailto:info@creativebookssa.co.za" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
-                <Mail className="w-4 h-4 text-copper" /> <span className="text-sm">info@creativebookssa.co.za</span>
-              </motion.a>
+              <motion.a href="tel:+27842305393" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
+                 <Phone className="w-4 h-4 text-copper" /> <span className="text-sm">+27 84 230 5393</span>
+               </motion.a>
+               <motion.a href="mailto:info@creativebooks.co.za" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
+                 <Mail className="w-4 h-4 text-copper" /> <span className="text-sm">info@creativebooks.co.za</span>
+               </motion.a>
               <motion.div whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
                 <MapPin className="w-4 h-4 text-copper shrink-0" /> <span className="text-sm">Johannesburg, Gauteng</span>
               </motion.div>

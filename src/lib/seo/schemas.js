@@ -1,12 +1,10 @@
 const SITE_URL = 'https://www.creativebookssa.co.za';
 const BUSINESS_NAME = 'Creative Books SA';
-const PHONE = '+27000000000';
-const EMAIL = 'info@creativebookssa.co.za';
+const PHONE = '+27842305393';
+const EMAIL = 'info@creativebooks.co.za';
 const ADDRESS = {
-  streetAddress: '123 Publishing Avenue, Johannesburg',
   addressLocality: 'Johannesburg',
   addressRegion: 'Gauteng',
-  postalCode: '2000',
   addressCountry: 'ZA',
 };
 
@@ -26,7 +24,7 @@ export const organizationSchema = {
      'https://www.facebook.com/creativebookssa',
      'https://www.linkedin.com/company/creative-books-sa',
      'https://www.instagram.com/creativebookssa',
-     'https://wa.me/27000000000',
+     'https://wa.me/27842305393',
    ],
    description: 'South Africa\'s premier publishing company offering book publishing, printing, editing, cover design and typesetting services.',
  };
@@ -43,9 +41,9 @@ export const localBusinessSchema = {
   address: { '@type': 'PostalAddress', ...ADDRESS },
   geo: { '@type': 'GeoCoordinates', latitude: -26.2041, longitude: 28.0473 },
   openingHoursSpecification: [
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '08:00', closes: '17:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '09:00', closes: '17:00' },
   ],
-  priceRange: 'R4,999 – R94,000',
+  priceRange: 'RR-RRRR',
   areaServed: [
     { '@type': 'City', name: 'Johannesburg' },
     { '@type': 'City', name: 'Pretoria' },
@@ -246,10 +244,9 @@ export function mainLocalBusinessSchema() {
      email: EMAIL,
      address: { '@type': 'PostalAddress', ...ADDRESS },
      geo: { '@type': 'GeoCoordinates', latitude: '-26.0755', longitude: '28.0041' },
-     priceRange: 'ZAR 4999 - 45000',
+     priceRange: 'RR-RRRR',
      openingHoursSpecification: [
-       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '08:00', closes: '17:00' },
-       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday','Sunday'], opens: '09:00', closes: '13:00' },
+       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '09:00', closes: '17:00' },
      ],
      sameAs: [
        'https://www.facebook.com/creativebookssa',
@@ -272,9 +269,9 @@ export function localBusinessSchemaForCity({ cityName, latitude, longitude, area
      address: { '@type': 'PostalAddress', ...ADDRESS },
      geo: { '@type': 'GeoCoordinates', latitude, longitude },
      openingHoursSpecification: [
-       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '08:00', closes: '17:00' },
-     ],
-     areaServed: [{ '@type': 'City', name: cityName }, ...areaServed],
+       { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '09:00', closes: '17:00' },
+       ],
+       areaServed: [{ '@type': 'City', name: cityName }, ...areaServed],
      aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '127', bestRating: '5', worstRating: '1' },
    };
  }

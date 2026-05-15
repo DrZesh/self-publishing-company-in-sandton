@@ -211,7 +211,7 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <motion.a
-              href="https://wa.me/27000000000"
+              href="https://wa.me/27842305393"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
