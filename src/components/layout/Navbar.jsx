@@ -88,13 +88,12 @@ export default function Navbar() {
     setActiveDropdown(null);
   }, [location]);
 
-  // This is the mobile hamburger menu — only visible on screens below 1024px
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 lg:hidden ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-[#0a0806]/90 backdrop-blur-2xl shadow-2xl shadow-black/40 border-b border-copper/10'
           : 'bg-transparent'
@@ -102,14 +101,14 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-20">
-          {/* Logo - Mobile Only */}
+          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <motion.img
               src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png"
               alt="Creative Books SA"
               whileHover={{ scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className="h-8 w-auto"
+              className="h-10 w-auto"
             />
           </Link>
 
