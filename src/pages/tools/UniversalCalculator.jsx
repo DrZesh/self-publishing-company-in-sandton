@@ -55,47 +55,66 @@ export default function UniversalCalculator() {
           total += result.totalPrice;
           items.push({
             name: 'Book Printing',
-            description: `${data.copies} copies, ${data.pages}p, ${data.bookSize}`,
+            description: `${data.copies} × ${data.pages}p book @ R${result.pricePerBook}/book`,
             amount: result.totalPrice,
           });
         }
       } else if (serviceId === 'editing') {
         const rates = {
-          proofreading: 0.04,
-          copyediting: 0.08,
-          academic: 0.12,
+          copyediting: 0.25,
+          lineedit: 0.40,
+          contentedit: 0.50,
         };
-        const amount = Math.ceil((data.wordCount || 0) * (rates[data.editingType] || 0.08));
+        const amount = Math.ceil((data.wordCount || 0) * (rates[data.editingType] || 0.25));
         if (amount > 0) {
           total += amount;
+          const typeLabel = {
+            copyediting: 'Copy Editing',
+            lineedit: 'Line Edit',
+            contentedit: 'Content Edit',
+          };
           items.push({
-            name: `${data.editingType === 'copyediting' ? 'Copy Editing' : data.editingType === 'academic' ? 'Academic Editing' : 'Proofreading'}`,
+            name: typeLabel[data.editingType] || 'Copy Editing',
             description: `${data.wordCount || 0} words @ R${rates[data.editingType]}/word`,
             amount,
           });
         }
       } else if (serviceId === 'design-cover') {
         const packages = {
-          starter: 3850,
-          standard: 5500,
-          premium: 7700,
-          full: 11000,
+          authors: 1700,
+          stock: 2150,
+          illustrated: 3650,
         };
-        const amount = packages[data.packageLevel || 'standard'];
+        const amount = packages[data.packageLevel || 'stock'];
         total += amount;
+        const labelMap = {
+          authors: 'Authors Book Cover',
+          stock: 'Stock Design Cover',
+          illustrated: 'Illustrated Design Cover',
+        };
         items.push({
           name: 'Book Cover Design',
-          description: `${data.packageLevel ? data.packageLevel.charAt(0).toUpperCase() + data.packageLevel.slice(1) : 'Standard'} Package`,
+          description: labelMap[data.packageLevel] || 'Stock Design Cover',
           amount,
         });
       } else if (serviceId === 'typesetting') {
-        const ratePerPage = data.complexFormatting ? 15.4 : 10.5;
+        const rates = {
+          basic: 10.5,
+          standard: 12.5,
+          premium: 19.5,
+        };
+        const ratePerPage = rates[data.typesetLevel] || 10.5;
         const amount = Math.ceil((data.pages || 0) * ratePerPage);
         if (amount > 0) {
           total += amount;
+          const typeLabel = {
+            basic: 'Basic Typesetting',
+            standard: 'Standard Typesetting',
+            premium: 'Premium Layout',
+          };
           items.push({
             name: 'Typesetting',
-            description: `${data.pages} pages`,
+            description: `${data.pages} pages @ R${ratePerPage}/page (${typeLabel[data.typesetLevel] || 'Basic'})`,
             amount,
           });
         }
@@ -282,12 +301,12 @@ export default function UniversalCalculator() {
                         <div>
                           <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Paper Type</label>
                           <select
-                            value={formData.printing?.paperType || 'cream78'}
+                            value={formData.printing?.paperType || 'a5_cream'}
                             onChange={(e) => updateServiceData('printing', { paperType: e.target.value })}
                             className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
                           >
-                            <option value="cream78">Cream Paper 78 gsm</option>
-                            <option value="white80">White Paper 80 gsm</option>
+                            <option value="a5_cream">Cream Paper</option>
+                            <option value="a5_white">White Paper</option>
                           </select>
                         </div>
                       </div>
@@ -341,20 +360,13 @@ export default function UniversalCalculator() {
                         <div>
                           <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Service Type</label>
                           <select
-                            value={formData.editing?.editingType || 'proofreading'}
-                            onChange={(e) => {
-                              const type = e.target.value;
-                              const rates = { proofreading: 0.04, copyediting: 0.08, academic: 0.12 };
-                              updateServiceData('editing', {
-                                editingType: type,
-                                ratePerWord: rates[type],
-                              });
-                            }}
+                            value={formData.editing?.editingType || 'copyediting'}
+                            onChange={(e) => updateServiceData('editing', { editingType: e.target.value })}
                             className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
                           >
-                            <option value="proofreading">Proofreading (R0.04/word)</option>
-                            <option value="copyediting">Copy Editing (R0.08/word)</option>
-                            <option value="academic">Academic Editing (R0.12/word)</option>
+                            <option value="copyediting">Copy Editing (R0.25/word)</option>
+                            <option value="lineedit">Line Edit (R0.40/word)</option>
+                            <option value="contentedit">Content Edit (R0.50/word)</option>
                           </select>
                         </div>
                       </div>
@@ -368,12 +380,11 @@ export default function UniversalCalculator() {
                     <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
                       <span>🎨</span> Book Cover Design
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {[
-                        { id: 'starter', label: 'Starter', price: 'R3,850' },
-                        { id: 'standard', label: 'Standard', price: 'R5,500' },
-                        { id: 'premium', label: 'Premium', price: 'R7,700' },
-                        { id: 'full', label: 'Full Design', price: 'R11,000' },
+                        { id: 'authors', label: 'Authors Book Cover', price: 'R1,700' },
+                        { id: 'stock', label: 'Stock Design Cover', price: 'R2,150' },
+                        { id: 'illustrated', label: 'Illustrated Design', price: 'R3,650' },
                       ].map(pkg => (
                         <motion.button
                           key={pkg.id}
@@ -386,7 +397,7 @@ export default function UniversalCalculator() {
                               : 'border-[#0F0F0F]/10 hover:border-purple-300'
                           }`}
                         >
-                          <div className="font-semibold text-[#0F0F0F]">{pkg.label}</div>
+                          <div className="font-semibold text-[#0F0F0F] text-sm">{pkg.label}</div>
                           <div className="text-sm text-copper font-bold mt-1">{pkg.price}</div>
                         </motion.button>
                       ))}
@@ -410,15 +421,18 @@ export default function UniversalCalculator() {
                           className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper"
                         />
                       </div>
-                      <label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-white/50 transition-all">
-                        <input
-                          type="checkbox"
-                          checked={formData.typesetting?.complexFormatting || false}
-                          onChange={(e) => updateServiceData('typesetting', { complexFormatting: e.target.checked })}
-                          className="w-4 h-4 accent-copper"
-                        />
-                        <span className="text-sm font-medium text-[#0F0F0F]">Complex formatting (images, tables, footnotes) — +R5/page</span>
-                      </label>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-semibold text-[#0F0F0F]/80 mb-2">Typesetting Level</label>
+                        <select
+                          value={formData.typesetting?.typesetLevel || 'basic'}
+                          onChange={(e) => updateServiceData('typesetting', { typesetLevel: e.target.value })}
+                          className="w-full px-4 py-2.5 border border-[#0F0F0F]/15 rounded-lg focus:outline-none focus:border-copper bg-white"
+                        >
+                          <option value="basic">Basic Typesetting (R10.50/page)</option>
+                          <option value="standard">Standard Typesetting (R12.50/page)</option>
+                          <option value="premium">Premium Layout (R19.50/page)</option>
+                        </select>
+                      </div>
                     </div>
                   </motion.div>
                 )}
