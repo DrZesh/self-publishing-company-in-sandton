@@ -165,7 +165,7 @@ export default function ChildrensBooks15x15() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a href={packages[0].orderLink} className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-white text-white font-medium rounded-full hover:border-copper hover:text-copper transition-all">
-                Order As-Is
+                Email Now
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
