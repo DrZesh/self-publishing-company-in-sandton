@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2, Download } from 'lucide-react';
+import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2, Download, Sparkles } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import CostBreakdownChart from '../../components/shared/CostBreakdownChart';
@@ -16,6 +16,50 @@ export default function UniversalCalculator() {
   const [clientInfo, setClientInfo] = useState({ name: '', email: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [recommendations, setRecommendations] = useState(null);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
+  // Get AI recommendations
+  const getRecommendations = async () => {
+    setLoadingRecommendations(true);
+    setRecommendations(null);
+    try {
+      const prompt = `Based on this publishing project details, recommend the most relevant Creative Books SA packages:
+
+Services Selected: ${selectedServices.join(', ')}
+Book Details: ${JSON.stringify(formData, null, 2)}
+Client Info: ${clientInfo.name}
+
+Consider: page count, word count, book size, number of copies, and service combination. Recommend specific package names (like "Mini Publishing Package", "Full A5 Publishing Package", "Full 6x9 Publishing Package", or "Premium Publishing Package") that best match their needs. Also explain why each package is suitable.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            recommendations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  packageName: { type: "string" },
+                  reason: { type: "string" },
+                  suitability: { type: "string" }
+                }
+              }
+            },
+            summary: { type: "string" }
+          }
+        }
+      });
+
+      setRecommendations(response.data);
+    } catch (err) {
+      setError(`Failed to get recommendations: ${err.message}`);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
 
   // Service toggle
   const toggleService = (serviceId) => {
@@ -554,6 +598,61 @@ export default function UniversalCalculator() {
                   <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#0F0F0F] mb-2">Review & Confirm</h2>
                   <p className="text-[#0F0F0F]/60 text-sm sm:text-base">Almost there! Let us know how to contact you</p>
                 </div>
+
+                {/* AI Recommendations */}
+                {!recommendations && (
+                  <motion.button
+                    onClick={getRecommendations}
+                    disabled={loadingRecommendations}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="w-full p-4 sm:p-5 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl hover:shadow-lg transition-all disabled:opacity-50"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      {loadingRecommendations ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                          <span className="font-medium text-purple-900">Getting smart recommendations...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 text-purple-600" />
+                          <span className="font-medium text-purple-900">Get Smart Package Recommendations</span>
+                        </>
+                      )}
+                    </div>
+                  </motion.button>
+                )}
+
+                {/* Display Recommendations */}
+                {recommendations && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200"
+                  >
+                    <div className="flex items-center gap-2 mb-5">
+                      <Sparkles className="w-6 h-6 text-purple-600" />
+                      <h3 className="font-heading text-lg font-bold text-purple-900">Recommended Packages</h3>
+                    </div>
+                    <p className="text-sm text-purple-800 mb-5">{recommendations.summary}</p>
+                    <div className="space-y-3">
+                      {recommendations.recommendations.map((rec, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className="p-4 bg-white rounded-xl border border-purple-200"
+                        >
+                          <div className="font-semibold text-purple-900 mb-2">{rec.packageName}</div>
+                          <div className="text-sm text-purple-800 mb-2">{rec.reason}</div>
+                          <div className="text-xs text-purple-700 italic">Suitability: {rec.suitability}</div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Estimate Breakdown */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 sm:p-8 bg-gradient-to-br from-copper/10 to-transparent rounded-2xl border-2 border-copper/30">
