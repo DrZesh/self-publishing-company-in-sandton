@@ -49,7 +49,7 @@ export default function UniversalCalculator() {
       if (serviceId === 'printing') {
         const result = getPrintingPrice(
           data.bookSize || 'a5',
-          data.paperType || 'cream78',
+          data.paperType || 'white80',
           data.pages || 150,
           data.copies || 100
         );
@@ -62,10 +62,16 @@ export default function UniversalCalculator() {
           });
         }
       } else if (serviceId === 'editing') {
+        // Get editing rates from master pricing
+        const editingServices = MASTER_PRICING.editing || [];
+        const copyEditService = editingServices.find(s => s.serviceName === 'Copy Editing');
+        const lineEditService = editingServices.find(s => s.serviceName === 'Line Editing');
+        const contentEditService = editingServices.find(s => s.serviceName === 'Content Editing');
+        
         const rates = {
-          copyediting: 0.25,
-          lineedit: 0.40,
-          contentedit: 0.50,
+          copyediting: copyEditService?.basePrice || 0.25,
+          lineedit: lineEditService?.basePrice || 0.40,
+          contentedit: contentEditService?.basePrice || 0.50,
         };
         const amount = Math.ceil((data.wordCount || 0) * (rates[data.editingType] || 0.25));
         if (amount > 0) {
@@ -82,10 +88,16 @@ export default function UniversalCalculator() {
           });
         }
       } else if (serviceId === 'design-cover') {
+        // Get design pricing from master pricing
+        const designServices = MASTER_PRICING.design || [];
+        const authorsCover = designServices.find(s => s.packageName === 'Authors Book Cover');
+        const stockCover = designServices.find(s => s.packageName === 'Stock Design Cover');
+        const illustratedCover = designServices.find(s => s.packageName === 'Illustrated Design Cover');
+        
         const packages = {
-          authors: 1700,
-          stock: 2150,
-          illustrated: 3650,
+          authors: authorsCover?.price || 1700,
+          stock: stockCover?.price || 2150,
+          illustrated: illustratedCover?.price || 3650,
         };
         const amount = packages[data.packageLevel || 'stock'];
         total += amount;
@@ -100,10 +112,16 @@ export default function UniversalCalculator() {
           amount,
         });
       } else if (serviceId === 'typesetting') {
+        // Get typesetting rates from master pricing
+        const typesetServices = MASTER_PRICING.typesetting || [];
+        const basicService = typesetServices.find(s => s.packageName === 'Basic Typesetting');
+        const standardService = typesetServices.find(s => s.packageName === 'Standard Typesetting');
+        const premiumService = typesetServices.find(s => s.packageName === 'Premium Layout');
+        
         const rates = {
-          basic: 10.5,
-          standard: 12.5,
-          premium: 19.5,
+          basic: basicService?.basePrice || 10.5,
+          standard: standardService?.basePrice || 12.5,
+          premium: premiumService?.basePrice || 19.5,
         };
         const ratePerPage = rates[data.typesetLevel] || 10.5;
         const amount = Math.ceil((data.pages || 0) * ratePerPage);
