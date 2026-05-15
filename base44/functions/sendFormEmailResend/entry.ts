@@ -1,8 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-const BUSINESS_EMAIL = 'info@creativebookssa.co.za';
-const FROM_EMAIL = 'noreply@creativebookssa.co.za';
+const BUSINESS_EMAIL = 'info@creativebooks.co.za';
+const FROM_EMAIL = 'noreply@creativebooks.co.za';
 
 const BRAND_COLOR = '#B87333';
 const LIGHT_COPPER = '#D4A574';
@@ -27,7 +27,7 @@ function footer() {
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr><td height="1" style="background:${DIVIDER_COLOR};font-size:0;">&nbsp;</td></tr>
     <tr><td align="center" style="padding:28px 24px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;color:${MUTED_COLOR};line-height:1.8;">
-      <strong style="color:${TEXT_COLOR};">Creative Books SA</strong><br />
+      <strong style="color:${TEXT_COLOR};">Creative Books</strong><br />
       Johannesburg, South Africa<br />
       ${BUSINESS_EMAIL}<br />
       <span style="color:${BRAND_COLOR};font-style:italic;">Premium Self-Publishing for South African Authors</span>
@@ -124,7 +124,7 @@ function buildUserEmail({ firstName, formType, submitterEmail, fields }) {
         <strong style="color:${BRAND_COLOR};">2.</strong>&nbsp; A member of our team will reach out via email with a personalised response.
       </td></tr>
       <tr><td style="padding:10px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:${TEXT_COLOR};line-height:1.6;">
-        <strong style="color:${BRAND_COLOR};">3.</strong>&nbsp; If your enquiry is urgent, call us on 084 230 5393 or email <a href="mailto:${BUSINESS_EMAIL}" style="color:${BRAND_COLOR};">${BUSINESS_EMAIL}</a> directly.
+        <strong style="color:${BRAND_COLOR};">3.</strong>&nbsp; If your enquiry is urgent, email us at <a href="mailto:${BUSINESS_EMAIL}" style="color:${BRAND_COLOR};">${BUSINESS_EMAIL}</a> directly.
       </td></tr>
     </table>
     <h2 style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:18px;font-weight:700;color:${BRAND_COLOR};margin:0 0 12px 0;">While you wait</h2>
