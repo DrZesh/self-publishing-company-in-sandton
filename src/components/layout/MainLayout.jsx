@@ -7,7 +7,7 @@ import WhatsAppButton from '../shared/WhatsAppButton';
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-obsidian">
+    <div className="min-h-screen bg-white">
       {/* Desktop Mega Menu (hidden on mobile) */}
       <div className="hidden lg:block">
         <DesktopMegaMenu />
