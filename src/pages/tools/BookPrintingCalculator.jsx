@@ -18,6 +18,15 @@ const PRICING_TIERS = {
       '310-350': 11500,
       '360-400': 12500,
     },
+    white80: {
+      '50-100': 5200,
+      '115-150': 5950,
+      '160-200': 7200,
+      '210-250': 8450,
+      '260-300': 9300,
+      '310-350': 11200,
+      '360-400': 12200,
+    },
   },
   '6x9': {
     cream78: {
@@ -28,6 +37,15 @@ const PRICING_TIERS = {
       '260-300': 10300,
       '310-350': 12200,
       '360-400': 13200,
+    },
+    white80: {
+      '50-100': 5900,
+      '115-150': 6650,
+      '160-200': 7900,
+      '210-250': 9150,
+      '260-300': 10000,
+      '310-350': 11900,
+      '360-400': 12900,
     },
   },
 };
@@ -62,6 +80,11 @@ export default function BookPrintingCalculator() {
   const [binding, setBinding] = useState('paperback');
   const [copies, setCopies] = useState(100);
   const [error, setError] = useState('');
+
+  const paperLabels = {
+    cream78: 'Cream Paper 78 gsm',
+    white80: 'White Paper 80 gsm',
+  };
 
   const calculation = useMemo(() => {
     setError('');
@@ -207,6 +230,7 @@ export default function BookPrintingCalculator() {
                 <div className="space-y-2">
                   {[
                     { value: 'cream78', label: 'Cream Paper 78 gsm (standard for novels and memoirs, thicker and softer)' },
+                    { value: 'white80', label: 'White Paper 80 gsm (standard for non-fiction and textbooks, premium white)' },
                   ].map(({ value, label }) => (
                     <label key={value} className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-copper/5 transition-all" style={{ borderColor: paperType === value ? '#B87333' : '#0F0F0F10' }}>
                       <input
@@ -333,7 +357,7 @@ export default function BookPrintingCalculator() {
                       {[
                         ['Book size', size === 'a5' ? 'A5' : '6×9'],
                         ['Page count', `${pages} pages`],
-                        ['Paper', 'Cream 78 gsm'],
+                        ['Paper', paperLabels[paperType]],
                         ['Binding', 'Paperback'],
                         ['Copies', `${copies}`],
                         ['Per copy', `R${calculation.perCopyPrice.toLocaleString()}`],
@@ -352,7 +376,7 @@ export default function BookPrintingCalculator() {
                         'Gloss or matte cover finish',
                         'Perfect binding',
                         'Black and white interior pages',
-                        'Cream 78 gsm paper',
+                        paperLabels[paperType],
                         'Nationwide delivery available',
                       ].map((item) => (
                         <p key={item} className="text-xs text-[#0F0F0F]/70 font-body">✓ {item}</p>
@@ -376,7 +400,7 @@ export default function BookPrintingCalculator() {
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                       <a
-                        href={`mailto:info@creativebookssa.co.za?subject=Print Order: ${size.toUpperCase()} ${pages}p Cream ${copies} copies - R${calculation.totalPrice}&body=Hi Creative Books SA,%0D%0A%0D%0AI'd like to order the following print run as-is:%0D%0A%0D%0AESTIMATE FROM CALCULATOR:%0D%0A- Book size: ${size === 'a5' ? 'A5' : '6x9'}%0D%0A- Page count: ${pages}%0D%0A- Paper type: Cream 78 gsm%0D%0A- Binding: Paperback%0D%0A- Number of copies: ${copies}%0D%0A- Estimated total: R${calculation.totalPrice.toLocaleString()}%0D%0A- Per copy: R${calculation.perCopyPrice.toLocaleString()}%0D%0A%0D%0A---%0D%0AMY DETAILS:%0D%0AName: %0D%0APhone: %0D%0ABook title: %0D%0AIs your book typeset and print-ready? (Yes/No): %0D%0AAny notes: %0D%0A%0D%0AThank you,`}
+                        href={`mailto:info@creativebookssa.co.za?subject=Print Order: ${size.toUpperCase()} ${pages}p ${paperType === 'cream78' ? 'Cream' : 'White'} ${copies} copies - R${calculation.totalPrice}&body=Hi Creative Books SA,%0D%0A%0D%0AI'd like to order the following print run as-is:%0D%0A%0D%0AESTIMATE FROM CALCULATOR:%0D%0A- Book size: ${size === 'a5' ? 'A5' : '6x9'}%0D%0A- Page count: ${pages}%0D%0A- Paper type: ${paperLabels[paperType]}%0D%0A- Binding: Paperback%0D%0A- Number of copies: ${copies}%0D%0A- Estimated total: R${calculation.totalPrice.toLocaleString()}%0D%0A- Per copy: R${calculation.perCopyPrice.toLocaleString()}%0D%0A%0D%0A---%0D%0AMY DETAILS:%0D%0AName: %0D%0APhone: %0D%0ABook title: %0D%0AIs your book typeset and print-ready? (Yes/No): %0D%0AAny notes: %0D%0A%0D%0AThank you,`}
                         className="w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-copper text-copper font-medium rounded-full hover:bg-copper/5 transition-all"
                       >
                         Order This Print Run

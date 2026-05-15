@@ -19,9 +19,7 @@ const TRIM_SIZES = [
 
 const PAPER_THICKNESS = {
   cream78: { label: 'Cream Paper 78 gsm', thickness: 0.092 },
-  white70: { label: 'White Paper 70 gsm', thickness: 0.072 },
-  white80: { label: 'White Paper 80 gsm', thickness: 0.082 },
-  colour90: { label: 'Full Colour 90 gsm', thickness: 0.1 },
+  white80: { label: 'White Paper 80 gsm Bond', thickness: 0.082 },
 };
 
 function generatePDF(dimensions, trimSize, pages, paper, binding) {
