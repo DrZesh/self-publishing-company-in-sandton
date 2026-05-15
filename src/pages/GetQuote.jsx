@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PageMeta from '../components/shared/PageMeta';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2, Sparkles, BookOpen, Star, Shield, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import QuoteStep1 from '../components/quote/QuoteStep1';
 import QuoteStep2 from '../components/quote/QuoteStep2';
@@ -16,27 +16,27 @@ import QuoteProgress from '../components/quote/QuoteProgress';
 const STORAGE_KEY = 'cbsa_quote_form';
 
 const INITIAL_DATA = {
-  // Step 1
   firstName: '', lastName: '', email: '', confirmEmail: '',
   phone: '', address: '', city: '', province: '', postalCode: '',
-  // Step 2
   bookSize: '', bookSizeConverted: '', numberOfPages: '', bookGenre: '', wordCount: '',
-  // Step 3
   needCover: '', coverType: '',
-  // Step 4
   needPrinting: '', printCopies: '', paperType: '', coverFinish: '',
   hasColourImages: '', colourImageCount: '', colourImagePrint: '',
-  // Step 5
   needTypesetting: '', typesettingType: '',
-  // Step 6
   needEditing: '', editingWordCount: '', editingGenre: '',
-  // Step 7
   startDate: '', howFound: '', additionalNotes: '',
 };
 
 const STEP_LABELS = [
   'Client Details', 'Book Details', 'Cover Design',
   'Printing', 'Typesetting', 'Editing', 'Timeline', 'Review'
+];
+
+const TRUST_ITEMS = [
+  { icon: Star, label: '500+ Books Published' },
+  { icon: Shield, label: 'No Hidden Fees' },
+  { icon: Clock, label: '24hr Response Time' },
+  { icon: Users, label: 'SA-Based Team' },
 ];
 
 export default function GetQuote() {
@@ -137,7 +137,6 @@ export default function GetQuote() {
 
   const submit = async () => {
     setSubmitting(true);
-    // Build email-like submission via mailto fallback
     await new Promise(r => setTimeout(r, 1200));
     try { localStorage.removeItem(STORAGE_KEY); } catch {}
     setSubmitting(false);
@@ -165,33 +164,54 @@ export default function GetQuote() {
           description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
           canonical="https://www.creativebookssa.co.za/getquote"
         />
-      <div className="min-h-screen bg-vellum flex items-center justify-center px-4 pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-3xl shadow-xl p-10 max-w-lg w-full text-center"
-        >
-          <div className="w-20 h-20 rounded-full bg-copper/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-copper" />
+        <div className="min-h-screen bg-[#060504] flex items-center justify-center px-4 pt-24 pb-16">
+          {/* Background glow */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-20"
+              style={{ background: 'radial-gradient(circle, #B87333 0%, transparent 70%)', filter: 'blur(80px)' }} />
           </div>
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0F0F0F] mb-4">
-            Quote Request Received!
-          </h2>
-          <p className="text-[#0F0F0F]/60 font-body leading-relaxed mb-8">
-            Thank you. Your quote request has been received. Creative Books SA will review your information and get back to you shortly.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="https://wa.me/27000000000" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors">
-              <MessageCircle className="w-4 h-4" /> WhatsApp Us
-            </a>
-            <Link to="/"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-obsidian text-white rounded-full font-medium hover:bg-obsidian/80 transition-colors">
-              <Home className="w-4 h-4" /> Back to Home
-            </Link>
-          </div>
-        </motion.div>
-      </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="relative max-w-lg w-full text-center"
+            style={{
+              background: 'rgba(15,10,6,0.9)',
+              backdropFilter: 'blur(24px)',
+              border: '1px solid rgba(184,115,51,0.2)',
+              borderRadius: '2rem',
+              padding: '3rem 2.5rem',
+              boxShadow: '0 40px 80px rgba(0,0,0,0.6)',
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+              style={{ background: 'rgba(184,115,51,0.15)', border: '1px solid rgba(184,115,51,0.3)' }}
+            >
+              <CheckCircle className="w-10 h-10 text-copper" />
+            </motion.div>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-white mb-4">
+              Quote Request Received!
+            </h2>
+            <p className="text-white/50 font-body leading-relaxed mb-8">
+              Thank you. Your quote request has been received. Creative Books SA will review your information and get back to you within 24 hours.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href="https://wa.me/27842305393" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors text-sm">
+                <MessageCircle className="w-4 h-4" /> WhatsApp Us
+              </a>
+              <Link to="/"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all text-white/70 hover:text-white"
+                style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
+                <Home className="w-4 h-4" /> Back to Home
+              </Link>
+            </div>
+          </motion.div>
+        </div>
       </>
     );
   }
@@ -203,70 +223,229 @@ export default function GetQuote() {
         description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
         canonical="https://www.creativebookssa.co.za/getquote"
       />
-    <div className="min-h-screen bg-vellum pt-24 pb-16 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-2 block">Creative Books SA</span>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Get a Free Publishing Quote</h1>
-          <p className="text-[#0F0F0F]/50 font-body mt-2 text-sm">Complete the steps below — we'll prepare a personalised quote for you.</p>
+
+      {/* ── HERO ── */}
+      <section className="relative min-h-[60vh] flex flex-col items-center justify-center overflow-hidden bg-[#060504] pt-24 pb-16 px-4">
+        {/* Ambient glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            animate={{ opacity: [0.15, 0.3, 0.15], scale: [1, 1.1, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(184,115,51,0.4) 0%, transparent 70%)', filter: 'blur(80px)' }}
+          />
+          <motion.div
+            animate={{ opacity: [0.1, 0.2, 0.1], scale: [1, 1.15, 1] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+            className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(184,115,51,0.25) 0%, transparent 70%)', filter: 'blur(60px)' }}
+          />
+          {/* Subtle grid */}
+          <div className="absolute inset-0 opacity-[0.03]"
+            style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         </div>
 
-        {/* Progress */}
-        <QuoteProgress step={step} labels={STEP_LABELS} />
+        {/* Floating particles */}
+        {[...Array(5)].map((_, i) => (
+          <motion.div key={i}
+            className="absolute w-1 h-1 rounded-full bg-copper/50"
+            style={{ left: `${20 + i * 15}%`, top: `${25 + (i % 3) * 20}%` }}
+            animate={{ y: [0, -18, 0], opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
+          />
+        ))}
 
-        {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-lg border border-[#0F0F0F]/5 overflow-hidden mt-6">
-          <div className="px-6 py-3 bg-obsidian flex items-center justify-between">
-            <span className="text-white/50 text-xs font-body uppercase tracking-widest">Step {step + 1} of 8</span>
-            <span className="text-copper text-xs font-body font-medium">{STEP_LABELS[step]}</span>
-          </div>
+        <div className="relative max-w-3xl mx-auto text-center">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+            style={{ background: 'rgba(184,115,51,0.1)', border: '1px solid rgba(184,115,51,0.25)' }}
+          >
+            <Sparkles className="w-4 h-4 text-copper" />
+            <span className="text-copper text-sm font-medium font-body">100% Free — No Obligation</span>
+          </motion.div>
 
-          <div className="p-6 md:p-8 overflow-hidden">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={step}
-                custom={direction}
-                initial={{ opacity: 0, x: direction * 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -40 }}
-                transition={{ duration: 0.25 }}
-              >
-                {STEPS[step]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
+          >
+            Your Book Deserves<br />
+            <span className="text-gradient-copper">Professional Publishing</span>
+          </motion.h1>
 
-          {/* Navigation */}
-          <div className="px-6 md:px-8 pb-6 md:pb-8 flex items-center justify-between gap-4 border-t border-[#0F0F0F]/5 pt-6">
-            <button
-              onClick={back}
-              disabled={step === 0}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#0F0F0F]/15 text-[#0F0F0F]/60 text-sm font-body hover:border-copper hover:text-copper transition-all disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
+          {/* Subheadline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-white/55 font-body text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-10"
+          >
+            Complete the 8-step form below and receive a personalised, transparent quote — tailored to your exact project. No hidden costs. Ever.
+          </motion.p>
 
-            {step < 7 ? (
-              <button
-                onClick={next}
-                className="inline-flex items-center gap-2 px-7 py-2.5 bg-copper text-white rounded-full text-sm font-medium hover:bg-copper/90 transition-all shadow-md shadow-copper/20"
-              >
-                Next <ArrowRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                onClick={submit}
-                disabled={submitting}
-                className="inline-flex items-center gap-2 px-7 py-2.5 bg-copper text-white rounded-full text-sm font-medium hover:bg-copper/90 transition-all shadow-md shadow-copper/20 disabled:opacity-70"
-              >
-                {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <>Submit Quote Request <CheckCircle className="w-4 h-4" /></>}
-              </button>
-            )}
-          </div>
+          {/* Trust strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="flex flex-wrap items-center justify-center gap-4 md:gap-6"
+          >
+            {TRUST_ITEMS.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-2 text-white/40 text-sm font-body">
+                <Icon className="w-4 h-4 text-copper" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </motion.div>
         </div>
-      </div>
-    </div>
+
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+        >
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-px h-8 bg-gradient-to-b from-copper/50 to-transparent"
+          />
+        </motion.div>
+      </section>
+
+      {/* ── FORM SECTION ── */}
+      <section className="relative bg-vellum py-16 px-4">
+        {/* Top wave transition */}
+        <div className="absolute top-0 left-0 right-0 h-16 overflow-hidden -mt-1">
+          <div className="w-full h-full bg-[#060504]"
+            style={{ clipPath: 'ellipse(60% 100% at 50% 0%)' }} />
+        </div>
+
+        <div className="relative max-w-3xl mx-auto">
+          {/* Section label */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-3 mb-6"
+          >
+            <div className="w-8 h-8 rounded-lg bg-obsidian flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-copper" />
+            </div>
+            <span className="text-[#0F0F0F]/40 text-sm font-body uppercase tracking-widest">Your Quote</span>
+          </motion.div>
+
+          {/* Progress */}
+          <QuoteProgress step={step} labels={STEP_LABELS} />
+
+          {/* Form Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mt-6 rounded-3xl overflow-hidden"
+            style={{
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.08)',
+            }}
+          >
+            {/* Card Header */}
+            <div className="px-6 py-4 flex items-center justify-between"
+              style={{ background: '#0F0F0F' }}>
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-copper/60" />
+                </div>
+                <span className="text-white/30 text-xs font-body uppercase tracking-widest">Step {step + 1} of 8</span>
+              </div>
+              <span className="text-copper text-xs font-body font-medium tracking-wide">{STEP_LABELS[step]}</span>
+            </div>
+
+            {/* Step Content */}
+            <div className="p-6 md:p-10 overflow-hidden">
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={step}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction * 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction * -40 }}
+                  transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  {STEPS[step]}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Navigation */}
+            <div className="px-6 md:px-10 pb-8 flex items-center justify-between gap-4 border-t border-[#0F0F0F]/5 pt-6">
+              <button
+                onClick={back}
+                disabled={step === 0}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-body transition-all disabled:opacity-20 disabled:pointer-events-none"
+                style={{ border: '1px solid rgba(0,0,0,0.12)', color: 'rgba(0,0,0,0.5)' }}
+                onMouseEnter={e => { if (step > 0) { e.currentTarget.style.borderColor = '#B87333'; e.currentTarget.style.color = '#B87333'; }}}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.12)'; e.currentTarget.style.color = 'rgba(0,0,0,0.5)'; }}
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+
+              {step < 7 ? (
+                <motion.button
+                  onClick={next}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-8 py-2.5 text-white rounded-full text-sm font-medium transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #B87333 0%, #9a6030 100%)',
+                    boxShadow: '0 8px 24px rgba(184,115,51,0.3)',
+                  }}
+                >
+                  Continue <ArrowRight className="w-4 h-4" />
+                </motion.button>
+              ) : (
+                <motion.button
+                  onClick={submit}
+                  disabled={submitting}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2 px-8 py-2.5 text-white rounded-full text-sm font-medium transition-all disabled:opacity-70"
+                  style={{
+                    background: 'linear-gradient(135deg, #B87333 0%, #9a6030 100%)',
+                    boxShadow: '0 8px 24px rgba(184,115,51,0.3)',
+                  }}
+                >
+                  {submitting
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+                    : <><CheckCircle className="w-4 h-4" /> Submit Quote Request</>}
+                </motion.button>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Bottom reassurance */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="text-center text-[#0F0F0F]/30 text-xs font-body mt-6"
+          >
+            🔒 Your information is kept private and never shared with third parties.
+          </motion.p>
+        </div>
+      </section>
     </>
   );
 }
