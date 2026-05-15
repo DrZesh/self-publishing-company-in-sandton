@@ -172,7 +172,6 @@ import BusinessBookPrinting from './pages/seo/industry/BusinessBookPrinting.jsx'
 import TrainingManualPrinting from './pages/seo/industry/TrainingManualPrinting.jsx';
 import SchoolBookPrinting from './pages/seo/industry/SchoolBookPrinting.jsx';
 import NovelPrinting from './pages/seo/industry/NovelPrinting.jsx';
-import CookbookPrinting from './pages/seo/industry/CookbookPrinting.jsx';
 import EducationalBookPrinting from './pages/seo/industry/EducationalBookPrinting.jsx';
 
 // Long-Tail SEO Article Pages
@@ -405,7 +404,6 @@ const AuthenticatedApp = () => {
         <Route path="/trainingmanualprintingjohannesburg" element={<TrainingManualPrinting />} />
         <Route path="/schoolbookprintingjohannesburg" element={<SchoolBookPrinting />} />
         <Route path="/novelprintingjohannesburg" element={<NovelPrinting />} />
-        <Route path="/cookbookprintingjohannesburg" element={<CookbookPrinting />} />
         <Route path="/educationalbookprintingjohannesburg" element={<EducationalBookPrinting />} />
 
         {/* Long-Tail SEO Article Pages */}
