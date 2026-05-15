@@ -7,9 +7,9 @@ import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
 
 const sizes = [
-  { label: '15cm × 15cm', path: '/printing/childrensbooks/15cmx15cm', description: 'Compact square format. Ideal for short picture books and board books.' },
-  { label: '20cm × 20cm', path: '/printing/childrensbooks/20cmx20cm', description: 'Popular medium square. The most common size for children\'s picture books.' },
-  { label: '21cm × 21cm', path: '/printing/childrensbooks/21cmx21cm', description: 'Large square format. Perfect for detailed illustrations and full-colour spreads.' },
+  { label: '15 x 15 cm', path: '/printing/childrensbooks/ChildrensBooks15x15', description: 'Our most popular children\'s book size. Compact, easy for little hands, and affordable to start. From R40 per book at 100 copies.' },
+  { label: '20 x 20 cm', path: '/printing/childrensbooks/ChildrensBooks20x20', description: 'Medium square format. More space for detailed illustrations and longer text. Ideal for picture books for ages 4-9.' },
+  { label: '21 x 21 cm', path: '/printing/childrensbooks/ChildrensBooks21x21', description: 'Large premium square format. Generous canvas for full-bleed illustrations and gift-book quality. Premium feel for special editions.' },
 ];
 
 export default function PrintingChildrensBooks() {
@@ -38,8 +38,8 @@ export default function PrintingChildrensBooks() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Select Your Size</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Choose a Book Size</h2>
-            <p className="text-[#0F0F0F]/50 font-body mt-3 max-w-xl mx-auto">Select the format that best suits your children's book to see detailed specifications and pricing.</p>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Choose Your Children's Book Size</h2>
+            <p className="text-[#0F0F0F]/50 font-body mt-3 max-w-xl mx-auto">Select the format that works best for your children's book. Each size includes full-colour printing, gloss cover, and saddle stitch binding.</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {sizes.map((size, i) => (
