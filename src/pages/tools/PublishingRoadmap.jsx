@@ -91,20 +91,15 @@ export default function PublishingRoadmap() {
     return stages;
   }, [currentStage]);
 
-  const finalDate = useMemo(() => {
-    let lastDate = new Date();
-    timeline.forEach((stage) => {
-      if (stage.endDate > lastDate) {
-        lastDate = stage.endDate;
-      }
-    });
-    return lastDate;
+  const currentStageEndDate = useMemo(() => {
+    const current = timeline.find((s) => s.isActive);
+    return current?.endDate || new Date();
   }, [timeline]);
 
   const daysToCompletion = useMemo(() => {
     const today = new Date();
-    return Math.ceil((finalDate - today) / (1000 * 60 * 60 * 24));
-  }, [finalDate]);
+    return Math.ceil((currentStageEndDate - today) / (1000 * 60 * 60 * 24));
+  }, [currentStageEndDate]);
 
   const remainingStages = useMemo(() => {
     const currentIndex = timeline.findIndex((s) => s.isActive);
@@ -228,9 +223,9 @@ export default function PublishingRoadmap() {
 
                   {/* Completion Date */}
                   <div className="pt-4 border-t border-[#0F0F0F]/10">
-                    <p className="text-[#0F0F0F]/60 text-xs font-body mb-2">Estimated Publication Date</p>
+                    <p className="text-[#0F0F0F]/60 text-xs font-body mb-2">Current Stage Completion</p>
                     <p className="font-heading text-2xl font-bold text-[#0F0F0F]">
-                      {finalDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {currentStageEndDate.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                     <p className="text-sm text-copper font-medium mt-1">{daysToCompletion} days from now</p>
                   </div>
