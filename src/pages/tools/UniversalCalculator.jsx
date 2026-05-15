@@ -60,22 +60,32 @@ export default function UniversalCalculator() {
           });
         }
       } else if (serviceId === 'editing') {
-        const amount = Math.ceil((data.wordCount || 0) * (data.ratePerWord || 0.08));
+        const rates = {
+          proofreading: 0.04,
+          copyediting: 0.08,
+          academic: 0.12,
+        };
+        const amount = Math.ceil((data.wordCount || 0) * (rates[data.editingType] || 0.08));
         if (amount > 0) {
           total += amount;
           items.push({
-            name: `${data.editingType || 'Editing'}`,
-            description: `${data.wordCount || 0} words`,
+            name: `${data.editingType === 'copyediting' ? 'Copy Editing' : data.editingType === 'academic' ? 'Academic Editing' : 'Proofreading'}`,
+            description: `${data.wordCount || 0} words @ R${rates[data.editingType]}/word`,
             amount,
           });
         }
       } else if (serviceId === 'design-cover') {
-        const prices = { starter: 3850, standard: 5500, premium: 7700 };
-        const amount = prices[data.packageLevel || 'standard'];
+        const packages = {
+          starter: 3850,
+          standard: 5500,
+          premium: 7700,
+          full: 11000,
+        };
+        const amount = packages[data.packageLevel || 'standard'];
         total += amount;
         items.push({
           name: 'Book Cover Design',
-          description: data.packageLevel || 'Standard',
+          description: `${data.packageLevel ? data.packageLevel.charAt(0).toUpperCase() + data.packageLevel.slice(1) : 'Standard'} Package`,
           amount,
         });
       } else if (serviceId === 'typesetting') {
@@ -358,11 +368,12 @@ export default function UniversalCalculator() {
                     <h3 className="font-heading text-lg font-bold text-[#0F0F0F] mb-4 flex items-center gap-2">
                       <span>🎨</span> Book Cover Design
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                       {[
                         { id: 'starter', label: 'Starter', price: 'R3,850' },
                         { id: 'standard', label: 'Standard', price: 'R5,500' },
                         { id: 'premium', label: 'Premium', price: 'R7,700' },
+                        { id: 'full', label: 'Full Design', price: 'R11,000' },
                       ].map(pkg => (
                         <motion.button
                           key={pkg.id}
