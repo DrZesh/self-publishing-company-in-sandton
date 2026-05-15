@@ -3,6 +3,7 @@ import PageMeta from '../../components/shared/PageMeta';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award, AlignLeft, BookOpen, Layers } from 'lucide-react';
+import PricingButtons from '../../components/shared/PricingButtons';
 import InternalLinks from '../../components/shared/InternalLinks';
 
 const packages = [
@@ -14,6 +15,7 @@ const packages = [
     popular: false,
     includes: ['Basic Formatting', 'Standard paragraph indentation', 'Drop Cap', 'Includes source file', 'Well Structured Chapter Headings'],
     cta: 'Choose Basic Layout',
+    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Basic%20Layout%20-%20R10.50%20per%20page&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20typesetting%20service%20as-is%3A%0A%0ASERVICE%3A%20Basic%20Layout%20%28Typesetting%29%0APRICE%3A%20R10.50%20per%20page%0A%0AINCLUDED%3A%0A-%20Print-ready%20file%20%28Microsoft%20Word%29%0A-%20Basic%20formatting%0A-%20Standard%20paragraph%20indentation%0A-%20Drop%20cap%0A-%20Includes%20source%20file%0A-%20Well-structured%20chapter%20headings%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0APage%20count%3A%20%0ABook%20size%20%28A5%20or%206x9%29%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: 'Standard Layout',
@@ -23,6 +25,7 @@ const packages = [
     popular: true,
     includes: ['Basic Formatting', 'Paragraph indentation', 'Author Title & Book Name on the header', 'Bullet & Numbering', 'Includes Source File', 'Images & Bleed Images', 'Well Structured Chapter Headings'],
     cta: 'Choose Standard Layout',
+    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Standard%20Layout%20-%20R12.50%20per%20page&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20typesetting%20service%20as-is%3A%0A%0ASERVICE%3A%20Standard%20Layout%20%28Typesetting%29%0APRICE%3A%20R12.50%20per%20page%0A%0AINCLUDED%3A%0A-%20Print-ready%20file%20%28Microsoft%20Word%29%0A-%20Basic%20formatting%0A-%20Paragraph%20indentation%0A-%20Author%20title%20and%20book%20name%20in%20the%20header%0A-%20Bullet%20and%20numbering%0A-%20Includes%20source%20file%0A-%20Images%20and%20bleed%20images%0A-%20Well-structured%20chapter%20headings%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0APage%20count%3A%20%0ABook%20size%20%28A5%20or%206x9%29%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: 'Premium Layout',
@@ -32,6 +35,7 @@ const packages = [
     popular: false,
     includes: ['Everything in Basic & Standard Layout', 'Tabulation', 'Structures'],
     cta: 'Choose Premium Layout',
+    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Premium%20Layout%20-%20R19.50%20per%20page&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20typesetting%20service%20as-is%3A%0A%0ASERVICE%3A%20Premium%20Layout%20%28Typesetting%29%0APRICE%3A%20R19.50%20per%20page%0A%0AINCLUDED%3A%0A-%20Print-ready%20file%20%28Microsoft%20Word%29%0A-%20Everything%20in%20Basic%20and%20Standard%20Layout%0A-%20Tabulation%0A-%20Structures%20%28suited%20to%20non-fiction%20with%20tables%20and%20complex%20formatting%29%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0APage%20count%3A%20%0ABook%20size%20%28A5%20or%206x9%29%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
 ];
 
@@ -165,6 +169,7 @@ export default function BookTypesetting() {
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0B1220] mb-2 leading-tight">Microsoft Word Packages</h2>
             <p className="text-[#2B2B2B]/50 font-body text-sm">Save Time. Save Money. — Priced per page.</p>
           </motion.div>
+          <p className="text-[#2B2B2B]/40 text-xs font-body mb-6">Need adjustments or have questions? Click 'Get a Custom Quote'. Ready to go? Click 'Order This As-Is' to send a pre-filled email.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {packages.map((pkg, i) => (
               <motion.div key={pkg.title} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
@@ -203,11 +208,8 @@ export default function BookTypesetting() {
                     ))}
                   </ul>
                 </div>
-                <div className="p-7 pt-0">
-                  <Link to="/getquote" className="block text-center py-3 text-sm font-semibold font-body transition-all"
-                    style={pkg.popular ? { background: 'linear-gradient(135deg, #0B1220, #1a2a4a)', color: '#fff', boxShadow: '0 8px 24px rgba(11,18,32,0.25)', borderRadius: '8px' } : { background: 'rgba(11,18,32,0.05)', color: '#0B1220', border: '1px solid rgba(11,18,32,0.12)', borderRadius: '8px' }}>
-                    {pkg.cta}
-                  </Link>
+                <div className="px-7 pb-7">
+                  <PricingButtons mailtoUrl={pkg.mailto} />
                 </div>
               </motion.div>
             ))}

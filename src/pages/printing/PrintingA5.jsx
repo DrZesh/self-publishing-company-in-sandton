@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, BookOpen, Layers, Printer, Award } from 'lucide-react';
+import PricingButtons from '../../components/shared/PricingButtons';
 import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import InternalLinks from '../../components/shared/InternalLinks';
 
@@ -24,13 +25,13 @@ const whitePricing = [
 ];
 
 const creamPricing = [
-  { name: 'Bronze',   pages: '50 – 100',   price: 'R5 500',  popular: true  },
-  { name: 'Silver',   pages: '115 – 150',  price: 'R6 250',  popular: false },
-  { name: 'Gold',     pages: '160 – 200',  price: 'R7 500',  popular: false },
-  { name: 'Platinum', pages: '210 – 250',  price: 'R8 750',  popular: false },
-  { name: 'Diamond',  pages: '260 – 300',  price: 'R9 600',  popular: false },
-  { name: 'Elite',    pages: '310 – 350',  price: 'R11 500', popular: false },
-  { name: 'Glam',     pages: '360 – 400',  price: 'R12 500', popular: false },
+  { name: 'Bronze',   pages: '50 – 100',   price: 'R5 500',  popular: true,  mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Bronze%20%2850-100%20pages%29%20-%20R5%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Bronze%20Tier%0APRICE%3A%20R5%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%2050%20to%20100%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Silver',   pages: '115 – 150',  price: 'R6 250',  popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Silver%20%28115-150%20pages%29%20-%20R6%2C250&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Silver%20Tier%0APRICE%3A%20R6%2C250%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20115%20to%20150%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Gold',     pages: '160 – 200',  price: 'R7 500',  popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Gold%20%28160-200%20pages%29%20-%20R7%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Gold%20Tier%0APRICE%3A%20R7%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20160%20to%20200%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Platinum', pages: '210 – 250',  price: 'R8 750',  popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Platinum%20%28210-250%20pages%29%20-%20R8%2C750&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Platinum%20Tier%0APRICE%3A%20R8%2C750%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20210%20to%20250%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Diamond',  pages: '260 – 300',  price: 'R9 600',  popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Diamond%20%28260-300%20pages%29%20-%20R9%2C600&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Diamond%20Tier%0APRICE%3A%20R9%2C600%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20260%20to%20300%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Elite',    pages: '310 – 350',  price: 'R11 500', popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Elite%20%28310-350%20pages%29%20-%20R11%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Elite%20Tier%0APRICE%3A%20R11%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20310%20to%20350%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Glam',     pages: '360 – 400',  price: 'R12 500', popular: false, mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20A5%20Printing%20Glam%20%28360-400%20pages%29%20-%20R12%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%20as-is%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Glam%20Tier%0APRICE%3A%20R12%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20360%20to%20400%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20Cream%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
 ];
 
 const features = [
@@ -120,18 +121,8 @@ function PricingCard({ pkg, paperType }) {
         </ul>
       </div>
 
-      <div className="p-6 pt-0">
-        <Link to="/getquote"
-          className="block text-center py-3 px-5 text-sm font-semibold font-body transition-all"
-          style={pkg.popular ? {
-            background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
-            color: '#fff', boxShadow: '0 8px 24px rgba(11,18,32,0.25)', borderRadius: '8px',
-          } : {
-            background: 'rgba(11,18,32,0.05)', color: '#0B1220',
-            border: '1px solid rgba(11,18,32,0.12)', borderRadius: '8px',
-          }}>
-          Request This Printing Quote
-        </Link>
+      <div className="px-6 pb-6">
+        <PricingButtons mailtoUrl={pkg.mailto} />
       </div>
     </motion.div>
   );
@@ -201,18 +192,8 @@ function DarkPricingCard({ pkg, paperType, i }) {
         </ul>
       </div>
 
-      <div className="p-6 pt-0">
-        <Link to="/getquote"
-          className="block text-center py-3 px-5 text-sm font-semibold font-body transition-all"
-          style={pkg.popular ? {
-            background: 'linear-gradient(135deg, #0B1220 0%, #1a2a4a 100%)',
-            color: '#fff', boxShadow: '0 8px 24px rgba(11,18,32,0.3)', borderRadius: '8px',
-          } : {
-            background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)',
-            border: '1px solid rgba(255,255,255,0.14)', borderRadius: '8px',
-          }}>
-          Request This Printing Quote
-        </Link>
+      <div className="px-6 pb-6">
+        <PricingButtons mailtoUrl={pkg.mailto} />
       </div>
     </motion.div>
   );
@@ -441,6 +422,7 @@ export default function PrintingA5() {
               <DarkPricingCard key={pkg.name + '-cream'} pkg={pkg} paperType="Cream Paper" i={i} />
             ))}
           </div>
+          <p className="text-white/25 text-xs font-body mt-4 text-center">Need adjustments or have questions? Click 'Get a Custom Quote'. Ready to go? Click 'Order This As-Is' to send a pre-filled email.</p>
 
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-8 py-6"
