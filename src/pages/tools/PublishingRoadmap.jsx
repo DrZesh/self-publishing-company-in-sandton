@@ -18,49 +18,41 @@ const STAGES = [
     id: 'editing',
     label: 'Editing',
     description: 'Professional editing (copy/developmental)',
-    daysFromStart: 14,
-    durationDays: 21,
+    daysFromStart: 0,
+    durationDays: 9,
     order: 2,
   },
   {
     id: 'cover',
     label: 'Cover Design',
     description: 'Professional cover design',
-    daysFromStart: 35,
-    durationDays: 10,
+    daysFromStart: 9,
+    durationDays: 7,
     order: 3,
   },
   {
     id: 'typesetting',
     label: 'Typesetting & Layout',
     description: 'Professional book layout and formatting',
-    daysFromStart: 45,
-    durationDays: 10,
+    daysFromStart: 16,
+    durationDays: 4,
     order: 4,
   },
   {
     id: 'proofs',
     label: 'Proofing & Revisions',
     description: 'Review proofs and final corrections',
-    daysFromStart: 55,
-    durationDays: 7,
+    daysFromStart: 20,
+    durationDays: 2,
     order: 5,
   },
   {
     id: 'printing',
     label: 'Printing & Distribution',
     description: 'Print-on-demand setup or printing run',
-    daysFromStart: 62,
+    daysFromStart: 22,
     durationDays: 10,
     order: 6,
-  },
-  {
-    id: 'marketing',
-    label: 'Marketing & Launch',
-    description: 'Launch marketing campaign',
-    daysFromStart: 72,
-    durationDays: 7,
-    order: 7,
   },
 ];
 
@@ -199,9 +191,9 @@ export default function PublishingRoadmap() {
                 <h3 className="font-heading font-bold text-[#0F0F0F] mb-4">Services Included in Timeline</h3>
                 <div className="space-y-2">
                   {[
-                    { id: 'editing', label: 'Professional Editing (add 21 days)', default: false },
-                    { id: 'cover', label: 'Professional Cover Design (add 10 days)', default: true },
-                    { id: 'typesetting', label: 'Professional Typesetting (add 10 days)', default: true },
+                    { id: 'editing', label: 'Professional Editing (add 9 days)', default: false },
+                    { id: 'cover', label: 'Professional Cover Design (add 7 days)', default: true },
+                    { id: 'typesetting', label: 'Professional Typesetting (add 4 days)', default: true },
                   ].map(({ id, label, default: defaultVal }) => (
                     <label key={id} className="flex items-center gap-3 p-3 border border-[#0F0F0F]/10 rounded-lg cursor-pointer hover:bg-copper/5 transition-all" style={{ borderColor: includeServices[id] ? '#B87333' : '#0F0F0F10' }}>
                       <input
