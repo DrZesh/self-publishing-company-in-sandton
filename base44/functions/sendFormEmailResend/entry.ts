@@ -2,7 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const BUSINESS_EMAIL = 'info@creativebooks.co.za';
-const FROM_EMAIL = 'noreply@creativebooks.co.za';
+const FROM_EMAIL = 'info@creativebooks.co.za';
 
 const BRAND_COLOR = '#B87333';
 const LIGHT_COPPER = '#D4A574';
