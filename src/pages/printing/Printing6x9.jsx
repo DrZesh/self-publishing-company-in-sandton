@@ -410,7 +410,7 @@ export default function Printing6x9() {
         </div>
       </section>
 
-      {/* ── Cream Paper: Why Section + Pricing ── */}
+      {/* ── White Paper: Why Section + Pricing ── */}
       <section className="relative py-24 lg:py-28 overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 100%)' }}>
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.4), transparent)' }} />
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] pointer-events-none"
@@ -420,22 +420,22 @@ export default function Printing6x9() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-px" style={{ background: '#B8955B' }} />
-              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">Cream Paper</span>
+              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">White Paper</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              6×9 Cream Paper Printing
+              6×9 White Paper Printing
             </h2>
             <p className="text-white/45 font-body text-sm max-w-2xl leading-relaxed">
-              Printed on 78gsm Bulk Cream paper, our cream option gives your book a warm, traditional feel — ideal for novels, memoirs and literary works.
+              Printed on 80gsm Bond White paper, our white option provides a clean, bright reading experience — ideal for business books, academic works and professional publications.
             </p>
           </motion.div>
 
-          {/* Cream paper benefits */}
+          {/* White paper benefits */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14">
             {[
-              { title: 'Thickness', body: 'Cream paper tends to be thicker and more opaque than white paper, which reduces show-through of text and images from one page to the next.' },
-              { title: 'Quality', body: 'This feature ensures a higher quality and more professional-looking final product.' },
-              { title: 'Reading Experience', body: 'Opting for cream paper can contribute to a more enjoyable reading experience, while also enhancing the aesthetic appeal and durability of the printed book.' },
+              { title: 'Clarity', body: 'White paper provides excellent contrast and brightness, making text and images appear crisp and vibrant for optimal readability.' },
+              { title: 'Professionalism', body: 'White paper has been the industry standard for professional publications, academic materials, and business books.' },
+              { title: 'Accessibility', body: 'White paper ensures consistent visual appearance and is suitable for readers with different visual preferences, including those with visual impairments.' },
             ].map((item, i) => (
               <motion.div key={item.title}
                 initial={{ opacity: 0, y: 16 }}
@@ -464,7 +464,7 @@ export default function Printing6x9() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {creamPricing.map((pkg, i) => (
-              <DarkPricingCard key={pkg.name + '-cream'} pkg={pkg} paperType="Cream Paper · 78gsm Bulk" i={i} />
+              <DarkPricingCard key={pkg.name + '-white'} pkg={pkg} paperType="White Paper · 80gsm Bond" i={i} />
             ))}
           </div>
           <p className="text-white/25 text-xs font-body mt-4 text-center">Need adjustments or have questions? Click 'Get a Custom Quote'. Ready to email us directly? Click 'Email Now' to send a pre-filled email.</p>
@@ -473,7 +473,7 @@ export default function Printing6x9() {
             className="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-8 py-6"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', backdropFilter: 'blur(12px)' }}>
             <p className="text-white/50 font-body text-sm leading-relaxed max-w-xl">
-              Need cream paper 6×9 book printing? Request a quote and we will help you confirm the best option for your page count and quantity.
+              Need white paper 6×9 book printing? Request a quote and we will help you confirm the best option for your page count and quantity.
             </p>
             <Link to="/getquote"
               className="shrink-0 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white transition-all group"
