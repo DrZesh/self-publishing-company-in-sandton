@@ -11,6 +11,7 @@ import PublishingPath from '../components/home/PublishingPath';
 import CoreServices from '../components/home/CoreServices';
 import PublishingPackagesSection from '../components/home/PublishingPackagesSection';
 import CalculatorCTA from '../components/home/CalculatorCTA';
+import UniversalCalculatorCTA from '../components/home/UniversalCalculatorCTA';
 import WhyChooseUsNew from '../components/home/WhyChooseUsNew';
 import BookTypes from '../components/home/BookTypes';
 import PublishingProcess from '../components/home/PublishingProcess';
@@ -57,6 +58,9 @@ export default function Home() {
 
       {/* 6. Book Printing Calculator CTA */}
       <CalculatorCTA />
+
+      {/* 6b. Universal Calculator CTA */}
+      <UniversalCalculatorCTA />
 
       {/* 7. Why Choose Us */}
       <WhyChooseUsNew />
