@@ -48,7 +48,7 @@ const slides = [
 
 const stats = [
   { value: '500+', label: 'Books Published' },
-  { value: '15+', label: 'Years Experience' },
+  { value: '8+', label: 'Years Experience' },
   { value: '98%', label: 'Satisfaction' },
 ];
 
