@@ -52,7 +52,7 @@ const faqs = [
   },
   {
     q: 'How long does printing take?',
-    a: 'Production typically takes 3 to 4 weeks from when we receive your print-ready files. Delivery within South Africa is usually 2 to 5 working days after production.',
+    a: 'Production typically takes 2 weeks from when we receive your print-ready files. Delivery within South Africa is usually 2 to 5 working days after production.',
   },
   {
     q: 'Do you ship outside South Africa?',
@@ -220,7 +220,7 @@ export default function ChildrensBooks21x21() {
               'Saddle stitch binding (industry standard for picture books)',
               'Print-ready file checking',
               'Nationwide delivery across South Africa',
-              'Production turnaround: 3 to 4 weeks from print-ready file approval',
+              'Production turnaround: 2 weeks from print-ready file approval',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
