@@ -220,7 +220,7 @@ Deno.serve(async (req) => {
     });
 
     await base44.integrations.Core.SendEmail({
-      to: BUSINESS_EMAIL,
+      to: `${BUSINESS_EMAIL}, draubreyzesh@gmail.com`,
       subject: businessSubject || `New ${formType} from ${submitterName}`,
       body: businessHtml,
     });
