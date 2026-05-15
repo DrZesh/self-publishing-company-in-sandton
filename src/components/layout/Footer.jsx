@@ -121,7 +121,10 @@ export default function Footer() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
-              <motion.a href="tel:+27842305393" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
+              <motion.a href="tel:0105003331" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
+                 <Phone className="w-4 h-4 text-copper" /> <span className="text-sm">010 500 3331</span>
+               </motion.a>
+               <motion.a href="tel:+27842305393" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>
                  <Phone className="w-4 h-4 text-copper" /> <span className="text-sm">+27 84 230 5393</span>
                </motion.a>
                <motion.a href="mailto:info@creativebooks.co.za" whileHover={{ x: 4 }} className="flex items-center gap-3 p-3 rounded-xl text-white/70 hover:text-copper transition-all" style={{ background: 'rgba(184,115,51,0.05)', border: '1px solid rgba(184,115,51,0.1)' }}>

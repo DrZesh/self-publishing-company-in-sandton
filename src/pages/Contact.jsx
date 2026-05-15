@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import PageMeta from '../components/shared/PageMeta';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, CheckCircle, Home, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Home, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -98,10 +98,7 @@ export default function Contact() {
                   );
                 })}
               </div>
-              <a href="https://wa.me/270842305393" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition-colors">
-                <MessageCircle className="w-4 h-4" /> Chat on WhatsApp
-              </a>
+
             </div>
 
             {/* Form */}
