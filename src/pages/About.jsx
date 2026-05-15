@@ -31,7 +31,7 @@ export default function About() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">About Us</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              Crafting Legacies, One Book at a Time
+              About Creative Books SA
             </h1>
             <p className="text-white/60 text-lg leading-relaxed font-body">
               Founded in Johannesburg, Creative Books SA has spent over 15 years transforming manuscripts into beautifully published books for authors across South Africa and beyond.

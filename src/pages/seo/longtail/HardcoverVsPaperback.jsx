@@ -28,7 +28,7 @@ export default function HardcoverVsPaperback() {
       canonical="https://www.creativebookssa.co.za/hardcovervspaperbackprinting"
       schema={schema}
       subtitle="Printing Format Comparison"
-      h1="Hardcover vs Paperback Book Printing"
+      h1="Hardcover vs Paperback: Which Is Right for Your Book?"
       intro="Should you print your book in hardcover or paperback? This is one of the most common questions we receive from self-publishing authors. The answer depends on your budget, goals, and reader expectations."
       sections={[
         {

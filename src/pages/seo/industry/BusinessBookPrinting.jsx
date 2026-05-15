@@ -32,7 +32,7 @@ export default function BusinessBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Business Book Printing"
-        title="Business Book Printing in Johannesburg"
+        title="Business Book Printing in South Africa"
         description="Print your business book, leadership guide, or entrepreneurship title professionally with Creative Books SA. We help South African business authors create authority-building books that open doors, generate leads, and command premium prices."
         features={[
           { title: 'A5 & 6×9 Formats', description: 'A5 for SA retail; 6×9 for Amazon KDP. We print both formats simultaneously for maximum market reach.' },

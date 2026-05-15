@@ -73,7 +73,7 @@ export default function BookPublishing() {
       <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png"
       subtitle="Book Publishing South Africa"
-      title="Professional Book Publishing Services"
+      title="Professional Book Publishing Services in South Africa"
       description="South Africa's leading book publishing company. We transform your manuscript into a professionally published book with expert editing, stunning design, quality printing, and global distribution."
       features={[
         { title: 'Full-Service Publishing', description: 'From manuscript evaluation to distribution, we handle every aspect of the publishing process.' },

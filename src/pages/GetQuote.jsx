@@ -208,7 +208,7 @@ export default function GetQuote() {
         {/* Header */}
         <div className="text-center mb-8">
           <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-2 block">Creative Books SA</span>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Request a Self-Publishing Quote</h1>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0F0F0F]">Get a Free Publishing Quote</h1>
           <p className="text-[#0F0F0F]/50 font-body mt-2 text-sm">Complete the steps below — we'll prepare a personalised quote for you.</p>
         </div>
 

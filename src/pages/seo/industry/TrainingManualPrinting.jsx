@@ -32,7 +32,7 @@ export default function TrainingManualPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Training Manual Printing"
-        title="Training Manual Printing in Johannesburg"
+        title="Training Manual Printing in South Africa"
         description="Professional training manual and workbook printing for Johannesburg businesses and training providers. Wire-O, spiral, softcover, and hardcover binding. Full-colour or black and white. Fast turnaround for your training programmes."
         features={[
           { title: 'Wire-O Binding', description: 'Flat-open wire-o binding is the gold standard for training manuals — practical in workshops and durable in the field.' },

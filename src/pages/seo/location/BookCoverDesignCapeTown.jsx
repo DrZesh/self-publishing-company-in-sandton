@@ -32,7 +32,7 @@ export default function BookCoverDesignCapeTown() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Cape Town</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design<br /><span className="text-copper">Cape Town</span>
+                Book Cover Design in Cape Town
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Cape Town and Western Cape</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

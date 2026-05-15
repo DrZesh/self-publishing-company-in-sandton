@@ -107,6 +107,10 @@ export default function BlogArticle() {
       title: 'How Much Does It Cost to Publish a Book in South Africa?',
       description: 'Complete breakdown of book publishing costs in South Africa — editing, design, printing, ISBN, distribution and marketing.',
     },
+    '/howtogetanisbn': {
+      title: 'How to Get an ISBN for Your Book | South Africa Guide',
+      description: 'Step-by-step guide to getting an ISBN in South Africa — free registration via the National Library, plus tips on barcodes.',
+    },
   };
   const pageMeta = metaMap[location.pathname];
 

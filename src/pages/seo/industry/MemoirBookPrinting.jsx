@@ -32,7 +32,7 @@ export default function MemoirBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Memoir Book Printing"
-        title="Memoir Book Printing in Johannesburg"
+        title="Memoir Printing Services in South Africa"
         description="Print your memoir professionally with Creative Books SA. Whether it is a personal family memoir, a business biography, or a literary autobiography, we bring your story to life in a beautifully produced book."
         features={[
           { title: 'Personal & Family Memoirs', description: 'We specialise in private family memoir printing — from 50 copies for family to 500+ for wider distribution.' },

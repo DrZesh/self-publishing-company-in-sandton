@@ -72,9 +72,9 @@ export default function MemoirWriting() {
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.6), transparent)' }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-20 w-full">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-            <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Memoir Writing Services · South Africa</span>
+            <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Memoir Writing · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Memoir Writing Services<br /><span style={{ color: '#B8955B' }}>South Africa</span>
+              Memoir Writing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Memoir Writers for Personal Stories, Life Journeys and Legacy Books</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

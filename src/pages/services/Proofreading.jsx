@@ -312,7 +312,7 @@ export default function Proofreading() {
               Proofreading Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Proofreading Services<br /><span style={{ color: '#B8955B' }}>Johannesburg</span>
+              Professional Proofreading Services
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">
               Professional Manuscript Proofreading for Authors Preparing to Publish

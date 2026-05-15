@@ -32,7 +32,7 @@ export default function ChristianBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Christian Book Printing"
-        title="Christian Book Printing in Johannesburg"
+        title="Christian Book Printing in South Africa"
         description="Creative Books SA is a trusted partner for South African Christian authors and ministries. We print devotionals, Bible studies, testimonies, ministry books, and church publications with the quality and care that faith-based publishing deserves."
         features={[
           { title: 'Devotionals & Bible Studies', description: 'Beautifully produced devotionals and Bible study guides for ministries and individual authors.' },

@@ -41,7 +41,7 @@ export default function BestPublishingCompaniesSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Best Publishers in South Africa"
-        title="Best Publishing Companies in South Africa"
+        title="The Best Publishing Companies in South Africa"
         description="When it comes to self-publishing in South Africa, Creative Books SA stands out as one of the country's top-rated publishing companies. We combine professional quality, transparent pricing, full rights retention, and complete end-to-end publishing services — from manuscript to market."
         features={[
           { title: 'Transparent, Fixed Pricing', description: 'No hidden costs. Our publishing packages have fixed prices published upfront so you always know what you\'re getting.' },

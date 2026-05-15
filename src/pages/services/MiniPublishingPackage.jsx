@@ -125,7 +125,7 @@ export default function MiniPublishingPackage() {
                 Affordable Publishing
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Mini Publishing Package
+                The Mini Publishing Package
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8 font-body">
                 Your most affordable entry into professional publishing. Perfect for first-time authors looking for quality without the premium price tag.

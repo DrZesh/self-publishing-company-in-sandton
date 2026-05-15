@@ -111,7 +111,7 @@ export default function Blog() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Blog</span>
             <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">
-              {isCategory ? categoryName : 'Publishing Insights & Guides'}
+              {isCategory ? categoryName : 'The Creative Books SA Blog'}
             </h1>
             <p className="text-white/60 text-lg leading-relaxed font-body">
               Expert advice on publishing, writing, printing, editing, and book marketing in South Africa.

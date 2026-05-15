@@ -125,7 +125,7 @@ export default function A5BookPublishing() {
                 A5 Format Publishing
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                A5 Book Publishing
+                A5 Book Publishing and Printing
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8 font-body">
                 Professional publishing for the compact A5 format. Perfect for poetry, short stories, and specialty publications. Affordable, professional, and ready for market.

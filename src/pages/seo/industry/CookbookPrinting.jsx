@@ -32,7 +32,7 @@ export default function CookbookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Cookbook Printing"
-        title="Cookbook Printing in Johannesburg"
+        title="Cookbook Printing in South Africa"
         description="Print stunning full-colour cookbooks and recipe books with Creative Books SA. We specialise in producing beautifully designed cookbooks for South African food authors, chefs, restaurants, and families — from intimate family recipe collections to commercially distributed titles."
         features={[
           { title: 'Full-Colour Printing', description: 'Vibrant full-colour printing on coated paper that brings your food photography to life.' },

@@ -32,7 +32,7 @@ export default function PoetryBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Poetry Book Printing"
-        title="Poetry Book Printing in Johannesburg"
+        title="Poetry Book Printing in South Africa"
         description="Creative Books SA provides specialist poetry book printing for South African poets. From intimate collections to prize-worthy volumes, we print poetry books that honour your work with premium quality production."
         features={[
           { title: 'A5 Poetry Format', description: 'A5 softcover on cream paper — the classic, trusted format for South African poetry collections.' },

@@ -371,10 +371,7 @@ export default function SelfPublishingPackages() {
               </motion.div>
 
               <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.02] mb-6">
-                Self Publishing<br />
-                <span style={{ background: 'linear-gradient(135deg, #B8955B 0%, #d4af72 50%, #B8955B 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                  Packages
-                </span>
+                Self-Publishing Packages for South African Authors
               </h1>
 
               <p className="text-white/55 text-base font-body leading-relaxed mb-8 max-w-lg">

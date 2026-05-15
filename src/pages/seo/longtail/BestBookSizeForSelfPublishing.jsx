@@ -28,7 +28,7 @@ export default function BestBookSizeForSelfPublishing() {
       canonical="https://www.creativebookssa.co.za/bestbooksizeforselfpublishing"
       schema={schema}
       subtitle="Self Publishing Guide"
-      h1="Best Book Size for Self Publishing in South Africa"
+      h1="The Best Book Size for Self-Publishing"
       intro="Choosing the right book size is one of the most important decisions in the publishing process. The wrong size can make your book look unprofessional, cost more to produce, and reduce your profit margin."
       sections={[
         {

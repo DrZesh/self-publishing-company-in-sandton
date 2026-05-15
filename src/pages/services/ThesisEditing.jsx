@@ -222,7 +222,7 @@ export default function ThesisEditing() {
               Thesis Editing Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Thesis Editing Services<br /><span style={{ color: '#B8955B' }}>Johannesburg</span>
+              Master's and PhD Thesis Editing Services
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">
               Professional Thesis Editing and Proofreading for Master's and PhD Students

@@ -42,7 +42,7 @@ export default function SelfPublishingSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Self Publishing South Africa"
-        title="Self Publishing in South Africa"
+        title="Self-Publishing in South Africa"
         description="Self-publish your book in South Africa with professional support from Creative Books SA. Keep 100% of your rights and royalties while receiving expert editing, cover design, typesetting, ISBN registration, printing, and global distribution services."
         features={[
           { title: '100% Rights Retained', description: 'Unlike traditional publishing, you own your work completely — all rights, all royalties, always.' },

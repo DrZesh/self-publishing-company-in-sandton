@@ -46,8 +46,8 @@ export default function BookPrintingMidrand() {
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
       />
 
-      {/* 1. Hero — same as home page */}
-      <HeroSlider />
+      {/* 1. Hero */}
+      <HeroSlider locationData={{ serviceType: 'Book Printing', city: 'Midrand', province: 'Gauteng' }} />
 
       {/* 2. Trust Strip */}
       <TrustStrip />

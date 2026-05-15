@@ -32,7 +32,7 @@ export default function NovelPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Novel Printing"
-        title="Novel Printing in Johannesburg"
+        title="Novel Printing in South Africa"
         description="Print your novel with the quality it deserves. Creative Books SA provides professional novel and fiction book printing for South African authors — from debut novelists to established writers. A5 softcover, cream paper, and hardcover options."
         features={[
           { title: 'A5 Cream Paper', description: 'The South African standard — A5 softcover on cream 80gsm paper for a warm, premium literary feel.' },

@@ -42,7 +42,7 @@ export default function ProofreadingServicesSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Proofreading Services South Africa"
-        title="Professional Proofreading Services in South Africa"
+        title="Proofreading Services in South Africa"
         description="South Africa's trusted proofreading specialists. Our expert proofreaders eliminate every spelling, grammar, punctuation, and formatting error from your book, thesis, academic paper, or business document — delivering a polished, error-free final product."
         features={[
           { title: 'Book Proofreading', description: 'Final-stage error elimination for novels, non-fiction, memoirs, and academic books before going to print.' },

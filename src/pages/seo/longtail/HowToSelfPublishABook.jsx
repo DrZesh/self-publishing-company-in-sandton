@@ -28,7 +28,7 @@ export default function HowToSelfPublishABook() {
       canonical="https://www.creativebookssa.co.za/howtoselfpublishabook"
       schema={schema}
       subtitle="Self Publishing Guide"
-      h1="How to Self Publish a Book in South Africa"
+      h1="How to Self-Publish a Book in South Africa"
       intro="Self-publishing gives you complete control over your book — your story, your design, your timeline, and 100% of your royalties. This guide walks South African authors through every step of the process."
       sections={[
         {

@@ -31,7 +31,7 @@ const locationData = {
   },
   editingservicesjohannesburg: {
     subtitle: 'Editing Services Johannesburg',
-    title: 'Editing Services in Johannesburg',
+    title: 'Book Editing Services in Johannesburg',
     description: 'Expert book editing, proofreading, and manuscript evaluation in Johannesburg. Professional editors serving authors across Gauteng and South Africa.',
   },
   bookcoverdesignjohannesburg: {

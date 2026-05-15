@@ -28,7 +28,7 @@ export default function A5vs6x9BookPrinting() {
       canonical="https://www.creativebookssa.co.za/a5vs6x9bookprinting"
       schema={schema}
       subtitle="Book Size Comparison"
-      h1="A5 vs 6×9 Book Printing — Which Size is Right?"
+      h1="A5 vs 6x9 Book Printing: Which Should You Choose?"
       intro="Two of the most popular book sizes in South Africa are A5 and 6×9 inches. They look similar, but serve different purposes. This guide helps you decide which format is right for your publishing goals."
       sections={[
         {

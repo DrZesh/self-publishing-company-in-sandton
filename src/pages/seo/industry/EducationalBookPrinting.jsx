@@ -32,7 +32,7 @@ export default function EducationalBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Educational Book Printing"
-        title="Educational Book Printing in Johannesburg"
+        title="Educational Book Printing in South Africa"
         description="Professional educational book printing for South African schools, tutors, and educational publishers. Textbooks, workbooks, learner guides, and supplementary reading printed with consistent quality at competitive prices."
         features={[
           { title: 'Textbook Printing', description: 'A5 and A4 textbooks for all school grades and subjects — black and white and full-colour.' },

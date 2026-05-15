@@ -37,7 +37,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Contact Us</span>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Get in Touch</h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Contact Creative Books SA</h1>
             <p className="text-white/60 text-lg leading-relaxed font-body">
               Ready to discuss your publishing project? Our team in Johannesburg is here to help.
             </p>

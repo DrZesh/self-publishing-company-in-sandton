@@ -170,7 +170,7 @@ export default function BookEditing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Editing Services · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Book Editors in<br /><span style={{ color: '#B8955B' }}>Johannesburg</span>
+              Professional Book Editing Services
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">Professional Book Editing, Copy Editing, Line Editing and Manuscript Refinement for Authors</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
