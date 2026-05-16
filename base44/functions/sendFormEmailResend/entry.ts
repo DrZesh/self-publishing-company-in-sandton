@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const BUSINESS_EMAIL = 'info@creativebooks.co.za';
 const BUSINESS_EMAIL_CC = 'draubreyzesh@gmail.com';
-const SITE_URL = 'https://www.creativebooks.co.za';
+const SITE_URL = 'https://creativebooks.co.za';
 const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 
 const BRAND_COLOR = '#B87333';
@@ -29,10 +29,11 @@ function footer() {
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr><td height="1" style="background:${DIVIDER_COLOR};font-size:0;">&nbsp;</td></tr>
     <tr><td align="center" style="padding:28px 24px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;color:${MUTED_COLOR};line-height:1.8;">
-      <strong style="color:${TEXT_COLOR};">Creative Books</strong><br />
-      Johannesburg, South Africa<br />
+      <strong style="color:${TEXT_COLOR};">Creative Books SA</strong><br />
+      Prism Office Park, 1 Ruby Cl, Fourways, 2191<br />
       ${BUSINESS_EMAIL}<br />
-      <span style="color:${BRAND_COLOR};font-style:italic;">Premium Self-Publishing for South African Authors</span>
+      Landline: 010 500 3331 &nbsp;|&nbsp; Mobile: 084 230 5393<br />
+      <span style="color:${BRAND_COLOR};font-style:italic;">#1 Self Publishing Company in South Africa &amp; Abroad</span>
     </td></tr>
     <tr><td align="center" style="padding:16px 24px 32px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;color:#AAAAAA;line-height:1.6;">
       You're receiving this email because you submitted a form on our website.<br />We will not share your email address with third parties.
@@ -134,17 +135,17 @@ function buildUserEmail({ firstName, formType, submitterEmail, fields }) {
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="${SITE_URL}/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
+          <a href="https://creativebooks.co.za/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="${SITE_URL}/howtopublishabook" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
+          <a href="https://creativebooks.co.za/publishingguide" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="${SITE_URL}/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
+          <a href="https://creativebooks.co.za/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
         </td>
       </tr>
     </table>
