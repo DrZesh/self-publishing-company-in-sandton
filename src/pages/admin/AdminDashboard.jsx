@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
+import GscDashboardSection from '@/components/admin/gsc/GscDashboardSection';
 
 export default function AdminDashboard() {
   const [timeOfDay, setTimeOfDay] = useState('morning');
@@ -101,6 +102,9 @@ export default function AdminDashboard() {
              <p className="text-xs text-[#2B2B2B]/50 mt-2">Total ZAR</p>
            </motion.div>
          </div>
+
+        {/* Search Console Section */}
+        <GscDashboardSection />
 
         {/* Placeholder for future sections */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

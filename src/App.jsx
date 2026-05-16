@@ -169,6 +169,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminInbox from './pages/admin/AdminInbox';
 import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
+import SeoAnalytics from './pages/admin/SeoAnalytics';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
 // Industry-Specific Printing Pages
@@ -540,6 +541,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/submissions" element={<ProtectedAdminRoute><AdminInbox /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
+      <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
     </Routes>
   );
 };
