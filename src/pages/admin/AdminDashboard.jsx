@@ -10,6 +10,8 @@ import FollowUps from '@/components/admin/dashboard/FollowUps';
 import QuickActions from '@/components/admin/dashboard/QuickActions';
 import AuthorInsights from '@/components/admin/dashboard/AuthorInsights';
 import SearchConsoleMini from '@/components/admin/dashboard/SearchConsoleMini';
+import LeadSourcesChart from '@/components/admin/dashboard/LeadSourcesChart';
+import RevenueGoalCard from '@/components/admin/dashboard/RevenueGoalCard';
 
 export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState('month');
@@ -45,6 +47,7 @@ export default function AdminDashboard() {
   const pipeline = dashData?.pipeline;
   const activity = dashData?.activity;
   const followUps = dashData?.followUps;
+  const leadSources = dashData?.leadSources;
 
   return (
     <AdminLayout>
@@ -62,24 +65,28 @@ export default function AdminDashboard() {
         {/* Section 3 — KPI Cards */}
         <KpiCards metrics={metrics} isOwner={isOwner} loading={loading} />
 
+        {/* Revenue Goal Banner — owner only */}
+        {isOwner && <RevenueGoalCard metrics={metrics} loading={loading} />}
+
         {/* Section 4 — Sales Pipeline */}
         <SalesPipeline pipeline={pipeline} loading={loading} />
 
-        {/* Section 6 + Follow-ups: two columns on large screens */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
-          {/* Follow-ups */}
+        {/* Lead Sources + Author Insights */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <LeadSourcesChart leadSources={leadSources} loading={loading} />
+          <AuthorInsights metrics={metrics} loading={loading} />
+        </div>
+
+        {/* Follow-ups + Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <FollowUps followUps={followUps} loading={loading} />
-          {/* Quick Actions */}
           <QuickActions />
         </div>
 
-        {/* Section 9 — Search Console Mini */}
+        {/* Search Console Mini */}
         <SearchConsoleMini />
 
-        {/* Section 10 — Author Insights */}
-        <AuthorInsights metrics={metrics} loading={loading} />
-
-        {/* Section 12 — Activity Feed */}
+        {/* Activity Feed */}
         <ActivityFeed activity={activity} loading={loading} />
 
         {/* Footer note */}

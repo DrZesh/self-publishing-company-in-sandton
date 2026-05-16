@@ -168,6 +168,9 @@ import LocationsHub from './pages/seo/LocationsHub';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminInbox from './pages/admin/AdminInbox';
+import AdminLeads from './pages/admin/AdminLeads';
+import AdminContacts from './pages/admin/AdminContacts';
+import AdminSettings from './pages/admin/AdminSettings';
 import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
 import SeoAnalytics from './pages/admin/SeoAnalytics';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
@@ -540,6 +543,9 @@ const AuthenticatedApp = () => {
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/submissions" element={<ProtectedAdminRoute><AdminInbox /></ProtectedAdminRoute>} />
+      <Route path="/admin/leads" element={<ProtectedAdminRoute><AdminLeads /></ProtectedAdminRoute>} />
+      <Route path="/admin/contacts" element={<ProtectedAdminRoute><AdminContacts /></ProtectedAdminRoute>} />
+      <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
     </Routes>
