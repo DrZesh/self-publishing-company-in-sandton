@@ -2,6 +2,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const BUSINESS_EMAIL = 'info@creativebooks.co.za';
+const BUSINESS_EMAIL_CC = 'draubreyzesh@gmail.com';
+const SITE_URL = 'https://www.creativebooks.co.za';
 const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 
 const BRAND_COLOR = '#B87333';
@@ -132,17 +134,17 @@ function buildUserEmail({ firstName, formType, submitterEmail, fields }) {
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
+          <a href="${SITE_URL}/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/howtopublishabook" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
+          <a href="${SITE_URL}/howtopublishabook" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
+          <a href="${SITE_URL}/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
         </td>
       </tr>
     </table>
@@ -216,7 +218,7 @@ Deno.serve(async (req) => {
     // Build email bodies
     const businessHtml = buildBusinessEmail({
       formType, submitterName, submitterEmail, fields, submittedAt,
-      pageUrl: pageUrl || 'www.creativebookssa.co.za',
+      pageUrl: pageUrl || SITE_URL,
     });
 
     const userHtml = buildUserEmail({
@@ -232,7 +234,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
-        to: BUSINESS_EMAIL,
+        to: [BUSINESS_EMAIL, BUSINESS_EMAIL_CC],
         subject: businessSubject || `New ${formType} from ${submitterName}`,
         html: businessHtml,
       }),
