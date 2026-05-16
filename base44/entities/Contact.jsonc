@@ -120,6 +120,11 @@
     "custom_fields": {
       "type": "object",
       "description": "Custom fields"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description or notes about this contact"
     }
   },
   "required": [
