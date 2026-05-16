@@ -16,7 +16,7 @@ const printPackages = [
     popular: true,
     description: "Authors use their own professional image.",
     includes: ["2x Concepts", "2x Mockups", "3x Revisions", "Delivered in Jpg & Pdf", "Print Ready", "Front, Spine & Back Cover Integrated"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Author%27s%20Book%20Cover%20%28Full%20Paperback%29%20-%20R1%2C650&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Author%27s%20Book%20Cover%20%28Full%20Paperback%29%0APRICE%3A%20R1%2C650%0A%0AINCLUDED%3A%0A-%20Author%20uses%20their%20own%20professional%20image%0A-%202x%20concepts%0A-%202x%20mockups%0A-%203x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Print%20ready%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Author%27s%20Book%20Cover%20%28Full%20Paperback%29%20-%20R1%2C650&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Author%27s%20Book%20Cover%20%28Full%20Paperback%29%0APRICE%3A%20R1%2C650%0A%0AINCLUDED%3A%0A-%20Author%20uses%20their%20own%20professional%20image%0A-%202x%20concepts%0A-%202x%20mockups%0A-%203x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Print%20ready%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: "Stock Design Cover",
@@ -25,7 +25,7 @@ const printPackages = [
     popular: false,
     description: "Shutterstock image integration.",
     includes: ["2x Concepts", "2x Mockups", "2x Revisions", "Delivered in Jpg & Pdf", "Front, Spine & Back Cover Integrated"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Stock%20Design%20Cover%20%28Full%20Paperback%29%20-%20R2%2C150&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Stock%20Design%20Cover%20%28Full%20Paperback%29%0APRICE%3A%20R2%2C150%0A%0AINCLUDED%3A%0A-%20Shutterstock%20image%20integration%0A-%202x%20concepts%0A-%202x%20mockups%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Stock%20Design%20Cover%20%28Full%20Paperback%29%20-%20R2%2C150&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Stock%20Design%20Cover%20%28Full%20Paperback%29%0APRICE%3A%20R2%2C150%0A%0AINCLUDED%3A%0A-%20Shutterstock%20image%20integration%0A-%202x%20concepts%0A-%202x%20mockups%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: "Illustrated Cover Design",
@@ -34,7 +34,7 @@ const printPackages = [
     popular: false,
     description: "Illustrated cover design.",
     includes: ["1x Character Development", "2x Concepts", "2x Revisions", "Delivered in Jpg & Pdf", "Custom product catalog", "Front, Spine & Back Cover Integrated"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Illustrated%20Cover%20Design%20%28Full%20Paperback%29%20-%20R3%2C850&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Illustrated%20Cover%20Design%20%28Full%20Paperback%29%0APRICE%3A%20R3%2C850%0A%0AINCLUDED%3A%0A-%201x%20character%20development%0A-%202x%20concepts%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Custom%20product%20catalog%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AStyle%20preferences%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Illustrated%20Cover%20Design%20%28Full%20Paperback%29%20-%20R3%2C850&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Illustrated%20Cover%20Design%20%28Full%20Paperback%29%0APRICE%3A%20R3%2C850%0A%0AINCLUDED%3A%0A-%201x%20character%20development%0A-%202x%20concepts%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Custom%20product%20catalog%0A-%20Front%2C%20spine%20and%20back%20cover%20integrated%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AStyle%20preferences%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
 ];
 
@@ -46,7 +46,7 @@ const ebookPackages = [
     popular: true,
     description: "Authors use their own professional image.",
     includes: ["2x Concepts", "2x Mockups", "3x Revisions", "Delivered in Jpg & Pdf", "Ebook Cover", "Front Cover"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Author%27s%20Ebook%20Cover%20%28Front%20Only%29%20-%20R1%2C200&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Author%27s%20Book%20Cover%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R1%2C200%0A%0AINCLUDED%3A%0A-%20Author%20uses%20their%20own%20professional%20image%0A-%202x%20concepts%0A-%202x%20mockups%0A-%203x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Author%27s%20Ebook%20Cover%20%28Front%20Only%29%20-%20R1%2C200&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Author%27s%20Book%20Cover%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R1%2C200%0A%0AINCLUDED%3A%0A-%20Author%20uses%20their%20own%20professional%20image%0A-%202x%20concepts%0A-%202x%20mockups%0A-%203x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: "Stock Design Cover",
@@ -55,7 +55,7 @@ const ebookPackages = [
     popular: false,
     description: "Shutterstock Image Integration.",
     includes: ["2x Concepts", "2x Mockups", "2x Revisions", "Delivered in Jpg & Pdf", "Ebook Cover", "Front Cover"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Stock%20Ebook%20Cover%20%28Front%20Only%29%20-%20R1%2C700&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Stock%20Design%20Cover%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R1%2C700%0A%0AINCLUDED%3A%0A-%20Shutterstock%20image%20integration%0A-%202x%20concepts%0A-%202x%20mockups%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Stock%20Ebook%20Cover%20%28Front%20Only%29%20-%20R1%2C700&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Stock%20Design%20Cover%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R1%2C700%0A%0AINCLUDED%3A%0A-%20Shutterstock%20image%20integration%0A-%202x%20concepts%0A-%202x%20mockups%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
   {
     title: "Illustrated Cover Design",
@@ -64,7 +64,7 @@ const ebookPackages = [
     popular: false,
     description: "Illustrated Cover.",
     includes: ["1x Character Development", "2x Concepts", "2x Revisions", "Delivered in Jpg & Pdf", "Ebook Cover", "Front Cover"],
-    mailto: "mailto:info@creativebookssa.co.za?subject=Service%20Order%3A%20Illustrated%20Ebook%20Cover%20%28Front%20Only%29%20-%20R3%2C400&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Illustrated%20Cover%20Design%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R3%2C400%0A%0AINCLUDED%3A%0A-%201x%20character%20development%0A-%202x%20concepts%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AStyle%20preferences%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
+    mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20Illustrated%20Ebook%20Cover%20%28Front%20Only%29%20-%20R3%2C400&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20service%20as-is%3A%0A%0ASERVICE%3A%20Illustrated%20Cover%20Design%20%28Amazon%20Ebook%2C%20Front%20Only%29%0APRICE%3A%20R3%2C400%0A%0AINCLUDED%3A%0A-%201x%20character%20development%0A-%202x%20concepts%0A-%202x%20revisions%0A-%20Delivered%20in%20JPG%20and%20PDF%0A-%20Ebook%20cover%0A-%20Front%20cover%20only%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0AGenre%3A%20%0AStyle%20preferences%3A%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C",
   },
 ];
 
