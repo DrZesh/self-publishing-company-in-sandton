@@ -46,7 +46,8 @@ export default function LeadModal({ mode, answers, pricing, inclVat, onClose, on
       base44.analytics.track({ eventName: mode === 'email' ? 'quote_emailed' : 'pdf_downloaded', properties: { total, chosenPath: answers.chosenPath || pricing.recommendation } });
       onSuccess(form);
     } catch (e) {
-      setErr(`Couldn't send. Please try calling us on 010 500 3331.`);
+      console.error('LeadModal submit error:', e);
+      setErr(`Error: ${e?.message || e?.response?.data?.error || 'Unknown error'}. Please try calling us on 010 500 3331.`);
     } finally {
       setLoading(false);
     }

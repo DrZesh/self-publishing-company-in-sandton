@@ -83,8 +83,8 @@ function buildUserEmail({ clientInfo, breakdown, total, quoteNumber, answers, ch
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr><td style="padding:12px 16px;background:${CREAM_BG};border-radius:12px;">
-        <div style="display:flex;justify-content:space-between;font-family:sans-serif;font-size:22px;font-weight:700;color:${BRAND_COLOR};">TOTAL: R${Math.round(total).toLocaleString()}</div>
-        <div style="font-family:sans-serif;font-size:13px;color:${MUTED_COLOR};margin-top:8px;">75% deposit to start: <strong>R${deposit.toLocaleString()}</strong> &nbsp;·&nbsp; 25% on completion: <strong>R${balance.toLocaleString()}</strong></div>
+        <div style="display:flex;justify-content:space-between;font-family:sans-serif;font-size:22px;font-weight:700;color:${BRAND_COLOR};">${total > 0 ? `TOTAL: R${Math.round(total).toLocaleString()}` : 'CUSTOM QUOTE — TEAM WILL CONFIRM PRICING'}</div>
+        ${total > 0 ? `<div style="font-family:sans-serif;font-size:13px;color:${MUTED_COLOR};margin-top:8px;">75% deposit to start: <strong>R${deposit.toLocaleString()}</strong> &nbsp;·&nbsp; 25% on completion: <strong>R${balance.toLocaleString()}</strong></div>` : ''}
         <div style="font-family:sans-serif;font-size:12px;color:${MUTED_COLOR};margin-top:4px;">Valid until: ${validUntil}</div>
       </td></tr>
     </table>
@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { clientInfo, breakdown, total, quoteNumber, answers, chosenPath, pathA, pathATotal, pathBTotal } = body;
 
-    if (!clientInfo?.email || !clientInfo?.name || !total || !quoteNumber) {
+    if (!clientInfo?.email || !clientInfo?.name || total === undefined || total === null || !quoteNumber) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
