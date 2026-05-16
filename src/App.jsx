@@ -171,6 +171,7 @@ import AdminInbox from './pages/admin/AdminInbox';
 import AdminLeads from './pages/admin/AdminLeads';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminServices from './pages/admin/AdminServices';
 import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
 import SeoAnalytics from './pages/admin/SeoAnalytics';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
@@ -545,6 +546,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/submissions" element={<ProtectedAdminRoute><AdminInbox /></ProtectedAdminRoute>} />
       <Route path="/admin/leads" element={<ProtectedAdminRoute><AdminLeads /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts" element={<ProtectedAdminRoute><AdminContacts /></ProtectedAdminRoute>} />
+      <Route path="/admin/services" element={<ProtectedAdminRoute><AdminServices /></ProtectedAdminRoute>} />
       <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
