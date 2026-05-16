@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calculator, ArrowRight, AlertCircle } from 'lucide-react';
+import { Calculator, ArrowRight, AlertCircle, Lock } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
@@ -76,11 +76,36 @@ function getPriceTier(pages) {
 
 export default function BookPrintingCalculator() {
   const [size, setSize] = useState('a5');
-  const [pages, setPages] = useState(150);
+  const [pages, setPages] = useState(200);
+  const [words, setWords] = useState(50000);
   const [paperType, setPaperType] = useState('cream78');
   const [binding, setBinding] = useState('paperback');
   const [copies, setCopies] = useState(100);
   const [error, setError] = useState('');
+  const [lengthError, setLengthError] = useState('');
+
+  const handlePagesChange = useCallback((val) => {
+    const num = Number(val);
+    setPages(num);
+    setWords(num * 250);
+    if (num > 400 || num < 50) {
+      setLengthError('For longer manuscripts, please request a custom quote.');
+    } else {
+      setLengthError('');
+    }
+  }, []);
+
+  const handleWordsChange = useCallback((val) => {
+    const num = Number(val);
+    setWords(num);
+    const derivedPages = Math.round(num / 250);
+    setPages(derivedPages);
+    if (num > 100000 || num < 12500) {
+      setLengthError('For longer manuscripts, please request a custom quote.');
+    } else {
+      setLengthError('');
+    }
+  }, []);
 
   const paperLabels = {
     cream78: 'Cream Paper 78 gsm',
@@ -202,26 +227,59 @@ export default function BookPrintingCalculator() {
                 </Link>
               </div>
 
-              {/* Page Count */}
+              {/* Page Count + Word Count — paired linked inputs */}
               <div>
-                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">
-                  Page Count: <span className="text-copper font-semibold">{pages}</span>
-                </label>
-                <input
-                  type="range"
-                  min={50}
-                  max={400}
-                  step={1}
-                  value={pages}
-                  onChange={(e) => setPages(Number(e.target.value))}
-                  className="w-full accent-[#B87333]"
-                />
-                <div className="flex justify-between text-xs text-[#0F0F0F]/40 mt-2">
-                  <span>50 pages</span>
-                  <span>400 pages</span>
+                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">Book Length</label>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  {/* Pages */}
+                  <div className="flex-1">
+                    <label className="block text-xs text-[#0F0F0F]/50 mb-1">Pages</label>
+                    <input
+                      type="number"
+                      min={50}
+                      max={400}
+                      value={pages}
+                      onChange={(e) => handlePagesChange(e.target.value)}
+                      className="w-full px-4 py-3 border-2 rounded-lg text-[#0F0F0F] font-medium focus:outline-none focus:border-copper transition-colors bg-white"
+                      style={{ borderColor: lengthError ? '#f87171' : '#e5e7eb' }}
+                    />
+                    <div className="text-xs text-[#0F0F0F]/40 mt-1">min 50 · max 400</div>
+                  </div>
+
+                  {/* Lock icon */}
+                  <div className="flex items-center justify-center sm:mt-5">
+                    <div className="w-8 h-8 rounded-full bg-copper/10 flex items-center justify-center">
+                      <Lock className="w-3.5 h-3.5 text-copper" />
+                    </div>
+                  </div>
+
+                  {/* Words */}
+                  <div className="flex-1">
+                    <label className="block text-xs text-[#0F0F0F]/50 mb-1">Words</label>
+                    <input
+                      type="number"
+                      min={12500}
+                      max={100000}
+                      step={250}
+                      value={words}
+                      onChange={(e) => handleWordsChange(e.target.value)}
+                      className="w-full px-4 py-3 border-2 rounded-lg text-[#0F0F0F] font-medium focus:outline-none focus:border-copper transition-colors bg-white"
+                      style={{ borderColor: lengthError ? '#f87171' : '#e5e7eb' }}
+                    />
+                    <div className="text-xs text-[#0F0F0F]/40 mt-1">min 12,500 · max 100,000</div>
+                  </div>
                 </div>
-                <p className="text-[#0F0F0F]/60 text-xs mt-2 font-body">
-                  Enter the total number of pages your book will have (50-400). Most books are between 150-300 pages.
+
+                {lengthError && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <span className="text-xs text-red-700">{lengthError}</span>
+                    <Link to="/getquote" className="ml-auto text-xs text-copper font-semibold hover:underline whitespace-nowrap">Request Custom Quote →</Link>
+                  </div>
+                )}
+
+                <p className="text-[#0F0F0F]/50 text-xs mt-3 font-body leading-relaxed">
+                  Most novels are 60,000–90,000 words (240–360 pages). Most memoirs are 50,000–80,000 words. Enter whichever number you know — we'll auto-calculate the other.
                 </p>
               </div>
 
@@ -357,7 +415,7 @@ export default function BookPrintingCalculator() {
                     <div className="space-y-2 pt-4 border-t border-[#0F0F0F]/10">
                       {[
                         ['Book size', size === 'a5' ? 'A5' : '6×9'],
-                        ['Page count', `${pages} pages`],
+                        ['Page count', `${pages} pages (≈${words.toLocaleString()} words)`],
                         ['Paper', paperLabels[paperType]],
                         ['Binding', 'Paperback'],
                         ['Copies', `${copies}`],
