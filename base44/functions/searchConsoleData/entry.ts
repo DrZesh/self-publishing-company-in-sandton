@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const SITE_URL = 'https://www.creativebooks.co.za/';
+const SITE_URL = 'sc-domain:creativebooks.co.za';
 const GSC_BASE = 'https://www.googleapis.com/webmasters/v3';
 
 // Simple in-memory cache (survives within the same Deno isolate)
