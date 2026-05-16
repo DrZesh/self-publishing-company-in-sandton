@@ -36,6 +36,7 @@ export default function UniversalCalculatorCTA() {
         >
           <Link
             to="/calculator"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
             className="inline-flex items-center gap-3 px-10 py-4 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all"
             style={{ boxShadow: '0 16px 40px rgba(184,115,51,0.35)' }}
           >
