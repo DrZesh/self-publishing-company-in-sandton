@@ -1,136 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import AdminLayout from '@/components/admin/AdminLayout';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2 } from 'lucide-react';
-import GscDashboardSection from '@/components/admin/gsc/GscDashboardSection';
+import AdminLayout from '@/components/admin/AdminLayout';
+import DashboardHeader from '@/components/admin/dashboard/DashboardHeader';
+import RightNowStrip from '@/components/admin/dashboard/RightNowStrip';
+import KpiCards from '@/components/admin/dashboard/KpiCards';
+import SalesPipeline from '@/components/admin/dashboard/SalesPipeline';
+import ActivityFeed from '@/components/admin/dashboard/ActivityFeed';
+import FollowUps from '@/components/admin/dashboard/FollowUps';
+import QuickActions from '@/components/admin/dashboard/QuickActions';
+import AuthorInsights from '@/components/admin/dashboard/AuthorInsights';
+import SearchConsoleMini from '@/components/admin/dashboard/SearchConsoleMini';
 
 export default function AdminDashboard() {
-  const [timeOfDay, setTimeOfDay] = useState('morning');
-  const [metrics, setMetrics] = useState(null);
+  const [dateRange, setDateRange] = useState('month');
   const [loading, setLoading] = useState(true);
+  const [dashData, setDashData] = useState(null);
+  const [user, setUser] = useState(null);
+  const refreshTimer = useRef(null);
 
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setTimeOfDay('morning');
-    else if (hour < 18) setTimeOfDay('afternoon');
-    else setTimeOfDay('evening');
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const [meRes, metricsRes] = await Promise.all([
+        base44.auth.me(),
+        base44.functions.invoke('getAdminDashboardMetrics', {}),
+      ]);
+      setUser(meRes);
+      setDashData(metricsRes.data);
+    } catch (err) {
+      console.error('Dashboard load error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const response = await base44.functions.invoke('getAdminDashboardMetrics', {});
-        setMetrics(response.data);
-      } catch (error) {
-        console.error('Failed to load metrics:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMetrics();
-  }, []);
+    fetchDashboard();
+    // Refresh KPIs every 60 seconds
+    refreshTimer.current = setInterval(fetchDashboard, 60000);
+    return () => clearInterval(refreshTimer.current);
+  }, [fetchDashboard]);
 
-  const currentDate = new Date().toLocaleDateString('en-ZA', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const isOwner = user?.role === 'admin';
+  const metrics = dashData?.metrics;
+  const pipeline = dashData?.pipeline;
+  const activity = dashData?.activity;
+  const followUps = dashData?.followUps;
 
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <h1 className="text-4xl font-bold text-[#0B1220] mb-2">
-            Good {timeOfDay}, Owner
-          </h1>
-          <p className="text-[#2B2B2B]/60">{currentDate}</p>
-          <p className="text-sm text-[#2B2B2B]/40 mt-1">
-            Here's what's happening on Creative Books SA today.
-          </p>
-        </motion.div>
+        {/* Section 1 — Header */}
+        <DashboardHeader
+          userName={user?.full_name || user?.email}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+        />
 
-        {/* KPI Cards - Row 1 */}
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.1 }}
-             className="p-6 bg-white rounded-lg border border-[#ddd]/50"
-           >
-             <p className="text-[#2B2B2B]/60 text-sm font-medium mb-2">Total Submissions</p>
-             <p className="text-4xl font-bold text-[#0B1220]">{loading ? <Loader2 className="w-6 h-6 animate-spin" /> : metrics?.metrics?.totalSubmissions || 0}</p>
-             <p className="text-xs text-[#2B2B2B]/50 mt-2">All time</p>
-           </motion.div>
+        {/* Section 2 — Right Now Strip */}
+        <RightNowStrip metrics={metrics} loading={loading} />
 
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.2 }}
-             className="p-6 bg-white rounded-lg border border-[#ddd]/50"
-           >
-             <p className="text-[#2B2B2B]/60 text-sm font-medium mb-2">New Submissions</p>
-             <p className="text-4xl font-bold text-[#0B1220]">{loading ? <Loader2 className="w-6 h-6 animate-spin" /> : metrics?.metrics?.newSubmissions || 0}</p>
-             <p className="text-xs text-[#2B2B2B]/50 mt-2">Waiting for response</p>
-           </motion.div>
+        {/* Section 3 — KPI Cards */}
+        <KpiCards metrics={metrics} isOwner={isOwner} loading={loading} />
 
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.3 }}
-             className="p-6 bg-white rounded-lg border border-[#ddd]/50"
-           >
-             <p className="text-[#2B2B2B]/60 text-sm font-medium mb-2">Open Leads</p>
-             <p className="text-4xl font-bold text-[#0B1220]">{loading ? <Loader2 className="w-6 h-6 animate-spin" /> : metrics?.metrics?.openLeads || 0}</p>
-             <p className="text-xs text-[#2B2B2B]/50 mt-2">In pipeline</p>
-           </motion.div>
+        {/* Section 4 — Sales Pipeline */}
+        <SalesPipeline pipeline={pipeline} loading={loading} />
 
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.4 }}
-             className="p-6 bg-white rounded-lg border border-[#ddd]/50"
-           >
-             <p className="text-[#2B2B2B]/60 text-sm font-medium mb-2">Pipeline Value</p>
-             <p className="text-4xl font-bold text-[#0B1220]">{loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'R' + (metrics?.metrics?.pipelineValue || 0).toLocaleString()}</p>
-             <p className="text-xs text-[#2B2B2B]/50 mt-2">Total ZAR</p>
-           </motion.div>
-         </div>
+        {/* Section 6 + Follow-ups: two columns on large screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
+          {/* Follow-ups */}
+          <FollowUps followUps={followUps} loading={loading} />
+          {/* Quick Actions */}
+          <QuickActions />
+        </div>
 
-        {/* Search Console Section */}
-        <GscDashboardSection />
+        {/* Section 9 — Search Console Mini */}
+        <SearchConsoleMini />
 
-        {/* Placeholder for future sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="lg:col-span-2 p-6 bg-white rounded-lg border border-[#ddd]/50"
-          >
-            <h3 className="text-lg font-bold text-[#0B1220] mb-4">Pipeline Funnel</h3>
-            <div className="h-32 flex items-center justify-center text-[#2B2B2B]/40">
-              Loading...
-            </div>
-          </motion.div>
+        {/* Section 10 — Author Insights */}
+        <AuthorInsights metrics={metrics} loading={loading} />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="p-6 bg-white rounded-lg border border-[#ddd]/50"
-          >
-            <h3 className="text-lg font-bold text-[#0B1220] mb-4">Recent Activity</h3>
-            <div className="h-32 flex items-center justify-center text-[#2B2B2B]/40">
-              No activity yet
-            </div>
-          </motion.div>
+        {/* Section 12 — Activity Feed */}
+        <ActivityFeed activity={activity} loading={loading} />
+
+        {/* Footer note */}
+        <div className="text-center pb-8">
+          <p className="text-xs text-black/30">Dashboard refreshes every 60 seconds · Last update: {new Date().toLocaleTimeString('en-ZA')}</p>
         </div>
       </div>
     </AdminLayout>
