@@ -7,8 +7,8 @@ export default function FullPackages6x9() {
   return (
     <div>
       <PageMeta
-        title="Full Publishing Package 6x9 | Creative Books SA"
-        description="Complete 6x9 publishing package with professional editing, design, and printing."
+        title="6×9 Publishing Packages | Trade Paperback Service"
+        description="End-to-end 6×9 trade paperback publishing — editing, design, layout, print from 100 copies. The international standard for novels and non-fiction."
       />
 
       {/* Hero */}

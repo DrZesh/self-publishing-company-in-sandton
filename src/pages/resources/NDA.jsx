@@ -11,8 +11,8 @@ export default function NDA() {
   return (
     <div>
       <PageMeta
-        title="Non-Disclosure Agreement (NDA) | Creative Books SA"
-        description="Download Creative Books SA's Non-Disclosure Agreement template. Protect your confidential information and intellectual property during publishing projects."
+        title="Non-Disclosure Agreement | Manuscript Confidentiality"
+        description="Our standard NDA protects authors' manuscripts and ideas during the publishing process. Read the terms before submitting confidential material."
         canonical="https://www.creativebookssa.co.za/nda"
       />
 

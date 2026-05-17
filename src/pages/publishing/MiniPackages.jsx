@@ -7,8 +7,8 @@ export default function MiniPackages() {
   return (
     <div>
       <PageMeta
-        title="Mini Publishing Package | Creative Books SA"
-        description="Affordable mini publishing package perfect for first-time authors."
+        title="Mini Publishing Packages | Pay Only For What You Need"
+        description="Flexible mini publishing packages — combine editing, design or printing without committing to a full bundle. Pay only for what you need."
       />
 
       {/* Hero */}

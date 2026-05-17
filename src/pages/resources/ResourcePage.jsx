@@ -6,6 +6,7 @@ import SectionHeading from '../../components/shared/SectionHeading';
 import CTASection from '../../components/shared/CTASection';
 import FAQSection from '../../components/shared/FAQSection';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 const resourceData = {
   isbnregistration: {
@@ -72,6 +73,11 @@ export default function ResourcePage({ resourceKey }) {
 
   return (
     <div>
+      <PageMeta
+        title="Author Resources & Publishing Guides | Creative Books SA"
+        description="Free resources for South African authors — publishing guides, templates, calculators and how-to articles. Everything needed to self-publish a book."
+        canonical="https://www.creativebookssa.co.za/resources"
+      />
       {/* Hero */}
       <section className="relative pt-32 pb-16 bg-obsidian">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

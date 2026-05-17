@@ -5,10 +5,16 @@ import { ArrowRight } from 'lucide-react';
 import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 export default function PrintingHardcover() {
   return (
     <div>
+      <PageMeta
+        title="Hardcover Book Printing South Africa | Case Bound"
+        description="Premium hardcover book printing in SA — case binding, dust jackets, foil stamping. Perfect for memoirs, special editions and corporate gifts."
+        canonical="https://www.creativebookssa.co.za/printing/hardcover"
+      />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 30% 60%, #B87333 0%, transparent 50%)' }} />

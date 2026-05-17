@@ -5,6 +5,7 @@ import { ArrowRight, Check, ChevronDown, BookOpen, Layers, Printer, Award } from
 import PricingButtons from '../../components/shared/PricingButtons';
 import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Pricing Data ────────────────────────────────────────────────────────────
 const packageFeatures = [
@@ -203,6 +204,11 @@ function DarkPricingCard({ pkg, paperType, i }) {
 export default function PrintingA5() {
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="A5 Book Printing South Africa | Cream & White Paper"
+        description="Affordable A5 book printing in SA — cream or white paper, perfect binding, from 100 copies. Free printed proof and competitive pricing. Order now."
+        canonical="https://www.creativebookssa.co.za/printing/a5"
+      />
 
       {/* ── Hero ── */}
       <section className="relative min-h-[60vh] flex items-end overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 60%, #111827 100%)' }}>

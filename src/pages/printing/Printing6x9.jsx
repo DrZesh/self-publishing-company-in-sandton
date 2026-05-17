@@ -5,6 +5,7 @@ import { ArrowRight, Check, ChevronDown, Award } from 'lucide-react';
 import PricingButtons from '../../components/shared/PricingButtons';
 import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Pricing Data ────────────────────────────────────────────────────────────
 const packageFeatures = [
@@ -199,6 +200,11 @@ function DarkPricingCard({ pkg, paperType, i }) {
 export default function Printing6x9() {
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="6×9 Book Printing South Africa | Trade Paperback"
+        description="6×9 trade paperback printing — the international standard for novels and non-fiction. Cream paper, perfect binding, from 100 copies. Free proof."
+        canonical="https://www.creativebookssa.co.za/printing/6x9"
+      />
 
       {/* ── Hero ── */}
       <section className="relative min-h-[60vh] flex items-end overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 60%, #111827 100%)' }}>

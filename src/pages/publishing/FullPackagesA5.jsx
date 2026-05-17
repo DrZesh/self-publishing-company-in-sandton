@@ -7,8 +7,8 @@ export default function FullPackagesA5() {
   return (
     <div>
       <PageMeta
-        title="Full Publishing Package A5 | Creative Books SA"
-        description="Complete A5 publishing package with professional editing, design, and printing."
+        title="A5 Publishing Packages | Full Production Service"
+        description="Complete A5 publishing packages — editing, cover design, typesetting and printing bundled. Perfect for novels, memoirs and non-fiction. Free quote."
       />
 
       {/* Hero */}

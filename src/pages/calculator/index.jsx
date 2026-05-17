@@ -169,8 +169,8 @@ export default function Calculator() {
   return (
     <div className="min-h-screen bg-[#F9F7F2]">
       <PageMeta
-        title="Book Publishing Cost Calculator South Africa | Smart Quote Builder | Creative Books SA"
-        description="Get an instant publishing quote in 60 seconds. Answer 10 questions about your book and we'll match you with the right package and price. Download or email your branded PDF quote."
+        title="Book Printing Cost Calculator South Africa | Instant Quote"
+        description="Calculate book printing costs instantly. Get accurate quotes by format, page count, paper type and print run. Free tool, no signup required."
         canonical="https://www.creativebooks.co.za/calculator"
       />
 

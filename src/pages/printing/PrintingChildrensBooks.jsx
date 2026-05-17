@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import Breadcrumbs from '../../components/shared/Breadcrumbs';
 import CTASection from '../../components/shared/CTASection';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 const sizes = [
   { label: '15 x 15 cm', path: '/printing/childrensbooks/ChildrensBooks15x15', description: 'Our most popular children\'s book size. Compact, easy for little hands, and affordable to start. From R40 per book at 100 copies.' },
@@ -15,6 +16,11 @@ const sizes = [
 export default function PrintingChildrensBooks() {
   return (
     <div>
+      <PageMeta
+        title="Children's Book Printing South Africa | Full Colour"
+        description="Full-colour children's book printing in 15×15, 20×20 and 21×21cm formats. Saddle-stitch or perfect binding. Perfect for picture books and stories."
+        canonical="https://www.creativebookssa.co.za/printing/childrensbooks"
+      />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 30% 60%, #B87333 0%, transparent 50%)' }} />
