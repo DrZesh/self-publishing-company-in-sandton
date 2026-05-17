@@ -39,8 +39,8 @@ export default function BookPrintingSandton() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Sandton | Premium Printing Services"
-        description="Premium book printing for Sandton-based authors and businesses. High-quality hardcover and paperback with fast turnaround."
+        title="Book Printing in Sandton | A5, 6×9 & Hardcover"
+        description="Book printing for Sandton authors — A5, 6×9, hardcover and children's formats. Fast Gauteng delivery, cream or white paper, from 100 copies."
         keywords="book printing Sandton, book printers Sandton, Sandton book printing, printing services Sandton, book publishing Sandton"
         canonical="https://www.creativebookssa.co.za/bookprintingsandton"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

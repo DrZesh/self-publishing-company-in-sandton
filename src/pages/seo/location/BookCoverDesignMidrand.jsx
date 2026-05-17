@@ -18,8 +18,8 @@ export default function BookCoverDesignMidrand() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Midrand | Custom Covers"
-        description="Professional book cover design for Midrand authors. Custom, market-ready designs for self-published books."
+        title="Book Cover Design in Midrand | Market-Ready Designs"
+        description="Custom book cover design for Midrand authors. Full print covers, eBook covers and illustrated designs. Serving Gauteng. Free quote."
         keywords="book cover design Midrand, book cover designer Midrand, book cover design Johannesburg, professional book covers Midrand"
         canonical="https://www.creativebookssa.co.za/bookcoverdesignmidrand"
         schema={schema}

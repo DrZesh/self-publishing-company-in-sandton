@@ -39,8 +39,8 @@ export default function BookPrintingCenturion() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Centurion | Professional Quality"
-        description="Professional book printing for Centurion authors and businesses. Hardcover, paperback and short runs with fast delivery."
+        title="Book Printing in Centurion | Softcover & Hardcover"
+        description="Professional book printing for Centurion authors — A5, 6×9 and hardcover formats. Competitive pricing with same-week Gauteng delivery available."
         keywords="book printing Centurion, book printers Centurion, Centurion book printing, printing services Centurion, book publishing Centurion"
         canonical="https://www.creativebookssa.co.za/bookprintingcenturion"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

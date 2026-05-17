@@ -18,8 +18,8 @@ export default function BookCoverDesignRoodepoort() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Roodepoort | Custom Designs"
-        description="Custom book cover design for Roodepoort authors. Market-ready, professional covers for self-published authors."
+        title="Book Cover Design in Roodepoort | Print & eBook Covers"
+        description="Custom book cover design for Roodepoort and west Johannesburg authors. Full print covers and eBook covers. Free quote within 24 hours."
         keywords="book cover design Roodepoort, book cover designer Roodepoort, book cover design Johannesburg, professional book covers Roodepoort"
         canonical="https://www.creativebookssa.co.za/bookcoverdesignroodepoort"
         schema={schema}

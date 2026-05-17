@@ -204,8 +204,8 @@ export default function BookEditingSandton() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Book Editing Services in Sandton | Professional Editors"
-        description="Professional book editing for Sandton-based authors. Developmental, copy and line editing for fiction and non-fiction."
+        title="Book Editing Services in Sandton | Copy & Line Editing"
+        description="Professional book editing for authors in Sandton and Johannesburg. Copy editing, line editing and full manuscript packages. Free quote."
         keywords="book editing Sandton, book editors Sandton, Sandton editing services, manuscript editing Sandton, copy editing Sandton"
         canonical="https://www.creativebookssa.co.za/bookeditingsandton"
       />

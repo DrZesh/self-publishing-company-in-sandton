@@ -39,8 +39,8 @@ export default function BookPrintingPretoria() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Pretoria | Quality Printing & Delivery"
-        description="Professional book printing for Pretoria authors. Hardcover, paperback, A5 and 6x9 with fast Gauteng delivery."
+        title="Book Printing in Pretoria | Academic & Trade Books"
+        description="Book printing for Pretoria and Tshwane authors — novels, memoirs, academic and trade books. A5, 6×9, hardcover. Fast Gauteng delivery."
         keywords="book printing Pretoria, book printers Pretoria, Pretoria book printing, printing services Pretoria, book publishing Pretoria, Tshwane book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingpretoria"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}

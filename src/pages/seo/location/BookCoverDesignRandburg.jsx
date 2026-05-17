@@ -18,8 +18,8 @@ export default function BookCoverDesignRandburg() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Randburg | Custom Book Covers"
-        description="Professional book cover design for Randburg authors. Custom covers for self-published novels, memoirs and non-fiction."
+        title="Book Cover Design in Randburg | Custom Print Covers"
+        description="Professional book cover design for Randburg authors — full print covers and eBook covers. Custom, genre-specific designs. Free quote today."
         keywords="book cover design Randburg, book cover designer Randburg, book cover design Johannesburg, professional book covers Randburg"
         canonical="https://www.creativebookssa.co.za/bookcoverdesignrandburg"
         schema={schema}

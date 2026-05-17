@@ -18,8 +18,8 @@ export default function BookCoverDesignCenturion() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Centurion | Professional Designs"
-        description="Custom book cover design for Centurion authors. Cinematic, professional covers that help your book stand out."
+        title="Book Cover Design in Centurion | Custom & Print-Ready"
+        description="Custom book cover design for Centurion authors — full print covers, eBook covers and illustrated designs. Serving Gauteng. Free quote."
         keywords="book cover design Centurion, book cover designer Centurion, book cover design Gauteng, professional book covers Centurion"
         canonical="https://www.creativebookssa.co.za/bookcoverdesigncenturion"
         schema={schema}
