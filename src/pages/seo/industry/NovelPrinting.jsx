@@ -23,8 +23,8 @@ export default function NovelPrinting() {
   return (
     <>
       <PageMeta
-        title="Novel Printing South Africa | Paperback & Hardcover"
-        description="Professional novel printing in South Africa. Paperback and hardcover fiction printing with international-standard quality."
+        title="Novel Printing South Africa | Cream Paper, Perfect Binding"
+        description="Professional novel printing in SA — A5 softcover on cream paper, the South African standard. Hardcover signed editions also available. Free quote."
         keywords="novel printing Johannesburg, fiction book printing South Africa, novel publishing South Africa, print my novel Johannesburg, self publish novel South Africa"
         canonical="https://www.creativebookssa.co.za/novelprintingjohannesburg"
         schema={schema}

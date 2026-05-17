@@ -23,8 +23,8 @@ export default function BusinessBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Business Book Printing South Africa | Corporate Quality"
-        description="Professional printing for business books, leadership titles and corporate publications in South Africa."
+        title="Business Book Printing South Africa | A5 & 6×9 for Amazon"
+        description="Business book printing for SA authors — A5 for local retail, 6×9 for Amazon KDP, hardcover for corporate gifting. Free 24-hour quote."
         keywords="business book printing Johannesburg, corporate book printing, leadership book printing South Africa, entrepreneur book printing, business publishing Johannesburg"
         canonical="https://www.creativebookssa.co.za/businessbookprintingjohannesburg"
         schema={schema}

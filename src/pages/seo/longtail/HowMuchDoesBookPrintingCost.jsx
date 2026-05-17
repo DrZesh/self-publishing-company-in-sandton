@@ -22,8 +22,8 @@ export default function HowMuchDoesBookPrintingCost() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How Much Does Book Printing Cost in South Africa?"
-      metaDescription="Book printing costs in South Africa explained. Pricing for paperback, hardcover, A5 and 6x9 — plus what affects the price."
+      metaTitle="Book Printing Cost in South Africa | Real Prices"
+      metaDescription="Real book printing prices for South Africa — A5, 6×9, hardcover and children's books. Detailed cost tables by page count and quantity."
       metaKeywords="book printing cost South Africa, how much does book printing cost, book printing prices South Africa, A5 printing cost, hardcover printing cost"
       canonical="https://www.creativebookssa.co.za/howmuchdoesbookprintingcost"
       schema={schema}

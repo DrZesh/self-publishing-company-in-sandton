@@ -23,8 +23,8 @@ export default function TrainingManualPrinting() {
   return (
     <>
       <PageMeta
-        title="Training Manual Printing South Africa | Corporate Quality"
-        description="Professional training manual printing in South Africa. Spiral, perfect-bound and wire-O binding for corporate and educational use."
+        title="Training Manual Printing Johannesburg | Wire-O & Perfect Bound"
+        description="Training manual and workbook printing in Johannesburg — wire-O, spiral and softcover binding. Full colour or B&W. Fast turnaround for workshops."
         keywords="training manual printing Johannesburg, corporate manual printing, workbook printing Johannesburg, training material printing South Africa, A4 book printing"
         canonical="https://www.creativebookssa.co.za/trainingmanualprintingjohannesburg"
         schema={schema}
