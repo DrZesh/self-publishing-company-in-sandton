@@ -122,16 +122,12 @@
   <url><loc>https://www.creativebooks.co.za/hardcovervspaperbackprinting</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.creativebooks.co.za/howtoselfpublishabook</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
-  <!-- Blog Articles — Printing & Publishing Guides -->
+  <!-- Blog Articles -->
   <url><loc>https://www.creativebooks.co.za/printondemandbooksinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/howtoprintyourselfpublishedbookinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/childrensbookillustrationsprinting</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-  <!-- Blog Articles — Editing Guides -->
   <url><loc>https://www.creativebooks.co.za/professionalcopyeditingservices</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/doineedaneditorbeforepublishing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-  <!-- Blog Articles — Writing Tips -->
   <url><loc>https://www.creativebooks.co.za/whatisghostwriting</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/writingabookdedication</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/writingabookacknowledgment</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -141,8 +137,6 @@
   <url><loc>https://www.creativebooks.co.za/howdoiknowifmybookisreadytopublish</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/canipublishmultiplegenresunderthesameauthorname</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/howtobuildanauthorplatformbeforepublishing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-  <!-- Blog Articles — Publishing Tips -->
   <url><loc>https://www.creativebooks.co.za/howmuchdoesitcosttoselfpublishonamazonkindle</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/howmuchdoesitcosttoselfpublishonamazon</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/ebookvsprintbookselfpublishing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -167,7 +161,7 @@
   <url><loc>https://www.creativebooks.co.za/isselling3000copiesofabookgoodinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/whatpublishingjobsareavailableinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/howlongdoesittaketogetpublishedinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.creativebooks.co.za/dosouthafricanpublishersprvidecoverdesign</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.creativebooks.co.za/dosouthafricanpublishersprovdecoverdesign</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/whatis9010ruleforauthorsandroyalties</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/howtochoosebetweenmultiplebookpublishingoffers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/canyoumakealivingasaselfpublishedauthorinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -186,10 +180,5 @@
   <url><loc>https://www.creativebooks.co.za/howdebutauthorsgetbetterbookdealsinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/whatistheroleliteraryagentinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.creativebooks.co.za/howtostartpublishingcareerfromzeroinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-
-  <!-- Additional Blog Articles -->
-  <url><loc>https://www.creativebooks.co.za/whatisghostwriting</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.creativebooks.co.za/ebookvsprintbookselfpublishing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.creativebooks.co.za/howlongdoesittaketoselfpublish</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
 </urlset>

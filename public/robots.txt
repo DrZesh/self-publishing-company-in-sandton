@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
+
+# Block admin routes
 Disallow: /admin/
-Disallow: /admin/login
-Disallow: /admin/dashboard
-Disallow: /admin/submissions
 
 Sitemap: https://www.creativebooks.co.za/sitemap.xml
