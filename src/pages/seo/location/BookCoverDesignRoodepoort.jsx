@@ -21,7 +21,7 @@ export default function BookCoverDesignRoodepoort() {
         title="Book Cover Design in Roodepoort | Print & eBook Covers"
         description="Custom book cover design for Roodepoort and west Johannesburg authors. Full print covers and eBook covers. Free quote within 24 hours."
         keywords="book cover design Roodepoort, book cover designer Roodepoort, book cover design Johannesburg, professional book covers Roodepoort"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesignroodepoort"
+        canonical="https://www.creativebooks.co.za/bookcoverdesignroodepoort"
         schema={schema}
       />
       

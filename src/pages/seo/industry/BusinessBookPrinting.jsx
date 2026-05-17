@@ -26,7 +26,7 @@ export default function BusinessBookPrinting() {
         title="Business Book Printing South Africa | A5 & 6×9 for Amazon"
         description="Business book printing for SA authors — A5 for local retail, 6×9 for Amazon KDP, hardcover for corporate gifting. Free 24-hour quote."
         keywords="business book printing Johannesburg, corporate book printing, leadership book printing South Africa, entrepreneur book printing, business publishing Johannesburg"
-        canonical="https://www.creativebookssa.co.za/businessbookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/businessbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

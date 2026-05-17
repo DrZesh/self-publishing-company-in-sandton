@@ -36,7 +36,7 @@ export default function ProofreadingServicesSouthAfrica() {
         title="Proofreading Services South Africa | Books & Academic"
         description="Expert proofreaders in South Africa for books, theses, dissertations and business documents. SA English specialists. Fast turnaround. Free quote."
         keywords="proofreading services South Africa, proofreading South Africa, book proofreading South Africa, academic proofreading South Africa, proofreader Johannesburg"
-        canonical="https://www.creativebookssa.co.za/proofreadingservicessouthafrica"
+        canonical="https://www.creativebooks.co.za/proofreadingservicessouthafrica"
         schema={schema}
       />
       <ServicePageTemplate

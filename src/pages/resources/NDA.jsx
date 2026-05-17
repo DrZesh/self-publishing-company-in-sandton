@@ -13,7 +13,7 @@ export default function NDA() {
       <PageMeta
         title="Non-Disclosure Agreement | Manuscript Confidentiality"
         description="Our standard NDA protects authors' manuscripts and ideas during the publishing process. Read the terms before submitting confidential material."
-        canonical="https://www.creativebookssa.co.za/nda"
+        canonical="https://www.creativebooks.co.za/nda"
       />
 
       {/* Hero */}

@@ -119,7 +119,7 @@ export default function ChildrensBooks20x20() {
         title="20 x 20 cm Children's Book Printing South Africa | Creative Books SA"
         description="Children's book printing in 20 x 20 cm format. Full colour, gloss cover, saddle stitched. Quality South African printing with nationwide delivery."
         keywords="children's book printing, 20x20 book printing, children's book printing South Africa, square format children's books"
-        canonical="https://www.creativebookssa.co.za/printing/childrensbooks/ChildrensBooks20x20"
+        canonical="https://www.creativebooks.co.za/printing/childrensbooks/ChildrensBooks20x20"
       />
 
       {/* Hero */}

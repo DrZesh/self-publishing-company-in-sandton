@@ -19,7 +19,7 @@ export default function PrintingChildrensBooks() {
       <PageMeta
         title="Children's Book Printing South Africa | Full Colour"
         description="Full-colour children's book printing in 15×15, 20×20 and 21×21cm formats. Saddle-stitch or perfect binding. Perfect for picture books and stories."
-        canonical="https://www.creativebookssa.co.za/printing/childrensbooks"
+        canonical="https://www.creativebooks.co.za/printing/childrensbooks"
       />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">

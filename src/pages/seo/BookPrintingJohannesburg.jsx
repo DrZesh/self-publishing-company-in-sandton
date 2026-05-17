@@ -50,7 +50,7 @@ export default function BookPrintingJohannesburg() {
         title="Book Printing in Johannesburg | Competitive Prices"
         description="Professional book printing in Johannesburg — A5, 6×9, hardcover and children's formats. Cream or white paper, from 100 copies, fast turnaround."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
-        canonical="https://www.creativebookssa.co.za/bookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/bookprintingjohannesburg"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
       />
 

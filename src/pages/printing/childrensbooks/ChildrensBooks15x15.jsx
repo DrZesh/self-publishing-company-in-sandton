@@ -149,7 +149,7 @@ export default function ChildrensBooks15x15() {
         title="15 x 15 cm Children's Book Printing South Africa | Creative Books SA"
         description="Children's book printing in 15 x 15 cm format. Full colour, gloss cover, saddle stitched. From R40 per book at 100 copies. Quality SA printing with nationwide delivery."
         keywords="children's book printing, 15x15 book printing, children's book printing South Africa, square format children's books"
-        canonical="https://www.creativebookssa.co.za/printing/childrensbooks/ChildrensBooks15x15"
+        canonical="https://www.creativebooks.co.za/printing/childrensbooks/ChildrensBooks15x15"
       />
 
       {/* Hero */}
@@ -401,7 +401,7 @@ export default function ChildrensBooks15x15() {
   "provider": {
     "@type": "Organization",
     "name": "Creative Books SA",
-    "url": "https://creativebookssa.co.za"
+    "url": "https://creativebooks.co.za"
   },
   "areaServed": {
     "@type": "Country",

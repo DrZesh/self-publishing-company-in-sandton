@@ -207,7 +207,7 @@ export default function BookEditingSandton() {
         title="Book Editing Services in Sandton | Copy & Line Editing"
         description="Professional book editing for authors in Sandton and Johannesburg. Copy editing, line editing and full manuscript packages. Free quote."
         keywords="book editing Sandton, book editors Sandton, Sandton editing services, manuscript editing Sandton, copy editing Sandton"
-        canonical="https://www.creativebookssa.co.za/bookeditingsandton"
+        canonical="https://www.creativebooks.co.za/bookeditingsandton"
       />
 
       {/* Hero */}

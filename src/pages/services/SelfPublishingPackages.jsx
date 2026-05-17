@@ -341,7 +341,7 @@ export default function SelfPublishingPackages() {
       <PageMeta
         title="Self-Publishing Packages South Africa | Bronze, Silver, Gold"
         description="Self-publishing packages for South African authors. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design, printing all included."
-        canonical="https://www.creativebookssa.co.za/selfpublishingpackagesinsouthafrica"
+        canonical="https://www.creativebooks.co.za/selfpublishingpackagesinsouthafrica"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

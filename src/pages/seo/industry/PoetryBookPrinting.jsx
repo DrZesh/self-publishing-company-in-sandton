@@ -26,7 +26,7 @@ export default function PoetryBookPrinting() {
         title="Poetry Book Printing South Africa | A5 Softcover Specialists"
         description="Specialist poetry book printing in SA — A5 cream paper, small runs from 50 copies, hardcover limited editions. Trusted by South African poets."
         keywords="poetry book printing Johannesburg, poetry collection printing, print poetry book South Africa, poetry publishing Johannesburg"
-        canonical="https://www.creativebookssa.co.za/poetrybookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/poetrybookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

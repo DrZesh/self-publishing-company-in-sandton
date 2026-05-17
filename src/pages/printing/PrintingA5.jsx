@@ -207,7 +207,7 @@ export default function PrintingA5() {
       <PageMeta
         title="A5 Book Printing South Africa | Cream & White Paper"
         description="Affordable A5 book printing in SA — cream or white paper, perfect binding, from 100 copies. Free printed proof and competitive pricing. Order now."
-        canonical="https://www.creativebookssa.co.za/printing/a5"
+        canonical="https://www.creativebooks.co.za/printing/a5"
       />
 
       {/* ── Hero ── */}

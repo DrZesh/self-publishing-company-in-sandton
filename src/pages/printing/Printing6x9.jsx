@@ -203,7 +203,7 @@ export default function Printing6x9() {
       <PageMeta
         title="6×9 Book Printing South Africa | Trade Paperback"
         description="6×9 trade paperback printing — the international standard for novels and non-fiction. Cream paper, perfect binding, from 100 copies. Free proof."
-        canonical="https://www.creativebookssa.co.za/printing/6x9"
+        canonical="https://www.creativebooks.co.za/printing/6x9"
       />
 
       {/* ── Hero ── */}

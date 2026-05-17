@@ -21,7 +21,7 @@ export default function BookCoverDesignCenturion() {
         title="Book Cover Design in Centurion | Custom & Print-Ready"
         description="Custom book cover design for Centurion authors — full print covers, eBook covers and illustrated designs. Serving Gauteng. Free quote."
         keywords="book cover design Centurion, book cover designer Centurion, book cover design Gauteng, professional book covers Centurion"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesigncenturion"
+        canonical="https://www.creativebooks.co.za/bookcoverdesigncenturion"
         schema={schema}
       />
       

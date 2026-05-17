@@ -26,7 +26,7 @@ export default function ChristianBookPrinting() {
         title="Christian Book Printing South Africa | Devotionals & Ministry"
         description="Christian book printing for South African authors and ministries — devotionals, Bible studies, testimonies and church publications. From 50 copies."
         keywords="Christian book printing Johannesburg, devotional printing South Africa, ministry book printing, Christian publishing South Africa, church book printing"
-        canonical="https://www.creativebookssa.co.za/christianbookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/christianbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

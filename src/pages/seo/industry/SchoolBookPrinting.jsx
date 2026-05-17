@@ -26,7 +26,7 @@ export default function SchoolBookPrinting() {
         title="School Book Printing South Africa | Textbooks & Workbooks"
         description="School textbook and workbook printing for SA private schools, tutors and publishers. From 50 copies, A4/A5, full colour options available."
         keywords="school book printing Johannesburg, textbook printing South Africa, workbook printing Johannesburg, educational book printing, study guide printing"
-        canonical="https://www.creativebookssa.co.za/schoolbookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/schoolbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

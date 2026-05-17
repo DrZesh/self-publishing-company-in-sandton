@@ -42,7 +42,7 @@ export default function BookPrintingRandburg() {
         title="Book Printing in Randburg | Paperback & Hardcover"
         description="Book printing for Randburg authors — softcover, hardcover and children's formats. Fast Gauteng delivery, competitive pricing, from 100 copies."
         keywords="book printing Randburg, book printers Randburg, Randburg book printing, printing services Randburg, book publishing Randburg"
-        canonical="https://www.creativebookssa.co.za/bookprintingrandburg"
+        canonical="https://www.creativebooks.co.za/bookprintingrandburg"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
       />
 

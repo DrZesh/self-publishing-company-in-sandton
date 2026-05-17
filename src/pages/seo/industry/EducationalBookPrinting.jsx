@@ -26,7 +26,7 @@ export default function EducationalBookPrinting() {
         title="Educational Book Printing South Africa | Schools & Publishers"
         description="Educational textbook, workbook and learner guide printing for SA schools and publishers. Full colour available, reprint service, from 50 copies."
         keywords="educational book printing Johannesburg, textbook printing South Africa, learner guide printing, educational publisher printing, school book printing"
-        canonical="https://www.creativebookssa.co.za/educationalbookprintingjohannesburg"
+        canonical="https://www.creativebooks.co.za/educationalbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

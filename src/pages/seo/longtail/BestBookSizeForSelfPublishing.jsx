@@ -25,7 +25,7 @@ export default function BestBookSizeForSelfPublishing() {
       metaTitle="Best Book Size for Self-Publishing in South Africa"
       metaDescription="Which book size is best for self-publishing in South Africa? A5 vs 6×9, children's formats and genre recommendations — all in one guide."
       metaKeywords="best book size self publishing, book sizes South Africa, A5 vs 6x9, children's book sizes, novel size South Africa"
-      canonical="https://www.creativebookssa.co.za/bestbooksizeforselfpublishing"
+      canonical="https://www.creativebooks.co.za/bestbooksizeforselfpublishing"
       schema={schema}
       subtitle="Self Publishing Guide"
       h1="The Best Book Size for Self-Publishing"

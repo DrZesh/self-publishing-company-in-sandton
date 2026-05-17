@@ -42,7 +42,7 @@ export default function CompletePublishingGuide() {
         title="Complete Book Publishing Guide for South African Authors"
         description="The complete guide to publishing a book in South Africa — manuscript prep, ISBN, printing, distribution. Everything in one place. Free resource."
         keywords="self-publishing South Africa, how to publish a book South Africa, book publishing guide South Africa, self-publishing costs South Africa"
-        canonical="https://www.creativebookssa.co.za/publishingguide"
+        canonical="https://www.creativebooks.co.za/publishingguide"
       />
 
       {/* Hero */}

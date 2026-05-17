@@ -21,7 +21,7 @@ export default function BookCoverDesignPretoria() {
         title="Book Cover Design in Pretoria | Professional Designers"
         description="Custom book cover design for Pretoria and Tshwane authors. Full print covers and eBook covers by experienced South African designers."
         keywords="book cover design Pretoria, book cover designer Pretoria, book cover design Gauteng, professional book covers Pretoria"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesignpretoria"
+        canonical="https://www.creativebooks.co.za/bookcoverdesignpretoria"
         schema={schema}
       />
       

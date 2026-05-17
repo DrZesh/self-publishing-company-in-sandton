@@ -21,7 +21,7 @@ export default function BookCoverDesignMidrand() {
         title="Book Cover Design in Midrand | Market-Ready Designs"
         description="Custom book cover design for Midrand authors. Full print covers, eBook covers and illustrated designs. Serving Gauteng. Free quote."
         keywords="book cover design Midrand, book cover designer Midrand, book cover design Johannesburg, professional book covers Midrand"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesignmidrand"
+        canonical="https://www.creativebooks.co.za/bookcoverdesignmidrand"
         schema={schema}
       />
       

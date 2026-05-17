@@ -42,7 +42,7 @@ export default function BookPrintingPretoria() {
         title="Book Printing in Pretoria | Academic & Trade Books"
         description="Book printing for Pretoria and Tshwane authors — novels, memoirs, academic and trade books. A5, 6×9, hardcover. Fast Gauteng delivery."
         keywords="book printing Pretoria, book printers Pretoria, Pretoria book printing, printing services Pretoria, book publishing Pretoria, Tshwane book printing"
-        canonical="https://www.creativebookssa.co.za/bookprintingpretoria"
+        canonical="https://www.creativebooks.co.za/bookprintingpretoria"
         schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
       />
 

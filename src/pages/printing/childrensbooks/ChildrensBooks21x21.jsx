@@ -119,7 +119,7 @@ export default function ChildrensBooks21x21() {
         title="21 x 21 cm Children's Book Printing South Africa | Creative Books SA"
         description="Premium children's book printing in 21 x 21 cm format. Full colour, gloss cover, saddle stitched. Quality South African printing with nationwide delivery."
         keywords="children's book printing, 21x21 book printing, children's book printing South Africa, square format children's books"
-        canonical="https://www.creativebookssa.co.za/printing/childrensbooks/ChildrensBooks21x21"
+        canonical="https://www.creativebooks.co.za/printing/childrensbooks/ChildrensBooks21x21"
       />
 
       {/* Hero */}

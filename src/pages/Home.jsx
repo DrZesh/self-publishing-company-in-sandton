@@ -36,7 +36,7 @@ export default function Home() {
         title="Book Publishing South Africa | Creative Books SA"
         description="Premium book publishing, editing, printing & cover design in South Africa. Self-publishing packages from Johannesburg. Get a free quote today."
         keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
-        canonical="https://www.creativebookssa.co.za/"
+        canonical="https://www.creativebooks.co.za/"
         schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}
       />
 

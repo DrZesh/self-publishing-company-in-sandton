@@ -25,7 +25,7 @@ export default function HardcoverVsPaperback() {
       metaTitle="Hardcover vs Paperback Printing | Costs & Comparison"
       metaDescription="Hardcover vs paperback printing compared — production costs, retail pricing, durability and when each format makes sense for SA authors."
       metaKeywords="hardcover vs paperback, hardcover vs softcover, book binding comparison, should I print hardcover or paperback, book printing South Africa"
-      canonical="https://www.creativebookssa.co.za/hardcovervspaperbackprinting"
+      canonical="https://www.creativebooks.co.za/hardcovervspaperbackprinting"
       schema={schema}
       subtitle="Printing Format Comparison"
       h1="Hardcover vs Paperback: Which Is Right for Your Book?"

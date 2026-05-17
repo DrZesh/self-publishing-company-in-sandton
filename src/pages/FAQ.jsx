@@ -61,7 +61,7 @@ export default function FAQ() {
       <PageMeta
         title="Self-Publishing FAQ South Africa | Creative Books SA"
         description="Answers to common questions about self-publishing in South Africa — costs, ISBNs, royalties, timelines, printing and distribution."
-        canonical="https://www.creativebookssa.co.za/faq"
+        canonical="https://www.creativebooks.co.za/faq"
         schema={faqPageSchema}
       />
       {/* Hero */}

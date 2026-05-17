@@ -36,7 +36,7 @@ export default function BookPublishersJohannesburg() {
         title="Book Publishers in Johannesburg | Local Publishing Team"
         description="Johannesburg-based book publishers offering editing, cover design, printing and distribution. In-person consultations available. Free quote within 24 hours."
         keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
-        canonical="https://www.creativebookssa.co.za/bookpublishersjohannesburg"
+        canonical="https://www.creativebooks.co.za/bookpublishersjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate

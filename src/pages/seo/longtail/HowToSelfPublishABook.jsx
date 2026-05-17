@@ -25,7 +25,7 @@ export default function HowToSelfPublishABook() {
       metaTitle="How to Self-Publish a Book in South Africa | Full Guide"
       metaDescription="Step-by-step guide to self-publishing in South Africa — editing, ISBN, cover design, printing, Amazon KDP and distribution. Keep 100% of your rights."
       metaKeywords="how to self publish a book South Africa, self publishing guide, self publishing steps, self publishing cost South Africa, how to publish a book"
-      canonical="https://www.creativebookssa.co.za/howtoselfpublishabook"
+      canonical="https://www.creativebooks.co.za/howtoselfpublishabook"
       schema={schema}
       subtitle="Self Publishing Guide"
       h1="How to Self-Publish a Book in South Africa"

@@ -21,7 +21,7 @@ export default function BookCoverDesignRandburg() {
         title="Book Cover Design in Randburg | Custom Print Covers"
         description="Professional book cover design for Randburg authors — full print covers and eBook covers. Custom, genre-specific designs. Free quote today."
         keywords="book cover design Randburg, book cover designer Randburg, book cover design Johannesburg, professional book covers Randburg"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesignrandburg"
+        canonical="https://www.creativebooks.co.za/bookcoverdesignrandburg"
         schema={schema}
       />
       

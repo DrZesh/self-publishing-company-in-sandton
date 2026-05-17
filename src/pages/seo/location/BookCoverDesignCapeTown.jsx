@@ -21,7 +21,7 @@ export default function BookCoverDesignCapeTown() {
         title="Book Cover Design in Cape Town | Remote Design Service"
         description="Professional book cover design for Cape Town and Western Cape authors. Full print covers, eBook covers. Remote service, national delivery."
         keywords="book cover design Cape Town, book cover designer Cape Town, book cover design Western Cape, professional book covers Cape Town"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesigncapetown"
+        canonical="https://www.creativebooks.co.za/bookcoverdesigncapetown"
         schema={schema}
       />
       

@@ -17,7 +17,7 @@ export default function BlogArticlePage({ article }) {
       <PageMeta
         title={article.title}
         description={article.description}
-        canonical={article.url ? `https://www.creativebookssa.co.za${article.url}` : undefined}
+        canonical={article.url ? `https://www.creativebooks.co.za${article.url}` : undefined}
         ogType="article"
       />
       {/* JSON-LD Article Schema */}

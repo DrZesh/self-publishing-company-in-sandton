@@ -74,7 +74,7 @@ export default function Contact() {
       <PageMeta
         title="Contact Creative Books SA | Publishing Help in Johannesburg"
         description="Get in touch with Creative Books SA for book publishing, editing, printing and cover design. Based in Johannesburg, serving all of South Africa."
-        canonical="https://www.creativebookssa.co.za/contact"
+        canonical="https://www.creativebooks.co.za/contact"
       />
       {/* Hero */}
       <section className="relative pt-32 pb-20 bg-obsidian">

@@ -103,7 +103,7 @@ export default function Blog() {
       <PageMeta
         title="Self-Publishing Blog South Africa | Creative Books SA"
         description="Expert guides on self-publishing, book marketing, editing and printing for South African authors. Practical advice from publishing professionals."
-        canonical="https://www.creativebookssa.co.za/blog"
+        canonical="https://www.creativebooks.co.za/blog"
       />
       {/* Hero */}
       <section className="relative pt-32 pb-16 bg-obsidian">

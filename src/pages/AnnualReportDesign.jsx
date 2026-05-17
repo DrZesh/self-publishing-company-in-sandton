@@ -62,7 +62,7 @@ export default function AnnualReportDesign() {
       <PageMeta
         title="Annual Report Design in Sandton | Premium Reports"
         description="Premium annual report design and printing in Sandton. Professionally designed reports for companies, NGOs and institutions."
-        canonical="https://www.creativebookssa.co.za/annualreportdesignsandton"
+        canonical="https://www.creativebooks.co.za/annualreportdesignsandton"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

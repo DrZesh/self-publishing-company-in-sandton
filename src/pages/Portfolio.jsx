@@ -105,7 +105,7 @@ export default function Portfolio() {
       <PageMeta
         title="Our Portfolio | Books We've Published | Creative Books SA"
         description="Explore the stunning portfolio of books published by Creative Books SA. Hundreds of South African authors have trusted us with their publishing journey."
-        canonical="https://www.creativebookssa.co.za/portfolio"
+        canonical="https://www.creativebooks.co.za/portfolio"
       />
 
       {/* Hero */}

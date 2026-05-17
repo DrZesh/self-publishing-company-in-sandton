@@ -21,7 +21,7 @@ export default function BookCoverDesignDurban() {
         title="Book Cover Design in Durban | KwaZulu-Natal Authors"
         description="Professional book cover design for Durban and KwaZulu-Natal authors. Full print covers and eBook covers. Remote service, free quote."
         keywords="book cover design Durban, book cover designer Durban, book cover design KwaZulu-Natal, professional book covers Durban"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesigndurban"
+        canonical="https://www.creativebooks.co.za/bookcoverdesigndurban"
         schema={schema}
       />
       

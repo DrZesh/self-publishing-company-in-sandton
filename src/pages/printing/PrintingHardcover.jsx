@@ -13,7 +13,7 @@ export default function PrintingHardcover() {
       <PageMeta
         title="Hardcover Book Printing South Africa | Case Bound"
         description="Premium hardcover book printing in SA — case binding, dust jackets, foil stamping. Perfect for memoirs, special editions and corporate gifts."
-        canonical="https://www.creativebookssa.co.za/printing/hardcover"
+        canonical="https://www.creativebooks.co.za/printing/hardcover"
       />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">

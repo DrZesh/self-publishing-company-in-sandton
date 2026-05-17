@@ -21,7 +21,7 @@ export default function BookCoverDesignSandton() {
         title="Book Cover Design in Sandton | Print & eBook Covers"
         description="Professional book cover design for Sandton authors — full print covers and eBook covers. Genre-specific, market-ready designs. Free quote."
         keywords="book cover design Sandton, book cover designer Sandton, book cover design Johannesburg, professional book covers Sandton"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesignsandton"
+        canonical="https://www.creativebooks.co.za/bookcoverdesignsandton"
         schema={schema}
       />
       
