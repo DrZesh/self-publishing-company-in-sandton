@@ -490,7 +490,8 @@ const AuthenticatedApp = () => {
         <Route path="/howdoiknowifmybookisreadytopublish" element={<HowDoIKnowIfMyBookIsReady />} />
         <Route path="/whatpublishingjobsareavailableinsouthafrica" element={<WhatPublishingJobsAreAvailable />} />
         <Route path="/howlongdoesittaketogetpublishedinsouthafrica" element={<HowLongToGetPublishedSA />} />
-        <Route path="/dosouthafricanpublishersprovdecoverdesign" element={<DoPublishersProvideCoverDesign />} />
+        <Route path="/dosouthafricanpublishersprovidecoverdesign" element={<DoPublishersProvideCoverDesign />} />
+        <Route path="/dosouthafricanpublishersprovdecoverdesign" element={<Navigate to="/dosouthafricanpublishersprovidecoverdesign" replace />} />
         <Route path="/whatis9010ruleforauthorsandroyalties" element={<WhatIs9010RuleAuthors />} />
         <Route path="/howtochoosebetweenmultiplebookpublishingoffers" element={<HowToChooseBetweenPublishingOffers />} />
         <Route path="/canyoumakealivingasaselfpublishedauthorinsouthafrica" element={<CanYouMakeALivingAsAuthorSA />} />
@@ -502,11 +503,13 @@ const AuthenticatedApp = () => {
         <Route path="/howtobuildanauthorplatformbeforepublishing" element={<HowToBuildAuthorPlatform />} />
         <Route path="/traditionalvsselfpublishingroyaltiesinsouthafrica" element={<TraditionalVsSelfPublishingRoyalties />} />
         <Route path="/canipublishabookinsouthafricaifenglishisnotmyfirstlanguage" element={<CanIPublishInOtherLanguagesSA />} />
-        <Route path="/howtofindbetrareadersformybookinsouthafrica" element={<HowToFindBetaReadersSA />} />
+        <Route path="/howtofindbetareadersformybookinsouthafrica" element={<HowToFindBetaReadersSA />} />
+        <Route path="/howtofindbetrareadersformybookinsouthafrica" element={<Navigate to="/howtofindbetareadersformybookinsouthafrica" replace />} />
         <Route path="/whattaxesdoselfpublishedauthorspayinsouthafrica" element={<WhatTaxesDoAuthorsPaySA />} />
         <Route path="/howtogetyourbookreviewedbysouthafricanpublications" element={<HowToGetBookReviewedSA />} />
         <Route path="/shouldihirepublishingcoachinsouthafrica" element={<ShouldIHirePublishingCoachSA />} />
-        <Route path="/mostcommonpublishingmistadebysouthafricanauthors" element={<CommonPublishingMistakesSA />} />
+        <Route path="/mostcommonpublishingmistakesbysouthafricanauthors" element={<CommonPublishingMistakesSA />} />
+        <Route path="/mostcommonpublishingmistadebysouthafricanauthors" element={<Navigate to="/mostcommonpublishingmistakesbysouthafricanauthors" replace />} />
         <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
         <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
         
