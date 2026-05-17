@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/questionstoaskapublisher',
   title: 'Questions to Ask a Publisher Before You Sign | Checklist',
-  description: 'Essential questions every author should ask a publisher before signing a contract. Protect your rights and your royalties.',
+  description: '17 essential questions to ask a publisher before you sign — covering fees, contracts, file ownership, royalties, Amazon accounts and what is included.',
   category: 'Publishing Tips',
   readTime: '14 min read',
   datePublished: '2026-02-05',

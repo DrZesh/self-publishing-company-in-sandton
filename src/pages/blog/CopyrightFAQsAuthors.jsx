@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/copyrightfaqsforauthors',
   title: 'Copyright FAQs for Authors in South Africa',
-  description: 'Copyright explained for South African authors — what\'s protected, how to register, ownership, and protecting your book idea.',
+  description: 'Copyright FAQs for South African authors — what is protected, how long it lasts, plagiarism, infringement and how to protect your manuscript.',
   category: 'Publishing Tips',
   readTime: '12 min read',
   datePublished: '2026-02-05',
