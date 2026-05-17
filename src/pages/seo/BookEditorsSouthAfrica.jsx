@@ -25,8 +25,8 @@ export default function BookEditorsSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Editors South Africa | Professional Editing Services"
-        description="Hire professional book editors in South Africa. Developmental, copy and line editing for fiction, non-fiction and academic work."
+        title="Book Editors in South Africa | Copy Editing & Proofreading"
+        description="Hire professional book editors in South Africa for novels, memoirs, non-fiction and academic work. Copy editing, proofreading, manuscript review."
         keywords="book editors in South Africa, book editors near me, copy editing services, proofreading services"
         canonical="https://www.creativebooks.co.za/bookeditorsinsouthafrica"
         schema={schema}

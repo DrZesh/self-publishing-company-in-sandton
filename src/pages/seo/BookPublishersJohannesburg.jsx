@@ -33,8 +33,8 @@ export default function BookPublishersJohannesburg() {
   return (
     <>
       <PageMeta
-        title="Book Publishers in Johannesburg | Creative Books SA"
-        description="Leading book publishers based in Johannesburg. Full-service publishing, editing, design and printing for South African authors."
+        title="Book Publishers in Johannesburg | Local Publishing Team"
+        description="Johannesburg-based book publishers offering editing, cover design, printing and distribution. In-person consultations available. Free quote within 24 hours."
         keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
         canonical="https://www.creativebookssa.co.za/bookpublishersjohannesburg"
         schema={schema}

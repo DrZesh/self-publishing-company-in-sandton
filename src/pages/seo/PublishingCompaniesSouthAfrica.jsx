@@ -38,8 +38,8 @@ export default function PublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Publishing Companies in South Africa | Book Publishers SA | Creative Books SA"
-        description="Looking for trusted publishing companies in South Africa? Creative Books SA offers full-service book publishing, editing, printing & ISBN support. Authors retain 100% rights. Free quote."
+        title="Publishing Companies in South Africa | Compare & Choose"
+        description="Compare publishing companies in South Africa. Services, pricing, rights and what to look for before signing. Creative Books SA — transparent, full-service."
         keywords="publishing companies in South Africa, book publishers South Africa, self publishing South Africa, best publishing company South Africa, book publishing services"
         canonical="https://www.creativebookssa.co.za/publishingcompaniessouthafrica"
         schema={schema}

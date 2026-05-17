@@ -25,8 +25,8 @@ export default function BookLayoutTypesetting() {
   return (
     <>
       <PageMeta
-        title="Book Layout & Typesetting Services South Africa"
-        description="Professional book layout and typesetting in South Africa. Print-ready interior design for paperback, hardcover and ebook editions."
+        title="Book Layout & Typesetting South Africa | Print-Ready Files"
+        description="Professional book typesetting and interior layout in South Africa. From Word document to print-ready PDF. Priced per page, fast turnaround."
         keywords="book layout, typesetting, book typesetting services, typesetter South Africa, print-ready book files"
         canonical="https://www.creativebooks.co.za/booklayoutandtypesetting"
         schema={schema}

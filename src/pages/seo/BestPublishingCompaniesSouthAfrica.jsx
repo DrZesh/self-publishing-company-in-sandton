@@ -32,8 +32,8 @@ export default function BestPublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Best Publishing Companies in South Africa (2026 Guide)"
-        description="Compare the best publishing companies in South Africa. Services, pricing and reviews to help authors choose the right publisher."
+        title="Best Publishing Companies in South Africa | 2026 Guide"
+        description="A guide to choosing the best publishing company in South Africa — what to look for, what questions to ask and how Creative Books SA compares."
         keywords="best publishing companies in South Africa, best book publishers South Africa, top publishing companies South Africa, best self publishing company South Africa"
         canonical="https://www.creativebookssa.co.za/bestpublishingcompaniesinsouthafrica"
         schema={schema}

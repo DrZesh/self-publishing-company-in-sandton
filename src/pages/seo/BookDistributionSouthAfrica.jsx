@@ -25,8 +25,8 @@ export default function BookDistributionSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Distribution Services South Africa | Get Your Book Out"
-        description="Book distribution services in South Africa. Get your book into bookstores, online retailers and international platforms like Amazon."
+        title="Book Distribution South Africa | Bookstores, Online & Amazon"
+        description="How book distribution works in South Africa — bookstores, Takealot, Amazon KDP, direct sales and what authors need to know about margins."
         keywords="book distribution South Africa, book distribution companies, sell self-published books, book marketing for authors"
         canonical="https://www.creativebooks.co.za/bookdistributioninsouthafrica"
         schema={schema}

@@ -33,8 +33,8 @@ export default function BookCoverDesignSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design South Africa | Professional Book Covers | Creative Books SA"
-        description="Award-winning book cover design in South Africa. Professional covers for print & eBook. Genre-specific, market-ready designs by Johannesburg designers. Free quote today."
+        title="Book Cover Design South Africa | Print & eBook Covers"
+        description="Professional book cover design for South African authors — full print covers and eBook covers. Genre-specific, market-ready. Free quote within 24 hours."
         keywords="book cover design South Africa, book cover designer South Africa, book cover design Johannesburg, eBook cover design South Africa, professional book covers South Africa"
         canonical="https://www.creativebookssa.co.za/bookcoverdesignsouthafrica"
         schema={schema}

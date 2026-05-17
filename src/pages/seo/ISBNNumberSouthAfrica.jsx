@@ -25,8 +25,8 @@ export default function ISBNNumberSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="How to Get an ISBN in South Africa | Full Guide"
-        description="Step-by-step guide to getting an ISBN number in South Africa. Free registration via the National Library — or let us handle it."
+        title="ISBN Number South Africa | Free Registration Guide"
+        description="What is an ISBN, do you need one, and how to get a free ISBN number in South Africa from the National Library. Includes barcode and placement tips."
         keywords="ISBN number South Africa, how to get ISBN South Africa, ISBN registration South Africa, ISBN for self-published book"
         canonical="https://www.creativebooks.co.za/isbnnumbersouthafrica"
         schema={schema}
