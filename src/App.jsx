@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -52,7 +52,6 @@ import ChildrensBookPackages from './pages/services/ChildrensBookPackages';
 import MemoirWriting from './pages/services/MemoirWriting';
 import BiographyWriting from './pages/services/BiographyWriting';
 import ChristianBookWriting from './pages/services/ChristianBookWriting';
-import GenericServicePage from './pages/services/GenericServicePage';
 import LocationPage from './pages/services/LocationPage';
 import ResourcePage from './pages/resources/ResourcePage';
 import CompletePublishingGuide from './pages/resources/CompletePublishingGuide';
@@ -63,9 +62,7 @@ import Portfolio from './pages/Portfolio';
 
 // New SEO Blog Article Pages
 import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
-import PublishingCompaniesSouthAfricaNew from './pages/seo/PublishingCompaniesSouthAfricaNew';
-import BookPublishersSouthAfricaNew from './pages/seo/BookPublishersSouthAfricaNew';
-import BookPrintingJohannesburgNew from './pages/seo/BookPrintingJohannesburgNew';
+
 import SelfPublishingCompaniesSouthAfrica from './pages/seo/SelfPublishingCompaniesSouthAfrica';
 import BookCoverDesignPriceSouthAfrica from './pages/seo/BookCoverDesignPriceSouthAfrica';
 import BookEditorsSouthAfrica from './pages/seo/BookEditorsSouthAfrica';
@@ -160,8 +157,6 @@ import BookCoverDesignCapeTown from './pages/seo/location/BookCoverDesignCapeTow
 import BookCoverDesignDurban from './pages/seo/location/BookCoverDesignDurban';
 
 // City Pages (scalable component)
-import { CityPrintingPage } from './pages/seo/location/CityPrintingPage.jsx';
-import SelfPublishingCityPage from './pages/seo/location/SelfPublishingCityPage';
 import LocationsHub from './pages/seo/LocationsHub';
 
 // Admin pages
@@ -232,17 +227,17 @@ const AuthenticatedApp = () => {
 
         {/* Publishing Silo */}
         <Route path="/bookpublishing" element={<BookPublishing />} />
-        <Route path="/selfpublishing" element={<GenericServicePage serviceKey="selfpublishing" />} />
-        <Route path="/publishingpackages" element={<GenericServicePage serviceKey="publishingpackages" />} />
+        <Route path="/selfpublishing" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/publishingpackages" element={<Navigate to="/publishingpackages/a5" replace />} />
         <Route path="/publishingpackages/mini" element={<MiniPackages />} />
         <Route path="/publishingpackages/a5" element={<FullPackagesA5 />} />
         <Route path="/publishingpackages/6x9" element={<FullPackages6x9 />} />
-        <Route path="/premiumpublishingpackage" element={<GenericServicePage serviceKey="premiumpublishingpackage" />} />
-        <Route path="/christianbookpublishing" element={<GenericServicePage serviceKey="christianbookpublishing" />} />
-        <Route path="/childrensbookpublishing" element={<GenericServicePage serviceKey="childrensbookpublishing" />} />
-        <Route path="/memoirpublishing" element={<GenericServicePage serviceKey="memoirpublishing" />} />
-        <Route path="/poetrypublishing" element={<GenericServicePage serviceKey="poetrypublishing" />} />
-        <Route path="/businessbookpublishing" element={<GenericServicePage serviceKey="businessbookpublishing" />} />
+        <Route path="/premiumpublishingpackage" element={<Navigate to="/publishingpackages" replace />} />
+        <Route path="/christianbookpublishing" element={<Navigate to="/bookpublishing" replace />} />
+        <Route path="/childrensbookpublishing" element={<Navigate to="/childrensbookpackages" replace />} />
+        <Route path="/memoirpublishing" element={<Navigate to="/memoirwriting" replace />} />
+        <Route path="/poetrypublishing" element={<Navigate to="/bookpublishing" replace />} />
+        <Route path="/businessbookpublishing" element={<Navigate to="/bookpublishing" replace />} />
 
         <Route path="/selfpublishingpackagesinsouthafrica" element={<SelfPublishingPackages />} />
 
@@ -260,27 +255,27 @@ const AuthenticatedApp = () => {
 
         {/* Printing Silo (GenericServicePage) */}
         <Route path="/bookprinting" element={<BookPrinting />} />
-        <Route path="/a5bookprinting" element={<GenericServicePage serviceKey="a5bookprinting" />} />
-        <Route path="/6x9bookprinting" element={<GenericServicePage serviceKey="6x9bookprinting" />} />
-        <Route path="/hardcoverprinting" element={<GenericServicePage serviceKey="hardcoverprinting" />} />
-        <Route path="/softcoverprinting" element={<GenericServicePage serviceKey="softcoverprinting" />} />
-        <Route path="/creampaperprinting" element={<GenericServicePage serviceKey="creampaperprinting" />} />
-        <Route path="/whitepaperprinting" element={<GenericServicePage serviceKey="whitepaperprinting" />} />
-        <Route path="/childrensbookprinting" element={<GenericServicePage serviceKey="childrensbookprinting" />} />
-        <Route path="/comicbookprinting" element={<GenericServicePage serviceKey="comicbookprinting" />} />
-        <Route path="/workbookprinting" element={<GenericServicePage serviceKey="workbookprinting" />} />
-        <Route path="/manualprinting" element={<GenericServicePage serviceKey="manualprinting" />} />
+        <Route path="/a5bookprinting" element={<Navigate to="/printing/a5" replace />} />
+        <Route path="/6x9bookprinting" element={<Navigate to="/printing/6x9" replace />} />
+        <Route path="/hardcoverprinting" element={<Navigate to="/printing/hardcover" replace />} />
+        <Route path="/softcoverprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/creampaperprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/whitepaperprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/childrensbookprinting" element={<Navigate to="/printing/childrensbooks" replace />} />
+        <Route path="/comicbookprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/workbookprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/manualprinting" element={<Navigate to="/bookprinting" replace />} />
 
         {/* Editing Silo */}
         <Route path="/bookediting" element={<BookEditing />} />
         <Route path="/proofreading" element={<Proofreading />} />
-        <Route path="/copyediting" element={<GenericServicePage serviceKey="copyediting" />} />
-        <Route path="/manuscriptevaluation" element={<GenericServicePage serviceKey="manuscriptevaluation" />} />
+        <Route path="/copyediting" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/manuscriptevaluation" element={<Navigate to="/bookediting" replace />} />
         <Route path="/academicediting" element={<AcademicEditing />} />
         <Route path="/thesisediting" element={<ThesisEditing />} />
         <Route path="/dissertationediting" element={<DissertationEditing />} />
-        <Route path="/technicalediting" element={<GenericServicePage serviceKey="technicalediting" />} />
-        <Route path="/languageediting" element={<GenericServicePage serviceKey="languageediting" />} />
+        <Route path="/technicalediting" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/languageediting" element={<Navigate to="/bookediting" replace />} />
 
         {/* Design Silo */}
         <Route path="/bookcoverdesign" element={<BookCoverDesign />} />
@@ -292,8 +287,8 @@ const AuthenticatedApp = () => {
         {/* Digital Silo */}
         <Route path="/ebookformatting" element={<EbookPublishing />} />
         <Route path="/ebookpublishing" element={<EbookPublishing />} />
-        <Route path="/amazonkdp" element={<GenericServicePage serviceKey="amazonkdp" />} />
-        <Route path="/kindlepublishing" element={<GenericServicePage serviceKey="kindlepublishing" />} />
+        <Route path="/amazonkdp" element={<Navigate to="/ebookpublishing" replace />} />
+        <Route path="/kindlepublishing" element={<Navigate to="/ebookpublishing" replace />} />
 
         {/* Writing Silo */}
         <Route path="/ghostwriting" element={<Ghostwriting />} />
@@ -336,76 +331,68 @@ const AuthenticatedApp = () => {
         <Route path="/bookcoverdesigncapetown" element={<BookCoverDesignCapeTown />} />
         <Route path="/bookcoverdesigndurban" element={<BookCoverDesignDurban />} />
 
-        {/* National City Printing Pages */}
-        <Route path="/bookprintingcapetown" element={<CityPrintingPage cityKey="capetown" />} />
-        <Route path="/bookprintingdurban" element={<CityPrintingPage cityKey="durban" />} />
-        <Route path="/bookprintingbloemfontein" element={<CityPrintingPage cityKey="bloemfontein" />} />
-        <Route path="/bookprintingpolokwane" element={<CityPrintingPage cityKey="polokwane" />} />
-        <Route path="/bookprintingnelspruit" element={<CityPrintingPage cityKey="nelspruit" />} />
-        <Route path="/bookprintingportelizabeth" element={<CityPrintingPage cityKey="portelizabeth" />} />
-        <Route path="/bookprintingeastlondon" element={<CityPrintingPage cityKey="eastlondon" />} />
-        <Route path="/bookprintingkimberley" element={<CityPrintingPage cityKey="kimberley" />} />
-        <Route path="/bookprintingpietermaritzburg" element={<CityPrintingPage cityKey="pietermaritzburg" />} />
-        <Route path="/bookprintingrustenburg" element={<CityPrintingPage cityKey="rustenburg" />} />
-        <Route path="/bookprintingboksburg" element={<CityPrintingPage cityKey="boksburg" />} />
-        <Route path="/bookprintingbenoni" element={<CityPrintingPage cityKey="benoni" />} />
-        <Route path="/bookprintinggermiston" element={<CityPrintingPage cityKey="germiston" />} />
-        <Route path="/bookprintingkemptonpark" element={<CityPrintingPage cityKey="kemptonpark" />} />
-        <Route path="/bookprintingfourways" element={<CityPrintingPage cityKey="fourways" />} />
-        <Route path="/bookprintingbryanston" element={<CityPrintingPage cityKey="bryanston" />} />
+        {/* National City Printing Pages — redirect to main printing page */}
+        <Route path="/bookprintingcapetown" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingdurban" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingbloemfontein" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingpolokwane" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingnelspruit" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingportelizabeth" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingeastlondon" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingkimberley" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingpietermaritzburg" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingrustenburg" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingboksburg" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingbenoni" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintinggermiston" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingkemptonpark" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingfourways" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingbryanston" element={<Navigate to="/bookprinting" replace />} />
 
-        {/* Self Publishing City Pages — Gauteng */}
-        <Route path="/selfpublishingjohannesburg" element={<SelfPublishingCityPage cityKey="johannesburg" />} />
-        <Route path="/selfpublishingsandton" element={<SelfPublishingCityPage cityKey="sandton" />} />
-        <Route path="/selfpublishingmidrand" element={<SelfPublishingCityPage cityKey="midrand" />} />
-        <Route path="/selfpublishingrandburg" element={<SelfPublishingCityPage cityKey="randburg" />} />
-        <Route path="/selfpublishingroodepoort" element={<SelfPublishingCityPage cityKey="roodepoort" />} />
-        <Route path="/selfpublishingcenturion" element={<SelfPublishingCityPage cityKey="centurion" />} />
-        <Route path="/selfpublishingpretoria" element={<SelfPublishingCityPage cityKey="pretoria" />} />
-        <Route path="/selfpublishingboksburg" element={<SelfPublishingCityPage cityKey="boksburg" />} />
-        <Route path="/selfpublishingbenoni" element={<SelfPublishingCityPage cityKey="benoni" />} />
-        <Route path="/selfpublishingkemptonpark" element={<SelfPublishingCityPage cityKey="kemptonpark" />} />
-        <Route path="/selfpublishinggermiston" element={<SelfPublishingCityPage cityKey="germiston" />} />
-        <Route path="/selfpublishingfourways" element={<SelfPublishingCityPage cityKey="fourways" />} />
-        <Route path="/selfpublishingbryanston" element={<SelfPublishingCityPage cityKey="bryanston" />} />
-        <Route path="/selfpublishingsoweto" element={<SelfPublishingCityPage cityKey="soweto" />} />
-        <Route path="/selfpublishingalberton" element={<SelfPublishingCityPage cityKey="alberton" />} />
-        {/* Self Publishing City Pages — Western Cape */}
-        <Route path="/selfpublishingcapetown" element={<SelfPublishingCityPage cityKey="capetown" />} />
-        <Route path="/selfpublishingstellenbosch" element={<SelfPublishingCityPage cityKey="stellenbosch" />} />
-        <Route path="/selfpublishingpaarl" element={<SelfPublishingCityPage cityKey="paarl" />} />
-        <Route path="/selfpublishinggeorge" element={<SelfPublishingCityPage cityKey="george" />} />
-        <Route path="/selfpublishingsomersetwest" element={<SelfPublishingCityPage cityKey="somersetwest" />} />
-        <Route path="/selfpublishingbellville" element={<SelfPublishingCityPage cityKey="bellville" />} />
-        {/* Self Publishing City Pages — KwaZulu-Natal */}
-        <Route path="/selfpublishingdurban" element={<SelfPublishingCityPage cityKey="durban" />} />
-        <Route path="/selfpublishingumhlanga" element={<SelfPublishingCityPage cityKey="umhlanga" />} />
-        <Route path="/selfpublishingpietermaritzburg" element={<SelfPublishingCityPage cityKey="pietermaritzburg" />} />
-        <Route path="/selfpublishingnewcastle" element={<SelfPublishingCityPage cityKey="newcastle" />} />
-        <Route path="/selfpublishingrichardsbay" element={<SelfPublishingCityPage cityKey="richardsbay" />} />
-        {/* Self Publishing City Pages — Eastern Cape */}
-        <Route path="/selfpublishingportelizabeth" element={<SelfPublishingCityPage cityKey="portelizabeth" />} />
-        <Route path="/selfpublishingeastlondon" element={<SelfPublishingCityPage cityKey="eastlondon" />} />
-        <Route path="/selfpublishinggrahamstown" element={<SelfPublishingCityPage cityKey="grahamstown" />} />
-        <Route path="/selfpublishinguitenhage" element={<SelfPublishingCityPage cityKey="uitenhage" />} />
-        {/* Self Publishing City Pages — Free State */}
-        <Route path="/selfpublishingbloemfontein" element={<SelfPublishingCityPage cityKey="bloemfontein" />} />
-        <Route path="/selfpublishingwelkom" element={<SelfPublishingCityPage cityKey="welkom" />} />
-        {/* Self Publishing City Pages — Limpopo */}
-        <Route path="/selfpublishingpolokwane" element={<SelfPublishingCityPage cityKey="polokwane" />} />
-        <Route path="/selfpublishingtzaneen" element={<SelfPublishingCityPage cityKey="tzaneen" />} />
-        <Route path="/selfpublishingthohoyandou" element={<SelfPublishingCityPage cityKey="thohoyandou" />} />
-        {/* Self Publishing City Pages — Mpumalanga */}
-        <Route path="/selfpublishingnelspruit" element={<SelfPublishingCityPage cityKey="nelspruit" />} />
-        <Route path="/selfpublishingwitbank" element={<SelfPublishingCityPage cityKey="witbank" />} />
-        <Route path="/selfpublishingmiddelburg" element={<SelfPublishingCityPage cityKey="middelburg" />} />
-        {/* Self Publishing City Pages — North West */}
-        <Route path="/selfpublishingrustenburg" element={<SelfPublishingCityPage cityKey="rustenburg" />} />
-        <Route path="/selfpublishingklerksdorp" element={<SelfPublishingCityPage cityKey="klerksdorp" />} />
-        <Route path="/selfpublishingpotchefstroom" element={<SelfPublishingCityPage cityKey="potchefstroom" />} />
-        {/* Self Publishing City Pages — Northern Cape */}
-        <Route path="/selfpublishingkimberley" element={<SelfPublishingCityPage cityKey="kimberley" />} />
-        <Route path="/selfpublishingupington" element={<SelfPublishingCityPage cityKey="upington" />} />
+        {/* Self Publishing City Pages — all redirect to canonical */}
+        <Route path="/selfpublishingjohannesburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingsandton" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingmidrand" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingrandburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingroodepoort" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingcenturion" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingpretoria" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingboksburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingbenoni" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingkemptonpark" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishinggermiston" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingfourways" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingbryanston" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingsoweto" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingalberton" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingcapetown" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingstellenbosch" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingpaarl" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishinggeorge" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingsomersetwest" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingbellville" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingdurban" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingumhlanga" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingpietermaritzburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingnewcastle" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingrichardsbay" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingportelizabeth" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingeastlondon" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishinggrahamstown" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishinguitenhage" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingbloemfontein" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingwelkom" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingpolokwane" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingtzaneen" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingthohoyandou" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingnelspruit" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingwitbank" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingmiddelburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingrustenburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingklerksdorp" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingpotchefstroom" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingkimberley" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingupington" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
 
         {/* Location SEO (legacy - keep for backward compat) */}
         <Route path="/editingservicesjohannesburg" element={<LocationPage locationKey="editingservicesjohannesburg" />} />
@@ -523,11 +510,11 @@ const AuthenticatedApp = () => {
         <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
         <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
         
-        {/* New SEO Blog Articles */}
-        <Route path="/publishingcompaniesinsouthafrica" element={<PublishingCompaniesSouthAfricaNew />} />
-        <Route path="/bookpublishersinsouthafrica" element={<BookPublishersSouthAfricaNew />} />
+        {/* 301 Redirects for deleted "New" SEO pages */}
+        <Route path="/publishingcompaniesinsouthafrica" element={<Navigate to="/publishingcompaniessouthafrica" replace />} />
+        <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
         <Route path="/selfpublishingcompaniesinsouthafrica" element={<SelfPublishingCompaniesSouthAfrica />} />
-        <Route path="/bookprintingjohannesburgnew" element={<BookPrintingJohannesburgNew />} />
+        <Route path="/bookprintingjohannesburgnew" element={<Navigate to="/bookprintingjohannesburg" replace />} />
         <Route path="/bookcoverdesignpricesouthafrica" element={<BookCoverDesignPriceSouthAfrica />} />
         <Route path="/bookeditorsinsouthafrica" element={<BookEditorsSouthAfrica />} />
         <Route path="/booklayoutandtypesetting" element={<BookLayoutTypesetting />} />

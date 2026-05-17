@@ -49,13 +49,12 @@ export default function LocationPage({ locationKey }) {
 
   return (
     <>
-      {meta && (
-        <PageMeta
-          title={meta.title}
-          description={meta.description}
-          canonical={meta.canonical}
-        />
-      )}
+      <PageMeta
+        title={meta?.title || data.title}
+        description={meta?.description || data.description}
+        canonical={meta?.canonical}
+        noindex={true}
+      />
       <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
       subtitle={data.subtitle}
