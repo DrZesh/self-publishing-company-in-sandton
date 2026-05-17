@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howlongdoesittaketogetpublishedinsouthafrica',
   title: 'How Long Does It Take to Get Published in South Africa?',
-  description: 'Realistic timelines for getting published in South Africa — traditional, hybrid and self-publishing routes compared.',
+  description: 'How long does it take to get published in South Africa? Traditional publishing timelines vs self-publishing — and what causes the most common delays.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

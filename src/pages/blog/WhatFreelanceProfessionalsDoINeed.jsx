@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/whatfreelanceprofessionalsdoineedtoselfpublish',
   title: 'Which Freelance Professionals Do Authors Need?',
-  description: 'The freelancers every self-publishing author needs — editors, designers, proofreaders, marketers and what each actually costs.',
+  description: 'Which freelance professionals do self-publishing authors need? Editors, designers, typesetters and proofreaders explained — and why one-stop services save money.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

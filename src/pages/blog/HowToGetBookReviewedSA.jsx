@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtogetyourbookreviewedbysouthafricanpublications',
   title: 'How to Get Your Book Reviewed in South Africa',
-  description: 'Practical tips for getting your book reviewed by readers, bloggers and SA media — and turning reviews into sales.',
+  description: 'How to get your book reviewed in South Africa — submitting to newspapers, BookStagram, Goodreads and SA media publications to drive real sales.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/whattaxesdoselfpublishedauthorspayinsouthafrica',
   title: 'What Taxes Do Authors Pay in South Africa? | SARS Guide',
-  description: 'Tax obligations for South African authors — royalties, SARS, deductions and what to expect from your first book sales.',
+  description: 'What taxes do South African authors pay? SARS obligations for book income, deductible publishing expenses and how to keep records from day one.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

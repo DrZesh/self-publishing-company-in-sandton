@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/isselling3000copiesofabookgoodinsouthafrica',
   title: 'Is Selling 3,000 Copies of a Book Good? | Author Reality',
-  description: 'Is 3,000 book sales good? Honest benchmarks for self-published and traditionally published authors — and what it actually means.',
+  description: 'Is selling 3,000 copies of a book good in South Africa? Realistic sales benchmarks and what 3,000 copies actually earns a self-published author.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

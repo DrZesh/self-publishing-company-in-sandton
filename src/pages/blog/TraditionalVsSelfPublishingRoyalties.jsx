@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/traditionalvsselfpublishingroyaltiesinsouthafrica',
   title: 'Traditional vs Self-Publishing Royalties | True Earnings',
-  description: 'Traditional vs self-publishing royalties compared — what authors actually earn per book and which route makes more financial sense.',
+  description: 'Traditional vs self-publishing royalties in South Africa — real per-copy earnings compared, with numbers showing which route pays more and when.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

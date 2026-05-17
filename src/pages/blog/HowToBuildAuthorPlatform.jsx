@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtobuildanauthorplatformbeforepublishing',
   title: 'How to Build an Author Platform | Step-by-Step Guide',
-  description: 'Build your author platform from scratch — website, social media, email list and reader community that sells more books.',
+  description: 'How to build an author platform in South Africa — email list, social media strategy, author website and engaging the SA literary community before launch.',
   category: 'Writing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/whattolookforinsouthafricanpublishingcontract',
   title: 'What to Look For in a Publishing Contract | Author Checklist',
-  description: 'Essential clauses every author should check in a publishing contract — rights, royalties, termination and red flags to spot.',
+  description: 'What to look for in a publishing contract — royalties, rights granted, reversion clauses, option clauses and red flags every South African author should know.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtopublishachildrensbookinsouthafrica',
   title: "How to Publish a Children's Book in South Africa",
-  description: "Complete guide to publishing a children's book in South Africa — illustration, printing, distribution and reaching young readers.",
+  description: "How to publish a children's book in South Africa — illustration, layout, colour printing costs, ISBN and distribution through schools and online.",
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

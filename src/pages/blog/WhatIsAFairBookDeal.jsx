@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/whatisafairbookdealforsouthafricanauthors',
   title: 'What Is a Fair Book Deal? | Author Negotiation Guide',
-  description: 'What does a fair book deal actually look like? Royalty rates, rights, advances and red flags every author should know.',
+  description: 'What is a fair book deal in South Africa? Royalty rates, rights, reversion clauses and red flags every author should know before signing.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

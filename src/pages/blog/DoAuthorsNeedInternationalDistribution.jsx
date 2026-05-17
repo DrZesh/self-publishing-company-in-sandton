@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/dosouthafricanauthorsneedinternationaldistribution',
   title: 'Do Authors Need International Distribution? | Honest Guide',
-  description: 'Is international book distribution worth it for South African authors? Pros, cons, costs and when global reach actually pays off.',
+  description: 'Do South African authors need international distribution? When Amazon KDP and IngramSpark make sense vs focusing on the local market.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

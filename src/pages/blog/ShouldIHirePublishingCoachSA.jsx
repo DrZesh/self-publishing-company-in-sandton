@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/shouldihirepublishingcoachinsouthafrica',
   title: 'Should I Hire a Publishing Coach? | Honest Guide',
-  description: 'Is a publishing coach worth it? What they actually do, what they cost, and when South African authors benefit from one.',
+  description: 'Should you hire a publishing coach in South Africa? What they do, when it makes sense, and when your production partner already provides that guidance.',
   category: 'Publishing Tips',
   readTime: '5 min read',
   datePublished: '2026-02-05',

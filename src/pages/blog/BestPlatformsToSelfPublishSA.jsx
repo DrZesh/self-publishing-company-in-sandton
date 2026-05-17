@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/bestplatformstoselfpublishinsouthafrica',
   title: 'Best Self-Publishing Platforms in South Africa (2026)',
-  description: "Compare the best self-publishing platforms for South African authors — Amazon KDP, IngramSpark, local options and more.",
+  description: "Best self-publishing platforms for South African authors in 2026 — Amazon KDP, Takealot, IngramSpark and your own author website compared.",
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

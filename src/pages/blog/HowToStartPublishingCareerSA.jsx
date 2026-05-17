@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtostartpublishingcareerfromzeroinsouthafrica',
   title: 'How to Start a Publishing Career in South Africa',
-  description: 'Want to work in publishing in South Africa? Career paths, qualifications and how to break into editing, design and book production.',
+  description: 'How to start a publishing career in South Africa — qualifications, internships, freelancing, networking and why publishing your own book builds real experience.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

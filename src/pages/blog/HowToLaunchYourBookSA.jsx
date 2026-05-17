@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtolaunchyourbooksuccessfullyinsouthafrica',
   title: 'How to Launch Your Book in South Africa | Author Guide',
-  description: 'Plan a successful book launch in South Africa — events, online launches, PR, social media and driving real sales on launch day.',
+  description: 'How to launch your book in South Africa — 3-month launch plan, venue choices, review copy strategy, social media and post-launch sales activities.',
   category: 'Publishing Tips',
   readTime: '8 min read',
   datePublished: '2026-02-05',

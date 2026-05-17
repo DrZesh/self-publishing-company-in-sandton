@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/canipublishabookinsouthafricaifenglishisnotmyfirstlanguage',
   title: 'Publishing Books in Other Languages in South Africa',
-  description: 'Can you publish a book in Zulu, Xhosa, Afrikaans or other SA languages? Yes — here\'s how, plus tips on reach and distribution.',
+  description: 'Publishing in Zulu, Xhosa, Afrikaans or English as a second language in South Africa — market demand, editing support and ghostwriting options.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

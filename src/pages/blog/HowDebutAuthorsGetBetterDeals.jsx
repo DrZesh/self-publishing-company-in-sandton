@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howdebutauthorsgetbetterbookdealsinsouthafrica',
   title: 'How Debut Authors Get Better Publishing Deals',
-  description: 'Negotiate a better book deal as a debut author — what to ask for, what\'s negotiable, and how to avoid leaving money on the table.',
+  description: 'How debut South African authors get better publishing deals — building leverage, entering awards and why self-publishing often beats a weak traditional deal.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/howtofindliteraryagentinsouthafrica',
   title: 'How to Find a Literary Agent in South Africa',
-  description: 'Step-by-step guide to finding a literary agent as a South African author — submission tips, what agents want and where to look.',
+  description: 'How to find a literary agent in South Africa — do you need one, how to write a query letter, and when self-publishing is the smarter route.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',

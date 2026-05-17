@@ -4,7 +4,7 @@ import BlogArticlePage from './BlogArticlePage';
 const article = {
   url: '/mostcommonpublishingmistadebysouthafricanauthors',
   title: 'Common Publishing Mistakes South African Authors Make',
-  description: 'Avoid these common publishing mistakes that cost South African authors time, money and sales. Practical lessons from the industry.',
+  description: 'Most common publishing mistakes South African authors make — publishing too early, vanity presses, bad covers, no marketing plan and skipping editing.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',
