@@ -1,118 +1,890 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://www.creativebooks.co.za/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/aboutus</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/contact</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/getquote</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/faq</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/portfolio</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookpublishing</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishing</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingpackages</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingpackages/mini</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingpackages/a5</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingpackages/6x9</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprinting</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/printing/a5</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/printing/6x9</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/printing/hardcover</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/printing/childrensbooks</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookediting</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/proofreading</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/academicediting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/thesisediting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/dissertationediting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesign</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/typesetting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/authorwebsites</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/ebookpublishing</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/ghostwriting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/memoirwriting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/biographywriting</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/locations</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingsandton</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookeditingsandton</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingrandburg</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingmidrand</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingpretoria</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingcenturion</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesignsandton</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesignrandburg</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesignmidrand</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesignpretoria</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingcapetown</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingdurban</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingjohannesburg</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingsandton</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingmidrand</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingrandburg</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingcapetown</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingdurban</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingcompaniessouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookpublisherssouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookpublishersjohannesburg</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingjohannesburg</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/selfpublishingsouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookcoverdesignsouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/proofreadingservicessouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/ghostwriterssouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bestpublishingcompaniesinsouthafrica</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bookprintingcalculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingroadmap</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/calculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/isbnregistration</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtopublishabook</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/publishingguide</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/nda</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/covercalculator</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/blog</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtoprintabookinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howmuchdoesbookprintingcost</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/a5vs6x9bookprinting</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/hardcovervspaperbackprinting</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtoselfpublishabook</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatisghostwriting</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtonameyourbook</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howlongdoesittaketoselfpublish</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtobecomeawriterinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtogetanisbnforyourbook</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatisselfpublishing</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/copyrightfaqsforauthors</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/questionstoaskapublisher</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howdoigetmybookpublishedinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/doineedaneditorbeforepublishing</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtopublishachildrensbookinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/canipublishacomicbookinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtomarketandsellyourselfpublishedbookinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatfreelanceprofessionalsdoineedtoselfpublish</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/isselling3000copiesofabookgoodinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howdoiknowifmybookisreadytopublish</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatpublishingjobsareavailableinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howlongdoesittaketogetpublishedinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatis9010ruleforauthorsandroyalties</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtochoosebetweenmultiplebookpublishingoffers</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/canyoumakealivingasaselfpublishedauthorinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whattolookforinsouthafricanpublishingcontract</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtoprotectmybookideabeforepublishinginsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/dosouthafricanauthorsneedinternationaldistribution</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howmuchdoispendonbookcoverdesigninsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/bestplatformstoselfpublishinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtobuildanauthorplatformbeforepublishing</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/traditionalvsselfpublishingroyaltiesinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtogetyourbookreviewedbysouthafricanpublications</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/shouldihirepublishingcoachinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtolaunchyourbooksuccessfullyinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howdebutauthorsgetbetterbookdealsinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/whatistheroleliteraryagentinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtostartpublishingcareerfromzeroinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/professionalcopyeditingservices</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/printondemandbooksinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howmuchdoesitcosttoselfpublishonamazonkindle</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtoprintyourselfpublishedbookinsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/childrensbookillustrationsprinting</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/ebookvsprintbookselfpublishing</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howmuchdoesitcosttoselfpublishonamazon</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/isbnregistrationsouthafrica</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/abeginnersguide</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-<url><loc>https://www.creativebooks.co.za/howtoselfpublishchildrensbooks</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+
+  <!-- ===================== CORE PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/aboutus</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/contact</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/getquote</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/faq</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/portfolio</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== PUBLISHING SILO ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookpublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/publishingpackages/a5</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/publishingpackages/6x9</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/publishingpackages/mini</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/selfpublishingpackagesinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===================== PRINTING SILO ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprinting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/a5</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/6x9</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/hardcover</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/childrensbooks</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/childrensbooks/15cmx15cm</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/childrensbooks/20cmx20cm</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/printing/childrensbooks/21cmx21cm</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== SERVICE SILO ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookediting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/proofreading</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/academicediting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/thesisediting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/dissertationediting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesign</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/typesetting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/ebookpublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/ghostwriting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/memoirwriting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/biographywriting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/christianbookwriting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/childrensbookpackages</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/authorwebsites</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/annualreportdesignsandton</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== TOOLS & CALCULATOR ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/calculator</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/publishingroadmap</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== RESOURCE PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/isbnregistration</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtopublishabook</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/nda</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/covercalculator</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ===================== BLOG ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/blog</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===================== BLOG ARTICLES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/printondemandbooksinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howmuchdoesitcosttoselfpublishonamazonkindle</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/professionalcopyeditingservices</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatisghostwriting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/writingabookdedication</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/writingabookacknowledgment</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtonameyourbook</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtoprintyourselfpublishedbookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/childrensbookillustrationsprinting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/ebookvsprintbookselfpublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howlongdoesittaketoselfpublish</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howmuchdoesitcosttoselfpublishonamazon</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtobecomeawriterinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/isbnregistrationsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtogetanisbnforyourbook</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/abeginnersguide</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtoselfpublishchildrensbooks</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatisselfpublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/copyrightfaqsforauthors</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/questionstoaskapublisher</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howdoigetmybookpublishedinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/dosouthafricanpublisherschargeauthors</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howmuchwilliearnfrommyfirstbook</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatisafairbookdealforsouthafricanauthors</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/doineedaneditorbeforepublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtofindliteraryagentinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtopublishachildrensbookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/canipublishacomicbookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtomarketandsellyourselfpublishedbookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howdosouthafricanpublishinghousesfindnewauthors</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatfreelanceprofessionalsdoineedtoselfpublish</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/isselling3000copiesofabookgoodinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howdoiknowifmybookisreadytopublish</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatpublishingjobsareavailableinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howlongdoesittaketogetpublishedinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/dosouthafricanpublishersprovdecoverdesign</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatis9010ruleforauthorsandroyalties</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtochoosebetweenmultiplebookpublishingoffers</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/canyoumakealivingasaselfpublishedauthorinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whattolookforinsouthafricanpublishingcontract</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtoprotectmybookideabeforepublishinginsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/dosouthafricanauthorsneedinternationaldistribution</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howmuchdoispendonbookcoverdesigninsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bestplatformstoselfpublishinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtobuildanauthorplatformbeforepublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/traditionalvsselfpublishingroyaltiesinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/canipublishabookinsouthafricaifenglishisnotmyfirstlanguage</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtofindbetrareadersformybookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whattaxesdoselfpublishedauthorspayinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtogetyourbookreviewedbysouthafricanpublications</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/shouldihirepublishingcoachinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/mostcommonpublishingmistadebysouthafricanauthors</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtolaunchyourbooksuccessfullyinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/canipublishmultiplegenresunderthesameauthorname</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howdebutauthorsgetbetterbookdealsinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/whatistheroleliteraryagentinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtostartpublishingcareerfromzeroinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== NATIONAL SEO PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/publishingcompaniessouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookpublisherssouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookpublishersjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/selfpublishingsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/proofreadingservicessouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/ghostwriterssouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bestpublishingcompaniesinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/selfpublishingcompaniesinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignpricesouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookeditorsinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/booklayoutandtypesetting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/isbnnumbersouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookdistributioninsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===================== LOCATIONS HUB ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/locations</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== GAUTENG LOCATION PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingsandton</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookeditingsandton</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingrandburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingmidrand</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingpretoria</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingcenturion</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookprintingroodepoort</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===================== BOOK COVER DESIGN LOCATION PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignsandton</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignrandburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignmidrand</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignpretoria</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesigncenturion</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesignroodepoort</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesigncapetown</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bookcoverdesigndurban</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== INDUSTRY-SPECIFIC PRINTING PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/poetrybookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/memoirbookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/christianbookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/businessbookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/trainingmanualprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/schoolbookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/novelprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/educationalbookprintingjohannesburg</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ===================== LONG-TAIL SEO ARTICLE PAGES ===================== -->
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtoprintabookinsouthafrica</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howmuchdoesbookprintingcost</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/bestbooksizeforselfpublishing</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/a5vs6x9bookprinting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/hardcovervspaperbackprinting</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.creativebookssa.co.za/howtoselfpublishabook</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
