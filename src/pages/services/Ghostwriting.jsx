@@ -83,7 +83,7 @@ export default function Ghostwriting() {
       <PageMeta
         title="Ghostwriting Services South Africa | NDA Protected"
         description="Discreet professional ghostwriters in South Africa — memoirs, business books, fiction and non-fiction. NDA-protected. Free consultation, transparent pricing."
-        canonical="https://www.creativebookssa.co.za/ghostwriting"
+        canonical="https://www.creativebooks.co.za/ghostwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

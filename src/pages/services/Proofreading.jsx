@@ -292,7 +292,7 @@ export default function Proofreading() {
       <PageMeta
         title="Book Proofreading Services in South Africa | Per-Word Pricing"
         description="Final-stage manuscript proofreading for South African authors. Catch typos, grammar and formatting errors before printing. Per-word pricing available."
-        canonical="https://www.creativebookssa.co.za/proofreading"
+        canonical="https://www.creativebooks.co.za/proofreading"
       />
 
       {/* FAQ Schema */}

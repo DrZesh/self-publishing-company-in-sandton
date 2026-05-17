@@ -154,7 +154,7 @@ export default function BookEditing() {
         title="Book Editing Services in South Africa | Free Sample Edit"
         description="Professional book editors in South Africa — developmental, line, copy editing and proofreading. Sample edit before you commit. Transparent pricing."
         keywords="book editing South Africa, book editors Johannesburg, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
-        canonical="https://www.creativebookssa.co.za/bookediting"
+        canonical="https://www.creativebooks.co.za/bookediting"
         schema={schema}
       />
       <div style={{ background: '#f8f9fc' }}>

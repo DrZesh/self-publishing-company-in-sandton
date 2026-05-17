@@ -179,7 +179,7 @@ export default function BookCoverDesign() {
         title="Book Cover Design South Africa | Custom & Stock Covers"
         description="Book cover design that sells — custom, illustrated and photographic covers for SA authors. Print and ebook ready. View portfolio and get a quote."
         keywords="book cover design Johannesburg, book cover designers South Africa, ebook cover design, print cover design, illustrated book covers, Amazon cover design, professional cover designers"
-        canonical="https://www.creativebookssa.co.za/bookcoverdesign"
+        canonical="https://www.creativebooks.co.za/bookcoverdesign"
         schema={schema}
       />
 
