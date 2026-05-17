@@ -1,4 +1,4 @@
-const SITE_URL = 'https://www.creativebookssa.co.za';
+const SITE_URL = 'https://www.creativebooks.co.za';
 const BUSINESS_NAME = 'Creative Books SA';
 const PHONE = '+27842305393';
 const EMAIL = 'info@creativebooks.co.za';
