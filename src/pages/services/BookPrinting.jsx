@@ -34,8 +34,8 @@ export default function BookPrinting() {
   return (
     <>
       <PageMeta
-        title="Book Printing Services South Africa | Print Your Book"
-        description="Professional book printing in South Africa. Hardcover, paperback, A5, 6x9 and children's books. Short and long runs with nationwide delivery."
+        title="Book Printing Services in South Africa | From 100 Copies"
+        description="Professional book printing for SA authors — A5, 6×9, hardcover, children's formats. Cream or white paper, from 100 copies, free printed proof."
         keywords="book printing Johannesburg, book printing South Africa, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
         canonical="https://www.creativebookssa.co.za/bookprinting"
         schema={schema}

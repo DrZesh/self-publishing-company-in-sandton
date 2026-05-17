@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Monitor, ShoppingCart, Smartphone } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 const faqs = [
   { q: 'Do authors need a website?', a: 'Yes. A professional author website is essential for building your credibility, promoting your books and giving readers a place to learn more about you. It also provides a platform to sell books directly, collect reader enquiries and build your author brand.' },
@@ -41,6 +42,11 @@ export default function AuthorWebsites() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Author Website Design South Africa | Build Your Platform"
+        description="Custom author websites for South African writers — showcase books, build a mailing list, sell direct. Mobile-friendly, SEO-ready, easy to manage."
+        canonical="https://www.creativebookssa.co.za/authorwebsites"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

@@ -6,6 +6,7 @@ import {
   BookOpen, Eye, AlignLeft, Feather, Shield, Star, Award, Sparkles
 } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const coverageCards = [
@@ -288,6 +289,11 @@ export default function Proofreading() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Book Proofreading Services in South Africa | Per-Word Pricing"
+        description="Final-stage manuscript proofreading for South African authors. Catch typos, grammar and formatting errors before printing. Per-word pricing available."
+        canonical="https://www.creativebookssa.co.za/proofreading"
+      />
 
       {/* FAQ Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

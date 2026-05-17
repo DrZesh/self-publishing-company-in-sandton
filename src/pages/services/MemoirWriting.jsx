@@ -57,8 +57,8 @@ export default function MemoirWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Memoir Writing Services South Africa | Professional Memoir Writers"
-        description="Professional memoir writing services in South Africa. We help you turn your life story into a published book — ghostwritten, structured and ready to print."
+        title="Memoir Writing Services South Africa | Professional Authors"
+        description="Professional memoir writing for South African authors. Turn your life story into a published book. Ghostwriting, editing, full publishing service."
         canonical="https://www.creativebookssa.co.za/memoirwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

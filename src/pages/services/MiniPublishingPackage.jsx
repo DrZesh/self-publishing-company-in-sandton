@@ -98,8 +98,8 @@ export default function MiniPublishingPackage() {
   return (
     <>
       <PageMeta
-        title="Mini Publishing Package South Africa | Budget-Friendly"
-        description="Affordable mini self-publishing package for South African authors. Essential services bundled to get your book published without the full cost."
+        title="Mini Publishing Package | À la Carte Author Services"
+        description="Flexible mini publishing package — choose only the services you need. Editing, design or printing without a full bundle. Free quote within 24 hours."
         keywords="affordable book publishing, self publishing package, book editing, cover design, ISBN registration South Africa"
       />
 

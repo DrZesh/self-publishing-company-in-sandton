@@ -57,8 +57,8 @@ export default function BiographyWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Biography Writing Services South Africa | Professional Biographers"
-        description="Professional biography writing services in South Africa. We document the lives of leaders, founders, families and public figures in published books."
+        title="Biography Writing Services South Africa | Researched & Crafted"
+        description="Professional biography writing in South Africa — for business leaders, public figures and family histories. Researched, well-crafted, ready for print."
         canonical="https://www.creativebookssa.co.za/biographywriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

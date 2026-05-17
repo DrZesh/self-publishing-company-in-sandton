@@ -85,8 +85,8 @@ export default function BookTypesetting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Book Typesetting & Layout Services South Africa"
-        description="Professional book typesetting and interior layout in South Africa. Print-ready files for paperback, hardcover and ebook formats."
+        title="Book Typesetting & Layout South Africa | Print-Ready Files"
+        description="Professional book typesetting and interior layout for SA authors. Print-ready PDFs for A5, 6×9, hardcover and custom formats. Fast turnaround."
         canonical="https://www.creativebookssa.co.za/typesetting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

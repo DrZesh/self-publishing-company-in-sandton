@@ -6,6 +6,7 @@ import {
   BookOpen, Shield, Eye, AlignLeft, FileText, Award, CheckSquare, Users
 } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const services = [
@@ -200,6 +201,11 @@ export default function ThesisEditing() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Thesis Editing Services South Africa | Master's & PhD"
+        description="Expert thesis editing for South African master's and doctoral candidates. Academic language, structure, formatting. Confidential, fast turnaround."
+        canonical="https://www.creativebookssa.co.za/thesisediting"
+      />
 
       {/* FAQ Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

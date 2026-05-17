@@ -151,8 +151,8 @@ export default function BookEditing() {
   return (
     <>
       <PageMeta
-        title="Professional Book Editing Services South Africa"
-        description="Expert book editing in South Africa — developmental, copy and line editing. Polish your manuscript to publication-ready standards. Free sample edit."
+        title="Book Editing Services in South Africa | Free Sample Edit"
+        description="Professional book editors in South Africa — developmental, line, copy editing and proofreading. Sample edit before you commit. Transparent pricing."
         keywords="book editing South Africa, book editors Johannesburg, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
         canonical="https://www.creativebookssa.co.za/bookediting"
         schema={schema}

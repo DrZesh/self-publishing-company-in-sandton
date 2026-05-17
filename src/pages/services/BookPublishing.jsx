@@ -66,8 +66,8 @@ export default function BookPublishing() {
   return (
     <>
       <PageMeta
-        title="Book Publishing Services South Africa | Creative Books SA"
-        description="Full-service book publishing in South Africa. Editing, design, ISBN, printing and distribution in one package. Free consultation for authors."
+        title="Book Publishing Services in South Africa | Creative Books"
+        description="Full-service book publishing for South African authors — editing, cover design, typesetting, printing, distribution. Packages from R21,000. Free quote."
         canonical="https://www.creativebookssa.co.za/bookpublishing"
       />
       <ServicePageTemplate

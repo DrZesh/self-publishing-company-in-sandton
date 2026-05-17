@@ -102,8 +102,8 @@ export default function SixByNinePublishing() {
   return (
     <>
       <PageMeta
-        title="6x9 Book Publishing & Printing South Africa"
-        description="Specialised 6x9 inch book publishing and printing in South Africa. The international standard for novels and non-fiction. Free quote."
+        title="6×9 Book Publishing Packages | Novels & Non-Fiction"
+        description="6×9 trade paperback publishing packages — perfect for novels, memoirs and serious non-fiction. Full production: editing, design, printing, distribution."
         keywords="6x9 book publishing, trade paperback, novel publishing, Amazon KDP publishing South Africa"
       />
 

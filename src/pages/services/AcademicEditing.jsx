@@ -6,6 +6,7 @@ import {
   BookOpen, FileText, BarChart2, Database, CheckSquare, ClipboardList, Shield, PenTool, Users, Award
 } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const services = [
@@ -112,6 +113,11 @@ export default function AcademicEditing() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Academic Editing Services South Africa | Theses & Papers"
+        description="Academic editing for SA students and researchers — theses, dissertations, research papers, academic books. UNISA, UJ, UP, Wits formatting standards."
+        canonical="https://www.creativebookssa.co.za/academicediting"
+      />
 
       {/* FAQ Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

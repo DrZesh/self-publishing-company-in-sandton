@@ -6,6 +6,7 @@ import {
   BookOpen, Eye, AlignLeft, Shield, Star, Award, FileText, Users, CheckSquare, Layers
 } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const services = [
@@ -224,6 +225,11 @@ export default function DissertationEditing() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="Dissertation Editing Services South Africa | Academic Pros"
+        description="Specialised dissertation editing for SA universities. Improve clarity, structure, academic language. Confidential service with fast turnaround."
+        canonical="https://www.creativebookssa.co.za/dissertationediting"
+      />
 
       {/* FAQ Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

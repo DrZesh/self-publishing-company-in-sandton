@@ -59,8 +59,8 @@ export default function ChristianBookWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Christian Book Writing Services South Africa | Faith-Based Ghostwriters"
-        description="Professional Christian book writing services in South Africa. We help pastors, ministry leaders and believers write testimonies, devotionals and faith-based books."
+        title="Christian Book Writing & Publishing South Africa"
+        description="Writing and publishing for Christian authors — devotionals, sermons, testimonies, theology. Faith-aligned editors, designers and ghostwriters in SA."
         canonical="https://www.creativebookssa.co.za/christianbookwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

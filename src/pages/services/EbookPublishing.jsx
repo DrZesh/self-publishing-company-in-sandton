@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award, Smartphone, Globe, BookOpen } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 const packages = [
   {
@@ -71,6 +72,11 @@ export default function EbookPublishing() {
 
   return (
     <div style={{ background: '#f8f9fc' }}>
+      <PageMeta
+        title="eBook Publishing South Africa | EPUB, Kindle, Amazon"
+        description="eBook publishing for SA authors — EPUB and MOBI conversion, Kindle formatting, Amazon, Kobo and Google Play distribution. Reach global readers."
+        canonical="https://www.creativebookssa.co.za/ebookpublishing"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))

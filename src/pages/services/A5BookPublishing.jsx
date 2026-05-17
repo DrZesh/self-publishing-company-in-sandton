@@ -98,8 +98,8 @@ export default function A5BookPublishing() {
   return (
     <>
       <PageMeta
-        title="A5 Book Publishing & Printing South Africa"
-        description="Specialised A5 book publishing and printing in South Africa. Popular size for novels, memoirs and non-fiction. Get a quote today."
+        title="A5 Book Publishing Packages South Africa | Full Service"
+        description="A5 publishing packages for SA authors — editing, cover design, typesetting and printing in the most popular novel and non-fiction size. Free quote."
         keywords="A5 book publishing, pocket book format, poetry publishing, short story publishing South Africa"
       />
 

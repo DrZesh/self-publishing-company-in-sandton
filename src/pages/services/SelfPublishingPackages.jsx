@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Check, Plus, Minus, Award, BookOpen, Printer, Star, Clock, Users, Zap, Shield, Layers, ChevronRight } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
+import PageMeta from '../../components/shared/PageMeta';
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 
@@ -337,6 +338,11 @@ export default function SelfPublishingPackages() {
 
   return (
     <div style={{ background: '#070B12' }}>
+      <PageMeta
+        title="Self-Publishing Packages South Africa | Bronze, Silver, Gold"
+        description="Self-publishing packages for South African authors. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design, printing all included."
+        canonical="https://www.creativebookssa.co.za/selfpublishingpackagesinsouthafrica"
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
         "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
