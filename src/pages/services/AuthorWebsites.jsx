@@ -45,7 +45,7 @@ export default function AuthorWebsites() {
       <PageMeta
         title="Author Website Design South Africa | Build Your Platform"
         description="Custom author websites for South African writers — showcase books, build a mailing list, sell direct. Mobile-friendly, SEO-ready, easy to manage."
-        canonical="https://www.creativebookssa.co.za/authorwebsites"
+        canonical="https://www.creativebooks.co.za/authorwebsites"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

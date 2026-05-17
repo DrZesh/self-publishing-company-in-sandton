@@ -77,7 +77,7 @@ export default function ChildrensBookPackages() {
       <PageMeta
         title="Children's Book Publishing Packages South Africa"
         description="Children's book publishing packages for SA authors — illustration coordination, full-colour printing in 15×15, 20×20, 21×21cm formats. Free quote."
-        canonical="https://www.creativebookssa.co.za/childrensbookpackages"
+        canonical="https://www.creativebooks.co.za/childrensbookpackages"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

@@ -59,7 +59,7 @@ export default function BiographyWriting() {
       <PageMeta
         title="Biography Writing Services South Africa | Researched & Crafted"
         description="Professional biography writing in South Africa — for business leaders, public figures and family histories. Researched, well-crafted, ready for print."
-        canonical="https://www.creativebookssa.co.za/biographywriting"
+        canonical="https://www.creativebooks.co.za/biographywriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

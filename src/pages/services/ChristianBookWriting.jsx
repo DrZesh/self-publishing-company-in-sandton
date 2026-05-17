@@ -61,7 +61,7 @@ export default function ChristianBookWriting() {
       <PageMeta
         title="Christian Book Writing & Publishing South Africa"
         description="Writing and publishing for Christian authors — devotionals, sermons, testimonies, theology. Faith-aligned editors, designers and ghostwriters in SA."
-        canonical="https://www.creativebookssa.co.za/christianbookwriting"
+        canonical="https://www.creativebooks.co.za/christianbookwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

@@ -204,7 +204,7 @@ export default function ThesisEditing() {
       <PageMeta
         title="Thesis Editing Services South Africa | Master's & PhD"
         description="Expert thesis editing for South African master's and doctoral candidates. Academic language, structure, formatting. Confidential, fast turnaround."
-        canonical="https://www.creativebookssa.co.za/thesisediting"
+        canonical="https://www.creativebooks.co.za/thesisediting"
       />
 
       {/* FAQ Schema */}

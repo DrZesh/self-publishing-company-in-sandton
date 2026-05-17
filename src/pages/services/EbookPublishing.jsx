@@ -75,7 +75,7 @@ export default function EbookPublishing() {
       <PageMeta
         title="eBook Publishing South Africa | EPUB, Kindle, Amazon"
         description="eBook publishing for SA authors — EPUB and MOBI conversion, Kindle formatting, Amazon, Kobo and Google Play distribution. Reach global readers."
-        canonical="https://www.creativebookssa.co.za/ebookpublishing"
+        canonical="https://www.creativebooks.co.za/ebookpublishing"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

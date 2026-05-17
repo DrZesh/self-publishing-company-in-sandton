@@ -228,7 +228,7 @@ export default function DissertationEditing() {
       <PageMeta
         title="Dissertation Editing Services South Africa | Academic Pros"
         description="Specialised dissertation editing for SA universities. Improve clarity, structure, academic language. Confidential service with fast turnaround."
-        canonical="https://www.creativebookssa.co.za/dissertationediting"
+        canonical="https://www.creativebooks.co.za/dissertationediting"
       />
 
       {/* FAQ Schema */}

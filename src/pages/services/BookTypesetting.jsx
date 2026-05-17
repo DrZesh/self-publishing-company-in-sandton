@@ -87,7 +87,7 @@ export default function BookTypesetting() {
       <PageMeta
         title="Book Typesetting & Layout South Africa | Print-Ready Files"
         description="Professional book typesetting and interior layout for SA authors. Print-ready PDFs for A5, 6×9, hardcover and custom formats. Fast turnaround."
-        canonical="https://www.creativebookssa.co.za/typesetting"
+        canonical="https://www.creativebooks.co.za/typesetting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",

@@ -59,7 +59,7 @@ export default function MemoirWriting() {
       <PageMeta
         title="Memoir Writing Services South Africa | Professional Authors"
         description="Professional memoir writing for South African authors. Turn your life story into a published book. Ghostwriting, editing, full publishing service."
-        canonical="https://www.creativebookssa.co.za/memoirwriting"
+        canonical="https://www.creativebooks.co.za/memoirwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
