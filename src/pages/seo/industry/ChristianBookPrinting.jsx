@@ -23,8 +23,8 @@ export default function ChristianBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Christian Book Printing South Africa | Devotionals & Ministry"
-        description="Christian book printing for South African authors and ministries — devotionals, Bible studies, testimonies and church publications. From 50 copies."
+        title="Christian Book Printing in Johannesburg | Devotionals & Sermons"
+        description="Christian book printing in Johannesburg for ministries, pastors and faith-based authors — devotionals, Bible studies, sermon collections and testimonies."
         keywords="Christian book printing Johannesburg, devotional printing South Africa, ministry book printing, Christian publishing South Africa, church book printing"
         canonical="https://www.creativebooks.co.za/christianbookprintingjohannesburg"
         schema={schema}

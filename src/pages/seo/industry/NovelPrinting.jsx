@@ -23,8 +23,8 @@ export default function NovelPrinting() {
   return (
     <>
       <PageMeta
-        title="Novel Printing South Africa | Cream Paper, Perfect Binding"
-        description="Professional novel printing in SA — A5 softcover on cream paper, the South African standard. Hardcover signed editions also available. Free quote."
+        title="Novel Printing in Johannesburg from R4,500 for 100 Copies"
+        description="Novel printing in Johannesburg for South African fiction authors — 6×9 trade paperback and B-format from R4,500 for 100 copies. Cream paper, perfect binding."
         keywords="novel printing Johannesburg, fiction book printing South Africa, novel publishing South Africa, print my novel Johannesburg, self publish novel South Africa"
         canonical="https://www.creativebooks.co.za/novelprintingjohannesburg"
         schema={schema}

@@ -23,8 +23,8 @@ export default function MemoirBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Memoir Printing Services South Africa | Softcover & Hardcover"
-        description="Professional memoir printing for South African authors — cream paper, hardcover gift editions, photo inserts. From 50 copies. Free quote."
+        title="Memoir Book Printing in Johannesburg | Family Editions"
+        description="Memoir printing in Johannesburg for South African authors — hardcover, paperback and family-edition runs. Photo inserts, dedications, lasting binding options."
         keywords="memoir book printing Johannesburg, memoir printing South Africa, print memoir book, memoir publishing Johannesburg, biography printing South Africa"
         canonical="https://www.creativebooks.co.za/memoirbookprintingjohannesburg"
         schema={schema}
