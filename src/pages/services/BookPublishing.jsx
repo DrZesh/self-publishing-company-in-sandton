@@ -97,12 +97,6 @@ export default function BookPublishing() {
           subtitle="Transparent Pricing"
         />
       }
-      faqs={[
-        { question: 'How much does book publishing cost in South Africa?', answer: 'Our publishing packages range from R4,999 for the Mini Package to R24,999+ for the Premium Package. The cost depends on manuscript length, editing needs, and design complexity. We offer a free quote for every project.' },
-        { question: 'How long does it take to publish a book?', answer: 'The publishing process typically takes 6–12 weeks from manuscript submission to printed copies. Timeline depends on the package chosen and manuscript readiness.' },
-        { question: 'Do I retain the rights to my book?', answer: 'Yes, 100%. Creative Books SA is a publishing service provider. You retain full copyright and intellectual property rights to your work.' },
-        { question: 'Can you help first-time authors?', answer: 'Absolutely. Many of our authors are first-time publishers. We guide you through every step and provide the support you need.' },
-      ]}
       relatedLinks={[
         { label: 'Self Publishing', path: '/selfpublishing' },
         { label: 'Publishing Packages', path: '/publishingpackages' },

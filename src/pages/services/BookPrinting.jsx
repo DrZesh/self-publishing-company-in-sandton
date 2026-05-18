@@ -1,14 +1,11 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
-import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
+import { serviceSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
 
 const faqs = [
-  { question: 'What is the minimum print run?', answer: 'Our minimum order is 50 copies for offset printing. For print-on-demand, you can order as few as 1 copy.' },
-  { question: 'How much does book printing cost?', answer: 'Pricing depends on page count, size, paper type, cover type, and quantity. A 200-page softcover A5 book starts from approximately R45 per copy for 100 copies. Request a detailed quote for your specs.' },
   { question: 'What file format do you need?', answer: 'We accept print-ready PDF files (PDF/X-1a preferred). If you don\'t have print-ready files, we offer typesetting and formatting services.' },
   { question: 'How fast is delivery?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available at an additional cost.' },
-  { question: 'Do you deliver outside Johannesburg?', answer: 'Yes, we deliver printed books anywhere in South Africa including Cape Town, Durban, Pretoria, and all major cities.' },
 ];
 
 const schema = {
@@ -20,7 +17,6 @@ const schema = {
       url: '/bookprinting',
       areaServed: 'South Africa',
     }),
-    faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
       { name: 'Services', path: '/bookprinting' },

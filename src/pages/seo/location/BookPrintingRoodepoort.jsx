@@ -1,6 +1,5 @@
 import React from 'react';
 import PageMeta from '../../../components/shared/PageMeta';
-import { faqSchema } from '../../../lib/seo/schemas';
 
 // Hero — same as home page
 import HeroSlider from '../../../components/home/HeroSlider';
@@ -15,17 +14,7 @@ import WhyChooseUsNew from '../../../components/home/WhyChooseUsNew';
 import BookTypes from '../../../components/home/BookTypes';
 import PublishingProcess from '../../../components/home/PublishingProcess';
 import LocationSEO from '../../../components/home/LocationSEO';
-import HomeFAQ from '../../../components/home/HomeFAQ';
 import FinalCTA from '../../../components/home/FinalCTA';
-
-const locationFaqs = [
-  { question: 'Do you offer book printing in Roodepoort?', answer: 'Yes. Creative Books SA provides professional book printing services for authors and businesses in Roodepoort and throughout Gauteng.' },
-  { question: 'What is the minimum print run?', answer: 'Our minimum order is 50 copies for offset printing. For print-on-demand, you can order as few as 1 copy.' },
-  { question: 'How much does book printing cost?', answer: 'Pricing depends on page count, size, paper type, cover type, and quantity. A 200-page softcover A5 book starts from approximately R45 per copy for 100 copies. Request a detailed quote for your specs.' },
-  { question: 'How fast is delivery to Roodepoort?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available. We deliver to Roodepoort within 1–2 business days.' },
-  { question: 'Can you help with layout before printing?', answer: 'Yes. We offer book layout and typesetting services to prepare your manuscript for professional printing.' },
-  { question: 'Can you design my book cover before printing?', answer: 'Yes. Our book cover design team creates professional print-ready covers with front, spine, and back cover integration.' },
-];
 
 export default function BookPrintingRoodepoort() {
   const schema = {
@@ -43,7 +32,7 @@ export default function BookPrintingRoodepoort() {
         description="Book printing for Roodepoort authors — softcover, hardcover and children's books. Fast Johannesburg turnaround, cream or white paper options."
         keywords="book printing Roodepoort, book printers Roodepoort, Roodepoort book printing, printing services Roodepoort, book publishing Roodepoort"
         canonical="https://www.creativebooks.co.za/bookprintingroodepoort"
-        schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
+        schema={{ '@graph': [schema] }}
       />
 
       {/* 1. Hero */}
@@ -76,10 +65,7 @@ export default function BookPrintingRoodepoort() {
       {/* 10. Location SEO */}
       <LocationSEO />
 
-      {/* 11. FAQ */}
-      <HomeFAQ />
-
-      {/* 12. Final CTA */}
+      {/* 11. Final CTA */}
       <FinalCTA />
     </div>
   );

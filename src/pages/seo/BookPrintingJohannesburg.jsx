@@ -1,6 +1,5 @@
 import React from 'react';
 import PageMeta from '../../components/shared/PageMeta';
-import { faqSchema } from '../../lib/seo/schemas';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -18,22 +17,10 @@ import WhyChooseUsNew from '../../components/home/WhyChooseUsNew';
 import BookTypes from '../../components/home/BookTypes';
 import PublishingProcess from '../../components/home/PublishingProcess';
 import LocationSEO from '../../components/home/LocationSEO';
-import HomeFAQ from '../../components/home/HomeFAQ';
 import FinalCTA from '../../components/home/FinalCTA';
 import InternalLinks from '../../components/shared/InternalLinks';
 
-const locationFaqs = [
-  { question: 'Do you offer book printing in Johannesburg?', answer: 'Yes. Creative Books SA provides professional book printing services for authors and businesses in Johannesburg and throughout Gauteng.' },
-  { question: 'What is the minimum print run?', answer: 'Our minimum order is 50 copies for offset printing. For print-on-demand, you can order as few as 1 copy.' },
-  { question: 'How much does book printing cost?', answer: 'Pricing depends on page count, size, paper type, cover type, and quantity. A 200-page softcover A5 book starts from approximately R45 per copy for 100 copies. Request a detailed quote for your specs.' },
-  { question: 'How fast is delivery to Johannesburg?', answer: 'Standard turnaround is 7–14 business days from proof approval. Rush printing (3–5 days) is available. We deliver to Johannesburg within 1–2 business days.' },
-  { question: 'Can you help with layout before printing?', answer: 'Yes. We offer book layout and typesetting services to prepare your manuscript for professional printing.' },
-  { question: 'Can you design my book cover before printing?', answer: 'Yes. Our book cover design team creates professional print-ready covers with front, spine, and back cover integration.' },
-  { question: 'Can I print from a Word document?', answer: 'For professional book printing, a print-ready PDF is strongly recommended. Word files can shift between devices and may not preserve exact layout.' },
-  { question: 'What is perfect binding?', answer: 'Perfect binding is a common paperback binding method where pages are glued into a printed cover. It is widely used for novels, memoirs, poetry books and non-fiction books.' },
-  { question: 'Is cream paper better than white paper?', answer: 'Neither is automatically better. Cream paper is often comfortable for long reading, while white paper is useful for sharper visuals, workbooks and manuals.' },
-  { question: 'How many copies should I print?', answer: 'This depends on your launch plan, audience size and budget. Many self-published authors start with a controlled quantity and reprint when demand is clearer.' },
-];
+
 
 export default function BookPrintingJohannesburg() {
   const schema = {
@@ -51,7 +38,7 @@ export default function BookPrintingJohannesburg() {
         description="Professional book printing in Johannesburg — A5, 6×9, hardcover and children's formats. Cream or white paper, from 100 copies, fast turnaround."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
         canonical="https://www.creativebooks.co.za/bookprintingjohannesburg"
-        schema={{ '@graph': [schema, faqSchema(locationFaqs)] }}
+        schema={{ '@graph': [schema] }}
       />
 
       {/* 1. Hero */}
@@ -163,10 +150,7 @@ export default function BookPrintingJohannesburg() {
         light
       />
 
-      {/* 13. FAQ */}
-      <HomeFAQ />
-
-      {/* 14. Final CTA */}
+      {/* 13. Final CTA */}
       <FinalCTA />
     </div>
   );
