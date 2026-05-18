@@ -36,7 +36,7 @@ export default function KpiCards({ metrics, isOwner, loading }) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-40 bg-black/5 rounded-2xl animate-pulse" />)}
+        {[...Array(4)].map((_, i) => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
       </div>
     );
   }
@@ -65,11 +65,11 @@ export default function KpiCards({ metrics, isOwner, loading }) {
           linkTo="/admin/submissions"
         >
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-black/40 mb-1">
+            <div className="flex justify-between text-xs text-gray-400 mb-1">
               <span>Target: R{revenueTarget.toLocaleString()}</span>
               <span>{revenueProgress}%</span>
             </div>
-            <div className="h-1.5 bg-black/10 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#B87333] rounded-full transition-all"
                 style={{ width: `${revenueProgress}%` }}
@@ -77,7 +77,7 @@ export default function KpiCards({ metrics, isOwner, loading }) {
             </div>
             {revenueProgress >= 100
               ? <p className="text-xs text-emerald-600 mt-1">🎉 Target hit!</p>
-              : <p className="text-xs text-black/40 mt-1">R{(revenueTarget - (metrics?.revenueThisMonth || 0)).toLocaleString()} to target</p>
+              : <p className="text-xs text-gray-400 mt-1">R{(revenueTarget - (metrics?.revenueThisMonth || 0)).toLocaleString()} to target</p>
             }
           </div>
         </KpiCard>

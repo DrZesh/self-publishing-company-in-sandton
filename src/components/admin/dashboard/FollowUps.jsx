@@ -11,7 +11,7 @@ function timeAgo(dateStr) {
 
 export default function FollowUps({ followUps, loading }) {
   if (loading) {
-    return <div className="h-48 bg-black/5 rounded-2xl animate-pulse mb-6" />;
+    return <div className="h-48 bg-gray-100 rounded-xl animate-pulse mb-6" />;
   }
 
   return (

@@ -51,7 +51,7 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1400px] mx-auto">
         {/* Section 1 — Header */}
         <DashboardHeader
           userName={user?.full_name || user?.email}
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
 
         {/* Footer note */}
         <div className="text-center pb-8">
-          <p className="text-xs text-black/30">Dashboard refreshes every 60 seconds · Last update: {new Date().toLocaleTimeString('en-ZA')}</p>
+          <p className="text-xs text-gray-400">Dashboard refreshes every 60 seconds · Last update: {new Date().toLocaleTimeString('en-ZA')}</p>
         </div>
       </div>
     </AdminLayout>

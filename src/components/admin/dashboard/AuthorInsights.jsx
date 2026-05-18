@@ -20,18 +20,18 @@ const STAGE_COLORS = {
 
 export default function AuthorInsights({ metrics, loading }) {
   if (loading) {
-    return <div className="h-48 bg-black/5 rounded-2xl animate-pulse mb-6" />;
+    return <div className="h-48 bg-gray-100 rounded-xl animate-pulse mb-6" />;
   }
 
   const stages = metrics?.contactsByStage || {};
   const total = metrics?.totalContacts || 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-base font-bold text-[#1A1208]">Your Authors</h2>
-          <p className="text-xs text-black/40">Customer relationships at a glance</p>
+          <h2 className="text-base font-semibold text-gray-900">Your Authors</h2>
+          <p className="text-xs text-gray-400">Customer relationships at a glance</p>
         </div>
         <Link to="/admin/submissions" className="text-xs text-[#B87333] hover:underline">View contacts →</Link>
       </div>
@@ -39,18 +39,18 @@ export default function AuthorInsights({ metrics, loading }) {
       {total === 0 ? (
         <div className="py-8 text-center">
           <div className="text-3xl mb-2">👤</div>
-          <p className="text-sm text-black/50">Your author database is empty.</p>
-          <p className="text-xs text-black/30 mt-1">Contacts are auto-created from form submissions, or you can add them manually.</p>
+          <p className="text-sm text-gray-400">Your author database is empty.</p>
+          <p className="text-xs text-gray-300 mt-1">Contacts are auto-created from form submissions, or you can add them manually.</p>
         </div>
       ) : (
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#B87333]/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-[#B87333]/10 flex items-center justify-center">
               <Users className="w-6 h-6 text-[#B87333]" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-[#1A1208]">{total}</div>
-              <div className="text-xs text-black/40">Total contacts in CRM</div>
+              <div className="text-3xl font-bold text-gray-900">{total}</div>
+              <div className="text-xs text-gray-400">Total contacts in CRM</div>
             </div>
           </div>
 

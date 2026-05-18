@@ -24,7 +24,7 @@ function StageBar({ stage, data, maxValue }) {
   const widthPct = maxValue > 0 ? Math.max(8, (data.estimatedValue / maxValue) * 100) : 8;
   return (
     <div className="flex items-center gap-3 mb-3">
-      <div className="w-24 text-xs font-semibold text-black/60 text-right shrink-0">{STAGE_LABELS[stage]}</div>
+      <div className="w-24 text-xs font-semibold text-gray-500 text-right shrink-0">{STAGE_LABELS[stage]}</div>
       <div className="flex-1 flex items-center gap-2">
         <div className="h-7 rounded-r-lg flex items-center px-3 transition-all"
           style={{
@@ -35,7 +35,7 @@ function StageBar({ stage, data, maxValue }) {
         >
           <span className="text-white text-xs font-bold whitespace-nowrap">{data.count}</span>
         </div>
-        <span className="text-xs text-black/50 whitespace-nowrap">
+        <span className="text-xs text-gray-400 whitespace-nowrap">
           R{(data.estimatedValue || 0).toLocaleString()}
         </span>
       </div>
@@ -45,7 +45,7 @@ function StageBar({ stage, data, maxValue }) {
 
 export default function SalesPipeline({ pipeline, loading }) {
   if (loading) {
-    return <div className="h-64 bg-black/5 rounded-2xl animate-pulse mb-6" />;
+    return <div className="h-64 bg-gray-100 rounded-xl animate-pulse mb-6" />;
   }
 
   const byStage = pipeline?.byStage || {};
@@ -78,7 +78,7 @@ export default function SalesPipeline({ pipeline, loading }) {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Funnel */}
           <div className="lg:col-span-3">
-            <p className="text-xs font-semibold text-black/40 uppercase tracking-wide mb-4">Funnel by Stage</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Funnel by Stage</p>
             {STAGES.map(stage => (
               <StageBar key={stage} stage={stage} data={byStage[stage] || { count: 0, estimatedValue: 0 }} maxValue={maxValue} />
             ))}
@@ -88,14 +88,14 @@ export default function SalesPipeline({ pipeline, loading }) {
           <div className="lg:col-span-2 space-y-4">
             {/* Time in stage */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-black/50 uppercase tracking-wide mb-3">Avg Days in Stage</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Avg Days in Stage</p>
               {STAGES.map(stage => {
                 const days = avgTime[stage] || 0;
                 const flag = days > 14;
                 return (
                   <div key={stage} className="flex items-center justify-between text-xs mb-2">
-                    <span className="text-black/60">{STAGE_LABELS[stage]}</span>
-                    <span className={`font-bold ${flag ? 'text-amber-500' : 'text-[#1A1208]'}`}>
+                    <span className="text-gray-500">{STAGE_LABELS[stage]}</span>
+                    <span className={`font-bold ${flag ? 'text-amber-500' : 'text-gray-800'}`}>
                       {days}d {flag ? '⚠' : ''}
                     </span>
                   </div>
@@ -106,10 +106,10 @@ export default function SalesPipeline({ pipeline, loading }) {
             {/* Loss reasons */}
             {totalLost > 0 && (
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-xs font-semibold text-black/50 uppercase tracking-wide mb-3">Loss Reasons</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Loss Reasons</p>
                 {Object.entries(lossReasons).map(([reason, count]) => (
                   <div key={reason} className="flex items-center justify-between text-xs mb-2">
-                    <span className="text-black/60">{LOSS_LABELS[reason] || reason}</span>
+                    <span className="text-gray-500">{LOSS_LABELS[reason] || reason}</span>
                     <span className="font-bold text-red-500">{Math.round(count / totalLost * 100)}%</span>
                   </div>
                 ))}
@@ -121,7 +121,7 @@ export default function SalesPipeline({ pipeline, loading }) {
 
       {/* Attention flags */}
       {(flags.quotedOldCount > 0 || flags.noOwnerCount > 0) && (
-        <div className="mt-5 pt-5 border-t border-black/8 space-y-2">
+        <div className="mt-5 pt-5 border-t border-gray-200 space-y-2">
           {flags.quotedOldCount > 0 && (
             <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5 border border-red-100">
               <AlertCircle className="w-4 h-4 shrink-0" />
