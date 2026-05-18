@@ -1,0 +1,102 @@
+{
+  "name": "EmailMessage",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "outbound",
+        "inbound"
+      ],
+      "default": "outbound"
+    },
+    "from_address": {
+      "type": "string",
+      "description": "Sender email address"
+    },
+    "to_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recipient email addresses"
+    },
+    "cc_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "CC addresses"
+    },
+    "bcc_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "BCC addresses"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body_html": {
+      "type": "string",
+      "description": "HTML body content"
+    },
+    "body_text": {
+      "type": "string",
+      "description": "Plain text body"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Array of {name, url, size} attachment objects"
+    },
+    "thread_id": {
+      "type": "string",
+      "description": "Thread grouping ID"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External message ID (e.g. Gmail message ID)"
+    },
+    "read_status": {
+      "type": "string",
+      "enum": [
+        "read",
+        "unread"
+      ],
+      "default": "read"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resend_id": {
+      "type": "string",
+      "description": "Resend email ID for tracking"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed",
+        "draft"
+      ],
+      "default": "sent"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "Template used if any"
+    }
+  },
+  "required": [
+    "direction",
+    "subject"
+  ]
+}
