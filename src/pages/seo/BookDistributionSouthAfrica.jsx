@@ -64,38 +64,38 @@ export default function BookDistributionSouthAfrica() {
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
-                Exclusive Books and Bargain Books
+                Physical bookshops
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-[#0F0F0F]/70 leading-[1.8] font-body mb-6">
-                Exclusive Books and Bargain Books are the two largest physical book retail chains in South Africa. Both work with distributors rather than dealing directly with individual self-published authors in most cases. To get stocked, your book typically needs to be represented by an approved distributor, carry a valid ISBN with barcode, be priced to allow a retail margin of 40–50%, and be returnable if unsold. Getting onto these shelves as a self-published author is possible but requires persistence and, usually, an existing audience.
+                Large chain bookshops in South Africa generally work through approved distributors rather than dealing directly with individual self-published authors. To be considered for shelf placement, a book typically needs to be represented by a recognised book distributor, carry a valid ISBN with a barcode, be priced to accommodate a retail margin of 40–50%, and be available on a sale-or-return basis. Independent bookshops can sometimes be approached directly and may be more open to local or niche titles. Either way, getting onto physical shelves requires persistence and is more realistic once an author has an existing audience or a clear local following.
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
-                Takealot and Loot
+                South African online retailers
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-[#0F0F0F]/70 leading-[1.8] font-body mb-6">
-                Takealot accepts third-party sellers through its marketplace, but the application process requires a registered business, a South African bank account and product listings that meet their requirements. Loot.co.za is another local online retailer that lists books and can be approached directly. Both platforms require an ISBN and a product image that meets their specifications. Neither guarantees sales — visibility still depends on your own marketing.
+                Several South African online retail platforms accept third-party sellers or book listings. The application process typically requires a registered business, a South African bank account and product listings that meet the platform's specifications, including an ISBN, a high-resolution cover image and accurate product metadata. Listing your book on an online marketplace does not guarantee sales — visibility depends on your own marketing and whether readers are actively searching for your title.
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
-                Amazon KDP
+                International print-on-demand and ebook platforms
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-[#0F0F0F]/70 leading-[1.8] font-body mb-6">
-                Amazon Kindle Direct Publishing (KDP) allows authors to publish both print-on-demand paperbacks and Kindle eBooks for global sale. You register directly at kdp.amazon.com, upload your interior PDF and cover files, set your price and territory rights, and Amazon handles fulfilment. South African authors can receive royalties to a local bank account. KDP does not require a locally printed stock — copies are printed per order in Amazon's fulfilment centres. This makes it a low-risk option for reaching international readers without upfront print costs.
+                Global print-on-demand platforms allow authors to publish paperbacks and ebooks for international sale without holding physical stock. Copies are printed per order and fulfilled by the platform. South African authors can register directly, upload their print-ready interior and cover files, set pricing and territory rights, and receive royalties to a local bank account. This is a low-risk route for reaching international readers, since there are no upfront print costs. Ebook distribution platforms work similarly — your formatted ebook file is uploaded once and made available across multiple digital storefronts.
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
                 Direct sales
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-[#0F0F0F]/70 leading-[1.8] font-body mb-6">
-                For many self-published authors, direct sales produce the strongest margins. A speaker can sell books at the back of the room after a talk. A pastor can sell through church networks and Sunday services. A children's author can approach schools and crèches directly. A business author can bundle books into training programmes or corporate orders. These channels require no distributor and give the author full control over pricing, customer data and cash flow.
+                For many self-published authors, direct sales produce the strongest margins and require no intermediary. A speaker can sell books after a talk. A pastor can sell through church networks. A children's author can approach schools and crèches directly. A business author can bundle books into training programmes or corporate orders. An author with a website or social media following can sell directly to readers using a payment link or online shop. These channels give you full control over pricing, customer data and cash flow.
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
                 What every distribution channel requires
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-[#0F0F0F]/70 leading-[1.8] font-body mb-6">
-                Regardless of which channels you pursue, a distributable book needs: a valid ISBN registered with the National Library of South Africa; a barcode on the back cover; professional printing that meets retail quality standards; and a price that allows for retail or platform margins without making your book unprofitable. Most channels also expect a high-resolution cover image and accurate product metadata (title, author, category, description).
+                Regardless of which channels you pursue, a book that is ready for distribution typically needs: a valid ISBN registered with the National Library of South Africa; a barcode correctly placed on the back cover; print quality that meets retail standards; a price that allows for platform or retail margins without making the book unprofitable; a high-resolution cover image; and accurate product metadata including title, author name, genre category and description. Meeting these requirements is the author's responsibility — no distributor or retailer will do this preparation on your behalf.
               </motion.p>
 
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4 mt-12">
