@@ -1,5 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
+import { jsPDF } from 'npm:jspdf@4.0.0';
+import html2canvas from 'npm:html2canvas@1.4.1';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
@@ -133,34 +135,249 @@ Deno.serve(async (req) => {
       if (!contactEmail) return Response.json({ error: 'Contact has no email address' }, { status: 400 });
 
       const viewUrl = `${req.headers.get('origin') || 'https://www.creativebooks.co.za'}/quote/view/${quote.id}/${quote.view_token}`;
+      const contactName = quote.contact_snapshot?.full_name || 'there';
+
+      // Generate PDF
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      // PDF Header
+      pdf.setFillColor(26, 18, 8);
+      pdf.rect(0, 0, 210, 40, 'F');
+      pdf.setTextColor(184, 115, 51);
+      pdf.setFontSize(22);
+      pdf.text('CREATIVE BOOKS SA', 15, 18);
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(10);
+      pdf.text('Professional Publishing Services', 15, 26);
+      pdf.text('info@creativebooks.co.za · www.creativebooks.co.za', 15, 32);
+
+      // Quote info
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(24);
+      pdf.text(quote.quote_number, 140, 18);
+      pdf.setTextColor(150, 150, 150);
+      pdf.setFontSize(10);
+      pdf.text('Quote Number', 140, 24);
+      pdf.text(`Valid until ${quote.valid_until || 'further notice'}`, 140, 32);
+
+      // Client info
+      pdf.setFillColor(250, 248, 244);
+      pdf.rect(0, 45, 210, 25, 'F');
+      pdf.setTextColor(184, 115, 51);
+      pdf.setFontSize(9);
+      pdf.text('PREPARED FOR', 15, 52);
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(14);
+      pdf.text(contactName, 15, 60);
+      if (quote.contact_snapshot?.email) {
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(quote.contact_snapshot.email, 15, 66);
+      }
+
+      // Line items table
+      const lineItems = await base44.asServiceRole.entities.QuoteLineItem.filter({ quote_id });
+      lineItems.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+      let yPos = 85;
+      // Table header
+      pdf.setFillColor(248, 247, 244);
+      pdf.rect(0, yPos - 8, 210, 8, 'F');
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(9);
+      pdf.text('DESCRIPTION', 15, yPos - 3);
+      pdf.text('QTY', 140, yPos - 3, { align: 'center' });
+      pdf.text('UNIT PRICE', 165, yPos - 3, { align: 'right' });
+      pdf.text('TOTAL', 195, yPos - 3, { align: 'right' });
+
+      // Table rows
+      pdf.setTextColor(26, 18, 8);
+      lineItems.forEach((item) => {
+        if (yPos > 250) {
+          pdf.addPage();
+          yPos = 20;
+        }
+        pdf.setFontSize(10);
+        pdf.text(item.description || '', 15, yPos);
+        pdf.text(String(item.quantity || 1), 140, yPos, { align: 'center' });
+        pdf.text(`R ${(Number(item.unit_price) || 0).toFixed(2)}`, 165, yPos, { align: 'right' });
+        pdf.text(`R ${(Number(item.line_total) || 0).toFixed(2)}`, 195, yPos, { align: 'right' });
+        yPos += 10;
+      });
+
+      // Totals
+      yPos += 5;
+      pdf.setDrawColor(200, 200, 200);
+      pdf.line(140, yPos - 3, 205, yPos - 3);
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(10);
+      pdf.text('Subtotal:', 140, yPos + 3);
+      pdf.text(`R ${(Number(quote.subtotal) || 0).toFixed(2)}`, 195, yPos + 3, { align: 'right' });
+      
+      if (quote.discount_amount > 0) {
+        yPos += 8;
+        pdf.setTextColor(200, 50, 50);
+        pdf.text('Discount:', 140, yPos + 3);
+        pdf.text(`- R ${(Number(quote.discount_amount) || 0).toFixed(2)}`, 195, yPos + 3, { align: 'right' });
+      }
+      
+      if (quote.include_vat) {
+        yPos += 8;
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(`VAT (15%):`, 140, yPos + 3);
+        pdf.text(`R ${(Number(quote.vat_amount) || 0).toFixed(2)}`, 195, yPos + 3, { align: 'right' });
+      }
+      
+      yPos += 10;
+      pdf.setDrawColor(184, 115, 51);
+      pdf.setLineWidth(1);
+      pdf.line(140, yPos - 3, 205, yPos - 3);
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(14);
+      pdf.setFont(undefined, 'bold');
+      pdf.text('TOTAL:', 140, yPos + 4);
+      pdf.setTextColor(184, 115, 51);
+      pdf.text(`R ${(Number(quote.total) || 0).toFixed(2)}`, 195, yPos + 4, { align: 'right' });
+
+      // Notes
+      if (quote.notes) {
+        yPos += 20;
+        pdf.setTextColor(184, 115, 51);
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('NOTES:', 15, yPos);
+        pdf.setTextColor(80, 80, 80);
+        pdf.setFontSize(9);
+        pdf.setFont(undefined, 'normal');
+        const splitNotes = pdf.splitTextToSize(quote.notes, 180);
+        pdf.text(splitNotes, 15, yPos + 6);
+      }
+
+      // Terms
+      if (quote.terms) {
+        yPos += 30;
+        pdf.setTextColor(184, 115, 51);
+        pdf.setFontSize(10);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('TERMS & CONDITIONS:', 15, yPos);
+        pdf.setTextColor(80, 80, 80);
+        pdf.setFontSize(9);
+        pdf.setFont(undefined, 'normal');
+        const splitTerms = pdf.splitTextToSize(quote.terms, 180);
+        pdf.text(splitTerms, 15, yPos + 6);
+      }
+
+      // Footer
+      pdf.setFillColor(248, 247, 244);
+      pdf.rect(0, 280, 210, 15, 'F');
+      pdf.setTextColor(150, 150, 150);
+      pdf.setFontSize(9);
+      pdf.text('Creative Books SA · Proudly South African · www.creativebooks.co.za', 105, 289, { align: 'center' });
+
+      const pdfBlob = pdf.output('blob');
+      const pdfArrayBuffer = await pdfBlob.arrayBuffer();
+      const pdfBase64 = Buffer.from(pdfArrayBuffer).toString('base64');
+
+      // Modern high-end email HTML
+      const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f5f5f7;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background: #f5f5f7; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 640px; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+          <!-- Hero Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 48px 40px; text-align: center;">
+              <h1 style="margin: 0; color: #B87333; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Creative Books SA</h1>
+              <p style="margin: 12px 0 0; color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 400;">Professional Publishing Services</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 48px 40px;">
+              <h2 style="margin: 0 0 20px; color: #1A1208; font-size: 24px; font-weight: 600; letter-spacing: -0.3px;">Hi ${contactName},</h2>
+              
+              <p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">
+                Thank you for your interest in Creative Books SA! We're excited to present your custom quote for your publishing project.
+              </p>
+
+              <!-- Quote Summary Card -->
+              <div style="background: linear-gradient(135deg, #faf8f4 0%, #f5f0e8 100%); border: 1px solid rgba(184,115,51,0.15); border-radius: 16px; padding: 32px; margin: 32px 0; text-align: center;">
+                <div style="font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Quote Total</div>
+                <div style="font-size: 42px; font-weight: 700; color: #B87333; line-height: 1;">R ${Number(quote.total).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</div>
+                <div style="font-size: 13px; color: #999; margin-top: 8px;">${quote.include_vat ? 'Including VAT (15%)' : 'Excluding VAT'}</div>
+                <div style="font-size: 13px; color: #999; margin-top: 4px;">Quote #${quote.quote_number} · Valid until ${quote.valid_until || 'further notice'}</div>
+              </div>
+
+              <!-- CTA Button -->
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${viewUrl}" style="display: inline-block; background: linear-gradient(135deg, #B87333 0%, #D4A574 100%); color: #ffffff; padding: 18px 48px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; box-shadow: 0 4px 16px rgba(184,115,51,0.3); transition: all 0.3s ease;">
+                  View & Accept Quote
+                </a>
+              </div>
+
+              ${quote.notes ? `
+              <div style="background: #f9f9f9; border-left: 3px solid #B87333; border-radius: 8px; padding: 20px; margin: 32px 0;">
+                <div style="font-size: 12px; color: #B87333; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Personal Notes</div>
+                <div style="color: #555; font-size: 14px; line-height: 1.6;">${quote.notes}</div>
+              </div>
+              ` : ''}
+
+              <p style="margin: 32px 0 16px; color: #888; font-size: 14px; line-height: 1.6;">
+                Your detailed quote PDF is attached to this email for your records. You can also view, accept, and download it anytime using the link above.
+              </p>
+
+              <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 40px 0;" />
+
+              <p style="margin: 0; color: #999; font-size: 13px; line-height: 1.6;">
+                Questions? Reply to this email or call us at <strong style="color: #1A1208;">010 500 3331</strong>.<br />
+                We're here to help bring your book to life.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background: #fafafa; padding: 32px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
+              <p style="margin: 0; color: #999; font-size: 12px; line-height: 1.6;">
+                <strong style="color: #1A1208;">Creative Books SA</strong><br />
+                Professional Publishing Services<br />
+                info@creativebooks.co.za · www.creativebooks.co.za<br />
+                Proudly South African 🇿🇦
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+      `;
 
       await resend.emails.send({
         from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contactEmail],
-        subject: `Your Quote from Creative Books SA — ${quote.quote_number}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f7f4; padding: 40px 20px;">
-            <div style="background: #1A1208; padding: 32px; border-radius: 12px 12px 0 0; text-align: center;">
-              <h1 style="color: #B87333; margin: 0; font-size: 24px;">Creative Books SA</h1>
-              <p style="color: rgba(255,255,255,0.5); margin: 8px 0 0; font-size: 14px;">Professional Publishing Services</p>
-            </div>
-            <div style="background: white; padding: 32px; border-radius: 0 0 12px 12px; border: 1px solid rgba(0,0,0,0.08); border-top: none;">
-              <h2 style="color: #1A1208; margin: 0 0 16px;">Hi ${quote.contact_snapshot?.full_name || 'there'},</h2>
-              <p style="color: #555; line-height: 1.6;">Please find your quote <strong>${quote.quote_number}</strong> attached below. This quote is valid until <strong>${quote.valid_until || 'further notice'}</strong>.</p>
-              <div style="background: #faf8f4; border: 1px solid rgba(184,115,51,0.2); border-radius: 8px; padding: 20px; margin: 24px 0; text-align: center;">
-                <div style="font-size: 28px; font-weight: bold; color: #B87333;">R ${Number(quote.total).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</div>
-                <div style="color: #888; font-size: 14px; margin-top: 4px;">Total (incl. VAT)</div>
-              </div>
-              <div style="text-align: center; margin: 24px 0;">
-                <a href="${viewUrl}" style="display: inline-block; background: #B87333; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">View & Accept Quote</a>
-              </div>
-              <p style="color: #888; font-size: 13px; text-align: center;">Or copy this link: <a href="${viewUrl}" style="color: #B87333;">${viewUrl}</a></p>
-              ${quote.notes ? `<div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 8px;"><strong>Notes:</strong><br><span style="color: #555;">${quote.notes}</span></div>` : ''}
-              <hr style="border: none; border-top: 1px solid rgba(0,0,0,0.08); margin: 24px 0;">
-              <p style="color: #888; font-size: 12px; text-align: center;">Creative Books SA · info@creativebooks.co.za · 010 500 3331</p>
-            </div>
-          </div>
-        `,
+        subject: `Your Custom Quote — ${quote.quote_number} | Creative Books SA`,
+        html: emailHtml,
+        attachments: [
+          {
+            filename: `Quote-${quote.quote_number}.pdf`,
+            content: pdfBase64,
+            contentType: 'application/pdf',
+          },
+        ],
       });
 
       const updated = await base44.asServiceRole.entities.Quote.update(quote_id, {
