@@ -263,7 +263,17 @@ export default function AdminQuoteBuilder() {
             <Button variant="outline" onClick={handleSave} disabled={!lineItems.length}>
               <Save className="w-4 h-4 mr-2" /> Save Draft
             </Button>
-            <Button variant="outline" onClick={() => window.open(`/quote/view/${quoteId}/${quoteData?.view_token}`, '_blank')}>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                if (quoteId && quoteData?.view_token) {
+                  window.open(`/quote/view/${quoteId}/${quoteData.view_token}`, '_blank');
+                } else {
+                  toast.error('Please save the quote first to preview');
+                }
+              }}
+              disabled={!quoteId || !quoteData?.view_token}
+            >
               <Eye className="w-4 h-4 mr-2" /> Preview
             </Button>
             <Button onClick={handleSend} disabled={!lineItems.length || !quoteData?.contact_id}>
