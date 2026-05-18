@@ -156,11 +156,24 @@ export default function AdminQuoteBuilder() {
 
   const handleSave = async () => {
     try {
+      if (!quoteId) {
+        toast.error('Quote not initialized. Please refresh the page.');
+        return;
+      }
+      const contactId = quoteData?.contact_id || contact?.id;
+      if (!contactId) {
+        toast.error('Please select a contact first');
+        return;
+      }
+      if (!lineItems.length) {
+        toast.error('Please add at least one line item');
+        return;
+      }
       const totals = calculateTotals();
       await base44.functions.invoke('quoteActions', {
         action: 'update',
         quote_id: quoteId,
-        contact_id: quoteData?.contact_id || contact?.id,
+        contact_id: contactId,
         valid_until: quoteData?.valid_until,
         include_vat: quoteData?.include_vat,
         discount_amount: quoteData?.discount_amount || 0,
@@ -170,6 +183,7 @@ export default function AdminQuoteBuilder() {
       });
       toast.success('Quote saved');
     } catch (error) {
+      console.error('Save error:', error);
       toast.error(error.message || 'Failed to save quote');
     }
   };
@@ -265,7 +279,7 @@ export default function AdminQuoteBuilder() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={handleSave} disabled={!lineItems.length}>
+            <Button variant="outline" onClick={handleSave} disabled={!quoteId}>
               <Save className="w-4 h-4 mr-2" /> Save Draft
             </Button>
             <Button 
