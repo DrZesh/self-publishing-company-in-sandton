@@ -38,7 +38,7 @@ export default function BookPublishersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Publishers in South Africa | Independent Publishers"
+        title="Book Publishers South Africa"
         description="Independent book publishers in South Africa working with local authors — editing, design and printing combined into clear, costed packages from R21,000."
         keywords="book publishers South Africa, book publishers in South Africa, publishing company South Africa, South African book publishers, publish a book South Africa"
         canonical="https://www.creativebooks.co.za/bookpublisherssouthafrica"
