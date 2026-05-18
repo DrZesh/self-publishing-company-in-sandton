@@ -37,8 +37,8 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazonkindle': {
     url: '/howmuchdoesitcosttoselfpublishonamazonkindle',
-    title: 'Cost to Self-Publish on Kindle | 2026 Pricing Guide',
-    description: 'Kindle self-publishing costs explained for South African authors — editing, formatting, cover design, royalties and what to budget before uploading.',
+    title: 'How Much Does It Cost to Self-Publish on Kindle? 2026',
+    description: 'What it actually costs to self-publish a Kindle ebook in 2026 — KDP fees, formatting, cover design, editing and ISBN. Real numbers for South African authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',
@@ -361,8 +361,8 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazon': {
     url: '/howmuchdoesitcosttoselfpublishonamazon',
-    title: 'Cost to Self-Publish on Amazon | Full Breakdown 2026',
-    description: 'Self-publishing on Amazon KDP cost breakdown — what uploading costs, what professional preparation costs, and how royalties are calculated for SA authors.',
+    title: 'How Much Does It Cost to Self-Publish on Amazon? 2026',
+    description: 'Amazon self-publishing costs in 2026 — KDP print and ebook fees, cover design, editing and ISBN. Full breakdown for South African authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
     datePublished: '2026-02-05',

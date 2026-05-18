@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/dosouthafricanpublisherschargeauthors',
-  title: 'Do South African Publishers Charge Authors? | Honest Answer',
-  description: 'Do South African publishers charge authors? The difference between traditional, vanity and self-publishing services — and how to avoid being overcharged.',
+  title: 'Do South African Publishers Charge Authors? Read This First',
+  description: 'Should you pay a publisher to publish your book? Vanity presses, hybrid publishers and legitimate self-publishing services in South Africa explained.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',
