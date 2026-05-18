@@ -38,7 +38,7 @@ export default function PublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Publishing Companies in South Africa | Creative Books SA"
+        title="Publishing Companies in South Africa | Compare Services"
         description="Compare book publishing companies in South Africa — what each offers, how packages are structured, and what to ask before signing with a publisher."
         keywords="publishing companies in South Africa, book publishers South Africa, self publishing South Africa, best publishing company South Africa, book publishing services"
         canonical="https://www.creativebooks.co.za/publishingcompaniessouthafrica"
