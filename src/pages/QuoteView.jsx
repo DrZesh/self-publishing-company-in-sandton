@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle, XCircle, Download, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Download, Loader2, PenTool } from 'lucide-react';
+import html2canvas from 'npm:html2canvas@1.4.1';
+import jsPDF from 'npm:jspdf@4.0.0';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import SignatureCapture from '@/components/quote/SignatureCapture';
 
 export default function QuoteView() {
   const { id, token } = useParams();
@@ -10,6 +14,9 @@ export default function QuoteView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [responding, setResponding] = useState(false);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const quoteRef = useRef(null);
 
   useEffect(() => {
     base44.functions.invoke('quoteActions', { action: 'get_public', quote_id: id, token })
@@ -25,12 +32,81 @@ export default function QuoteView() {
       .finally(() => setLoading(false));
   }, [id, token]);
 
-  const handleRespond = async (response) => {
-    if (!confirm(response === 'accept' ? 'Accept this quote?' : 'Decline this quote?')) return;
+  const handleDecline = async () => {
+    if (!confirm('Are you sure you want to decline this quote?')) return;
     setResponding(true);
-    const res = await base44.functions.invoke('quoteActions', { action: 'respond', quote_id: id, token, response });
+    const res = await base44.functions.invoke('quoteActions', { action: 'respond', quote_id: id, token, response: 'decline' });
     if (res.data?.success) setQuote(res.data.quote);
     setResponding(false);
+  };
+
+  const handleAcceptClick = () => {
+    setShowSignatureModal(true);
+  };
+
+  const handleSignatureComplete = async (signatureData) => {
+    try {
+      // Upload signature image
+      const fileBlob = await fetch(signatureData.signature_image_url).then(r => r.blob());
+      const file = new File([fileBlob], 'signature.png', { type: 'image/png' });
+      
+      // Use Base44 upload
+      const uploadRes = await base44.integrations.Core.UploadFile({ file: signatureData.signature_image_url });
+      
+      // Save signature
+      await base44.entities.QuoteSignature.create({
+        quote_id: id,
+        signer_name: signatureData.signer_name,
+        signer_email: signatureData.signer_email,
+        signer_ip: 'web',
+        signer_user_agent: navigator.userAgent,
+        signature_image_url: uploadRes.file_url,
+        signed_at: new Date().toISOString(),
+        signature_method: signatureData.signature_method,
+        legal_acknowledgment_checked: signatureData.legal_acknowledgment_checked,
+      });
+
+      // Update quote status
+      const res = await base44.functions.invoke('quoteActions', { action: 'respond', quote_id: id, token, response: 'accept' });
+      if (res.data?.success) {
+        setQuote(res.data.quote);
+        setShowSignatureModal(false);
+      }
+    } catch (error) {
+      console.error('Signature failed:', error);
+      alert('Failed to save signature. Please try again.');
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!quoteRef.current) return;
+    setGeneratingPdf(true);
+    try {
+      const canvas = await html2canvas(quoteRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width * 0.264583;
+      const imgHeight = canvas.height * 0.264583;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
+      pdf.addImage(imgData, 'PNG', (pdfWidth - finalWidth) / 2, 10, finalWidth, finalHeight);
+      pdf.save(`Quote-${quote.quote_number}.pdf`);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+    } finally {
+      setGeneratingPdf(false);
+    }
   };
 
   if (loading) return (
@@ -54,7 +130,7 @@ export default function QuoteView() {
 
   return (
     <div className="min-h-screen bg-[#f8f7f4] py-10 px-4 print:bg-white print:py-0">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:shadow-none print:rounded-none">
+      <div ref={quoteRef} className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:shadow-none print:rounded-none">
         <div className="bg-[#1A1208] px-10 py-8 print:py-6">
           <div className="flex items-start justify-between">
             <div>
@@ -146,25 +222,27 @@ export default function QuoteView() {
         {!isClosed && (
           <div className="px-10 py-6 bg-[#f8f7f4] border-t border-black/5 print:hidden">
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => handleRespond('accept')} disabled={responding}
+              <button onClick={handleAcceptClick} disabled={responding}
                 className="flex-1 flex items-center justify-center gap-2 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 disabled:opacity-50 transition-colors">
-                <CheckCircle className="w-5 h-5" /> Accept Quote
+                <PenTool className="w-5 h-5" /> Sign & Accept
               </button>
-              <button onClick={() => handleRespond('decline')} disabled={responding}
+              <button onClick={handleDecline} disabled={responding}
                 className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-red-200 text-red-600 rounded-xl font-semibold hover:bg-red-50 disabled:opacity-50 transition-colors">
                 <XCircle className="w-5 h-5" /> Decline
               </button>
-              <button onClick={() => window.print()}
-                className="flex items-center justify-center gap-2 px-5 py-3 border border-black/15 text-black/60 rounded-xl font-semibold hover:bg-white transition-colors">
-                <Download className="w-4 h-4" /> Print / PDF
+              <button onClick={handleDownloadPdf} disabled={generatingPdf}
+                className="flex items-center justify-center gap-2 px-5 py-3 border border-black/15 text-black/60 rounded-xl font-semibold hover:bg-white disabled:opacity-50 transition-colors">
+                {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                {generatingPdf ? 'Generating...' : 'Download PDF'}
               </button>
             </div>
           </div>
         )}
         {isClosed && (
           <div className="px-10 py-4 bg-[#f8f7f4] border-t border-black/5 print:hidden flex justify-center">
-            <button onClick={() => window.print()} className="flex items-center gap-2 px-5 py-2.5 border border-black/15 text-black/60 rounded-xl text-sm font-semibold hover:bg-white">
-              <Download className="w-4 h-4" /> Download / Print
+            <button onClick={handleDownloadPdf} disabled={generatingPdf} className="flex items-center gap-2 px-5 py-2.5 border border-black/15 text-black/60 rounded-xl text-sm font-semibold hover:bg-white disabled:opacity-50">
+              {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {generatingPdf ? 'Generating...' : 'Download PDF'}
             </button>
           </div>
         )}
@@ -173,6 +251,22 @@ export default function QuoteView() {
           <div className="text-xs text-black/30">Creative Books SA · Proudly South African · www.creativebooks.co.za</div>
         </div>
       </div>
+
+      {/* Signature Modal */}
+      <Dialog open={showSignatureModal} onOpenChange={setShowSignatureModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Sign Quote {quote?.quote_number}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <SignatureCapture
+              onSignatureComplete={handleSignatureComplete}
+              signerEmail={contact.email}
+              signerName={contact.full_name}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

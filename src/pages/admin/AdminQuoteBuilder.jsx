@@ -72,19 +72,17 @@ export default function AdminQuoteBuilder() {
 
   const createQuoteMutation = useMutation({
     mutationFn: async (data) => {
-      const quotes = await base44.entities.Quote.list('-created_date', 1);
-      const nextNum = quotes.length ? parseInt(quotes[0].quote_number.split('-').pop()) + 1 : 1;
-      const quote_number = `CB-2026-${String(nextNum).padStart(4, '0')}`;
-      
-      const newQuote = await base44.entities.Quote.create({
-        ...data,
-        quote_number,
-        status: 'Draft',
-        vat_rate: 15,
+      const result = await base44.functions.invoke('quoteActions', {
+        action: 'create',
+        contact_id: initialContactId,
+        valid_until: data.valid_until,
         include_vat: true,
-        view_token: Math.random().toString(36).substring(2) + Date.now().toString(36),
+        discount_amount: 0,
+        notes: '',
+        terms: '',
+        line_items: [],
       });
-      return newQuote;
+      return result.data.quote;
     },
     onSuccess: (quote) => {
       toast.success('Quote created');
@@ -151,17 +149,32 @@ export default function AdminQuoteBuilder() {
 
   const totals = calculateTotals();
 
+  const handleSave = async () => {
+    try {
+      const totals = calculateTotals();
+      await base44.functions.invoke('quoteActions', {
+        action: 'update',
+        quote_id: quoteId,
+        contact_id: quoteData?.contact_id || contact?.id,
+        valid_until: quoteData?.valid_until,
+        include_vat: quoteData?.include_vat,
+        discount_amount: quoteData?.discount_amount || 0,
+        notes: quoteData?.notes,
+        terms: quoteData?.terms,
+        line_items: lineItems,
+      });
+      toast.success('Quote saved');
+    } catch (error) {
+      toast.error(error.message || 'Failed to save quote');
+    }
+  };
+
   const handleSend = async () => {
     try {
-      // Save quote first
-      await saveQuoteMutation.mutateAsync({
-        ...quoteData,
-        subtotal: totals.subtotal,
-        vat_amount: totals.vatAmount,
-        total: totals.total,
-      });
-
-      // Call backend function to generate PDF and send
+      // Save first
+      await handleSave();
+      
+      // Then send
       const result = await base44.functions.invoke('quoteActions', {
         action: 'send',
         quote_id: quoteId,
@@ -247,7 +260,10 @@ export default function AdminQuoteBuilder() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => toast.info('Preview coming soon')}>
+            <Button variant="outline" onClick={handleSave} disabled={!lineItems.length}>
+              <Save className="w-4 h-4 mr-2" /> Save Draft
+            </Button>
+            <Button variant="outline" onClick={() => window.open(`/quote/view/${quoteId}/${quoteData?.view_token}`, '_blank')}>
               <Eye className="w-4 h-4 mr-2" /> Preview
             </Button>
             <Button onClick={handleSend} disabled={!lineItems.length || !quoteData?.contact_id}>
