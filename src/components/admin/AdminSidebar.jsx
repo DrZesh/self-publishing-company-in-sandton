@@ -50,7 +50,7 @@ export default function AdminSidebar({ open, onClose }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto min-h-0">
         {NAV_ITEMS.map(({ label, path, icon: Icon }) => {
           const active = location.pathname === path || location.pathname.startsWith(path + '/');
           const badge = label === 'Submissions' ? unreadCount : label === 'Leads' ? openLeadCount : 0;
@@ -59,7 +59,7 @@ export default function AdminSidebar({ open, onClose }) {
               key={path}
               to={path}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                 active
                   ? 'bg-[#B87333] text-white'
                   : 'text-[#2B2B2B]/70 hover:bg-[#f5f5f5] hover:text-[#1A1208]'
