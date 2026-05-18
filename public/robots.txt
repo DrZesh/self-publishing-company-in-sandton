@@ -1,7 +1,12 @@
 User-agent: *
 Allow: /
 
-# Block admin routes
-Disallow: /admin/
+# Block legacy WordPress template query strings
+Disallow: /*?elementskit_template=*
+
+# Block legacy WordPress paths
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/
 
 Sitemap: https://www.creativebooks.co.za/sitemap.xml

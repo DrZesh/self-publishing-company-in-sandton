@@ -515,7 +515,10 @@ const AuthenticatedApp = () => {
         
         {/* Dash-URL legacy redirects */}
         <Route path="/6x9-book-size-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
+        <Route path="/6x9-book-size-printing-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
         <Route path="/a5-book-size-johannesburg" element={<Navigate to="/printing/a5" replace />} />
+        <Route path="/childrens-books" element={<Navigate to="/printing/childrensbooks" replace />} />
+        <Route path="/ebook-cover-design" element={<Navigate to="/ebookpublishing" replace />} />
         <Route path="/book-printing-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
         <Route path="/book-publishing-south-africa" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
         <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
