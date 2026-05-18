@@ -24,7 +24,7 @@ export default function RevenueGoalCard({ metrics, loading }) {
   const remaining = Math.max(0, target - revenue);
 
   return (
-    <div className="bg-gradient-to-r from-[#B87333] to-[#D4A574] rounded-2xl p-6 mb-6 text-white">
+    <div className="rounded-xl p-5 mb-6 text-white" style={{ background: 'linear-gradient(135deg, #1A3C34 0%, #2D6A4F 100%)' }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-white/80" />

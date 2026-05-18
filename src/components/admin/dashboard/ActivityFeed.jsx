@@ -21,14 +21,14 @@ const TYPE_CONFIG = {
 export default function ActivityFeed({ activity, loading }) {
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
-        <div className="h-5 bg-black/5 rounded w-32 mb-4 animate-pulse" />
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="h-5 bg-gray-100 rounded w-32 mb-4 animate-pulse" />
         {[...Array(5)].map((_, i) => (
           <div key={i} className="flex gap-3 mb-3">
-            <div className="w-8 h-8 bg-black/5 rounded-xl animate-pulse shrink-0" />
+            <div className="w-8 h-8 bg-gray-100 rounded-lg animate-pulse shrink-0" />
             <div className="flex-1">
-              <div className="h-4 bg-black/5 rounded w-3/4 mb-1 animate-pulse" />
-              <div className="h-3 bg-black/5 rounded w-1/4 animate-pulse" />
+              <div className="h-4 bg-gray-100 rounded w-3/4 mb-1 animate-pulse" />
+              <div className="h-3 bg-gray-100 rounded w-1/4 animate-pulse" />
             </div>
           </div>
         ))}
@@ -39,13 +39,13 @@ export default function ActivityFeed({ activity, loading }) {
   const isEmpty = !activity?.length;
 
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-base font-bold text-[#1A1208]">Recent Activity</h2>
-          <p className="text-xs text-black/40">What's happening across Creative Books</p>
+          <h2 className="text-base font-semibold text-gray-900">Recent Activity</h2>
+          <p className="text-xs text-gray-400">What's happening across Creative Books</p>
         </div>
-        <Link to="/admin/submissions" className="text-xs text-[#B87333] hover:underline">View all →</Link>
+        <Link to="/admin/submissions" className="text-xs font-medium hover:underline" style={{ color: '#B87333' }}>View all →</Link>
       </div>
 
       {isEmpty ? (
@@ -59,14 +59,14 @@ export default function ActivityFeed({ activity, loading }) {
             const Icon = cfg.icon;
             return (
               <div key={i} className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${cfg.bg}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${cfg.bg}`}>
                   <Icon className={`w-4 h-4 ${cfg.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[#1A1208] leading-snug truncate">{item.label}</p>
-                  {item.sub && <p className="text-xs text-black/40">{item.sub}</p>}
+                  <p className="text-sm text-gray-800 leading-snug truncate">{item.label}</p>
+                  {item.sub && <p className="text-xs text-gray-400">{item.sub}</p>}
                 </div>
-                <div className="text-xs text-black/30 shrink-0 whitespace-nowrap">{timeAgo(item.date)}</div>
+                <div className="text-xs text-gray-400 shrink-0 whitespace-nowrap">{timeAgo(item.date)}</div>
               </div>
             );
           })}

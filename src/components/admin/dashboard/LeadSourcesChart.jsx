@@ -25,10 +25,10 @@ export default function LeadSourcesChart({ leadSources, loading }) {
   if (!total) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1A1208]">Lead Sources This Month</h2>
-        <p className="text-xs text-black/40">Where your submissions are coming from</p>
+        <h2 className="text-base font-semibold text-gray-900">Lead Sources This Month</h2>
+        <p className="text-xs text-gray-400">Where your submissions are coming from</p>
       </div>
       <div className="flex flex-col sm:flex-row items-center gap-6">
         <ResponsiveContainer width={160} height={160}>
@@ -44,11 +44,11 @@ export default function LeadSourcesChart({ leadSources, loading }) {
             <div key={i} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-                <span className="text-xs text-black/70">{item.name}</span>
+                <span className="text-xs text-gray-600">{item.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#1A1208]">{item.value}</span>
-                <span className="text-xs text-black/40">{Math.round(item.value / total * 100)}%</span>
+                <span className="text-xs font-bold text-gray-800">{item.value}</span>
+                <span className="text-xs text-gray-400">{Math.round(item.value / total * 100)}%</span>
               </div>
             </div>
           ))}

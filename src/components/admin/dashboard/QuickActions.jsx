@@ -13,22 +13,22 @@ const ACTIONS = [
 
 export default function QuickActions() {
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1A1208]">Quick Actions</h2>
-        <p className="text-xs text-black/40">Common workflows in one click</p>
+        <h2 className="text-base font-semibold text-gray-900">Quick Actions</h2>
+        <p className="text-xs text-gray-400">Common workflows in one click</p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {ACTIONS.map((a, i) => {
           const Icon = a.icon;
           const inner = (
-            <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#F9F7F2] hover:bg-[#f0ece4] border border-black/5 hover:border-[#B87333]/30 transition-all cursor-pointer text-center">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${a.color}`}>
+            <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 transition-all cursor-pointer text-center">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${a.color}`}>
                 <Icon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <div className="text-xs font-bold text-[#1A1208]">{a.label}</div>
-                <div className="text-xs text-black/40">{a.sub}</div>
+                <div className="text-xs font-semibold text-gray-800">{a.label}</div>
+                <div className="text-xs text-gray-400">{a.sub}</div>
               </div>
             </div>
           );

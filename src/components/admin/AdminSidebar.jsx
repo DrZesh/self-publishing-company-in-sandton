@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
+const BRAND = '#2D6A4F'; // QuickBooks-style deep green mapped to brand
+
 const NAV_ITEMS = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Submissions', path: '/admin/submissions', icon: Inbox },
@@ -35,22 +37,22 @@ export default function AdminSidebar({ open, onClose }) {
   }, []);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white border-r border-black/8 w-64">
+    <div className="flex flex-col h-full w-64" style={{ background: '#1A3C34', color: 'white' }}>
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-black/8">
-        <Link to="/admin/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#B87333] rounded-lg flex items-center justify-center">
-            <BookOpen className="w-4 h-4 text-white" />
+      <div className="px-5 py-4 border-b border-white/10">
+        <Link to="/admin/dashboard" className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#B87333' }}>
+            <BookOpen className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#1A1208]">Creative Books</p>
-            <p className="text-xs text-black/40">Admin Portal</p>
+            <p className="text-sm font-bold text-white leading-tight">Creative Books</p>
+            <p className="text-xs text-white/40">Business Portal</p>
           </div>
         </Link>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto min-h-0">
+      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto min-h-0">
         {NAV_ITEMS.map(({ label, path, icon: Icon }) => {
           const active = location.pathname === path || location.pathname.startsWith(path + '/');
           const badge = label === 'Submissions' ? unreadCount : label === 'Leads' ? openLeadCount : 0;
@@ -59,22 +61,22 @@ export default function AdminSidebar({ open, onClose }) {
               key={path}
               to={path}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 active
-                  ? 'bg-[#B87333] text-white'
-                  : 'text-[#2B2B2B]/70 hover:bg-[#f5f5f5] hover:text-[#1A1208]'
+                  ? 'text-white'
+                  : 'text-white/60 hover:text-white hover:bg-white/8'
               }`}
+              style={active ? { background: 'rgba(184,115,51,0.85)' } : {}}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
               <span className="flex-1">{label}</span>
               {badge > 0 && (
                 <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                  active ? 'bg-white/20 text-white' : label === 'Submissions' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
+                  active ? 'bg-white/20 text-white' : label === 'Submissions' ? 'bg-red-400/20 text-red-300' : 'bg-amber-400/20 text-amber-300'
                 }`}>
                   {badge}
                 </span>
               )}
-              {active && !badge && <ChevronRight className="w-3 h-3 opacity-60" />}
             </Link>
           );
         })}
@@ -82,14 +84,14 @@ export default function AdminSidebar({ open, onClose }) {
 
       {/* User */}
       {user && (
-        <div className="px-4 py-4 border-t border-black/8">
+        <div className="px-4 py-4 border-t border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#B87333] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0" style={{ background: '#B87333' }}>
               {(user.full_name || user.email || '?')[0].toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold text-[#1A1208] truncate">{user.full_name || 'Admin'}</p>
-              <p className="text-xs text-black/40 truncate">{user.email}</p>
+              <p className="text-xs font-semibold text-white truncate">{user.full_name || 'Admin'}</p>
+              <p className="text-xs text-white/40 truncate">{user.email}</p>
             </div>
           </div>
         </div>

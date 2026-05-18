@@ -15,13 +15,13 @@ export default function FollowUps({ followUps, loading }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-base font-bold text-[#1A1208]">Suggested Follow-Ups</h2>
-          <p className="text-xs text-black/40">Contacts needing your attention</p>
+          <h2 className="text-base font-semibold text-gray-900">Suggested Follow-Ups</h2>
+          <p className="text-xs text-gray-400">Contacts needing your attention</p>
         </div>
-        <Link to="/admin/submissions" className="flex items-center gap-1 text-xs text-[#B87333] hover:underline">
+        <Link to="/admin/submissions" className="flex items-center gap-1 text-xs font-medium hover:underline" style={{ color: '#B87333' }}>
           <PlusCircle className="w-3.5 h-3.5" /> View inbox
         </Link>
       </div>
@@ -35,11 +35,11 @@ export default function FollowUps({ followUps, loading }) {
       ) : (
         <div className="space-y-3">
           {followUps.map((f, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
+            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-amber-50 border border-amber-100">
               <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#1A1208] truncate">{f.contact}</p>
-                <p className="text-xs text-black/50">{f.reason} · {f.daysAgo}d ago</p>
+                <p className="text-sm font-semibold text-gray-900 truncate">{f.contact}</p>
+                <p className="text-xs text-gray-500">{f.reason} · {f.daysAgo}d ago</p>
               </div>
               <a
                 href={`mailto:${f.email}`}

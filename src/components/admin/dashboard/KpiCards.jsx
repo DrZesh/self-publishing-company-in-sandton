@@ -16,15 +16,15 @@ function Trend({ current, previous }) {
 
 function KpiCard({ icon: Icon, color, title, value, sub, trend, linkTo, children }) {
   const inner = (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-5 hover:shadow-md transition-shadow h-full">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow h-full">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{title}</span>
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${color}`}>
           <Icon className="w-4 h-4 text-white" />
         </div>
-        <span className="text-xs font-semibold text-black/40 uppercase tracking-wide">{title}</span>
       </div>
-      <div className="text-3xl font-bold text-[#1A1208] mb-1">{value}</div>
-      {sub && <p className="text-xs text-black/50 mb-2">{sub}</p>}
+      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+      {sub && <p className="text-xs text-gray-400 mb-2">{sub}</p>}
       {trend}
       {children}
     </div>
@@ -53,7 +53,7 @@ export default function KpiCards({ metrics, isOwner, loading }) {
     : 'text-red-500';
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {/* Revenue — owner only */}
       {isOwner ? (
         <KpiCard

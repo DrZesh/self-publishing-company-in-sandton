@@ -19,7 +19,7 @@ export default function AdminLayout({ children }) {
   });
 
   return (
-    <div className="flex h-screen bg-[#f8f9fc]">
+    <div className="flex h-screen" style={{ background: '#F4F6F8' }}>
       {/* Sidebar */}
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -27,8 +27,8 @@ export default function AdminLayout({ children }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
         <div
-          className="h-16 border-b border-[#ddd]/30 flex items-center justify-between px-6"
-          style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)' }}
+          className="h-14 border-b flex items-center justify-between px-6"
+          style={{ background: '#ffffff', borderColor: '#e5e7eb' }}
         >
           <div className="flex items-center gap-4 flex-1">
             <button
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }) {
 
         {/* Page Content */}
         <div className="flex-1 overflow-auto">
-          <div className="p-6 lg:p-8 h-full">
+          <div className="p-6 lg:p-7 h-full">
             {children}
           </div>
         </div>
