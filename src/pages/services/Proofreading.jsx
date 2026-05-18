@@ -293,14 +293,14 @@ export default function Proofreading() {
         title="Book Proofreading Services in South Africa | Per-Word Pricing"
         description="Final-stage manuscript proofreading for South African authors. Catch typos, grammar and formatting errors before printing. Per-word pricing available."
         canonical="https://www.creativebooks.co.za/proofreading"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+        }}
       />
 
-      {/* FAQ Schema */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
-      }) }} />
+
 
       {/* ── 1. HERO ── */}
       <section className="relative min-h-[65vh] flex items-end overflow-hidden"

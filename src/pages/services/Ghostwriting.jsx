@@ -84,11 +84,13 @@ export default function Ghostwriting() {
         title="Ghostwriting Services South Africa | NDA Protected"
         description="Discreet professional ghostwriters in South Africa — memoirs, business books, fiction and non-fiction. NDA-protected. Free consultation, transparent pricing."
         canonical="https://www.creativebooks.co.za/ghostwriting"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+        }}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-        "@context": "https://schema.org", "@type": "FAQPage",
-        "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } }))
-      }) }} />
+
 
       {/* Hero */}
       <section className="relative min-h-[65vh] flex items-end overflow-hidden" style={{ background: 'linear-gradient(160deg, #090E18 0%, #0d1830 60%, #111827 100%)' }}>
