@@ -17,8 +17,8 @@ export default function About() {
   return (
     <div>
       <PageMeta
-        title="About Creative Books SA | Premium SA Publishing Company"
-        description="Meet Creative Books SA — a Johannesburg-based publishing house helping South African authors self-publish with cinematic quality and care."
+        title="About Creative Books SA | Sandton Book Publishers"
+        description="Meet the team behind Creative Books SA — a Sandton-based book publishing and printing studio working with South African authors on self-publishing projects."
         canonical="https://www.creativebooks.co.za/aboutus"
       />
       {/* Hero */}

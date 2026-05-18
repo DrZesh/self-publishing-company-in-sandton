@@ -239,8 +239,8 @@ export default function GetQuote() {
     return (
       <>
         <PageMeta
-          title="Get a Free Publishing Quote | Creative Books SA"
-          description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
+          title="Get a Free Book Publishing Quote | Creative Books SA"
+          description="Affordable book publishing, printing, editing or cover design. Tell us about your project — we'll respond with options and pricing."
           canonical="https://www.creativebooks.co.za/getquote"
         />
         <div className="min-h-screen bg-[#060504] flex items-center justify-center px-4 pt-24 pb-16">
@@ -298,8 +298,8 @@ export default function GetQuote() {
   return (
     <>
       <PageMeta
-        title="Get a Free Publishing Quote | Creative Books SA"
-        description="Request a free, no-obligation quote for book publishing, editing, printing or cover design in South Africa. Fast response within 24 hours."
+        title="Get a Free Book Publishing Quote | Creative Books SA"
+        description="Affordable book publishing, printing, editing or cover design. Tell us about your project — we'll respond with options and pricing."
         canonical="https://www.creativebooks.co.za/getquote"
       />
 

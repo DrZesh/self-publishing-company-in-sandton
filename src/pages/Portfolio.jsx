@@ -103,8 +103,8 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-obsidian">
       <PageMeta
-        title="Our Portfolio | Books We've Published | Creative Books SA"
-        description="Explore the stunning portfolio of books published by Creative Books SA. Hundreds of South African authors have trusted us with their publishing journey."
+        title="Book Publishing Portfolio | Covers, Layouts & Printed Books"
+        description="Our portfolio of South African book publishing projects — cover designs, interior layouts and printed books across fiction, non-fiction and memoir genres."
         canonical="https://www.creativebooks.co.za/portfolio"
       />
 

@@ -101,8 +101,8 @@ export default function Blog() {
   return (
     <div>
       <PageMeta
-        title="Self-Publishing Blog South Africa | Creative Books SA"
-        description="Expert guides on self-publishing, book marketing, editing and printing for South African authors. Practical advice from publishing professionals."
+        title="Self-Publishing Blog | Guides for South African Authors"
+        description="Self-publishing guides, tutorials and resources for South African authors — pricing, ISBN, distribution, editing, marketing and the publishing journey."
         canonical="https://www.creativebooks.co.za/blog"
       />
       {/* Hero */}

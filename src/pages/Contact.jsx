@@ -72,8 +72,8 @@ export default function Contact() {
   return (
     <div>
       <PageMeta
-        title="Contact Creative Books SA | Publishing Help in Johannesburg"
-        description="Get in touch with Creative Books SA for book publishing, editing, printing and cover design. Based in Johannesburg, serving all of South Africa."
+        title="Contact Creative Books SA | Book Publishing Company in Sandton"
+        description="Get in touch with Creative Books SA — phone, email or visit. Sandton-based book publishing and printing for South African authors."
         canonical="https://www.creativebooks.co.za/contact"
       />
       {/* Hero */}
