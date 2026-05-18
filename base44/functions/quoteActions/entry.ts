@@ -135,7 +135,7 @@ Deno.serve(async (req) => {
       const viewUrl = `${req.headers.get('origin') || 'https://www.creativebooks.co.za'}/quote/view/${quote.id}/${quote.view_token}`;
 
       await resend.emails.send({
-        from: 'Creative Books SA <quotes@creativebooks.co.za>',
+        from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contactEmail],
         subject: `Your Quote from Creative Books SA — ${quote.quote_number}`,
         html: `
