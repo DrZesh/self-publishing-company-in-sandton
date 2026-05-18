@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/canyoumakealivingasaselfpublishedauthorinsouthafrica',
-  title: 'Can You Make a Living as an Author in South Africa?',
-  description: 'Can you make a living as an author in South Africa? Honest income expectations, what successful authors have in common, and income streams beyond royalties.',
+  title: 'Can You Make a Living as a Self-Published Author in SA?',
+  description: 'Honest look at making a living from self-publishing in South Africa — income realities, what successful authors actually earn, and how long it typically takes.',
   category: 'Publishing Tips',
   readTime: '7 min read',
   datePublished: '2026-02-05',

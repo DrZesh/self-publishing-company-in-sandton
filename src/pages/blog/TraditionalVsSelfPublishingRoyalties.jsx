@@ -3,8 +3,8 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/traditionalvsselfpublishingroyaltiesinsouthafrica',
-  title: 'Traditional vs Self-Publishing Royalties | True Earnings',
-  description: 'Traditional vs self-publishing royalties in South Africa — real per-copy earnings compared, with numbers showing which route pays more and when.',
+  title: 'Traditional vs Self-Publishing Royalties in South Africa',
+  description: 'Compare royalty rates between traditional and self-publishing in South Africa — typical splits, real take-home numbers, and which model actually pays more.',
   category: 'Publishing Tips',
   readTime: '6 min read',
   datePublished: '2026-02-05',
