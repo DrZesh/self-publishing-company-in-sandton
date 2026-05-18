@@ -71,7 +71,10 @@ export default function AdminQuoteBuilder() {
     setShowModeModal(false);
     if (!quoteId) {
       // Create new quote draft
-      createQuoteMutation.mutate({ mode: selectedMode, contact_id: initialContactId });
+      createQuoteMutation.mutate({ 
+        mode: selectedMode, 
+        contact_id: contact?.id || initialContactId 
+      });
     }
   };
 
@@ -79,8 +82,8 @@ export default function AdminQuoteBuilder() {
     mutationFn: async (data) => {
       const result = await base44.functions.invoke('quoteActions', {
         action: 'create',
-        contact_id: initialContactId,
-        valid_until: data.valid_until,
+        contact_id: data.contact_id,
+        valid_until: data.valid_until || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
         include_vat: true,
         discount_amount: 0,
         notes: '',
@@ -91,8 +94,8 @@ export default function AdminQuoteBuilder() {
     },
     onSuccess: (quote) => {
       toast.success('Quote created');
-      navigate(`/admin/quotes/new?quote_id=${quote.id}`);
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      // Reload page with new quote ID
+      window.location.href = `/admin/quotes/new?quote_id=${quote.id}`;
     },
   });
 
@@ -169,8 +172,7 @@ export default function AdminQuoteBuilder() {
         toast.error('Please add at least one line item');
         return;
       }
-      const totals = calculateTotals();
-      await base44.functions.invoke('quoteActions', {
+      const result = await base44.functions.invoke('quoteActions', {
         action: 'update',
         quote_id: quoteId,
         contact_id: contactId,
@@ -181,6 +183,10 @@ export default function AdminQuoteBuilder() {
         terms: quoteData?.terms,
         line_items: lineItems,
       });
+      // Update local state with saved data
+      if (result.data?.quote) {
+        setQuoteData(result.data.quote);
+      }
       toast.success('Quote saved');
     } catch (error) {
       console.error('Save error:', error);
@@ -328,9 +334,7 @@ export default function AdminQuoteBuilder() {
               onValueChange={(value) => {
                 const selected = contacts.find(c => c.id === value);
                 setContact(selected);
-                if (!quoteData) {
-                  setQuoteData({ ...quoteData, contact_id: value });
-                }
+                setQuoteData({ ...quoteData, contact_id: value });
               }}
             >
               <SelectTrigger className="w-full max-w-md">
