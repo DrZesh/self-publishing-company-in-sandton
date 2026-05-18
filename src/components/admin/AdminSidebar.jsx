@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Inbox, Target, Users, Settings, 
-  BookOpen, BarChart2, Search, X, ChevronRight, Columns
+  BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -11,7 +11,9 @@ const NAV_ITEMS = [
   { label: 'Submissions', path: '/admin/submissions', icon: Inbox },
   { label: 'Leads', path: '/admin/leads', icon: Target },
   { label: 'Pipeline', path: '/admin/pipeline', icon: Columns },
+  { label: 'Quotes', path: '/admin/quotes', icon: FileText },
   { label: 'Contacts', path: '/admin/contacts', icon: Users },
+  { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
   { label: 'Services', path: '/admin/services', icon: BookOpen },
   { label: 'SEO Analytics', path: '/admin/seo', icon: BarChart2 },
   { label: 'Search Console', path: '/admin/search-console', icon: Search },
@@ -50,7 +52,7 @@ export default function AdminSidebar({ open, onClose }) {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {NAV_ITEMS.map(({ label, path, icon: Icon }) => {
-          const active = location.pathname === path;
+          const active = location.pathname === path || location.pathname.startsWith(path + '/');
           const badge = label === 'Submissions' ? unreadCount : label === 'Leads' ? openLeadCount : 0;
           return (
             <Link

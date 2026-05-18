@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Search, Plus, ChevronRight, X, Mail, Phone } from 'lucide-react';
+import { Search, Plus, ChevronRight, X, Mail, Phone, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
 
@@ -158,6 +159,7 @@ function ContactModal({ contact, onClose, onSave, onDelete }) {
 }
 
 export default function AdminContacts() {
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -266,7 +268,7 @@ export default function AdminContacts() {
               </thead>
               <tbody>
                 {filtered.map(c => (
-                  <tr key={c.id} onClick={() => { setModalContact(c); setShowModal(true); }}
+                  <tr key={c.id} onClick={() => navigate(`/admin/contacts/detail?id=${c.id}`)}
                     className="border-b border-black/5 hover:bg-[#faf8f4] cursor-pointer transition-colors">
                     <td className="px-4 py-3">
                       <p className="font-semibold text-[#1A1208]">{c.full_name}</p>

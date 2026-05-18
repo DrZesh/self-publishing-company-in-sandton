@@ -29,13 +29,9 @@ export default function QuoteView() {
     if (!confirm(response === 'accept' ? 'Accept this quote?' : 'Decline this quote?')) return;
     setResponding(true);
     const res = await base44.functions.invoke('quoteActions', { action: 'respond', quote_id: id, token, response });
-    if (res.data?.success) {
-      setQuote(res.data.quote);
-    }
+    if (res.data?.success) setQuote(res.data.quote);
     setResponding(false);
   };
-
-  const handlePrint = () => window.print();
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8f7f4]">
@@ -59,7 +55,6 @@ export default function QuoteView() {
   return (
     <div className="min-h-screen bg-[#f8f7f4] py-10 px-4 print:bg-white print:py-0">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:shadow-none print:rounded-none">
-        {/* Header */}
         <div className="bg-[#1A1208] px-10 py-8 print:py-6">
           <div className="flex items-start justify-between">
             <div>
@@ -75,7 +70,6 @@ export default function QuoteView() {
           </div>
         </div>
 
-        {/* Status Banner */}
         {quote.status === 'Accepted' && (
           <div className="bg-emerald-50 border-b border-emerald-100 px-10 py-3 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-emerald-500" />
@@ -89,24 +83,21 @@ export default function QuoteView() {
           </div>
         )}
 
-        {/* Bill To */}
         <div className="px-10 py-6 border-b border-black/5">
           <div className="text-xs font-semibold text-[#B87333] uppercase tracking-wide mb-2">Prepared for</div>
           <div className="text-lg font-bold text-[#1A1208]">{contact.full_name}</div>
           {contact.email && <div className="text-sm text-black/50">{contact.email}</div>}
           {contact.phone && <div className="text-sm text-black/50">{contact.phone}</div>}
-          {contact.company && <div className="text-sm text-black/50">{contact.company}</div>}
         </div>
 
-        {/* Line Items */}
         <div className="px-10 py-6">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-[#f8f7f4] rounded-lg">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide rounded-l-lg">Description</th>
+              <tr className="bg-[#f8f7f4]">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">Description</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-black/40 uppercase tracking-wide">Qty</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-black/40 uppercase tracking-wide">Unit Price</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold text-black/40 uppercase tracking-wide rounded-r-lg">Total</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-black/40 uppercase tracking-wide">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -121,23 +112,13 @@ export default function QuoteView() {
             </tbody>
           </table>
 
-          {/* Totals */}
           <div className="mt-4 max-w-xs ml-auto space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-black/50">Subtotal</span>
-              <span>R {Number(quote.subtotal).toFixed(2)}</span>
-            </div>
+            <div className="flex justify-between text-sm"><span className="text-black/50">Subtotal</span><span>R {Number(quote.subtotal).toFixed(2)}</span></div>
             {quote.discount_amount > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-black/50">Discount</span>
-                <span className="text-red-600">- R {Number(quote.discount_amount).toFixed(2)}</span>
-              </div>
+              <div className="flex justify-between text-sm"><span className="text-black/50">Discount</span><span className="text-red-600">- R {Number(quote.discount_amount).toFixed(2)}</span></div>
             )}
             {quote.include_vat && (
-              <div className="flex justify-between text-sm">
-                <span className="text-black/50">VAT ({quote.vat_rate}%)</span>
-                <span>R {Number(quote.vat_amount).toFixed(2)}</span>
-              </div>
+              <div className="flex justify-between text-sm"><span className="text-black/50">VAT ({quote.vat_rate}%)</span><span>R {Number(quote.vat_amount).toFixed(2)}</span></div>
             )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t-2 border-[#B87333]">
               <span className="text-[#1A1208]">TOTAL</span>
@@ -146,7 +127,6 @@ export default function QuoteView() {
           </div>
         </div>
 
-        {/* Notes */}
         {quote.notes && (
           <div className="px-10 pb-4">
             <div className="bg-[#faf8f4] rounded-xl p-4">
@@ -156,7 +136,6 @@ export default function QuoteView() {
           </div>
         )}
 
-        {/* Terms */}
         {quote.terms && (
           <div className="px-10 pb-6">
             <div className="text-xs font-semibold text-black/40 uppercase tracking-wide mb-2">Payment Terms</div>
@@ -164,7 +143,6 @@ export default function QuoteView() {
           </div>
         )}
 
-        {/* CTA Buttons */}
         {!isClosed && (
           <div className="px-10 py-6 bg-[#f8f7f4] border-t border-black/5 print:hidden">
             <div className="flex flex-col sm:flex-row gap-3">
@@ -176,7 +154,7 @@ export default function QuoteView() {
                 className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-red-200 text-red-600 rounded-xl font-semibold hover:bg-red-50 disabled:opacity-50 transition-colors">
                 <XCircle className="w-5 h-5" /> Decline
               </button>
-              <button onClick={handlePrint}
+              <button onClick={() => window.print()}
                 className="flex items-center justify-center gap-2 px-5 py-3 border border-black/15 text-black/60 rounded-xl font-semibold hover:bg-white transition-colors">
                 <Download className="w-4 h-4" /> Print / PDF
               </button>
@@ -185,13 +163,12 @@ export default function QuoteView() {
         )}
         {isClosed && (
           <div className="px-10 py-4 bg-[#f8f7f4] border-t border-black/5 print:hidden flex justify-center">
-            <button onClick={handlePrint} className="flex items-center gap-2 px-5 py-2.5 border border-black/15 text-black/60 rounded-xl text-sm font-semibold hover:bg-white">
+            <button onClick={() => window.print()} className="flex items-center gap-2 px-5 py-2.5 border border-black/15 text-black/60 rounded-xl text-sm font-semibold hover:bg-white">
               <Download className="w-4 h-4" /> Download / Print
             </button>
           </div>
         )}
 
-        {/* Footer */}
         <div className="px-10 py-4 text-center border-t border-black/5">
           <div className="text-xs text-black/30">Creative Books SA · Proudly South African · www.creativebooks.co.za</div>
         </div>
