@@ -25,8 +25,8 @@ export default function SelfPublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self-Publishing Companies in South Africa | What to Look For"
-        description="How to choose a self-publishing company in South Africa — what services matter, what questions to ask, and red flags to avoid."
+        title="Self-Publishing Companies in SA from R21,000 | Creative Books SA"
+        description="Self-publishing companies in South Africa for first-time and experienced authors. Bronze, Silver, Gold packages from R21,000 — editing, design, printing."
         keywords="self-publishing companies in South Africa, self publishing services, self publish a book South Africa"
         canonical="https://www.creativebooks.co.za/selfpublishingcompaniesinsouthafrica"
         schema={schema}

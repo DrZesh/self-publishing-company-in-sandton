@@ -33,8 +33,8 @@ export default function SelfPublishingSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self-Publishing in South Africa | Keep Your Rights & Royalties"
-        description="Self-publish your book in South Africa and keep 100% of your rights and royalties. Editing, design, printing and distribution — all in one place."
+        title="Self-Publishing in South Africa from R21,000 | Full Guide"
+        description="How self-publishing works in South Africa — ISBN, editing, cover design, printing, distribution. Full-service packages from R21,000 or pick à la carte."
         keywords="self publishing South Africa, self publish a book South Africa, self publishing services South Africa, how to self publish in South Africa"
         canonical="https://www.creativebooks.co.za/selfpublishingsouthafrica"
         schema={schema}
