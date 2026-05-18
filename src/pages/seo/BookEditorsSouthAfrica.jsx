@@ -25,8 +25,8 @@ export default function BookEditorsSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Editors in South Africa | Copy Editing & Proofreading"
-        description="Hire professional book editors in South Africa for novels, memoirs, non-fiction and academic work. Copy editing, proofreading, manuscript review."
+        title="Book Editors in South Africa | From R0.30 Per Word"
+        description="Hire a professional book editor in South Africa from R0.30 per word — developmental, line and copy editing for fiction, non-fiction and memoir manuscripts."
         keywords="book editors in South Africa, book editors near me, copy editing services, proofreading services"
         canonical="https://www.creativebooks.co.za/bookeditorsinsouthafrica"
         schema={schema}

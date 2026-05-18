@@ -33,8 +33,8 @@ export default function BookPublishersJohannesburg() {
   return (
     <>
       <PageMeta
-        title="Book Publishers in Johannesburg | Local Publishing Team"
-        description="Johannesburg-based book publishers offering editing, cover design, printing and distribution. In-person consultations available. Free quote within 24 hours."
+        title="Book Publishers in Johannesburg from R21,000"
+        description="Johannesburg book publishers offering editing, cover design, printing and ISBN registration. In-person consultations at our Sandton studio. Packages from R21,000."
         keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
         canonical="https://www.creativebooks.co.za/bookpublishersjohannesburg"
         schema={schema}

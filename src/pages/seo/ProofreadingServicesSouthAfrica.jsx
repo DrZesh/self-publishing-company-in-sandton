@@ -33,8 +33,8 @@ export default function ProofreadingServicesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Proofreading Services South Africa | Books & Academic"
-        description="Expert proofreaders in South Africa for books, theses, dissertations and business documents. SA English specialists. Fast turnaround. Free quote."
+        title="Proofreading Services in SA from R0.25 Per Word"
+        description="Professional manuscript proofreading services across South Africa from R0.25 per word. Final-stage error checking before your book goes to print or upload."
         keywords="proofreading services South Africa, proofreading South Africa, book proofreading South Africa, academic proofreading South Africa, proofreader Johannesburg"
         canonical="https://www.creativebooks.co.za/proofreadingservicessouthafrica"
         schema={schema}
