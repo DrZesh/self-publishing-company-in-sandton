@@ -513,6 +513,18 @@ const AuthenticatedApp = () => {
         <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
         <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
         
+        {/* Dash-URL legacy redirects */}
+        <Route path="/6x9-book-size-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
+        <Route path="/a5-book-size-johannesburg" element={<Navigate to="/printing/a5" replace />} />
+        <Route path="/book-printing-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
+        <Route path="/book-publishing-south-africa" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
+        <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/book-cover-design-south-africa" element={<Navigate to="/bookcoverdesignsouthafrica" replace />} />
+        <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
+        <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
+        <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbnregistration" replace />} />
+
         {/* 301 Redirects for deleted "New" SEO pages */}
         <Route path="/publishingcompaniesinsouthafrica" element={<Navigate to="/publishingcompaniessouthafrica" replace />} />
         <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
