@@ -1,0 +1,49 @@
+{
+  "name": "QuoteSignature",
+  "type": "object",
+  "properties": {
+    "quote_id": {
+      "type": "string",
+      "description": "Quote ID"
+    },
+    "signer_name": {
+      "type": "string"
+    },
+    "signer_email": {
+      "type": "string"
+    },
+    "signer_ip": {
+      "type": "string"
+    },
+    "signer_user_agent": {
+      "type": "string"
+    },
+    "signature_image_url": {
+      "type": "string",
+      "description": "URL to signature image"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signature_method": {
+      "type": "string",
+      "enum": [
+        "drawn",
+        "typed"
+      ],
+      "description": "How signature was created"
+    },
+    "legal_acknowledgment_checked": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "quote_id",
+    "signer_name",
+    "signer_email",
+    "signature_image_url",
+    "signed_at"
+  ]
+}

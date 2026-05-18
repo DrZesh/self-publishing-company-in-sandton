@@ -171,7 +171,7 @@ import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
 import SeoAnalytics from './pages/admin/SeoAnalytics';
 import AdminPipeline from './pages/admin/AdminPipeline';
 import AdminQuotes from './pages/admin/AdminQuotes';
-import AdminQuoteBuilder from './pages/admin/AdminQuoteBuilder';
+import AdminQuoteBuilder from './pages/admin/AdminQuoteBuilder.jsx';
 import AdminEmailTemplates from './pages/admin/AdminEmailTemplates';
 import AdminContactDetail from './pages/admin/AdminContactDetail';
 import QuoteView from './pages/QuoteView';
@@ -561,6 +561,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
       <Route path="/admin/pipeline" element={<ProtectedAdminRoute><AdminPipeline /></ProtectedAdminRoute>} />
       <Route path="/admin/quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
+      <Route path="/admin/quotes/new" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/quotes/:id" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/email-templates" element={<ProtectedAdminRoute><AdminEmailTemplates /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts/detail" element={<ProtectedAdminRoute><AdminContactDetail /></ProtectedAdminRoute>} />

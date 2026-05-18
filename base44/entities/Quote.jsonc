@@ -1,0 +1,148 @@
+{
+  "name": "Quote",
+  "type": "object",
+  "properties": {
+    "quote_number": {
+      "type": "string",
+      "description": "Auto-sequential quote number e.g. CB-2026-0001"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "contact_snapshot": {
+      "type": "object",
+      "description": "Snapshot of contact details at time of quote"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "premium"
+      ],
+      "default": "standard",
+      "description": "Quote generation mode"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent",
+        "Delivered",
+        "Opened",
+        "Viewed",
+        "Accepted",
+        "Declined",
+        "Expired"
+      ],
+      "default": "Draft"
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0
+    },
+    "discount_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "vat_rate": {
+      "type": "number",
+      "default": 15
+    },
+    "vat_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "include_vat": {
+      "type": "boolean",
+      "default": true
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When quote expires (auto-calculated)"
+    },
+    "view_token": {
+      "type": "string",
+      "description": "Unique token for public view link"
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "URL to generated PDF"
+    },
+    "book_title": {
+      "type": "string",
+      "description": "Client's book title"
+    },
+    "project_understanding_text": {
+      "type": "string",
+      "description": "Personalised project understanding (Premium mode)"
+    },
+    "intro_video_url": {
+      "type": "string",
+      "description": "Intro video URL (Premium mode)"
+    },
+    "primary_package_id": {
+      "type": "string",
+      "description": "Selected package ID (Premium mode)"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "delivered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "accepted_signature_url": {
+      "type": "string",
+      "description": "URL to signature image"
+    },
+    "declined_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "declined_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal/client notes"
+    },
+    "terms": {
+      "type": "string",
+      "description": "Payment terms shown on quote"
+    },
+    "last_viewer_ip": {
+      "type": "string"
+    },
+    "last_viewer_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "contact_id",
+    "quote_number"
+  ]
+}

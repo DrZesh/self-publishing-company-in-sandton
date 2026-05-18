@@ -1,363 +1,457 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Trash2, Send, Save, Eye, ArrowLeft, ChevronDown, X } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, GripVertical, Save, Send, Eye, FileText, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-
-const DEFAULT_TERMS = `Payment is due within 14 days of invoice date.
-Banking Details:
-Bank: FNB | Account Name: Creative Books SA
-Account Number: 62XXXXXXXXX | Branch Code: 250655
-Reference: Your Quote Number`;
-
-function ContactSearch({ contacts, value, onChange }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState('');
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const filtered = contacts.filter(c => !q || c.full_name?.toLowerCase().includes(q.toLowerCase()) || c.email?.toLowerCase().includes(q.toLowerCase()));
-  const selected = contacts.find(c => c.id === value);
-
-  return (
-    <div ref={ref} className="relative">
-      <button type="button" onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333] bg-white text-left">
-        {selected ? (
-          <div>
-            <div className="font-semibold text-[#1A1208]">{selected.full_name}</div>
-            <div className="text-xs text-black/40">{selected.email}</div>
-          </div>
-        ) : <span className="text-black/40">Select a contact…</span>}
-        <ChevronDown className="w-4 h-4 text-black/30 flex-shrink-0" />
-      </button>
-      {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-black/10 rounded-xl shadow-xl overflow-hidden">
-          <div className="p-2 border-b border-black/8">
-            <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search contacts…"
-              className="w-full px-3 py-2 text-sm border border-black/10 rounded-lg focus:outline-none focus:border-[#B87333]" />
-          </div>
-          <div className="max-h-60 overflow-y-auto">
-            {filtered.slice(0, 20).map(c => (
-              <button key={c.id} type="button" onClick={() => { onChange(c.id); setOpen(false); setQ(''); }}
-                className="w-full text-left px-4 py-3 hover:bg-[#faf8f4] transition-colors border-b border-black/5 last:border-0">
-                <div className="font-medium text-sm text-[#1A1208]">{c.full_name}</div>
-                <div className="text-xs text-black/40">{c.email}{c.phone ? ` · ${c.phone}` : ''}</div>
-              </button>
-            ))}
-            {filtered.length === 0 && <div className="px-4 py-6 text-center text-sm text-black/40">No contacts found</div>}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+import { format } from 'date-fns';
 
 export default function AdminQuoteBuilder() {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const isNew = id === 'new';
+  const [searchParams] = useSearchParams();
+  const initialContactId = searchParams.get('contact_id');
+  const quoteId = searchParams.get('quote_id');
 
-  const [contacts, setContacts] = useState([]);
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(!isNew);
-  const [saving, setSaving] = useState(false);
-  const [sending, setSending] = useState(false);
+  const queryClient = useQueryClient();
+  const [mode, setMode] = useState('standard');
+  const [showModeModal, setShowModeModal] = useState(!quoteId);
+  const [quoteData, setQuoteData] = useState(null);
+  const [lineItems, setLineItems] = useState([]);
+  const [contact, setContact] = useState(null);
 
-  const [contactId, setContactId] = useState('');
-  const [validUntil, setValidUntil] = useState(new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]);
-  const [includeVat, setIncludeVat] = useState(true);
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [notes, setNotes] = useState('');
-  const [terms, setTerms] = useState(DEFAULT_TERMS);
-  const [lineItems, setLineItems] = useState([{ description: '', quantity: 1, unit_price: 0, line_total: 0, service_id: null }]);
-  const [quote, setQuote] = useState(null);
-
-  useEffect(() => {
-    Promise.all([
-      base44.entities.Contact.list('-created_date', 500),
-      base44.entities.QuoteService.filter({ is_active: true }),
-    ]).then(([cs, svs]) => {
-      setContacts(cs);
-      setServices(svs);
-    });
-
-    if (!isNew) {
-      Promise.all([
-        base44.entities.Quote.filter({ id }),
-        base44.entities.QuoteLineItem.filter({ quote_id: id }),
-      ]).then(([qs, items]) => {
-        if (!qs.length) { navigate('/admin/quotes'); return; }
-        const q = qs[0];
-        setQuote(q);
-        setContactId(q.contact_id || '');
-        setValidUntil(q.valid_until || '');
-        setIncludeVat(q.include_vat !== false);
-        setDiscountAmount(q.discount_amount || 0);
-        setNotes(q.notes || '');
-        setTerms(q.terms || DEFAULT_TERMS);
-        items.sort((a, b) => a.sort_order - b.sort_order);
-        setLineItems(items.length ? items : [{ description: '', quantity: 1, unit_price: 0, line_total: 0 }]);
-        setLoading(false);
-      });
-    }
-  }, [id, isNew, navigate]);
-
-  const updateLine = (idx, field, val) => {
-    setLineItems(prev => prev.map((item, i) => {
-      if (i !== idx) return item;
-      const updated = { ...item, [field]: val };
-      if (field === 'quantity' || field === 'unit_price') {
-        const qty = field === 'quantity' ? Number(val) : Number(item.quantity);
-        const price = field === 'unit_price' ? Number(val) : Number(item.unit_price);
-        updated.line_total = parseFloat((qty * price).toFixed(2));
-      }
-      return updated;
-    }));
-  };
-
-  const applyService = (idx, svcId) => {
-    const svc = services.find(s => s.id === svcId);
-    if (!svc) return;
-    setLineItems(prev => prev.map((item, i) => {
-      if (i !== idx) return item;
-      const price = svc.default_price || 0;
-      return { ...item, service_id: svcId, description: svc.default_description || svc.name, unit_price: price, line_total: parseFloat((item.quantity * price).toFixed(2)) };
-    }));
-  };
-
-  const addLine = () => setLineItems(prev => [...prev, { description: '', quantity: 1, unit_price: 0, line_total: 0, service_id: null }]);
-  const removeLine = (idx) => setLineItems(prev => prev.filter((_, i) => i !== idx));
-
-  const subtotal = lineItems.reduce((s, i) => s + (Number(i.line_total) || 0), 0);
-  const disc = Number(discountAmount) || 0;
-  const taxable = subtotal - disc;
-  const vat = includeVat ? taxable * 0.15 : 0;
-  const total = taxable + vat;
-
-  const buildPayload = () => ({
-    contact_id: contactId, valid_until: validUntil, include_vat: includeVat,
-    discount_amount: disc, notes, terms,
-    line_items: lineItems.map(({ description, quantity, unit_price, line_total, service_id }) => ({ description, quantity: Number(quantity), unit_price: Number(unit_price), line_total: Number(line_total), service_id })),
+  // Fetch contacts for dropdown
+  const { data: contacts = [] } = useQuery({
+    queryKey: ['contacts'],
+    queryFn: () => base44.entities.Contact.list('-created_date', 100),
   });
 
-  const handleSave = async () => {
-    if (!contactId) { toast.error('Please select a contact'); return; }
-    setSaving(true);
-    const payload = buildPayload();
-    if (isNew) {
-      const res = await base44.functions.invoke('quoteActions', { action: 'create', ...payload });
-      if (res.data?.quote) {
-        toast.success('Quote saved as draft');
-        navigate(`/admin/quotes/${res.data.quote.id}`, { replace: true });
-      }
-    } else {
-      const res = await base44.functions.invoke('quoteActions', { action: 'update', quote_id: id, ...payload });
-      if (res.data?.quote) { setQuote(res.data.quote); toast.success('Quote updated'); }
+  // Fetch services
+  const { data: services = [] } = useQuery({
+    queryKey: ['quote-services'],
+    queryFn: () => base44.entities.QuoteService.filter({ is_active: true }, 'sort_order'),
+  });
+
+  // Fetch existing quote if editing
+  useEffect(() => {
+    if (quoteId) {
+      base44.entities.Quote.filter({ id: quoteId }).then(quotes => {
+        if (quotes.length) {
+          const q = quotes[0];
+          setQuoteData(q);
+          setMode(q.mode || 'standard');
+          setQuoteData(q);
+        }
+      });
+      base44.entities.QuoteLineItem.filter({ quote_id: quoteId }).then(items => {
+        setLineItems(items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+      });
+    } else if (initialContactId) {
+      base44.entities.Contact.filter({ id: initialContactId }).then(con => {
+        if (con.length) setContact(con[0]);
+      });
     }
-    setSaving(false);
+  }, [quoteId, initialContactId]);
+
+  const handleModeSelect = (selectedMode) => {
+    setMode(selectedMode);
+    setShowModeModal(false);
+    if (!quoteId) {
+      // Create new quote draft
+      createQuoteMutation.mutate({ mode: selectedMode, contact_id: initialContactId });
+    }
   };
+
+  const createQuoteMutation = useMutation({
+    mutationFn: async (data) => {
+      const quotes = await base44.entities.Quote.list('-created_date', 1);
+      const nextNum = quotes.length ? parseInt(quotes[0].quote_number.split('-').pop()) + 1 : 1;
+      const quote_number = `CB-2026-${String(nextNum).padStart(4, '0')}`;
+      
+      const newQuote = await base44.entities.Quote.create({
+        ...data,
+        quote_number,
+        status: 'Draft',
+        vat_rate: 15,
+        include_vat: true,
+        view_token: Math.random().toString(36).substring(2) + Date.now().toString(36),
+      });
+      return newQuote;
+    },
+    onSuccess: (quote) => {
+      toast.success('Quote created');
+      navigate(`/admin/quotes/new?quote_id=${quote.id}`);
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+    },
+  });
+
+  const saveQuoteMutation = useMutation({
+    mutationFn: async (data) => {
+      if (quoteId) {
+        return base44.entities.Quote.update(quoteId, data);
+      }
+      return null;
+    },
+    onSuccess: () => {
+      toast.success('Quote saved');
+    },
+  });
+
+  const addLineItem = () => {
+    const newItem = {
+      description: '',
+      quantity: 1,
+      unit_price: 0,
+      line_total: 0,
+      sort_order: lineItems.length,
+      is_optional: false,
+      is_selected: true,
+    };
+    setLineItems([...lineItems, newItem]);
+  };
+
+  const updateLineItem = (index, field, value) => {
+    const updated = [...lineItems];
+    updated[index] = { ...updated[index], [field]: value };
+    if (field === 'quantity' || field === 'unit_price') {
+      updated[index].line_total = (updated[index].quantity || 0) * (updated[index].unit_price || 0);
+    }
+    setLineItems(updated);
+  };
+
+  const removeLineItem = (index) => {
+    setLineItems(lineItems.filter((_, i) => i !== index));
+  };
+
+  const handleServiceSelect = (index, serviceId) => {
+    const service = services.find(s => s.id === serviceId);
+    if (service) {
+      updateLineItem(index, 'service_id', serviceId);
+      updateLineItem(index, 'description', service.default_description);
+      updateLineItem(index, 'unit_price', service.default_price);
+    }
+  };
+
+  const calculateTotals = () => {
+    const subtotal = lineItems.reduce((sum, item) => sum + (item.line_total || 0), 0);
+    const discount = quoteData?.discount_amount || 0;
+    const taxable = subtotal - discount;
+    const vatAmount = quoteData?.include_vat ? (taxable * 0.15) : 0;
+    const total = taxable + vatAmount;
+    return { subtotal, discount, vatAmount, total };
+  };
+
+  const totals = calculateTotals();
 
   const handleSend = async () => {
-    if (!contactId) { toast.error('Please select a contact'); return; }
-    setSending(true);
-    let qId = id;
-    if (isNew || quote?.status === 'Draft') {
-      const payload = buildPayload();
-      const saveRes = await base44.functions.invoke('quoteActions', { action: isNew ? 'create' : 'update', ...(isNew ? {} : { quote_id: id }), ...payload });
-      if (saveRes.data?.quote) { qId = saveRes.data.quote.id; setQuote(saveRes.data.quote); }
+    try {
+      // Save quote first
+      await saveQuoteMutation.mutateAsync({
+        ...quoteData,
+        subtotal: totals.subtotal,
+        vat_amount: totals.vatAmount,
+        total: totals.total,
+      });
+
+      // Call backend function to generate PDF and send
+      const result = await base44.functions.invoke('quoteActions', {
+        action: 'send',
+        quote_id: quoteId,
+      });
+
+      toast.success('Quote sent successfully!');
+      navigate('/admin/quotes');
+    } catch (error) {
+      toast.error(error.message || 'Failed to send quote');
     }
-    const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: qId });
-    if (res.data?.success) {
-      toast.success('Quote sent to client!');
-      setQuote(q => ({ ...q, status: 'Sent' }));
-      if (isNew) navigate(`/admin/quotes/${qId}`, { replace: true });
-    } else {
-      toast.error('Failed to send quote');
-    }
-    setSending(false);
   };
 
-  const viewLink = quote ? `/quote/view/${quote.id}/${quote.view_token}` : null;
+  if (showModeModal) {
+    return (
+      <AdminLayout>
+        <div className="max-w-3xl mx-auto py-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl">Choose Quote Type</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div
+                onClick={() => handleModeSelect('standard')}
+                className="p-6 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#B87333] transition-colors"
+              >
+                <div className="flex items-start gap-4">
+                  <FileText className="w-8 h-8 text-[#B87333]" />
+                  <div>
+                    <h3 className="font-semibold text-lg">Standard Quote (PDF)</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Professional PDF quote — ideal for printing jobs, à la carte services, and repeat clients.
+                      Clean, straightforward format with line items and totals.
+                    </p>
+                    <Badge className="mt-2 bg-green-100 text-green-700">Recommended for small jobs</Badge>
+                  </div>
+                </div>
+              </div>
 
-  if (loading) return (
-    <AdminLayout>
-      <div className="space-y-4 max-w-4xl mx-auto">
-        {[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-black/5 rounded-2xl animate-pulse" />)}
-      </div>
-    </AdminLayout>
-  );
-
-  const selectedContact = contacts.find(c => c.id === contactId);
+              <div
+                onClick={() => handleModeSelect('premium')}
+                className="p-6 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-[#B87333] transition-colors"
+              >
+                <div className="flex items-start gap-4">
+                  <Sparkles className="w-8 h-8 text-[#B87333]" />
+                  <div>
+                    <h3 className="font-semibold text-lg">Premium Proposal (Interactive)</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Interactive web proposal with packages, add-ons, timeline, and e-signature.
+                      Creates a memorable client experience for high-value self-publishing packages.
+                    </p>
+                    <Badge className="mt-2 bg-purple-100 text-purple-700">Best for package sales</Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link to="/admin/quotes" className="p-2 hover:bg-black/5 rounded-lg"><ArrowLeft className="w-5 h-5" /></Link>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/admin/quotes')}>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
             <div>
-              <h1 className="text-2xl font-bold text-[#1A1208]">{isNew ? 'New Quote' : quote?.quote_number}</h1>
-              {quote?.status && (
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  quote.status === 'Accepted' ? 'bg-emerald-100 text-emerald-700' :
-                  quote.status === 'Sent' ? 'bg-blue-100 text-blue-700' :
-                  quote.status === 'Viewed' ? 'bg-purple-100 text-purple-700' :
-                  quote.status === 'Declined' ? 'bg-red-100 text-red-700' :
-                  'bg-gray-100 text-gray-600'
-                }`}>{quote.status}</span>
-              )}
+              <h1 className="text-2xl font-bold text-gray-900">
+                {quoteId ? `Edit Quote ${quoteData?.quote_number}` : 'Create New Quote'}
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant={mode === 'premium' ? 'default' : 'secondary'}>
+                  {mode === 'premium' ? 'Premium Proposal' : 'Standard PDF Quote'}
+                </Badge>
+                <Button variant="link" className="text-xs" onClick={() => setShowModeModal(true)}>
+                  Switch Mode
+                </Button>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {viewLink && (
-              <a href={viewLink} target="_blank" rel="noreferrer"
-                className="flex items-center gap-2 px-3 py-2 border border-black/15 rounded-xl text-sm font-medium hover:bg-black/5">
-                <Eye className="w-4 h-4" /> Preview
-              </a>
-            )}
-            <button onClick={handleSave} disabled={saving}
-              className="flex items-center gap-2 px-3 py-2 border border-black/15 rounded-xl text-sm font-medium hover:bg-black/5 disabled:opacity-50">
-              <Save className="w-4 h-4" /> {saving ? 'Saving…' : 'Save Draft'}
-            </button>
-            <button onClick={handleSend} disabled={sending || ['Accepted','Declined'].includes(quote?.status)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428] disabled:opacity-50 transition-colors">
-              <Send className="w-4 h-4" /> {sending ? 'Sending…' : 'Send Quote'}
-            </button>
+            <Button variant="outline" onClick={() => toast.info('Preview coming soon')}>
+              <Eye className="w-4 h-4 mr-2" /> Preview
+            </Button>
+            <Button onClick={handleSend} disabled={!lineItems.length || !quoteData?.contact_id}>
+              <Send className="w-4 h-4 mr-2" /> Send Quote
+            </Button>
           </div>
         </div>
 
-        <div className="space-y-5">
-          <div className="bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-black/60 uppercase tracking-wide mb-4">Client & Quote Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Bill To *</label>
-                <ContactSearch contacts={contacts} value={contactId} onChange={setContactId} />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Valid Until</label>
-                <input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" />
-              </div>
-            </div>
-            {selectedContact && (
-              <div className="mt-4 p-3 bg-[#faf8f4] rounded-xl text-sm text-black/60 space-y-0.5">
-                <div className="font-semibold text-[#1A1208]">{selectedContact.full_name}</div>
-                {selectedContact.email && <div>{selectedContact.email}</div>}
-                {selectedContact.phone && <div>{selectedContact.phone}</div>}
-                {selectedContact.book_title && <div className="text-[#B87333]">📖 {selectedContact.book_title}</div>}
+        {/* Contact Selection */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-base">Client</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select
+              value={quoteData?.contact_id || contact?.id || ''}
+              onValueChange={(value) => {
+                const selected = contacts.find(c => c.id === value);
+                setContact(selected);
+                if (!quoteData) {
+                  setQuoteData({ ...quoteData, contact_id: value });
+                }
+              }}
+            >
+              <SelectTrigger className="w-full max-w-md">
+                <SelectValue placeholder="Select a contact" />
+              </SelectTrigger>
+              <SelectContent>
+                {contacts.map(c => (
+                  <SelectItem key={c.id} value={c.id}>{c.full_name} ({c.email})</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {contact && (
+              <div className="mt-3 text-sm text-gray-500">
+                {contact.company && <p>{contact.company}</p>}
+                {contact.phone && <p>{contact.phone}</p>}
               </div>
             )}
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-black/60 uppercase tracking-wide mb-4">Line Items</h2>
-            <div className="space-y-3">
-              <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-black/40 uppercase tracking-wide px-1">
-                <div className="col-span-5">Description</div>
-                <div className="col-span-2 text-center">Qty</div>
-                <div className="col-span-2 text-right">Unit Price</div>
-                <div className="col-span-2 text-right">Total</div>
-                <div className="col-span-1" />
+        {/* Quote Details */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-base">Quote Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Book Title</Label>
+                <Input
+                  value={quoteData?.book_title || ''}
+                  onChange={(e) => setQuoteData({ ...quoteData, book_title: e.target.value })}
+                  placeholder="e.g. The Journey Home"
+                />
               </div>
-              {lineItems.map((item, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-start">
-                  <div className="col-span-5">
-                    {services.length > 0 && (
-                      <select value={item.service_id || ''} onChange={e => applyService(idx, e.target.value)}
-                        className="w-full px-2 py-1.5 mb-1 border border-black/10 rounded-lg text-xs text-black/50 focus:outline-none focus:border-[#B87333] bg-white">
-                        <option value="">— Select service —</option>
-                        {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                      </select>
-                    )}
-                    <input value={item.description} onChange={e => updateLine(idx, 'description', e.target.value)}
-                      placeholder="Description…"
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" />
+              <div>
+                <Label>Valid Until</Label>
+                <Input
+                  type="date"
+                  value={quoteData?.valid_until || ''}
+                  onChange={(e) => setQuoteData({ ...quoteData, valid_until: e.target.value })}
+                />
+              </div>
+            </div>
+            {mode === 'premium' && (
+              <div>
+                <Label className="text-red-600">Project Understanding (Required for Premium)</Label>
+                <Textarea
+                  value={quoteData?.project_understanding_text || ''}
+                  onChange={(e) => setQuoteData({ ...quoteData, project_understanding_text: e.target.value })}
+                  placeholder="Write a personalised paragraph about the client's project..."
+                  className="h-24"
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Line Items */}
+        <Card className="mb-6">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base">Line Items</CardTitle>
+            <Button size="sm" onClick={addLineItem}>
+              <Plus className="w-4 h-4 mr-2" /> Add Item
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {lineItems.map((item, index) => (
+                <div key={index} className="flex items-end gap-3 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex-1">
+                    <Label className="text-xs">Service</Label>
+                    <Select onValueChange={(v) => handleServiceSelect(index, v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {services.map(s => (
+                          <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="col-span-2">
-                    <input type="number" value={item.quantity} onChange={e => updateLine(idx, 'quantity', e.target.value)} min="0"
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm text-center focus:outline-none focus:border-[#B87333]" />
+                  <div className="flex-1">
+                    <Label className="text-xs">Description</Label>
+                    <Input
+                      value={item.description}
+                      onChange={(e) => updateLineItem(index, 'description', e.target.value)}
+                    />
                   </div>
-                  <div className="col-span-2">
-                    <input type="number" value={item.unit_price} onChange={e => updateLine(idx, 'unit_price', e.target.value)} min="0" step="0.01"
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm text-right focus:outline-none focus:border-[#B87333]" />
+                  <div className="w-24">
+                    <Label className="text-xs">Qty</Label>
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => updateLineItem(index, 'quantity', Number(e.target.value))}
+                    />
                   </div>
-                  <div className="col-span-2">
-                    <div className="px-3 py-2 bg-[#faf8f4] rounded-xl text-sm text-right font-semibold text-[#1A1208]">
-                      R {Number(item.line_total).toFixed(2)}
+                  <div className="w-32">
+                    <Label className="text-xs">Unit Price</Label>
+                    <Input
+                      type="number"
+                      value={item.unit_price}
+                      onChange={(e) => updateLineItem(index, 'unit_price', Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="w-32">
+                    <Label className="text-xs">Total</Label>
+                    <div className="text-lg font-bold text-[#B87333]">
+                      R{(item.line_total || 0).toLocaleString()}
                     </div>
                   </div>
-                  <div className="col-span-1 flex justify-center pt-2">
-                    {lineItems.length > 1 && (
-                      <button onClick={() => removeLine(idx)} className="p-1 hover:bg-red-50 rounded-lg text-red-400">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeLineItem(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               ))}
-              <button onClick={addLine} className="flex items-center gap-2 text-[#B87333] text-sm font-semibold hover:bg-[#faf8f4] px-3 py-2 rounded-xl transition-colors">
-                <Plus className="w-4 h-4" /> Add Line Item
-              </button>
+              {!lineItems.length && (
+                <p className="text-center text-gray-400 py-8">No line items yet. Click "Add Item" to get started.</p>
+              )}
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="mt-6 pt-4 border-t border-black/8">
-              <div className="max-w-xs ml-auto space-y-2">
-                <div className="flex justify-between text-sm"><span className="text-black/50">Subtotal</span><span className="font-medium">R {subtotal.toFixed(2)}</span></div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-black/50">Discount (R)</span>
-                  <input type="number" value={discountAmount} onChange={e => setDiscountAmount(e.target.value)} min="0" step="0.01"
-                    className="w-24 px-2 py-1 border border-black/15 rounded-lg text-sm text-right focus:outline-none focus:border-[#B87333]" />
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2 text-black/50 cursor-pointer">
-                    <input type="checkbox" checked={includeVat} onChange={e => setIncludeVat(e.target.checked)} className="rounded" />
-                    VAT (15%)
-                  </label>
-                  <span className="font-medium">R {vat.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-base font-bold pt-2 border-t border-black/10">
-                  <span className="text-[#1A1208]">TOTAL</span>
-                  <span className="text-[#B87333]">R {total.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
-              <label className="block text-sm font-bold text-black/60 uppercase tracking-wide mb-3">Notes to Client</label>
-              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4}
-                placeholder="Any notes to include on the quote…"
-                className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333] resize-none" />
-            </div>
-            <div className="bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
-              <label className="block text-sm font-bold text-black/60 uppercase tracking-wide mb-3">Payment Terms</label>
-              <textarea value={terms} onChange={e => setTerms(e.target.value)} rows={4}
-                className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333] resize-none" />
-            </div>
-          </div>
-
-          {viewLink && (
-            <div className="bg-[#faf8f4] rounded-2xl border border-[#B87333]/20 p-4 flex items-center gap-3">
-              <div className="flex-1">
-                <div className="text-xs font-semibold text-black/50 uppercase tracking-wide mb-1">Public Quote Link</div>
-                <div className="text-sm text-[#B87333] font-mono break-all">{window.location.origin}{viewLink}</div>
-              </div>
-              <button onClick={() => { navigator.clipboard.writeText(window.location.origin + viewLink); toast.success('Link copied!'); }}
-                className="px-3 py-2 bg-[#B87333] text-white rounded-xl text-xs font-semibold whitespace-nowrap">
-                Copy Link
-              </button>
-            </div>
-          )}
+        {/* Notes & Terms */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                value={quoteData?.notes || ''}
+                onChange={(e) => setQuoteData({ ...quoteData, notes: e.target.value })}
+                placeholder="Internal notes or client message..."
+                className="h-24"
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Terms & Conditions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                value={quoteData?.terms || ''}
+                onChange={(e) => setQuoteData({ ...quoteData, terms: e.target.value })}
+                placeholder="Payment terms, delivery terms, etc."
+                className="h-24"
+              />
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Totals */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex justify-end">
+              <div className="w-80 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="font-medium">R{totals.subtotal.toLocaleString()}</span>
+                </div>
+                {quoteData?.include_vat && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">VAT (15%):</span>
+                    <span className="font-medium">R{totals.vatAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-bold border-t pt-2">
+                  <span>Total:</span>
+                  <span className="text-[#B87333]">R{totals.total.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );

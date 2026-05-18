@@ -1,0 +1,58 @@
+{
+  "name": "QuoteViewSession",
+  "type": "object",
+  "properties": {
+    "quote_id": {
+      "type": "string",
+      "description": "Quote ID being viewed"
+    },
+    "viewer_ip": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "string"
+    },
+    "session_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "session_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sections_viewed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of section IDs viewed"
+    },
+    "addons_toggled": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of add-on IDs toggled"
+    },
+    "time_on_page_seconds": {
+      "type": "number",
+      "default": 0
+    },
+    "came_from_email": {
+      "type": "boolean",
+      "default": false
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ]
+    }
+  },
+  "required": [
+    "quote_id",
+    "session_start"
+  ]
+}

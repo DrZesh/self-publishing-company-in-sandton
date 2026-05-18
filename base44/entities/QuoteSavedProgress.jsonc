@@ -1,0 +1,38 @@
+{
+  "name": "QuoteSavedProgress",
+  "type": "object",
+  "properties": {
+    "quote_id": {
+      "type": "string",
+      "description": "Quote ID"
+    },
+    "viewer_email": {
+      "type": "string"
+    },
+    "package_selected": {
+      "type": "string",
+      "description": "Selected package ID or name"
+    },
+    "addons_selected_json": {
+      "type": "object",
+      "description": "JSON of selected add-on IDs"
+    },
+    "last_section_viewed": {
+      "type": "string",
+      "description": "Last section ID viewed"
+    },
+    "return_token": {
+      "type": "string",
+      "description": "Secure token for return link"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "quote_id",
+    "viewer_email",
+    "return_token"
+  ]
+}
