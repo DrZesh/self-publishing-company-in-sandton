@@ -75,7 +75,7 @@ export default function ChildrensBookPackages() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Children's Book Publishing Packages South Africa"
+        title="Children's Book Publishing in 15×15, 20×20, 21×21cm"
         description="Children's book publishing packages for SA authors — illustration coordination, full-colour printing in 15×15, 20×20, 21×21cm formats. Free quote."
         canonical="https://www.creativebooks.co.za/childrensbookpackages"
       />

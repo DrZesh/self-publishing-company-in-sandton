@@ -73,7 +73,7 @@ export default function EbookPublishing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="eBook Publishing South Africa | EPUB, Kindle, Amazon"
+        title="eBook Publishing for Amazon, Kobo & Google Play"
         description="eBook publishing for SA authors — EPUB and MOBI conversion, Kindle formatting, Amazon, Kobo and Google Play distribution. Reach global readers."
         canonical="https://www.creativebooks.co.za/ebookpublishing"
       />

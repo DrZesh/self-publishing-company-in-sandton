@@ -98,7 +98,7 @@ export default function MiniPublishingPackage() {
   return (
     <>
       <PageMeta
-        title="Mini Publishing Package | À la Carte Author Services"
+        title="Mini Publishing Package | Pick the Services You Need"
         description="Flexible mini publishing package — choose only the services you need. Editing, design or printing without a full bundle. Free quote within 24 hours."
         keywords="affordable book publishing, self publishing package, book editing, cover design, ISBN registration South Africa"
       />

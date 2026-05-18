@@ -102,8 +102,8 @@ export default function SixByNinePublishing() {
   return (
     <>
       <PageMeta
-        title="6×9 Book Publishing Packages | Novels & Non-Fiction"
-        description="6×9 trade paperback publishing packages — perfect for novels, memoirs and serious non-fiction. Full production: editing, design, printing, distribution."
+        title="6×9 Book Publishing from R7,000 | Trade Paperback Service"
+        description="6×9 trade paperback publishing from R7,000 — perfect for novels, memoirs and serious non-fiction. Full production: editing, design, layout and printing."
         keywords="6x9 book publishing, trade paperback, novel publishing, Amazon KDP publishing South Africa"
       />
 

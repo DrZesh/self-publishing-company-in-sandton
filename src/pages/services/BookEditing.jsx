@@ -151,8 +151,8 @@ export default function BookEditing() {
   return (
     <>
       <PageMeta
-        title="Book Editing Services in South Africa | Free Sample Edit"
-        description="Professional book editors in South Africa — developmental, line, copy editing and proofreading. Sample edit before you commit. Transparent pricing."
+        title="Book Editing in South Africa | From R0.30 Per Word"
+        description="Professional book editing in South Africa from R0.30 per word — developmental, line, copy editing and proofreading. Transparent per-word pricing, no flat fees."
         keywords="book editing South Africa, book editors Johannesburg, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
         canonical="https://www.creativebooks.co.za/bookediting"
         schema={schema}

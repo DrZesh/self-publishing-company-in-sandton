@@ -30,8 +30,8 @@ export default function BookPrinting() {
   return (
     <>
       <PageMeta
-        title="Book Printing Services in South Africa | From 100 Copies"
-        description="Professional book printing for SA authors — A5, 6×9, hardcover, children's formats. Cream or white paper, from 100 copies, free printed proof."
+        title="Book Printing in Johannesburg from R4,500 for 100 Copies"
+        description="Professional book printing for SA authors from R4,500 for 100 copies. A5, 6×9, hardcover and children's formats. Cream or white paper, free printed proof."
         keywords="book printing Johannesburg, book printing South Africa, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
         canonical="https://www.creativebooks.co.za/bookprinting"
         schema={schema}

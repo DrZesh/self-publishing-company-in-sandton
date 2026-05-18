@@ -202,8 +202,8 @@ export default function ThesisEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Thesis Editing Services South Africa | Master's & PhD"
-        description="Expert thesis editing for South African master's and doctoral candidates. Academic language, structure, formatting. Confidential, fast turnaround."
+        title="Thesis Editing for Master's & PhD in South Africa"
+        description="Thesis editing for South African master's and doctoral candidates. Academic language, structure and formatting refined. Confidential and supervisor-ready."
         canonical="https://www.creativebooks.co.za/thesisediting"
       />
 

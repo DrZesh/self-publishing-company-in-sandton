@@ -59,7 +59,7 @@ export default function ChristianBookWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Christian Book Writing & Publishing South Africa"
+        title="Christian Books | Devotionals, Sermons & Testimonies"
         description="Writing and publishing for Christian authors — devotionals, sermons, testimonies, theology. Faith-aligned editors, designers and ghostwriters in SA."
         canonical="https://www.creativebooks.co.za/christianbookwriting"
       />

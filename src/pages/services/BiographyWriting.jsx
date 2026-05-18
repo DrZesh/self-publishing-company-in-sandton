@@ -57,7 +57,7 @@ export default function BiographyWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Biography Writing Services South Africa | Researched & Crafted"
+        title="Biographies for Business Leaders & Public Figures in SA"
         description="Professional biography writing in South Africa — for business leaders, public figures and family histories. Researched, well-crafted, ready for print."
         canonical="https://www.creativebooks.co.za/biographywriting"
       />

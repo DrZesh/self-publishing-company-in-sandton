@@ -290,8 +290,8 @@ export default function Proofreading() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Book Proofreading Services in South Africa | Per-Word Pricing"
-        description="Final-stage manuscript proofreading for South African authors. Catch typos, grammar and formatting errors before printing. Per-word pricing available."
+        title="Manuscript Proofreading from R0.25 Per Word | Before Print"
+        description="Final-stage manuscript proofreading from R0.25 per word for South African authors. Catch typos, grammar and formatting errors before your book goes to print."
         canonical="https://www.creativebooks.co.za/proofreading"
         schema={{
           '@context': 'https://schema.org',

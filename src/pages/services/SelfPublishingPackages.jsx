@@ -339,7 +339,7 @@ export default function SelfPublishingPackages() {
   return (
     <div style={{ background: '#070B12' }}>
       <PageMeta
-        title="Self-Publishing Packages South Africa | Bronze, Silver, Gold"
+        title="Self-Publish from R21,000 | Bronze, Silver, Gold Packages"
         description="Self-publishing packages for South African authors. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design, printing all included."
         canonical="https://www.creativebooks.co.za/selfpublishingpackagesinsouthafrica"
       />

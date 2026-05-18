@@ -43,8 +43,8 @@ export default function AuthorWebsites() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Author Website Design South Africa | Build Your Platform"
-        description="Custom author websites for South African writers — showcase books, build a mailing list, sell direct. Mobile-friendly, SEO-ready, easy to manage."
+        title="Author Websites in South Africa from a Publishing Team"
+        description="Author websites built by a publishing team, not a generic web agency. Showcase your books, build a mailing list, sell direct. Mobile-friendly and SEO-ready."
         canonical="https://www.creativebooks.co.za/authorwebsites"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

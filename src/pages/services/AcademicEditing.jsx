@@ -114,7 +114,7 @@ export default function AcademicEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Academic Editing Services South Africa | Theses & Papers"
+        title="Academic Editing for UNISA, UJ, UP & Wits Students"
         description="Academic editing for SA students and researchers — theses, dissertations, research papers, academic books. UNISA, UJ, UP, Wits formatting standards."
         canonical="https://www.creativebooks.co.za/academicediting"
       />
