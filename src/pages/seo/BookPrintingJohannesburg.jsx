@@ -34,8 +34,8 @@ export default function BookPrintingJohannesburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Johannesburg | Competitive Prices"
-        description="Professional book printing in Johannesburg — A5, 6×9, hardcover and children's formats. Cream or white paper, from 100 copies, fast turnaround."
+        title="Book Printing in Johannesburg from R4,500 for 100 Copies"
+        description="Joburg book printing for self-published authors from R4,500 for 100 copies. A5, 6×9, hardcover and children's formats. Collect or courier from Fourways, Sandton."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
         canonical="https://www.creativebooks.co.za/bookprintingjohannesburg"
         schema={{ '@graph': [schema] }}

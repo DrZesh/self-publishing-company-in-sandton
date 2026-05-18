@@ -25,8 +25,8 @@ export default function BookCoverDesignPriceSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Price South Africa | What to Budget"
-        description="What affects book cover design prices in South Africa — from stock covers to full illustration. Transparent Creative Books SA pricing included."
+        title="Book Cover Design Prices in South Africa 2026"
+        description="What book cover design actually costs in South Africa in 2026 — transparent pricing for custom illustration, photographic and typographic covers. No quote forms."
         keywords="book cover design price South Africa, book cover designer, book cover design near me, ebook cover design"
         canonical="https://www.creativebooks.co.za/bookcoverdesignpricesouthafrica"
         schema={schema}
