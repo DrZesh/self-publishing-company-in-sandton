@@ -43,16 +43,21 @@ export default function AdminQuoteBuilder() {
   // Fetch existing quote if editing
   useEffect(() => {
     if (quoteId) {
-      base44.entities.Quote.filter({ id: quoteId }).then(quotes => {
-        if (quotes.length) {
+      Promise.all([
+        base44.entities.Quote.filter({ id: quoteId }),
+        base44.entities.QuoteLineItem.filter({ quote_id: quoteId }),
+      ]).then(([quotes, items]) => {
+        if (quotes && quotes.length > 0) {
           const q = quotes[0];
           setQuoteData(q);
           setMode(q.mode || 'standard');
-          setQuoteData(q);
+          setLineItems(items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+        } else {
+          toast.error('Quote not found. It may have been deleted.');
         }
-      });
-      base44.entities.QuoteLineItem.filter({ quote_id: quoteId }).then(items => {
-        setLineItems(items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
+      }).catch(err => {
+        console.error('Failed to load quote:', err);
+        toast.error('Failed to load quote');
       });
     } else if (initialContactId) {
       base44.entities.Contact.filter({ id: initialContactId }).then(con => {
