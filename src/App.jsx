@@ -170,6 +170,9 @@ import AdminServices from './pages/admin/AdminServices';
 import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
 import SeoAnalytics from './pages/admin/SeoAnalytics';
 import AdminPipeline from './pages/admin/AdminPipeline';
+import AdminQuotes from './pages/admin/AdminQuotes.jsx';
+import AdminQuoteBuilder from './pages/admin/AdminQuoteBuilder.jsx';
+import QuoteView from './pages/QuoteView.jsx';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
 // Industry-Specific Printing Pages
@@ -555,8 +558,11 @@ const AuthenticatedApp = () => {
       <Route path="/admin/services" element={<ProtectedAdminRoute><AdminServices /></ProtectedAdminRoute>} />
       <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
       <Route path="/admin/pipeline" element={<ProtectedAdminRoute><AdminPipeline /></ProtectedAdminRoute>} />
+      <Route path="/admin/quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
+      <Route path="/admin/quotes/:id" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
+      <Route path="/quote/view/:id/:token" element={<QuoteView />} />
     </Routes>
   );
 };
