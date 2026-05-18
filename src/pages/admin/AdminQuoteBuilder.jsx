@@ -190,6 +190,21 @@ export default function AdminQuoteBuilder() {
 
   const handleSend = async () => {
     try {
+      // Validate before sending
+      if (!quoteId) {
+        toast.error('Please create the quote first');
+        return;
+      }
+      const contactId = quoteData?.contact_id || contact?.id;
+      if (!contactId) {
+        toast.error('Please select a contact first');
+        return;
+      }
+      if (!lineItems.length) {
+        toast.error('Please add at least one line item');
+        return;
+      }
+
       // Save first
       await handleSave();
       
@@ -202,6 +217,7 @@ export default function AdminQuoteBuilder() {
       toast.success('Quote sent successfully!');
       navigate('/admin/quotes');
     } catch (error) {
+      console.error('Send error:', error);
       toast.error(error.message || 'Failed to send quote');
     }
   };
