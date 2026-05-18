@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Inbox, Target, Users, Settings, 
-  BookOpen, BarChart2, Search, X, ChevronRight
+  BookOpen, BarChart2, Search, X, ChevronRight, Kanban
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Submissions', path: '/admin/submissions', icon: Inbox },
   { label: 'Leads', path: '/admin/leads', icon: Target },
+  { label: 'Pipeline', path: '/admin/pipeline', icon: Kanban },
   { label: 'Contacts', path: '/admin/contacts', icon: Users },
   { label: 'Services', path: '/admin/services', icon: BookOpen },
   { label: 'SEO Analytics', path: '/admin/seo', icon: BarChart2 },

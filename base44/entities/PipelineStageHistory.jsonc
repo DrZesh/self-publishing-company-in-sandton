@@ -1,0 +1,37 @@
+{
+  "name": "PipelineStageHistory",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "ID of the contact"
+    },
+    "from_stage": {
+      "type": "string",
+      "description": "Previous pipeline stage"
+    },
+    "to_stage": {
+      "type": "string",
+      "description": "New pipeline stage"
+    },
+    "changed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the stage changed"
+    },
+    "changed_by": {
+      "type": "string",
+      "description": "Email of user who changed the stage"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about the stage change"
+    }
+  },
+  "required": [
+    "contact_id",
+    "to_stage",
+    "changed_at",
+    "changed_by"
+  ]
+}

@@ -125,6 +125,41 @@
       "type": "string",
       "maxLength": 1000,
       "description": "Optional description or notes about this contact"
+    },
+    "book_title": {
+      "type": "string",
+      "description": "Book title in progress"
+    },
+    "pipeline_stage": {
+      "type": "string",
+      "enum": [
+        "Lead Contacted",
+        "Quote Sent",
+        "Negotiating",
+        "Won",
+        "In Production",
+        "Completed",
+        "Lost"
+      ],
+      "default": "Lead Contacted",
+      "description": "Pipeline stage"
+    },
+    "pipeline_stage_changed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When pipeline stage last changed"
+    },
+    "pipeline_value": {
+      "type": "number",
+      "description": "Estimated deal value in ZAR"
+    },
+    "pipeline_owner": {
+      "type": "string",
+      "description": "Owner user email"
+    },
+    "lost_reason": {
+      "type": "string",
+      "description": "Reason for losing the deal (only when stage = Lost)"
     }
   },
   "required": [

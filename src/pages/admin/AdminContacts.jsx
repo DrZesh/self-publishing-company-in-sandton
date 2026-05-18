@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Search, Plus, ChevronRight, X, Mail, Phone } from 'lucide-react';
 import { toast } from 'sonner';
+import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
 
 const LIFECYCLE_COLORS = {
   subscriber: 'bg-blue-100 text-blue-700',
@@ -24,6 +25,11 @@ function ContactModal({ contact, onClose, onSave, onDelete }) {
     province: contact?.province || '',
     website_url: contact?.website_url || '',
     description: contact?.description || '',
+    book_title: contact?.book_title || '',
+    pipeline_stage: contact?.pipeline_stage || 'Lead Contacted',
+    pipeline_value: contact?.pipeline_value || '',
+    pipeline_owner: contact?.pipeline_owner || '',
+    lost_reason: contact?.lost_reason || '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -101,6 +107,37 @@ function ContactModal({ contact, onClose, onSave, onDelete }) {
               className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="https://example.com" />
           </div>
           <div>
+            <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Book Title</label>
+            <input value={form.book_title} onChange={e => setForm(f => ({ ...f, book_title: e.target.value }))}
+              className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="Title of their book" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Pipeline Stage</label>
+              <select value={form.pipeline_stage} onChange={e => setForm(f => ({ ...f, pipeline_stage: e.target.value }))}
+                className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]">
+                {PIPELINE_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Pipeline Value (R)</label>
+              <input type="number" value={form.pipeline_value} onChange={e => setForm(f => ({ ...f, pipeline_value: e.target.value }))}
+                className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="0" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Pipeline Owner (email)</label>
+            <input value={form.pipeline_owner} onChange={e => setForm(f => ({ ...f, pipeline_owner: e.target.value }))}
+              className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="owner@creativebooks.co.za" />
+          </div>
+          {form.pipeline_stage === 'Lost' && (
+            <div>
+              <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Lost Reason</label>
+              <input value={form.lost_reason} onChange={e => setForm(f => ({ ...f, lost_reason: e.target.value }))}
+                className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="Why was this deal lost?" />
+            </div>
+          )}
+          <div>
             <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Notes</label>
             <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3}
               className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="Notes about this contact…" />
@@ -129,7 +166,16 @@ export default function AdminContacts() {
   const [modalContact, setModalContact] = useState(null);
 
   useEffect(() => {
-    base44.entities.Contact.list('-created_date', 500).then(setContacts).finally(() => setLoading(false));
+    base44.entities.Contact.list('-created_date', 500).then(data => {
+      setContacts(data);
+      // Auto-open contact if ?id= param is present
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+        const found = data.find(c => c.id === id);
+        if (found) { setModalContact(found); setShowModal(true); }
+      }
+    }).finally(() => setLoading(false));
   }, []);
 
   const filtered = contacts.filter(c => {
