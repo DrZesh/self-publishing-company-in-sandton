@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -5,201 +6,195 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-
-// Layout
 import MainLayout from './components/layout/MainLayout';
-
-// Core Pages
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import GetQuote from './pages/GetQuote';
-import FAQ from './pages/FAQ';
-import Blog from './pages/Blog';
-import BlogArticle from './pages/BlogArticle';
-
-// Printing Sub-Pages (full content)
-import PrintingA5 from './pages/printing/PrintingA5.jsx';
-import Printing6x9 from './pages/printing/Printing6x9.jsx';
-import PrintingHardcover from './pages/printing/PrintingHardcover.jsx';
-import PrintingChildrensBooks from './pages/printing/PrintingChildrensBooks';
-import ChildrensBooks15x15 from './pages/printing/childrensbooks/ChildrensBooks15x15.jsx';
-import ChildrensBooks20x20 from './pages/printing/childrensbooks/ChildrensBooks20x20.jsx';
-import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks21x21.jsx';
-
-// Service Silo Pages
-import BookPublishing from './pages/services/BookPublishing';
-import MiniPublishingPackage from './pages/services/MiniPublishingPackage';
-import A5BookPublishing from './pages/services/A5BookPublishing';
-import SixByNinePublishing from './pages/services/SixByNinePublishing';
-import FullPackagesA5 from './pages/publishing/FullPackagesA5';
-import FullPackages6x9 from './pages/publishing/FullPackages6x9';
-import MiniPackages from './pages/publishing/MiniPackages';
-import BookPrinting from './pages/services/BookPrinting';
-import BookEditing from './pages/services/BookEditing';
-import Proofreading from './pages/services/Proofreading';
-import AcademicEditing from './pages/services/AcademicEditing';
-import ThesisEditing from './pages/services/ThesisEditing';
-import DissertationEditing from './pages/services/DissertationEditing';
-import BookCoverDesign from './pages/services/BookCoverDesign';
-import AnnualReportDesign from './pages/AnnualReportDesign';
-import EbookPublishing from './pages/services/EbookPublishing';
-import Ghostwriting from './pages/services/Ghostwriting';
-import BookTypesetting from './pages/services/BookTypesetting';
-import SelfPublishingPackages from './pages/services/SelfPublishingPackages';
-import AuthorWebsites from './pages/services/AuthorWebsites';
-import ChildrensBookPackages from './pages/services/ChildrensBookPackages';
-import MemoirWriting from './pages/services/MemoirWriting';
-import BiographyWriting from './pages/services/BiographyWriting';
-import ChristianBookWriting from './pages/services/ChristianBookWriting';
-import LocationPage from './pages/services/LocationPage';
-import ResourcePage from './pages/resources/ResourcePage';
-import CompletePublishingGuide from './pages/resources/CompletePublishingGuide';
-import ISBNRegistration from './pages/resources/ISBNRegistration';
-import NDA from './pages/resources/NDA';
-import CoverSizeCalculator from './pages/resources/CoverSizeCalculator';
-import Portfolio from './pages/Portfolio';
-
-// New SEO Blog Article Pages
-import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
-
-import SelfPublishingCompaniesSouthAfrica from './pages/seo/SelfPublishingCompaniesSouthAfrica';
-import BookCoverDesignPriceSouthAfrica from './pages/seo/BookCoverDesignPriceSouthAfrica';
-import BookEditorsSouthAfrica from './pages/seo/BookEditorsSouthAfrica';
-import BookLayoutTypesetting from './pages/seo/BookLayoutTypesetting';
-import ISBNNumberSouthAfrica from './pages/seo/ISBNNumberSouthAfrica';
-import BookDistributionSouthAfrica from './pages/seo/BookDistributionSouthAfrica';
-import CostToSelfPublishKindle from './pages/blog/CostToSelfPublishKindle';
-import ProfessionalCopyEditing from './pages/blog/ProfessionalCopyEditing';
-import WhatIsGhostwriting from './pages/blog/WhatIsGhostwriting';
-import WritingBookDedication from './pages/blog/WritingBookDedication';
-import WritingBookAcknowledgment from './pages/blog/WritingBookAcknowledgment';
-import HowToNameYourBook from './pages/blog/HowToNameYourBook';
-import HowToPrintSelfPublishedBook from './pages/blog/HowToPrintSelfPublishedBook';
-import ChildrensBookIllustrations from './pages/blog/ChildrensBookIllustrations';
-import EbookVsPrint from './pages/blog/EbookVsPrint';
-import HowLongSelfPublish from './pages/blog/HowLongSelfPublish';
-import CostToSelfPublishAmazon from './pages/blog/CostToSelfPublishAmazon';
-import BecomeAWriter from './pages/blog/BecomeAWriter';
-import ISBNRegistrationSA from './pages/blog/ISBNRegistrationSA';
-import HowToGetISBN from './pages/blog/HowToGetISBN';
-import BeginnersGuideSelfPublishing from './pages/blog/BeginnersGuideSelfPublishing';
-import SelfPublishChildrensBooks from './pages/blog/SelfPublishChildrensBooks';
-import WhatIsSelfPublishing from './pages/blog/WhatIsSelfPublishing';
-import CopyrightFAQsAuthors from './pages/blog/CopyrightFAQsAuthors';
-import QuestionsToAskPublisher from './pages/blog/QuestionsToAskPublisher';
-import HowDoIGetMyBookPublished from './pages/blog/HowDoIGetMyBookPublished';
-import DoSouthAfricanPublishersChargeAuthors from './pages/blog/DoSouthAfricanPublishersChargeAuthors';
-import HowMuchWillIEarnFromMyFirstBook from './pages/blog/HowMuchWillIEarnFromMyFirstBook';
-import WhatIsAFairBookDeal from './pages/blog/WhatIsAFairBookDeal';
-import DoINeedAnEditorBeforePublishing from './pages/blog/DoINeedAnEditorBeforePublishing';
-import HowToFindALiteraryAgentSA from './pages/blog/HowToFindALiteraryAgentSA';
-import HowToPublishChildrensBookSA from './pages/blog/HowToPublishChildrensBookSA';
-import CanIPublishAComicBookSA from './pages/blog/CanIPublishAComicBookSA';
-import HowToMarketSelfPublishedBookSA from './pages/blog/HowToMarketSelfPublishedBookSA';
-import HowDoPublishersFindAuthors from './pages/blog/HowDoPublishersFindAuthors';
-import WhatFreelanceProfessionalsDoINeed from './pages/blog/WhatFreelanceProfessionalsDoINeed';
-import IsSelling3000CopiesGood from './pages/blog/IsSelling3000CopiesGood';
-import HowDoIKnowIfMyBookIsReady from './pages/blog/HowDoIKnowIfMyBookIsReady';
-import WhatPublishingJobsAreAvailable from './pages/blog/WhatPublishingJobsAreAvailable';
-import HowLongToGetPublishedSA from './pages/blog/HowLongToGetPublishedSA';
-import DoPublishersProvideCoverDesign from './pages/blog/DoPublishersProvideCoverDesign';
-import WhatIs9010RuleAuthors from './pages/blog/WhatIs9010RuleAuthors';
-import HowToChooseBetweenPublishingOffers from './pages/blog/HowToChooseBetweenPublishingOffers';
-import CanYouMakeALivingAsAuthorSA from './pages/blog/CanYouMakeALivingAsAuthorSA';
-import WhatToLookForInPublishingContract from './pages/blog/WhatToLookForInPublishingContract';
-import HowToProtectBookIdeaSA from './pages/blog/HowToProtectBookIdeaSA';
-import DoAuthorsNeedInternationalDistribution from './pages/blog/DoAuthorsNeedInternationalDistribution';
-import HowMuchToSpendOnCoverDesign from './pages/blog/HowMuchToSpendOnCoverDesign';
-import BestPlatformsToSelfPublishSA from './pages/blog/BestPlatformsToSelfPublishSA';
-import HowToBuildAuthorPlatform from './pages/blog/HowToBuildAuthorPlatform';
-import TraditionalVsSelfPublishingRoyalties from './pages/blog/TraditionalVsSelfPublishingRoyalties';
-import CanIPublishInOtherLanguagesSA from './pages/blog/CanIPublishInOtherLanguagesSA';
-import HowToFindBetaReadersSA from './pages/blog/HowToFindBetaReadersSA';
-import WhatTaxesDoAuthorsPaySA from './pages/blog/WhatTaxesDoAuthorsPaySA';
-import HowToGetBookReviewedSA from './pages/blog/HowToGetBookReviewedSA';
-import ShouldIHirePublishingCoachSA from './pages/blog/ShouldIHirePublishingCoachSA';
-import CommonPublishingMistakesSA from './pages/blog/CommonPublishingMistakesSA';
-import HowToLaunchYourBookSA from './pages/blog/HowToLaunchYourBookSA';
-import CanIPublishMultipleGenresSA from './pages/blog/CanIPublishMultipleGenresSA';
-import HowDebutAuthorsGetBetterDeals from './pages/blog/HowDebutAuthorsGetBetterDeals';
-import RoleLiteraryAgentSA from './pages/blog/RoleLiteraryAgentSA';
-import HowToStartPublishingCareerSA from './pages/blog/HowToStartPublishingCareerSA';
-
-// Existing SEO Landing Pages
-import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
-import BookPublishersSouthAfrica from './pages/seo/BookPublishersSouthAfrica';
-import BookPublishersJohannesburg from './pages/seo/BookPublishersJohannesburg';
-import BookPrintingJohannesburg from './pages/seo/BookPrintingJohannesburg';
-import SelfPublishingSouthAfrica from './pages/seo/SelfPublishingSouthAfrica';
-import BookCoverDesignSouthAfrica from './pages/seo/BookCoverDesignSouthAfrica';
-import ProofreadingServicesSouthAfrica from './pages/seo/ProofreadingServicesSouthAfrica';
-import GhostwritersSouthAfrica from './pages/seo/GhostwritersSouthAfrica';
-import BestPublishingCompaniesSouthAfrica from './pages/seo/BestPublishingCompaniesSouthAfrica';
-
-// Gauteng Location Pages (dedicated)
-import BookPrintingSandton from './pages/seo/location/BookPrintingSandton.jsx';
-import BookEditingSandton from './pages/seo/location/BookEditingSandton.jsx';
-import BookPrintingRandburg from './pages/seo/location/BookPrintingRandburg.jsx';
-import BookPrintingMidrand from './pages/seo/location/BookPrintingMidrand.jsx';
-import BookPrintingPretoria from './pages/seo/location/BookPrintingPretoria.jsx';
-import BookPrintingCenturion from './pages/seo/location/BookPrintingCenturion.jsx';
-import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.jsx';
-
-// Book Cover Design Location Pages
-import BookCoverDesignSandton from './pages/seo/location/BookCoverDesignSandton';
-import BookCoverDesignRandburg from './pages/seo/location/BookCoverDesignRandburg';
-import BookCoverDesignMidrand from './pages/seo/location/BookCoverDesignMidrand';
-import BookCoverDesignPretoria from './pages/seo/location/BookCoverDesignPretoria';
-import BookCoverDesignCenturion from './pages/seo/location/BookCoverDesignCenturion';
-import BookCoverDesignRoodepoort from './pages/seo/location/BookCoverDesignRoodepoort';
-import BookCoverDesignCapeTown from './pages/seo/location/BookCoverDesignCapeTown';
-import BookCoverDesignDurban from './pages/seo/location/BookCoverDesignDurban';
-
-// City Pages (scalable component)
-import LocationsHub from './pages/seo/LocationsHub';
-
-// Admin pages
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminInbox from './pages/admin/AdminInbox';
-import AdminLeads from './pages/admin/AdminLeads';
-import AdminContacts from './pages/admin/AdminContacts';
-import AdminSettings from './pages/admin/AdminSettings';
-import AdminServices from './pages/admin/AdminServices';
-import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
-import SeoAnalytics from './pages/admin/SeoAnalytics';
-import AdminPipeline from './pages/admin/AdminPipeline';
-import AdminQuotes from './pages/admin/AdminQuotes';
-import AdminQuoteBuilder from './pages/admin/AdminQuoteBuilder.jsx';
-import AdminEmailTemplates from './pages/admin/AdminEmailTemplates';
-import AdminContactDetail from './pages/admin/AdminContactDetail';
-import QuoteView from './pages/QuoteView';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
-// Industry-Specific Printing Pages
-import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
-import MemoirBookPrinting from './pages/seo/industry/MemoirBookPrinting.jsx';
-import ChristianBookPrinting from './pages/seo/industry/ChristianBookPrinting.jsx';
-import BusinessBookPrinting from './pages/seo/industry/BusinessBookPrinting.jsx';
-import TrainingManualPrinting from './pages/seo/industry/TrainingManualPrinting.jsx';
-import SchoolBookPrinting from './pages/seo/industry/SchoolBookPrinting.jsx';
-import NovelPrinting from './pages/seo/industry/NovelPrinting.jsx';
-import EducationalBookPrinting from './pages/seo/industry/EducationalBookPrinting.jsx';
+// ─── Lazy-loaded page components (code-split per route) ───────────────────────
+// Core
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const GetQuote = lazy(() => import('./pages/GetQuote'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogArticle = lazy(() => import('./pages/BlogArticle'));
+const Portfolio = lazy(() => import('./pages/Portfolio'));
+const AnnualReportDesign = lazy(() => import('./pages/AnnualReportDesign'));
 
-// Long-Tail SEO Article Pages
-import HowToPrintABook from './pages/seo/longtail/HowToPrintABook.jsx';
-import HowMuchDoesBookPrintingCost from './pages/seo/longtail/HowMuchDoesBookPrintingCost.jsx';
-import BestBookSizeForSelfPublishing from './pages/seo/longtail/BestBookSizeForSelfPublishing.jsx';
-import A5vs6x9BookPrinting from './pages/seo/longtail/A5vs6x9BookPrinting.jsx';
-import HardcoverVsPaperback from './pages/seo/longtail/HardcoverVsPaperback.jsx';
-import HowToSelfPublishABook from './pages/seo/longtail/HowToSelfPublishABook.jsx';
+// Printing
+const PrintingA5 = lazy(() => import('./pages/printing/PrintingA5.jsx'));
+const Printing6x9 = lazy(() => import('./pages/printing/Printing6x9.jsx'));
+const PrintingHardcover = lazy(() => import('./pages/printing/PrintingHardcover.jsx'));
+const PrintingChildrensBooks = lazy(() => import('./pages/printing/PrintingChildrensBooks'));
+const ChildrensBooks15x15 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks15x15.jsx'));
+const ChildrensBooks20x20 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks20x20.jsx'));
+const ChildrensBooks21x21 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks21x21.jsx'));
 
-// Interactive Tools
-import BookPrintingCalculator from './pages/tools/BookPrintingCalculator.jsx';
-import PublishingRoadmap from './pages/tools/PublishingRoadmap.jsx';
-import UniversalCalculator from './pages/tools/UniversalCalculator.jsx';
-import NewCalculator from './pages/calculator/index.jsx';
+// Services
+const BookPublishing = lazy(() => import('./pages/services/BookPublishing'));
+const MiniPublishingPackage = lazy(() => import('./pages/services/MiniPublishingPackage'));
+const A5BookPublishing = lazy(() => import('./pages/services/A5BookPublishing'));
+const SixByNinePublishing = lazy(() => import('./pages/services/SixByNinePublishing'));
+const FullPackagesA5 = lazy(() => import('./pages/publishing/FullPackagesA5'));
+const FullPackages6x9 = lazy(() => import('./pages/publishing/FullPackages6x9'));
+const MiniPackages = lazy(() => import('./pages/publishing/MiniPackages'));
+const BookPrinting = lazy(() => import('./pages/services/BookPrinting'));
+const BookEditing = lazy(() => import('./pages/services/BookEditing'));
+const Proofreading = lazy(() => import('./pages/services/Proofreading'));
+const AcademicEditing = lazy(() => import('./pages/services/AcademicEditing'));
+const ThesisEditing = lazy(() => import('./pages/services/ThesisEditing'));
+const DissertationEditing = lazy(() => import('./pages/services/DissertationEditing'));
+const BookCoverDesign = lazy(() => import('./pages/services/BookCoverDesign'));
+const EbookPublishing = lazy(() => import('./pages/services/EbookPublishing'));
+const Ghostwriting = lazy(() => import('./pages/services/Ghostwriting'));
+const BookTypesetting = lazy(() => import('./pages/services/BookTypesetting'));
+const SelfPublishingPackages = lazy(() => import('./pages/services/SelfPublishingPackages'));
+const AuthorWebsites = lazy(() => import('./pages/services/AuthorWebsites'));
+const ChildrensBookPackages = lazy(() => import('./pages/services/ChildrensBookPackages'));
+const MemoirWriting = lazy(() => import('./pages/services/MemoirWriting'));
+const BiographyWriting = lazy(() => import('./pages/services/BiographyWriting'));
+const ChristianBookWriting = lazy(() => import('./pages/services/ChristianBookWriting'));
+const LocationPage = lazy(() => import('./pages/services/LocationPage'));
+const ResourcePage = lazy(() => import('./pages/resources/ResourcePage'));
+const CompletePublishingGuide = lazy(() => import('./pages/resources/CompletePublishingGuide'));
+const ISBNRegistration = lazy(() => import('./pages/resources/ISBNRegistration'));
+const NDA = lazy(() => import('./pages/resources/NDA'));
+const CoverSizeCalculator = lazy(() => import('./pages/resources/CoverSizeCalculator'));
+
+// SEO landing pages
+const PrintOnDemandSouthAfrica = lazy(() => import('./pages/blog/PrintOnDemandSouthAfrica'));
+const SelfPublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/SelfPublishingCompaniesSouthAfrica'));
+const BookCoverDesignPriceSouthAfrica = lazy(() => import('./pages/seo/BookCoverDesignPriceSouthAfrica'));
+const BookEditorsSouthAfrica = lazy(() => import('./pages/seo/BookEditorsSouthAfrica'));
+const BookLayoutTypesetting = lazy(() => import('./pages/seo/BookLayoutTypesetting'));
+const ISBNNumberSouthAfrica = lazy(() => import('./pages/seo/ISBNNumberSouthAfrica'));
+const BookDistributionSouthAfrica = lazy(() => import('./pages/seo/BookDistributionSouthAfrica'));
+const CostToSelfPublishKindle = lazy(() => import('./pages/blog/CostToSelfPublishKindle'));
+const ProfessionalCopyEditing = lazy(() => import('./pages/blog/ProfessionalCopyEditing'));
+const WhatIsGhostwriting = lazy(() => import('./pages/blog/WhatIsGhostwriting'));
+const WritingBookDedication = lazy(() => import('./pages/blog/WritingBookDedication'));
+const WritingBookAcknowledgment = lazy(() => import('./pages/blog/WritingBookAcknowledgment'));
+const HowToNameYourBook = lazy(() => import('./pages/blog/HowToNameYourBook'));
+const HowToPrintSelfPublishedBook = lazy(() => import('./pages/blog/HowToPrintSelfPublishedBook'));
+const ChildrensBookIllustrations = lazy(() => import('./pages/blog/ChildrensBookIllustrations'));
+const EbookVsPrint = lazy(() => import('./pages/blog/EbookVsPrint'));
+const HowLongSelfPublish = lazy(() => import('./pages/blog/HowLongSelfPublish'));
+const CostToSelfPublishAmazon = lazy(() => import('./pages/blog/CostToSelfPublishAmazon'));
+const BecomeAWriter = lazy(() => import('./pages/blog/BecomeAWriter'));
+const ISBNRegistrationSA = lazy(() => import('./pages/blog/ISBNRegistrationSA'));
+const HowToGetISBN = lazy(() => import('./pages/blog/HowToGetISBN'));
+const BeginnersGuideSelfPublishing = lazy(() => import('./pages/blog/BeginnersGuideSelfPublishing'));
+const SelfPublishChildrensBooks = lazy(() => import('./pages/blog/SelfPublishChildrensBooks'));
+const WhatIsSelfPublishing = lazy(() => import('./pages/blog/WhatIsSelfPublishing'));
+const CopyrightFAQsAuthors = lazy(() => import('./pages/blog/CopyrightFAQsAuthors'));
+const QuestionsToAskPublisher = lazy(() => import('./pages/blog/QuestionsToAskPublisher'));
+const HowDoIGetMyBookPublished = lazy(() => import('./pages/blog/HowDoIGetMyBookPublished'));
+const DoSouthAfricanPublishersChargeAuthors = lazy(() => import('./pages/blog/DoSouthAfricanPublishersChargeAuthors'));
+const HowMuchWillIEarnFromMyFirstBook = lazy(() => import('./pages/blog/HowMuchWillIEarnFromMyFirstBook'));
+const WhatIsAFairBookDeal = lazy(() => import('./pages/blog/WhatIsAFairBookDeal'));
+const DoINeedAnEditorBeforePublishing = lazy(() => import('./pages/blog/DoINeedAnEditorBeforePublishing'));
+const HowToFindALiteraryAgentSA = lazy(() => import('./pages/blog/HowToFindALiteraryAgentSA'));
+const HowToPublishChildrensBookSA = lazy(() => import('./pages/blog/HowToPublishChildrensBookSA'));
+const CanIPublishAComicBookSA = lazy(() => import('./pages/blog/CanIPublishAComicBookSA'));
+const HowToMarketSelfPublishedBookSA = lazy(() => import('./pages/blog/HowToMarketSelfPublishedBookSA'));
+const HowDoPublishersFindAuthors = lazy(() => import('./pages/blog/HowDoPublishersFindAuthors'));
+const WhatFreelanceProfessionalsDoINeed = lazy(() => import('./pages/blog/WhatFreelanceProfessionalsDoINeed'));
+const IsSelling3000CopiesGood = lazy(() => import('./pages/blog/IsSelling3000CopiesGood'));
+const HowDoIKnowIfMyBookIsReady = lazy(() => import('./pages/blog/HowDoIKnowIfMyBookIsReady'));
+const WhatPublishingJobsAreAvailable = lazy(() => import('./pages/blog/WhatPublishingJobsAreAvailable'));
+const HowLongToGetPublishedSA = lazy(() => import('./pages/blog/HowLongToGetPublishedSA'));
+const DoPublishersProvideCoverDesign = lazy(() => import('./pages/blog/DoPublishersProvideCoverDesign'));
+const WhatIs9010RuleAuthors = lazy(() => import('./pages/blog/WhatIs9010RuleAuthors'));
+const HowToChooseBetweenPublishingOffers = lazy(() => import('./pages/blog/HowToChooseBetweenPublishingOffers'));
+const CanYouMakeALivingAsAuthorSA = lazy(() => import('./pages/blog/CanYouMakeALivingAsAuthorSA'));
+const WhatToLookForInPublishingContract = lazy(() => import('./pages/blog/WhatToLookForInPublishingContract'));
+const HowToProtectBookIdeaSA = lazy(() => import('./pages/blog/HowToProtectBookIdeaSA'));
+const DoAuthorsNeedInternationalDistribution = lazy(() => import('./pages/blog/DoAuthorsNeedInternationalDistribution'));
+const HowMuchToSpendOnCoverDesign = lazy(() => import('./pages/blog/HowMuchToSpendOnCoverDesign'));
+const BestPlatformsToSelfPublishSA = lazy(() => import('./pages/blog/BestPlatformsToSelfPublishSA'));
+const HowToBuildAuthorPlatform = lazy(() => import('./pages/blog/HowToBuildAuthorPlatform'));
+const TraditionalVsSelfPublishingRoyalties = lazy(() => import('./pages/blog/TraditionalVsSelfPublishingRoyalties'));
+const CanIPublishInOtherLanguagesSA = lazy(() => import('./pages/blog/CanIPublishInOtherLanguagesSA'));
+const HowToFindBetaReadersSA = lazy(() => import('./pages/blog/HowToFindBetaReadersSA'));
+const WhatTaxesDoAuthorsPaySA = lazy(() => import('./pages/blog/WhatTaxesDoAuthorsPaySA'));
+const HowToGetBookReviewedSA = lazy(() => import('./pages/blog/HowToGetBookReviewedSA'));
+const ShouldIHirePublishingCoachSA = lazy(() => import('./pages/blog/ShouldIHirePublishingCoachSA'));
+const CommonPublishingMistakesSA = lazy(() => import('./pages/blog/CommonPublishingMistakesSA'));
+const HowToLaunchYourBookSA = lazy(() => import('./pages/blog/HowToLaunchYourBookSA'));
+const CanIPublishMultipleGenresSA = lazy(() => import('./pages/blog/CanIPublishMultipleGenresSA'));
+const HowDebutAuthorsGetBetterDeals = lazy(() => import('./pages/blog/HowDebutAuthorsGetBetterDeals'));
+const RoleLiteraryAgentSA = lazy(() => import('./pages/blog/RoleLiteraryAgentSA'));
+const HowToStartPublishingCareerSA = lazy(() => import('./pages/blog/HowToStartPublishingCareerSA'));
+
+// Existing SEO pages
+const PublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/PublishingCompaniesSouthAfrica'));
+const BookPublishersSouthAfrica = lazy(() => import('./pages/seo/BookPublishersSouthAfrica'));
+const BookPublishersJohannesburg = lazy(() => import('./pages/seo/BookPublishersJohannesburg'));
+const BookPrintingJohannesburg = lazy(() => import('./pages/seo/BookPrintingJohannesburg'));
+const SelfPublishingSouthAfrica = lazy(() => import('./pages/seo/SelfPublishingSouthAfrica'));
+const BookCoverDesignSouthAfrica = lazy(() => import('./pages/seo/BookCoverDesignSouthAfrica'));
+const ProofreadingServicesSouthAfrica = lazy(() => import('./pages/seo/ProofreadingServicesSouthAfrica'));
+const GhostwritersSouthAfrica = lazy(() => import('./pages/seo/GhostwritersSouthAfrica'));
+const BestPublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/BestPublishingCompaniesSouthAfrica'));
+
+// Location pages
+const BookPrintingSandton = lazy(() => import('./pages/seo/location/BookPrintingSandton.jsx'));
+const BookEditingSandton = lazy(() => import('./pages/seo/location/BookEditingSandton.jsx'));
+const BookPrintingRandburg = lazy(() => import('./pages/seo/location/BookPrintingRandburg.jsx'));
+const BookPrintingMidrand = lazy(() => import('./pages/seo/location/BookPrintingMidrand.jsx'));
+const BookPrintingPretoria = lazy(() => import('./pages/seo/location/BookPrintingPretoria.jsx'));
+const BookPrintingCenturion = lazy(() => import('./pages/seo/location/BookPrintingCenturion.jsx'));
+const BookPrintingRoodepoort = lazy(() => import('./pages/seo/location/BookPrintingRoodepoort.jsx'));
+const BookCoverDesignSandton = lazy(() => import('./pages/seo/location/BookCoverDesignSandton'));
+const BookCoverDesignRandburg = lazy(() => import('./pages/seo/location/BookCoverDesignRandburg'));
+const BookCoverDesignMidrand = lazy(() => import('./pages/seo/location/BookCoverDesignMidrand'));
+const BookCoverDesignPretoria = lazy(() => import('./pages/seo/location/BookCoverDesignPretoria'));
+const BookCoverDesignCenturion = lazy(() => import('./pages/seo/location/BookCoverDesignCenturion'));
+const BookCoverDesignRoodepoort = lazy(() => import('./pages/seo/location/BookCoverDesignRoodepoort'));
+const BookCoverDesignCapeTown = lazy(() => import('./pages/seo/location/BookCoverDesignCapeTown'));
+const BookCoverDesignDurban = lazy(() => import('./pages/seo/location/BookCoverDesignDurban'));
+const LocationsHub = lazy(() => import('./pages/seo/LocationsHub'));
+
+// Industry pages
+const PoetryBookPrinting = lazy(() => import('./pages/seo/industry/PoetryBookPrinting.jsx'));
+const MemoirBookPrinting = lazy(() => import('./pages/seo/industry/MemoirBookPrinting.jsx'));
+const ChristianBookPrinting = lazy(() => import('./pages/seo/industry/ChristianBookPrinting.jsx'));
+const BusinessBookPrinting = lazy(() => import('./pages/seo/industry/BusinessBookPrinting.jsx'));
+const TrainingManualPrinting = lazy(() => import('./pages/seo/industry/TrainingManualPrinting.jsx'));
+const SchoolBookPrinting = lazy(() => import('./pages/seo/industry/SchoolBookPrinting.jsx'));
+const NovelPrinting = lazy(() => import('./pages/seo/industry/NovelPrinting.jsx'));
+const EducationalBookPrinting = lazy(() => import('./pages/seo/industry/EducationalBookPrinting.jsx'));
+
+// Long-tail pages
+const HowToPrintABook = lazy(() => import('./pages/seo/longtail/HowToPrintABook.jsx'));
+const HowMuchDoesBookPrintingCost = lazy(() => import('./pages/seo/longtail/HowMuchDoesBookPrintingCost.jsx'));
+const BestBookSizeForSelfPublishing = lazy(() => import('./pages/seo/longtail/BestBookSizeForSelfPublishing.jsx'));
+const A5vs6x9BookPrinting = lazy(() => import('./pages/seo/longtail/A5vs6x9BookPrinting.jsx'));
+const HardcoverVsPaperback = lazy(() => import('./pages/seo/longtail/HardcoverVsPaperback.jsx'));
+const HowToSelfPublishABook = lazy(() => import('./pages/seo/longtail/HowToSelfPublishABook.jsx'));
+
+// Tools & calculators
+const BookPrintingCalculator = lazy(() => import('./pages/tools/BookPrintingCalculator.jsx'));
+const PublishingRoadmap = lazy(() => import('./pages/tools/PublishingRoadmap.jsx'));
+const UniversalCalculator = lazy(() => import('./pages/tools/UniversalCalculator.jsx'));
+const NewCalculator = lazy(() => import('./pages/calculator/index.jsx'));
+
+// Admin pages
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminInbox = lazy(() => import('./pages/admin/AdminInbox'));
+const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
+const AdminContacts = lazy(() => import('./pages/admin/AdminContacts'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminServices = lazy(() => import('./pages/admin/AdminServices'));
+const SearchConsoleDashboard = lazy(() => import('./pages/admin/SearchConsoleDashboard'));
+const SeoAnalytics = lazy(() => import('./pages/admin/SeoAnalytics'));
+const AdminPipeline = lazy(() => import('./pages/admin/AdminPipeline'));
+const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes'));
+const AdminQuoteBuilder = lazy(() => import('./pages/admin/AdminQuoteBuilder.jsx'));
+const AdminEmailTemplates = lazy(() => import('./pages/admin/AdminEmailTemplates'));
+const AdminContactDetail = lazy(() => import('./pages/admin/AdminContactDetail'));
+const QuoteView = lazy(() => import('./pages/QuoteView'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -222,6 +217,11 @@ const AuthenticatedApp = () => {
   }
 
   return (
+    <Suspense fallback={
+      <div className="fixed inset-0 flex items-center justify-center bg-obsidian">
+        <div className="w-8 h-8 border-4 border-white/10 border-t-copper rounded-full animate-spin" />
+      </div>
+    }>
     <Routes>
       <Route element={<MainLayout />}>
         {/* Core */}
@@ -569,6 +569,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />
     </Routes>
+    </Suspense>
   );
 };
 

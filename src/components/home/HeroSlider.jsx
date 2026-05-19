@@ -140,9 +140,9 @@ export default function HeroSlider({ locationData }) {
           animate="center"
           exit="exit"
           className="absolute inset-0 w-full h-full object-cover will-change-transform"
-          loading="eager"
-          width="1800"
-          height="1000"
+          srcSet={`${slide.bg.split('?')[0]}?w=480&q=70 480w, ${slide.bg.split('?')[0]}?w=768&q=75 768w, ${slide.bg.split('?')[0]}?w=1200&q=80 1200w`}
+          sizes="100vw"
+          fetchPriority={current === 0 ? 'high' : 'auto'}
           decoding="async"
         />
       </AnimatePresence>
