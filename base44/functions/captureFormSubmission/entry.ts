@@ -72,8 +72,8 @@ Deno.serve(async (req) => {
       marketingSource = 'referral';
     }
 
-    // Create submission record
-    const submission = await base44.entities.Submission.create({
+    // Create submission record — use service role since this is a public (unauthenticated) form
+    const submission = await base44.asServiceRole.entities.Submission.create({
       form_type: formType,
       source_page: sourcePage,
       full_name: fullName,
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
 
       // Link submission to contact
       if (contact) {
-        await base44.entities.Submission.update(submission.id, {
+        await base44.asServiceRole.entities.Submission.update(submission.id, {
           contact_id: contact.id,
         });
       }

@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+// Public form email function — no Base44 auth needed, calls Resend directly
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const BUSINESS_EMAIL = 'info@creativebooks.co.za';
@@ -177,7 +177,6 @@ function buildUserEmail({ firstName, formType, submitterEmail, fields }) {
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
     const body = await req.json();
 
     const {
