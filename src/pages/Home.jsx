@@ -1,4 +1,5 @@
 import React from 'react';
+import LazySection from '../components/shared/LazySection';
 import PageMeta from '../components/shared/PageMeta';
 import { faqSchema, mainLocalBusinessSchema } from '../lib/seo/schemas';
 
@@ -46,40 +47,50 @@ export default function Home() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3. Choose Your Publishing Path */}
-      <PublishingPath />
+      {/* 3–14. Below-fold sections — deferred until near viewport */}
+      <LazySection>
+        <PublishingPath />
+      </LazySection>
 
-      {/* 4. Core Services */}
-      <CoreServices />
+      <LazySection>
+        <CoreServices />
+      </LazySection>
 
-      {/* 5. Publishing Packages */}
-      <PublishingPackagesSection />
+      <LazySection>
+        <PublishingPackagesSection />
+      </LazySection>
 
-      {/* 7. Why Choose Us */}
-      <WhyChooseUsNew />
+      <LazySection>
+        <WhyChooseUsNew />
+      </LazySection>
 
-      {/* 8. Book Types */}
-      <BookTypes />
+      <LazySection>
+        <BookTypes />
+      </LazySection>
 
-      {/* 9. Publishing Process */}
-      <PublishingProcess />
+      <LazySection>
+        <PublishingProcess />
+      </LazySection>
 
-      {/* 10. Location SEO */}
-      <LocationSEO />
+      <LazySection>
+        <LocationSEO />
+      </LazySection>
 
-      {/* 11. Portfolio Preview */}
-      <PortfolioPreview />
+      <LazySection>
+        <PortfolioPreview />
+      </LazySection>
 
-      {/* 12. Featured Blog */}
-      <FeaturedBlog />
+      <LazySection>
+        <FeaturedBlog />
+      </LazySection>
 
+      <LazySection>
+        <HomeFAQ />
+      </LazySection>
 
-
-      {/* 13. FAQ */}
-      <HomeFAQ />
-
-      {/* 14. Final CTA */}
-      <FinalCTA />
+      <LazySection>
+        <FinalCTA />
+      </LazySection>
     </div>
   );
 }

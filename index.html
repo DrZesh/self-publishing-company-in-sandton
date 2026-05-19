@@ -49,10 +49,26 @@
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://media.base44.com" crossorigin />
+
+    <!-- Google Fonts — display=swap prevents invisible text, non-render-blocking -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap" /></noscript>
 
 
-    <!-- Zoho SalesIQ Chat Widget -->
-    <script type="text/javascript" src="https://salesiq.zohopublic.com/widget?widgetcode=siq5fc7b5bbbe0de96ce31262d7a17cae9ae869101728d6b065fc6d760d42a5e037"></script>
+    <!-- Zoho SalesIQ — deferred until after page is interactive to avoid blocking LCP -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = 'https://salesiq.zohopublic.com/widget?widgetcode=siq5fc7b5bbbe0de96ce31262d7a17cae9ae869101728d6b065fc6d760d42a5e037';
+          document.body.appendChild(s);
+        }, 2000);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
