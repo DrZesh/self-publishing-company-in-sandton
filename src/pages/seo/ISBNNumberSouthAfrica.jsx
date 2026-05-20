@@ -25,7 +25,7 @@ export default function ISBNNumberSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="ISBN Number South Africa | Free Registration Guide"
+        title="ISBN Number in South Africa"
         description="How to register a free ISBN with the National Library of South Africa. Step-by-step guide for self-published authors with forms, timelines and requirements."
         keywords="ISBN number South Africa, how to get ISBN South Africa, ISBN registration South Africa, ISBN for self-published book"
         canonical="https://www.creativebooks.co.za/isbnnumbersouthafrica"
@@ -39,7 +39,7 @@ export default function ISBNNumberSouthAfrica() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Publishing Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                How to Get an ISBN Number in South Africa
+                ISBN Number in South Africa
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 9 min read

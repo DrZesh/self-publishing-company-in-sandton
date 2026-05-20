@@ -17,7 +17,7 @@ export default function PrintingChildrensBooks() {
   return (
     <div>
       <PageMeta
-        title="Children's Book Printing South Africa | Full Colour"
+        title="Children's Book Printing in Johannesburg"
         description="Full-colour children's book printing in 15×15, 20×20 and 21×21cm formats. Saddle-stitch or perfect binding. Perfect for picture books and stories."
         canonical="https://www.creativebooks.co.za/printing/childrensbooks"
       />
@@ -28,7 +28,7 @@ export default function PrintingChildrensBooks() {
           <Breadcrumbs light items={[{ label: 'Printing', path: '/printing/a5' }, { label: "Children's Book Printing", path: '/printing/childrensbooks' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl mt-4">
             <span className="text-copper text-sm font-body font-medium tracking-[0.25em] uppercase mb-4 block">Book Printing</span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Children's Book Printing</h1>
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Children's Book Printing in Johannesburg</h1>
             <p className="text-white/60 text-lg leading-relaxed font-body mb-8">
               Vibrant full-colour children's book printing on thick, durable paper. Choose your ideal size below to get started.
             </p>

@@ -110,7 +110,7 @@ export default function ISBNRegistration() {
   return (
     <>
       <PageMeta
-        title="ISBN Registration South Africa | Free National Library Guide"
+        title="ISBN Registration"
         description="How to register a free ISBN with the National Library of South Africa. Step-by-step guide for self-published authors with forms and timelines."
         keywords="ISBN South Africa, how to get ISBN number South Africa, NLSA ISBN registration, ISBN registration South Africa"
       />
@@ -119,8 +119,8 @@ export default function ISBNRegistration() {
       <PageHero
         icon={Hash}
         subtitle="ISBN South Africa"
-        title="How to Get an ISBN"
-        titleHighlight="in South Africa"
+        title="ISBN Registration"
+        titleHighlight=""
         description="ISBNs in South Africa are issued free of charge by the National Library of South Africa (NLSA). Follow these three simple steps to get yours."
         primaryLabel="Apply via Email"
         primaryLink="#"

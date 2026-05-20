@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtolaunchyourbooksuccessfullyinsouthafrica',
-  title: 'How to Launch Your Book in South Africa',
+  title: 'How to Launch Your Book Successfully in South Africa',
   description: 'How to launch your book in South Africa — 3-month launch plan, venue choices, review copy strategy, social media and post-launch sales activities.',
   category: 'Publishing Tips',
   readTime: '8 min read',

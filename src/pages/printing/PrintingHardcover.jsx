@@ -11,7 +11,7 @@ export default function PrintingHardcover() {
   return (
     <div>
       <PageMeta
-        title="Hardcover Book Printing South Africa | Case Bound"
+        title="Hardcover Book Printing in Johannesburg"
         description="Premium hardcover book printing in SA — case binding, dust jackets, foil stamping. Perfect for memoirs, special editions and corporate gifts."
         canonical="https://www.creativebooks.co.za/printing/hardcover"
       />
@@ -22,7 +22,7 @@ export default function PrintingHardcover() {
           <Breadcrumbs light items={[{ label: 'Printing', path: '/printing/a5' }, { label: 'Hardcover Printing', path: '/printing/hardcover' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl mt-4">
             <span className="text-copper text-sm font-body font-medium tracking-[0.25em] uppercase mb-4 block">Book Printing</span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Hardcover Printing</h1>
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Hardcover Book Printing in Johannesburg</h1>
             <p className="text-white/60 text-lg leading-relaxed font-body mb-8">
               Premium hardcover book printing with case binding, dust jackets, foil stamping, and embossing options. Create a book that feels as exceptional as it reads.
             </p>

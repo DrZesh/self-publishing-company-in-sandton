@@ -201,7 +201,7 @@ export default function Printing6x9() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="6×9 Book Printing South Africa | Trade Paperback"
+        title="6x9 Book Printing in Johannesburg"
         description="6×9 trade paperback printing — the international standard for novels and non-fiction. Cream paper, perfect binding, from 100 copies. Free proof."
         canonical="https://www.creativebooks.co.za/printing/6x9"
       />
@@ -222,8 +222,7 @@ export default function Printing6x9() {
               6×9 Book Printing · Johannesburg
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.05]">
-              Professional 6×9<br />Book Printing<br className="hidden md:block" />
-              <span style={{ color: '#B8955B' }}> South Africa</span>
+              6x9 Book Printing in Johannesburg
             </h1>
             <p className="text-white/55 text-lg leading-relaxed font-body mb-10 max-w-xl">
               The industry-standard trade paperback format for novels, biographies, business books and non-fiction. Printed professionally on cream or white paper with a full-colour cover.

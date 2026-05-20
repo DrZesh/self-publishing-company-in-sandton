@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtofindbetrareadersformybookinsouthafrica',
-  title: 'How to Find Beta Readers in South Africa',
+  title: 'How to Find Beta Readers for My Book in South Africa',
   description: 'How to find beta readers in South Africa — where to look, how to work with them effectively and when to move to professional editing after feedback.',
   category: 'Writing Tips',
   readTime: '5 min read',

@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howmuchdoispendonbookcoverdesigninsouthafrica',
-  title: 'How Much Should You Spend on Book Cover Design?',
+  title: 'How Much Should I Spend on Book Cover Design in South Africa?',
   description: 'What South African authors should budget for book cover design in 2026 — pricing tiers, what each gets you, and when to spend more vs. less on a cover.',
   category: 'Publishing Tips',
   readTime: '5 min read',

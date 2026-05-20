@@ -22,13 +22,13 @@ export default function HowToSelfPublishABook() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How to Self-Publish a Book in South Africa | Full Guide"
+      metaTitle="How to Self-Publish a Book"
       metaDescription="Step-by-step guide to self-publishing in South Africa — editing, ISBN, cover design, printing, Amazon KDP and distribution. Keep 100% of your rights."
       metaKeywords="how to self publish a book South Africa, self publishing guide, self publishing steps, self publishing cost South Africa, how to publish a book"
       canonical="https://www.creativebooks.co.za/howtoselfpublishabook"
       schema={schema}
       subtitle="Self Publishing Guide"
-      h1="How to Self-Publish a Book in South Africa"
+      h1="How to Self-Publish a Book"
       intro="Self-publishing gives you complete control over your book — your story, your design, your timeline, and 100% of your royalties. This guide walks South African authors through every step of the process."
       sections={[
         {

@@ -201,7 +201,7 @@ export default function PrintingA5() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="A5 Book Printing South Africa | Cream & White Paper"
+        title="A5 Book Printing in Johannesburg"
         description="Affordable A5 book printing in SA — cream or white paper, perfect binding, from 100 copies. Free printed proof and competitive pricing. Order now."
         canonical="https://www.creativebooks.co.za/printing/a5"
       />
@@ -224,8 +224,7 @@ export default function PrintingA5() {
               A5 Book Printing · Johannesburg
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-[1.05]">
-              Professional A5<br />Book Printing<br className="hidden md:block" />
-              <span style={{ color: '#B8955B' }}> South Africa</span>
+              A5 Book Printing in Johannesburg
             </h1>
             <p className="text-white/55 text-lg leading-relaxed font-body mb-10 max-w-xl">
               The most popular format for novels, memoirs, poetry, business books and non-fiction. Printed professionally on cream or white paper with a full-colour cover.

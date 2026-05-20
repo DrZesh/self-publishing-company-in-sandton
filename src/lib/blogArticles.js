@@ -4,7 +4,7 @@ export const blogArticles = {
 
   '/printondemandbooksinsouthafrica': {
     url: '/printondemandbooksinsouthafrica',
-    title: 'Print on Demand in South Africa',
+    title: 'Print on Demand Books in South Africa',
     description: 'Print on demand in South Africa explained — when POD works, when bulk printing is better, and how to prepare your book for either option.',
     category: 'Printing Guides',
     readTime: '7 min read',
@@ -37,7 +37,7 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazonkindle': {
     url: '/howmuchdoesitcosttoselfpublishonamazonkindle',
-    title: 'How Much Does It Cost to Self-Publish on Kindle? 2026',
+    title: 'How Much Does It Cost to Self-Publish on Amazon Kindle?',
     description: 'What it actually costs to self-publish a Kindle ebook in 2026 — KDP fees, formatting, cover design, editing and ISBN. Real numbers for South African authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
@@ -228,7 +228,7 @@ export const blogArticles = {
 
   '/howtoprintyourselfpublishedbookinsouthafrica': {
     url: '/howtoprintyourselfpublishedbookinsouthafrica',
-    title: 'How to Print a Self-Published Book',
+    title: 'How to Print Your Self-Published Book in South Africa',
     description: 'How to print your self-published book in South Africa — from editing and typesetting to cover design, ISBNs and choosing the right print run.',
     category: 'Printing Guides',
     readTime: '8 min read',
@@ -361,7 +361,7 @@ export const blogArticles = {
 
   '/howmuchdoesitcosttoselfpublishonamazon': {
     url: '/howmuchdoesitcosttoselfpublishonamazon',
-    title: 'How Much Does It Cost to Self-Publish on Amazon? 2026',
+    title: 'How Much Does It Cost to Self-Publish on Amazon?',
     description: 'Amazon self-publishing costs in 2026 — KDP print and ebook fees, cover design, editing and ISBN. Full breakdown for South African authors.',
     category: 'Publishing Tips',
     readTime: '7 min read',
@@ -394,7 +394,7 @@ export const blogArticles = {
 
   '/howtobecomeawriterinsouthafrica': {
     url: '/howtobecomeawriterinsouthafrica',
-    title: 'How to Become a Writer in South Africa | Career Guide',
+    title: 'How to Become a Writer in South Africa',
     description: 'How to become a writer in South Africa — building a writing routine, editing your manuscript, self-publishing and building an author brand that sells.',
     category: 'Writing Tips',
     readTime: '7 min read',
@@ -460,7 +460,7 @@ export const blogArticles = {
 
   '/howtogetanisbnforyourbook': {
     url: '/howtogetanisbnforyourbook',
-    title: 'How to Get an ISBN',
+    title: 'How to Get an ISBN for Your Book',
     description: 'How to get an ISBN for your book in South Africa — step-by-step NLSA registration, barcode placement and when to apply before printing.',
     category: 'Publishing Tips',
     readTime: '6 min read',

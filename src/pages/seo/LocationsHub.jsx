@@ -104,7 +104,7 @@ export default function LocationsHub() {
   return (
     <>
       <PageMeta
-        title="Book Printing Locations Across South Africa | Creative Books SA"
+        title="Book Publishing and Printing Locations in South Africa"
         description="Find your nearest book printing and publishing service. We serve all major South African cities with professional printing, editing, and publishing. Get a free quote."
         keywords="book printing locations, book printing near me, book printing South Africa, publishing services nationwide"
         canonical="https://www.creativebookssa.co.za/locations"
@@ -123,7 +123,7 @@ export default function LocationsHub() {
               <span className="text-copper text-sm font-semibold">NATIONWIDE COVERAGE</span>
             </div>
             <h1 className="font-heading text-4xl md:text-5xl font-bold text-[#0F0F0F] mb-4">
-              Book Printing Across South Africa
+              Book Publishing and Printing Locations in South Africa
             </h1>
             <p className="text-lg text-[#0F0F0F]/60 font-body max-w-2xl mx-auto">
               Professional book printing and self-publishing services in all major cities. Fast turnaround, premium quality, and competitive pricing nationwide.

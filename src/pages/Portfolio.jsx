@@ -103,7 +103,7 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-obsidian">
       <PageMeta
-        title="Book Publishing Portfolio | Covers, Layouts & Printed Books"
+        title="Book Design and Printing Portfolio"
         description="Our portfolio of South African book publishing projects — cover designs, interior layouts and printed books across fiction, non-fiction and memoir genres."
         canonical="https://www.creativebooks.co.za/portfolio"
       />
@@ -116,8 +116,7 @@ export default function Portfolio() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-copper text-sm font-body tracking-[0.3em] uppercase mb-4 block">Our Work</span>
             <h1 className="font-heading text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Some of the Books<br />
-              <span className="text-gradient-copper">We've Worked On</span>
+              Book Design and Printing Portfolio
             </h1>
             <p className="text-white/55 font-body text-lg max-w-2xl mx-auto leading-relaxed">
               Proudly published and designed by Creative Books SA — each title a story, each cover a work of art.

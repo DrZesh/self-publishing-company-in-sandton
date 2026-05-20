@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howtoprotectmybookideabeforepublishinginsouthafrica',
-  title: 'How to Protect Your Book Idea in South Africa',
+  title: 'How Do I Protect My Book Idea Before Publishing in South Africa?',
   description: 'How to protect your book idea in South Africa — how copyright works, practical steps to safeguard your manuscript and what to watch for in publishing contracts.',
   category: 'Publishing Tips',
   readTime: '6 min read',

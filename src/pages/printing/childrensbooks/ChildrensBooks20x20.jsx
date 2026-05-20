@@ -116,7 +116,7 @@ export default function ChildrensBooks20x20() {
   return (
     <div>
       <PageMeta
-        title="20 x 20 cm Children's Book Printing South Africa | Creative Books SA"
+        title="20cm x 20cm Children's Book Printing in Johannesburg"
         description="Children's book printing in 20 x 20 cm format. Full colour, gloss cover, saddle stitched. Quality South African printing with nationwide delivery."
         keywords="children's book printing, 20x20 book printing, children's book printing South Africa, square format children's books"
         canonical="https://www.creativebooks.co.za/printing/childrensbooks/ChildrensBooks20x20"
@@ -128,7 +128,7 @@ export default function ChildrensBooks20x20() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              20 x 20 cm Children's Book Printing in South Africa
+              20cm x 20cm Children's Book Printing in Johannesburg
             </h1>
             <p className="text-white/60 text-lg font-body max-w-2xl mb-8">
               Full-colour, saddle-stitched children's books printed in Johannesburg and delivered nationwide.
