@@ -167,7 +167,8 @@ export default function BookPrintingCalculator() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Cost Calculator South Africa | Instant Estimate | Creative Books SA"
+        title="Book Printing Cost Calculator"
+        description="Use the book printing cost calculator to estimate printing costs based on your book size, page count and printing requirements."
         description="Calculate the exact cost of printing your book in South Africa. Enter your page count, size, quantity, and binding type for an accurate estimate."
         keywords="book printing calculator South Africa, book printing cost, printing estimate, self-publishing costs"
         canonical="https://www.creativebookssa.co.za/bookprintingcalculator"

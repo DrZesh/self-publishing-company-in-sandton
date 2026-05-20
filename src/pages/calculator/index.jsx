@@ -169,7 +169,8 @@ export default function Calculator() {
   return (
     <div className="min-h-screen bg-[#F9F7F2]">
       <PageMeta
-        title="Book Printing Cost Calculator South Africa | Instant Quote"
+        title="Book Printing Cost Calculator"
+        description="Calculate book printing costs instantly. Get accurate quotes by format, page count, paper type and print run. Free tool, no signup required."
         description="Calculate book printing costs instantly. Get accurate quotes by format, page count, paper type and print run. Free tool, no signup required."
         canonical="https://www.creativebooks.co.za/calculator"
       />

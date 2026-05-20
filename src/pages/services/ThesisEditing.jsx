@@ -202,7 +202,8 @@ export default function ThesisEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Thesis Editing for Master's & PhD in South Africa"
+        title="Professional Thesis Editing Services"
+        description="Professional thesis editing services for Master's and PhD students in South Africa. Grammar, clarity and academic tone improved before submission."
         description="Thesis editing for South African master's and doctoral candidates. Academic language, structure and formatting refined. Confidential and supervisor-ready."
         canonical="https://www.creativebooks.co.za/thesisediting"
       />
@@ -228,7 +229,7 @@ export default function ThesisEditing() {
               Thesis Editing Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Master's and PhD Thesis Editing Services
+              Professional Thesis Editing Services
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">
               Professional Thesis Editing and Proofreading for Master's and PhD Students

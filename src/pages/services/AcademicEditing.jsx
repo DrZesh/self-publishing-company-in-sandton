@@ -114,7 +114,8 @@ export default function AcademicEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Academic Editing for UNISA, UJ, UP & Wits Students"
+        title="Professional Academic Editing Services"
+        description="Professional academic editing services for researchers, postgraduate students and institutions in South Africa."
         description="Academic editing for SA students and researchers — theses, dissertations, research papers, academic books. UNISA, UJ, UP, Wits formatting standards."
         canonical="https://www.creativebooks.co.za/academicediting"
       />
@@ -138,7 +139,7 @@ export default function AcademicEditing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Academic Editing & Research Services · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Academic Editing Services
+              Professional Academic Editing Services
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">
               Professional Academic Writing, Language Editing, Technical Editing and Research Support

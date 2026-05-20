@@ -30,7 +30,8 @@ export default function BookPrinting() {
   return (
     <>
       <PageMeta
-        title="Book Printing in Johannesburg from R4,500 for 100 Copies"
+        title="Affordable Book Printing Services in South Africa"
+        description="Affordable book printing services in South Africa for authors, publishers and businesses that need professional printed books."
         description="Professional book printing for SA authors from R4,500 for 100 copies. A5, 6×9, hardcover and children's formats. Cream or white paper, free printed proof."
         keywords="book printing Johannesburg, book printing South Africa, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
         canonical="https://www.creativebooks.co.za/bookprinting"
@@ -39,7 +40,7 @@ export default function BookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Book Printing Johannesburg"
-        title="Professional Book Printing Services in South Africa"
+        title="Affordable Book Printing Services in South Africa"
         description="High-quality book printing in Johannesburg. Hardcover, softcover, children's books, workbooks, and specialty formats. From 50 to 50,000 copies with fast turnaround and competitive pricing."
         features={[
           { title: 'Hardcover Printing', description: 'Case-bound hardcover books with dust jackets, foil stamping, and premium finishes.' },

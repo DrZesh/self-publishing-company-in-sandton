@@ -75,7 +75,8 @@ export default function ChildrensBookPackages() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Children's Book Publishing in 15×15, 20×20, 21×21cm"
+        title="Affordable Children's Book Publishing Packages"
+        description="Affordable children's book publishing packages for authors who need illustration, design and print-ready files."
         description="Children's book publishing packages for SA authors — illustration coordination, full-colour printing in 15×15, 20×20, 21×21cm formats. Free quote."
         canonical="https://www.creativebooks.co.za/childrensbookpackages"
       />
@@ -92,7 +93,7 @@ export default function ChildrensBookPackages() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Children's Book Illustration · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Children's Book Publishing Packages
+              Affordable Children's Book Publishing Packages
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Children's Book Illustration, Character Development and Print-Ready Files</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

@@ -102,7 +102,8 @@ export default function SixByNinePublishing() {
   return (
     <>
       <PageMeta
-        title="6×9 Book Publishing from R7,000 | Trade Paperback Service"
+        title="6x9 Book Publishing Services"
+        description="6x9 book publishing services for authors who need a professional trade paperback format for Amazon KDP and international distribution."
         description="6×9 trade paperback publishing from R7,000 — perfect for novels, memoirs and serious non-fiction. Full production: editing, design, layout and printing."
         keywords="6x9 book publishing, trade paperback, novel publishing, Amazon KDP publishing South Africa"
       />
@@ -129,7 +130,7 @@ export default function SixByNinePublishing() {
                 6x9 Format Publishing
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                6x9 Book Publishing and Printing
+                6x9 Book Publishing Services
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8 font-body">
                 The professional standard for novels, non-fiction, and trade paperbacks. Amazon KDP optimized with global distribution and professional design.

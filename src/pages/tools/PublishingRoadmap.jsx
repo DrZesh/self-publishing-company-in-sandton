@@ -93,7 +93,8 @@ export default function PublishingRoadmap() {
   return (
     <div>
       <PageMeta
-        title="Publishing Roadmap"
+        title="Book Publishing Roadmap"
+        description="Interactive roadmap of the complete publishing journey — manuscript to distribution. Step-by-step guide for first-time South African authors."
         description="Interactive roadmap of the complete publishing journey — manuscript to distribution. Step-by-step guide for first-time South African authors."
         keywords="publishing timeline, book roadmap, publishing timeline calculator, self-publishing timeline"
         canonical="https://www.creativebookssa.co.za/publishingroadmap"
@@ -108,7 +109,7 @@ export default function PublishingRoadmap() {
               <Calendar className="w-4 h-4 text-copper" />
               <span className="text-copper text-sm font-medium">Free Tool</span>
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Publishing Roadmap</h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Book Publishing Roadmap</h1>
             <p className="text-white/60 text-lg font-body max-w-2xl">
               Select where you are in the publishing process to see your personalized timeline to book release.
             </p>

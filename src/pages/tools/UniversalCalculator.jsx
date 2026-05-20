@@ -125,7 +125,8 @@ export default function UniversalCalculator() {
   return (
     <div>
       <PageMeta
-        title="Publishing Cost Calculator | Creative Books SA"
+        title="Book Publishing Cost Calculator"
+        description="Use the book publishing cost calculator to estimate costs for printing, editing, cover design and typesetting."
         description="Calculate costs for printing, editing, design, and publishing. Instant estimates based on real Creative Books SA rates."
         canonical="https://www.creativebooks.co.za/calculator"
       />

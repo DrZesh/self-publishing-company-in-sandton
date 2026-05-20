@@ -81,7 +81,8 @@ export default function Ghostwriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Ghostwriting Services South Africa | NDA Protected"
+        title="Professional Ghostwriting Services"
+        description="Professional ghostwriting services in South Africa for memoirs, business books, Christian titles and other manuscripts. NDA-protected."
         description="Discreet professional ghostwriters in South Africa — memoirs, business books, fiction and non-fiction. NDA-protected. Free consultation, transparent pricing."
         canonical="https://www.creativebooks.co.za/ghostwriting"
         schema={{

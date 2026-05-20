@@ -43,7 +43,8 @@ export default function AuthorWebsites() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Author Websites in South Africa from a Publishing Team"
+        title="Professional Author Website Design Services"
+        description="Professional author website design services for writers, self-published authors and publishers in South Africa."
         description="Author websites built by a publishing team, not a generic web agency. Showcase your books, build a mailing list, sell direct. Mobile-friendly and SEO-ready."
         canonical="https://www.creativebooks.co.za/authorwebsites"
       />
@@ -60,7 +61,7 @@ export default function AuthorWebsites() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Author Website Design · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Author Website Design
+              Professional Author Website Design Services
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Websites for Authors, Writers and Self-Published Creatives</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

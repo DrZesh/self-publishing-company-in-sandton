@@ -98,7 +98,8 @@ export default function MiniPublishingPackage() {
   return (
     <>
       <PageMeta
-        title="Mini Publishing Package | Pick the Services You Need"
+        title="Affordable Mini Publishing Package"
+        description="Affordable mini publishing package for first-time authors who need editing, design or printing without a full bundle."
         description="Flexible mini publishing package — choose only the services you need. Editing, design or printing without a full bundle. Free quote within 24 hours."
         keywords="affordable book publishing, self publishing package, book editing, cover design, ISBN registration South Africa"
       />
@@ -125,7 +126,7 @@ export default function MiniPublishingPackage() {
                 Affordable Publishing
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                The Mini Publishing Package
+                Affordable Mini Publishing Package
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8 font-body">
                 Your most affordable entry into professional publishing. Perfect for first-time authors looking for quality without the premium price tag.

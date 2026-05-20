@@ -73,7 +73,8 @@ export default function EbookPublishing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="eBook Publishing for Amazon, Kobo & Google Play"
+        title="Affordable Ebook Publishing Services"
+        description="Affordable ebook publishing services for South African authors. EPUB conversion, Kindle formatting and Amazon KDP distribution."
         description="eBook publishing for SA authors — EPUB and MOBI conversion, Kindle formatting, Amazon, Kobo and Google Play distribution. Reach global readers."
         canonical="https://www.creativebooks.co.za/ebookpublishing"
       />
@@ -90,7 +91,7 @@ export default function EbookPublishing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">eBook Formatting and Publishing · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Ebook Publishing for South African Authors
+              Affordable Ebook Publishing Services
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional eBook Formatting, Conversion, Paperback Layout and Amazon Publishing Support</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

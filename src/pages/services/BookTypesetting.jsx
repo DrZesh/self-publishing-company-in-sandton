@@ -85,7 +85,8 @@ export default function BookTypesetting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Book Typesetting for A5, 6×9, Hardcover | Print-Ready PDFs"
+        title="Affordable Book Typesetting & Layout Services"
+        description="Affordable book typesetting and layout services for authors who need a clean, professional and print-ready book interior."
         description="Professional book typesetting and interior layout for South African authors. Print-ready PDFs for A5, 6×9, hardcover and custom formats. Built for print."
         canonical="https://www.creativebooks.co.za/typesetting"
       />
@@ -102,7 +103,7 @@ export default function BookTypesetting() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Layout & Typesetting · Johannesburg · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Book Typesetting and Interior Layout
+              Affordable Book Typesetting & Layout Services
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Book Interior Layout, Typesetting and Print-Ready Files</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

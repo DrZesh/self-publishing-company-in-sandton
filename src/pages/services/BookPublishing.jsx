@@ -66,14 +66,15 @@ export default function BookPublishing() {
   return (
     <>
       <PageMeta
-        title="Book Publishing in South Africa from R21,000 | Creative Books SA"
+        title="Affordable Book Publishing Services in South Africa"
+        description="Affordable book publishing services in South Africa from R21,000. Editing, cover design, typesetting and printing included."
         description="Full-service book publishing for South African authors — editing, cover design, typesetting and printing. Packages from R21,000. Get a free quote."
         canonical="https://www.creativebooks.co.za/bookpublishing"
       />
       <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png"
       subtitle="Book Publishing South Africa"
-      title="Professional Book Publishing Services in South Africa"
+      title="Affordable Book Publishing Services in South Africa"
       description="South Africa's leading book publishing company. We transform your manuscript into a professionally published book with expert editing, stunning design, quality printing, and global distribution."
       features={[
         { title: 'Full-Service Publishing', description: 'From manuscript evaluation to distribution, we handle every aspect of the publishing process.' },

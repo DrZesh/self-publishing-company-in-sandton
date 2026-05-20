@@ -339,7 +339,8 @@ export default function SelfPublishingPackages() {
   return (
     <div style={{ background: '#070B12' }}>
       <PageMeta
-        title="Self Publishing Packages in South Africa"
+        title="Affordable Self-Publishing Packages in South Africa"
+        description="Affordable self-publishing packages in South Africa. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design and printing included."
         description="Self-publishing packages for South African authors. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design, printing all included."
         canonical="https://www.creativebooks.co.za/selfpublishingpackagesinsouthafrica"
       />
@@ -377,7 +378,7 @@ export default function SelfPublishingPackages() {
               </motion.div>
 
               <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.02] mb-6">
-                Self Publishing Packages in South Africa
+                Affordable Self-Publishing Packages in South Africa
               </h1>
 
               <p className="text-white/55 text-base font-body leading-relaxed mb-8 max-w-lg">
