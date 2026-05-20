@@ -100,8 +100,6 @@
   <url><loc>https://www.creativebooks.co.za/bookcoverdesignroodepoort</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/bookcoverdesigncapetown</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/bookcoverdesigndurban</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-
-  <!-- Locations Hub -->
   <url><loc>https://www.creativebooks.co.za/locations</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Industry-Specific Printing Pages -->
@@ -114,7 +112,7 @@
   <url><loc>https://www.creativebooks.co.za/novelprintingjohannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.creativebooks.co.za/educationalbookprintingjohannesburg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <!-- Long-Tail SEO Article Pages -->
+  <!-- Long-Tail SEO Pages -->
   <url><loc>https://www.creativebooks.co.za/howtoprintabookinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.creativebooks.co.za/howmuchdoesbookprintingcost</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.creativebooks.co.za/bestbooksizeforselfpublishing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
