@@ -520,6 +520,25 @@ const AuthenticatedApp = () => {
         <Route path="/howtolaunchyourbooksuccessfullyinsouthafrica" element={<HowToLaunchYourBookSA />} />
         <Route path="/canipublishmultiplegenresunderthesameauthorname" element={<CanIPublishMultipleGenresSA />} />
         
+        {/* 301 redirects for broken /blog/ component URLs */}
+        <Route path="/blog/BecomeAWriter" element={<Navigate to="/howtobecomeawriterinsouthafrica" replace />} />
+        <Route path="/blog/BeginnersGuideSelfPublishing" element={<Navigate to="/abeginnersguide" replace />} />
+        <Route path="/blog/BestPlatformsToSelfPublishSA" element={<Navigate to="/bestplatformstoselfpublishinsouthafrica" replace />} />
+        <Route path="/blog/CanIPublishAComicBookSA" element={<Navigate to="/canipublishacomicbookinsouthafrica" replace />} />
+        <Route path="/blog/CostToSelfPublishAmazon" element={<Navigate to="/howmuchdoesitcosttoselfpublishonamazon" replace />} />
+        <Route path="/blog/CostToSelfPublishKindle" element={<Navigate to="/howmuchdoesitcosttoselfpublishonamazonkindle" replace />} />
+        <Route path="/blog/DoAuthorsNeedInternationalDistribution" element={<Navigate to="/dosouthafricanauthorsneedinternationaldistribution" replace />} />
+        <Route path="/blog/DoINeedAnEditorBeforePublishing" element={<Navigate to="/doineedaneditorbeforepublishing" replace />} />
+        <Route path="/blog/DoPublishersProvideCoverDesign" element={<Navigate to="/dosouthafricanpublishersprovidecoverdesign" replace />} />
+        <Route path="/blog/DoSouthAfricanPublishersChargeAuthors" element={<Navigate to="/dosouthafricanpublisherschargeauthors" replace />} />
+        <Route path="/blog/EbookVsPrint" element={<Navigate to="/ebookvsprintbookselfpublishing" replace />} />
+        <Route path="/blog/HowDebutAuthorsGetBetterDeals" element={<Navigate to="/howdebutauthorsgetbetterbookdealsinsouthafrica" replace />} />
+        <Route path="/blog/HowDoIGetMyBookPublished" element={<Navigate to="/howdoigetmybookpublishedinsouthafrica" replace />} />
+        <Route path="/blog/HowDoIKnowIfMyBookIsReady" element={<Navigate to="/howdoiknowifmybookisreadytopublish" replace />} />
+        <Route path="/blog/HowDoPublishersFindAuthors" element={<Navigate to="/howdosouthafricanpublishinghousesfindnewauthors" replace />} />
+        <Route path="/blog/CommonPublishingMistakesSA" element={<Navigate to="/mostcommonpublishingmistakesbysouthafricanauthors" replace />} />
+        <Route path="/blog/CopyrightFAQsAuthors" element={<Navigate to="/copyrightfaqsforauthors" replace />} />
+
         {/* Dash-URL legacy redirects */}
         <Route path="/6x9-book-size-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
         <Route path="/6x9-book-size-printing-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
