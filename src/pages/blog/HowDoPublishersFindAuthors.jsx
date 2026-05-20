@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howdosouthafricanpublishinghousesfindnewauthors',
-  title: 'How Do Publishers Find Authors? | Get Noticed',
+  title: 'How Do South African Publishing Houses Find New Authors?',
   description: 'How South African publishers find new authors — unsolicited submissions, literary awards, social media and why many authors choose self-publishing instead.',
   category: 'Publishing Tips',
   readTime: '6 min read',

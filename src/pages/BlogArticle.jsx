@@ -8,7 +8,7 @@ import InternalLinks from '../components/shared/InternalLinks';
 
 const articleData = {
   '/howmuchdoesitcosttopublishabook': {
-    title: 'How Much Does It Cost to Publish a Book in South Africa?',
+    title: 'How Much Does It Cost to Publish a Book?',
     category: 'Publishing Tips',
     readTime: '8 min read',
     content: [
@@ -104,7 +104,7 @@ export default function BlogArticle() {
 
   const metaMap = {
     '/howmuchdoesitcosttopublishabook': {
-      title: 'How Much Does It Cost to Publish a Book in South Africa?',
+      title: 'How Much Does It Cost to Publish a Book?',
       description: 'Complete breakdown of book publishing costs in South Africa — editing, design, printing, ISBN, distribution and marketing.',
     },
     '/howtogetanisbn': {

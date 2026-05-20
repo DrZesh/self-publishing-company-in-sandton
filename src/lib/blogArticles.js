@@ -328,7 +328,7 @@ export const blogArticles = {
 
   '/howlongdoesittaketoselfpublish': {
     url: '/howlongdoesittaketoselfpublish',
-    title: 'How Long Does Self-Publishing Take?',
+    title: 'How Long Does It Take to Self-Publish?',
     description: 'How long does self-publishing take in South Africa? Realistic timelines for editing, layout, cover design, ISBN and printing — stage by stage.',
     category: 'Publishing Tips',
     readTime: '6 min read',

@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howdoigetmybookpublishedinsouthafrica',
-  title: 'How Do I Get My Book Published? | Step-by-Step Guide',
+  title: 'How Do I Get My Book Published in South Africa?',
   description: 'How to get your book published in South Africa — step-by-step from manuscript to print, choosing between traditional and self-publishing. Keep 100% of your rights.',
   category: 'Publishing Tips',
   readTime: '9 min read',

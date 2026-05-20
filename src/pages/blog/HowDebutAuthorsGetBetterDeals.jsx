@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howdebutauthorsgetbetterbookdealsinsouthafrica',
-  title: 'How Debut Authors Get Better Publishing Deals',
+  title: 'How Do Debut Authors Get Better Book Deals in South Africa?',
   description: 'How debut South African authors get better publishing deals — building leverage, entering awards and why self-publishing often beats a weak traditional deal.',
   category: 'Publishing Tips',
   readTime: '6 min read',
