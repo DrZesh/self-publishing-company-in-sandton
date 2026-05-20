@@ -28,7 +28,8 @@ export default function BookPrintingRoodepoort() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Roodepoort | Local Gauteng Service"
+        title="Book Printing Roodepoort"
+        description="Book printing for Roodepoort authors — softcover, hardcover and children's books. Fast Johannesburg turnaround, cream or white paper options."
         description="Book printing for Roodepoort authors — softcover, hardcover and children's books. Fast Johannesburg turnaround, cream or white paper options."
         keywords="book printing Roodepoort, book printers Roodepoort, Roodepoort book printing, printing services Roodepoort, book publishing Roodepoort"
         canonical="https://www.creativebooks.co.za/bookprintingroodepoort"

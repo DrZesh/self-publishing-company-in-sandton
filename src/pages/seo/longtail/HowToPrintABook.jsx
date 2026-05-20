@@ -22,13 +22,13 @@ export default function HowToPrintABook() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How to Print a Book in South Africa"
+      metaTitle="How to Print a Book"
       metaDescription="How to print a book in South Africa — file preparation, paper types, binding options, costs and turnaround times. Free quote within 24 hours."
       metaKeywords="how to print a book South Africa, book printing guide, book printing process, print ready PDF book, book printing steps"
       canonical="https://www.creativebooks.co.za/howtoprintabookinsouthafrica"
       schema={schema}
       subtitle="Book Printing Guide"
-      h1="How to Print a Book in South Africa"
+      h1="How to Print a Book"
       intro="Printing a book in South Africa is simpler than most first-time authors expect. This guide walks you through every step — from preparing your files to collecting your finished books."
       sections={[
         {

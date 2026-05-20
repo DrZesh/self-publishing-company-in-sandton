@@ -22,13 +22,13 @@ export default function HardcoverVsPaperback() {
 
   return (
     <LongTailArticlePage
-      metaTitle="Hardcover vs Paperback Printing | Costs & Comparison"
+      metaTitle="Hardcover vs Paperback"
       metaDescription="Hardcover vs paperback printing compared — production costs, retail pricing, durability and when each format makes sense for SA authors."
       metaKeywords="hardcover vs paperback, hardcover vs softcover, book binding comparison, should I print hardcover or paperback, book printing South Africa"
       canonical="https://www.creativebooks.co.za/hardcovervspaperbackprinting"
       schema={schema}
       subtitle="Printing Format Comparison"
-      h1="Hardcover vs Paperback: Which Is Right for Your Book?"
+      h1="Hardcover vs Paperback"
       intro="Should you print your book in hardcover or paperback? This is one of the most common questions we receive from self-publishing authors. The answer depends on your budget, goals, and reader expectations."
       sections={[
         {

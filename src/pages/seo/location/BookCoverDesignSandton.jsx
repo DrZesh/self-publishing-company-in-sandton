@@ -18,7 +18,7 @@ export default function BookCoverDesignSandton() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Sandton | Print & eBook Covers"
+        title="Book Cover Design Sandton"
         description="Professional book cover design for Sandton authors — full print covers and eBook covers. Genre-specific, market-ready designs. Free quote."
         keywords="book cover design Sandton, book cover designer Sandton, book cover design Johannesburg, professional book covers Sandton"
         canonical="https://www.creativebooks.co.za/bookcoverdesignsandton"
@@ -32,7 +32,7 @@ export default function BookCoverDesignSandton() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Sandton</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design in Sandton
+                Book Cover Design Sandton
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Sandton and Greater Johannesburg</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

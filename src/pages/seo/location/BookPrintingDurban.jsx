@@ -39,7 +39,8 @@ export default function BookPrintingDurban() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Durban | Fast, Affordable Quality"
+        title="Book Printing Durban"
+        description="Book printing services for Durban authors. Quality paperback, hardcover and children's book printing with nationwide delivery."
         description="Book printing services for Durban authors. Quality paperback, hardcover and children's book printing with nationwide delivery."
         keywords="book printing Durban, book printers Durban, Durban book printing, printing services Durban, book publishing Durban, KwaZulu-Natal book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingdurban"

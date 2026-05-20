@@ -98,7 +98,8 @@ export default function A5BookPublishing() {
   return (
     <>
       <PageMeta
-        title="A5 Book Publishing from R7,000 | Edit, Design, Print"
+        title="A5 Book Publishing"
+        description="A5 book publishing services for authors who want a professional, print-ready book format. Editing, design, typesetting and printing included."
         description="A5 book publishing packages for South African authors from R7,000 — editing, cover design, typesetting and printing in the most popular novel format."
         keywords="A5 book publishing, pocket book format, poetry publishing, short story publishing South Africa"
       />
@@ -125,7 +126,7 @@ export default function A5BookPublishing() {
                 A5 Format Publishing
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                A5 Book Publishing and Printing
+                A5 Book Publishing
               </h1>
               <p className="text-white/60 text-lg leading-relaxed mb-8 font-body">
                 Professional publishing for the compact A5 format. Perfect for poetry, short stories, and specialty publications. Affordable, professional, and ready for market.

@@ -39,7 +39,8 @@ export default function BookPrintingCapeTown() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Cape Town | Nationwide Delivery"
+        title="Book Printing Cape Town"
+        description="Book printing for Cape Town authors. Hardcover, paperback and children's books with delivery across the Western Cape."
         description="Professional book printing for Cape Town authors. Hardcover, paperback and children's books with delivery across the Western Cape."
         keywords="book printing Cape Town, book printers Cape Town, Cape Town book printing, printing services Cape Town, book publishing Cape Town, Western Cape book printing"
         canonical="https://www.creativebookssa.co.za/bookprintingcapetown"

@@ -28,7 +28,8 @@ export default function BookPrintingSandton() {
   return (
     <div>
       <PageMeta
-        title="Book Printing in Sandton | A5, 6×9 & Hardcover"
+        title="Book Printing Sandton"
+        description="Book printing for Sandton authors — A5, 6×9, hardcover and children's formats. Fast Gauteng delivery, cream or white paper, from 100 copies."
         description="Book printing for Sandton authors — A5, 6×9, hardcover and children's formats. Fast Gauteng delivery, cream or white paper, from 100 copies."
         keywords="book printing Sandton, book printers Sandton, Sandton book printing, printing services Sandton, book publishing Sandton"
         canonical="https://www.creativebooks.co.za/bookprintingsandton"
