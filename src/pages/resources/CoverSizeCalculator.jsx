@@ -178,7 +178,7 @@ export default function CoverSizeCalculator() {
   return (
     <div>
       <PageMeta
-        title="Book Cover Size Calculator | Print-Ready Templates | Creative Books SA"
+        title="Cover Size Calculator"
         description="Generate accurate cover dimensions for your book. Free print-ready PDF templates for indie authors. A5, 6×9, children's books, hardcover, and custom sizes."
         keywords="book cover calculator, cover dimensions, spine width calculator, print-ready cover template"
         canonical="https://www.creativebookssa.co.za/resources/CoverSizeCalculator"

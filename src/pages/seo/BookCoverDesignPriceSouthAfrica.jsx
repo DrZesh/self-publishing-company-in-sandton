@@ -25,7 +25,7 @@ export default function BookCoverDesignPriceSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Prices in South Africa 2026"
+        title="Book Cover Design Price South Africa"
         description="What book cover design actually costs in South Africa in 2026 — transparent pricing for custom illustration, photographic and typographic covers. No quote forms."
         keywords="book cover design price South Africa, book cover designer, book cover design near me, ebook cover design"
         canonical="https://www.creativebooks.co.za/bookcoverdesignpricesouthafrica"
@@ -39,7 +39,7 @@ export default function BookCoverDesignPriceSouthAfrica() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Design Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design Prices in South Africa
+                Book Cover Design Price South Africa
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 10 min read

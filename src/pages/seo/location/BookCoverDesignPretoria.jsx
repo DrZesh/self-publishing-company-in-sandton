@@ -18,7 +18,7 @@ export default function BookCoverDesignPretoria() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Pretoria | Professional Designers"
+        title="Book Cover Design Pretoria"
         description="Custom book cover design for Pretoria and Tshwane authors. Full print covers and eBook covers by experienced South African designers."
         keywords="book cover design Pretoria, book cover designer Pretoria, book cover design Gauteng, professional book covers Pretoria"
         canonical="https://www.creativebooks.co.za/bookcoverdesignpretoria"
@@ -32,7 +32,7 @@ export default function BookCoverDesignPretoria() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Pretoria</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design in Pretoria
+                Book Cover Design Pretoria
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Pretoria and Gauteng</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

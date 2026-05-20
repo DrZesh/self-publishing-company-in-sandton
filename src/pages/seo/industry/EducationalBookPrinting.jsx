@@ -23,7 +23,7 @@ export default function EducationalBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Educational Book Printing in Johannesburg | Schools & Tertiary"
+        title="Educational Book Printing"
         description="Educational book printing in Johannesburg for schools, universities and training providers — textbooks, workbooks and study guides in volume. Bulk discounts."
         keywords="educational book printing Johannesburg, textbook printing South Africa, learner guide printing, educational publisher printing, school book printing"
         canonical="https://www.creativebooks.co.za/educationalbookprintingjohannesburg"
@@ -32,7 +32,7 @@ export default function EducationalBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Educational Book Printing"
-        title="Educational Book Printing in South Africa"
+        title="Educational Book Printing"
         description="Professional educational book printing for South African schools, tutors, and educational publishers. Textbooks, workbooks, learner guides, and supplementary reading printed with consistent quality at competitive prices."
         features={[
           { title: 'Textbook Printing', description: 'A5 and A4 textbooks for all school grades and subjects — black and white and full-colour.' },

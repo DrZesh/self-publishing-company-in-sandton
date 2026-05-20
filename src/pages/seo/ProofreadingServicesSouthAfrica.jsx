@@ -33,7 +33,7 @@ export default function ProofreadingServicesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Proofreading Services in SA from R0.25 Per Word"
+        title="Proofreading Services South Africa"
         description="Professional manuscript proofreading services across South Africa from R0.25 per word. Final-stage error checking before your book goes to print or upload."
         keywords="proofreading services South Africa, proofreading South Africa, book proofreading South Africa, academic proofreading South Africa, proofreader Johannesburg"
         canonical="https://www.creativebooks.co.za/proofreadingservicessouthafrica"
@@ -42,7 +42,7 @@ export default function ProofreadingServicesSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Proofreading Services South Africa"
-        title="Proofreading Services in South Africa"
+        title="Proofreading Services South Africa"
         description="South Africa's trusted proofreading specialists. Our expert proofreaders eliminate every spelling, grammar, punctuation, and formatting error from your book, thesis, academic paper, or business document — delivering a polished, error-free final product."
         features={[
           { title: 'Book Proofreading', description: 'Final-stage error elimination for novels, non-fiction, memoirs, and academic books before going to print.' },

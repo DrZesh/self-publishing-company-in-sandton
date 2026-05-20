@@ -25,7 +25,7 @@ export default function GhostwritersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Ghostwriters in South Africa | NDA-Protected Writers"
+        title="Ghostwriters South Africa"
         description="Hire a professional ghostwriter in South Africa for memoirs, business books, fiction and non-fiction. Discreet, NDA-protected, transparent project pricing."
         keywords="ghostwriters in South Africa, ghost writer near me, ghostwriting services, book writer South Africa"
         canonical="https://www.creativebooks.co.za/ghostwritersinsouthafrica"
@@ -39,7 +39,7 @@ export default function GhostwritersSouthAfrica() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Writing Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Ghostwriters for Hire in South Africa
+                Ghostwriters South Africa
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 12 min read

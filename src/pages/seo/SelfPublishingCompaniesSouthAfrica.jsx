@@ -25,7 +25,7 @@ export default function SelfPublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self-Publishing Companies in SA from R21,000 | Creative Books SA"
+        title="Self Publishing Companies in South Africa"
         description="Self-publishing companies in South Africa for first-time and experienced authors. Bronze, Silver, Gold packages from R21,000 — editing, design, printing."
         keywords="self-publishing companies in South Africa, self publishing services, self publish a book South Africa"
         canonical="https://www.creativebooks.co.za/selfpublishingcompaniesinsouthafrica"
@@ -39,7 +39,7 @@ export default function SelfPublishingCompaniesSouthAfrica() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Publishing Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Self-Publishing Companies in South Africa
+                Self Publishing Companies in South Africa
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 13 min read

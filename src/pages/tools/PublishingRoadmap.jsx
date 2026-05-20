@@ -93,7 +93,7 @@ export default function PublishingRoadmap() {
   return (
     <div>
       <PageMeta
-        title="Publishing Roadmap | Your Path to Published Author"
+        title="Publishing Roadmap"
         description="Interactive roadmap of the complete publishing journey — manuscript to distribution. Step-by-step guide for first-time South African authors."
         keywords="publishing timeline, book roadmap, publishing timeline calculator, self-publishing timeline"
         canonical="https://www.creativebookssa.co.za/publishingroadmap"

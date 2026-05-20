@@ -23,7 +23,7 @@ export default function ChristianBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Christian Book Printing in Johannesburg | Devotionals & Sermons"
+        title="Christian Book Printing"
         description="Christian book printing in Johannesburg for ministries, pastors and faith-based authors — devotionals, Bible studies, sermon collections and testimonies."
         keywords="Christian book printing Johannesburg, devotional printing South Africa, ministry book printing, Christian publishing South Africa, church book printing"
         canonical="https://www.creativebooks.co.za/christianbookprintingjohannesburg"
@@ -32,7 +32,7 @@ export default function ChristianBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="Christian Book Printing"
-        title="Christian Book Printing in South Africa"
+        title="Christian Book Printing"
         description="Creative Books SA is a trusted partner for South African Christian authors and ministries. We print devotionals, Bible studies, testimonies, ministry books, and church publications with the quality and care that faith-based publishing deserves."
         features={[
           { title: 'Devotionals & Bible Studies', description: 'Beautifully produced devotionals and Bible study guides for ministries and individual authors.' },

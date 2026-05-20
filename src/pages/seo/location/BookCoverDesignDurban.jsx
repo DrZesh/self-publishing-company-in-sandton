@@ -18,7 +18,7 @@ export default function BookCoverDesignDurban() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in Durban | KwaZulu-Natal Authors"
+        title="Book Cover Design Durban"
         description="Professional book cover design for Durban and KwaZulu-Natal authors. Full print covers and eBook covers. Remote service, free quote."
         keywords="book cover design Durban, book cover designer Durban, book cover design KwaZulu-Natal, professional book covers Durban"
         canonical="https://www.creativebooks.co.za/bookcoverdesigndurban"
@@ -32,7 +32,7 @@ export default function BookCoverDesignDurban() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Durban</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design in Durban
+                Book Cover Design Durban
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Durban and KwaZulu-Natal</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">

@@ -23,7 +23,7 @@ export default function SchoolBookPrinting() {
   return (
     <>
       <PageMeta
-        title="School Book Printing in Johannesburg | Workbooks & Readers"
+        title="School Book Printing Johannesburg"
         description="School book printing in Johannesburg for primary and high schools — textbooks, workbooks, readers and CAPS-aligned learning materials in bulk quantities."
         keywords="school book printing Johannesburg, textbook printing South Africa, workbook printing Johannesburg, educational book printing, study guide printing"
         canonical="https://www.creativebooks.co.za/schoolbookprintingjohannesburg"
@@ -32,7 +32,7 @@ export default function SchoolBookPrinting() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
         subtitle="School Book Printing"
-        title="School Book Printing in South Africa"
+        title="School Book Printing Johannesburg"
         description="Professional school textbook, workbook, and study guide printing for Johannesburg private schools, tutors, and educational publishers. Quality educational material printing from 50 copies upwards."
         features={[
           { title: 'Textbook & Workbook Printing', description: 'A4 and A5 textbooks, workbooks, and study guides for all educational levels.' },

@@ -39,7 +39,7 @@ export default function CompletePublishingGuide() {
   return (
     <div>
       <PageMeta
-        title="Complete Guide to Publishing a Book"
+        title="Complete Publishing Guide"
         description="The complete guide to publishing a book in South Africa — manuscript prep, ISBN, printing, distribution. Everything in one place. Free resource."
         keywords="self-publishing South Africa, how to publish a book South Africa, book publishing guide South Africa, self-publishing costs South Africa"
         canonical="https://www.creativebooks.co.za/publishingguide"
@@ -52,7 +52,7 @@ export default function CompletePublishingGuide() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-center">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Complete Self-Publishing Guide</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Complete Guide to Publishing a Book
+              Complete Publishing Guide
             </h1>
             <p className="text-white/60 text-lg leading-relaxed font-body max-w-2xl mx-auto">
               Real Creative Books SA pricing, real steps, and the distribution truth most authors learn too late.

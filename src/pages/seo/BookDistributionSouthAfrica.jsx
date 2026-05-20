@@ -25,7 +25,7 @@ export default function BookDistributionSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Distribution in South Africa | An Author's Guide"
+        title="Book Distribution South Africa"
         description="A practical guide to book distribution in South Africa — bookshops, online retailers, direct sales and what authors realistically need to consider before printing."
         keywords="book distribution South Africa, book distribution companies, sell self-published books, book marketing for authors"
         canonical="https://www.creativebooks.co.za/bookdistributioninsouthafrica"
@@ -39,7 +39,7 @@ export default function BookDistributionSouthAfrica() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Marketing Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Distribution in South Africa: An Author's Guide
+                Book Distribution South Africa
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 11 min read

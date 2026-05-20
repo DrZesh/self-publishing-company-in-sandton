@@ -11,7 +11,7 @@ export default function NDA() {
   return (
     <div>
       <PageMeta
-        title="Non-Disclosure Agreement"
+        title="NDA"
         description="Our standard NDA protects authors' manuscripts and ideas during the publishing process. Read the terms before submitting confidential material."
         canonical="https://www.creativebooks.co.za/nda"
       />
@@ -21,7 +21,7 @@ export default function NDA() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-2xl mx-auto">
             <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Legal Documents</span>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Non-Disclosure Agreement</h1>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">NDA</h1>
             <p className="text-white/60 text-lg leading-relaxed font-body">
               Protect your intellectual property and confidential information with Creative Books SA's Non-Disclosure Agreement template.
             </p>

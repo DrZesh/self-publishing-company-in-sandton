@@ -34,7 +34,7 @@ export default function BookPrintingJohannesburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Johannesburg | Quality Printing from R4,500"
+        title="Book Printing Johannesburg"
         description="Professional book printing in Johannesburg from R4,500 for 100 copies. A5, 6×9, hardcover, children's books. High-quality printing for authors."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
         canonical="https://www.creativebooks.co.za/bookprintingjohannesburg"

@@ -33,7 +33,7 @@ export default function BookCoverDesignSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design in South Africa | Custom Covers"
+        title="Book Cover Design South Africa"
         description="Custom book cover design in South Africa — illustrated, photographic and typographic covers for print and ebook. View portfolio and get a project quote."
         keywords="book cover design South Africa, book cover designer South Africa, book cover design Johannesburg, eBook cover design South Africa, professional book covers South Africa"
         canonical="https://www.creativebooks.co.za/bookcoverdesignsouthafrica"
@@ -42,7 +42,7 @@ export default function BookCoverDesignSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Cover Design South Africa"
-        title="Book Cover Design in South Africa"
+        title="Book Cover Design South Africa"
         description="Your book cover is your most powerful marketing tool. Creative Books SA designs professional, genre-appropriate book covers for South African authors that compete with the best-published titles on any shelf or digital platform — from Amazon to Takealot."
         features={[
           { title: 'Genre-Specific Cover Design', description: 'We design covers that speak your genre\'s visual language — whether fiction, non-fiction, academic, or children\'s books.' },

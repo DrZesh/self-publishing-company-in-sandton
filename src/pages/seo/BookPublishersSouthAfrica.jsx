@@ -47,7 +47,7 @@ export default function BookPublishersSouthAfrica() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Publishers South Africa"
-        title="Book Publishers in South Africa"
+        title="Book Publishers South Africa"
         description="Creative Books SA is one of South Africa's most experienced book publishers, offering full-service publishing for authors nationwide. From manuscript evaluation and professional editing to cover design, typesetting, printing, and global distribution — we bring your book to life while you keep 100% of your rights."
         features={[
           { title: 'Full-Service Publishing', description: 'Editing, design, typesetting, printing, ISBN, and distribution all handled under one roof in Johannesburg.' },

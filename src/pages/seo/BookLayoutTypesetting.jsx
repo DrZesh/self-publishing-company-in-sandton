@@ -25,7 +25,7 @@ export default function BookLayoutTypesetting() {
   return (
     <>
       <PageMeta
-        title="Book Layout &amp; Typesetting in South Africa | Print-Ready"
+        title="Book Layout Typesetting"
         description="Professional book layout and typesetting in South Africa — print-ready interior PDFs for A5, 6×9, hardcover and children's book formats. Built for print."
         keywords="book layout, typesetting, book typesetting services, typesetter South Africa, print-ready book files"
         canonical="https://www.creativebooks.co.za/booklayoutandtypesetting"
@@ -39,7 +39,7 @@ export default function BookLayoutTypesetting() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Design Guide</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Layout and Typesetting Services
+                Book Layout Typesetting
               </h1>
               <p className="flex items-center gap-2 text-white/50 text-sm font-body">
                 <Clock className="w-4 h-4" /> 10 min read

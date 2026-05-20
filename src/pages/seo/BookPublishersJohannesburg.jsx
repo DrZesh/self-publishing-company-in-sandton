@@ -33,7 +33,7 @@ export default function BookPublishersJohannesburg() {
   return (
     <>
       <PageMeta
-        title="Book Publishers in Johannesburg from R21,000"
+        title="Book Publishers Johannesburg"
         description="Johannesburg book publishers offering editing, cover design, printing and ISBN registration. In-person consultations at our Sandton studio. Packages from R21,000."
         keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
         canonical="https://www.creativebooks.co.za/bookpublishersjohannesburg"
@@ -42,7 +42,7 @@ export default function BookPublishersJohannesburg() {
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Publishers Johannesburg"
-        title="Book Publishers in Johannesburg"
+        title="Book Publishers Johannesburg"
         description="Creative Books SA is Johannesburg's trusted self-publishing company. We offer complete book publishing services for Johannesburg and Gauteng authors — from manuscript editing and professional cover design to local printing, ISBN registration, and international distribution on Amazon and Takealot."
         features={[
           { title: 'Johannesburg-Based Publishing Team', description: 'Our full publishing team is based in Johannesburg. Meet with us in person or work with us remotely.' },

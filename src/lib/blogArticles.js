@@ -70,7 +70,7 @@ export const blogArticles = {
 
   '/professionalcopyeditingservices': {
     url: '/professionalcopyeditingservices',
-    title: 'Professional Copy Editing',
+    title: 'Professional Copy Editing Services',
     description: 'Professional copy editing explained — what it includes, how it differs from proofreading, and when South African authors need it before publishing.',
     category: 'Editing Guides',
     readTime: '7 min read',
