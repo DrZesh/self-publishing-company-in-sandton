@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div>
       <PageMeta
-        title="Publish Your Book in South Africa: Packages From R21,000 | Creative Books SA"
+        title="Publish Your Book in South Africa: Packages From R21,000"
         description="Self-publishing services in South Africa — editing, cover design, typesetting and printing from R21,000. Based in Sandton, working with authors nationwide."
         keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
         canonical="https://www.creativebooks.co.za/"
