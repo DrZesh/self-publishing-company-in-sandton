@@ -17,12 +17,12 @@ const packageFeatures = [
 ];
 
 const whitePricing = [
-  { name: 'Bronze',   pages: '50 – 100',   price: 'R4 500',  popular: true  },
-  { name: 'Silver',   pages: '115 – 150',  price: 'R5 100',  popular: false },
-  { name: 'Gold',     pages: '160 – 200',  price: 'R6 500',  popular: false },
-  { name: 'Platinum', pages: '215 – 300',  price: 'R7 800',  popular: false },
-  { name: 'Diamond',  pages: '315 – 350',  price: 'R8 500',  popular: false },
-  { name: 'Elite',    pages: '360 – 400',  price: 'R9 600',  popular: false },
+  { name: 'Bronze',   pages: '50 – 100',   price: 'R4 500',  popular: true,  mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Bronze%20%2850-100%20pages%29%20-%20R4%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Bronze%20Tier%0APRICE%3A%20R4%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%2050%20to%20100%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Silver',   pages: '115 – 150',  price: 'R5 100',  popular: false, mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Silver%20%28115-150%20pages%29%20-%20R5%2C100&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Silver%20Tier%0APRICE%3A%20R5%2C100%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20115%20to%20150%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Gold',     pages: '160 – 200',  price: 'R6 500',  popular: false, mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Gold%20%28160-200%20pages%29%20-%20R6%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Gold%20Tier%0APRICE%3A%20R6%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20160%20to%20200%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Platinum', pages: '215 – 300',  price: 'R7 800',  popular: false, mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Platinum%20%28215-300%20pages%29%20-%20R7%2C800&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Platinum%20Tier%0APRICE%3A%20R7%2C800%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20215%20to%20300%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Diamond',  pages: '315 – 350',  price: 'R8 500',  popular: false, mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Diamond%20%28315-350%20pages%29%20-%20R8%2C500&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Diamond%20Tier%0APRICE%3A%20R8%2C500%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20315%20to%20350%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
+  { name: 'Elite',    pages: '360 – 400',  price: 'R9 600',  popular: false, mailto: "mailto:info@creativebooks.co.za?subject=Service%20Order%3A%20A5%20White%20Paper%20Printing%20Elite%20%28360-400%20pages%29%20-%20R9%2C600&body=Hi%20Creative%20Books%20SA%2C%0A%0AI%20would%20like%20to%20order%20the%20following%20printing%20service%3A%0A%0ASERVICE%3A%20A5%20Printing%20-%20Elite%20Tier%0APRICE%3A%20R9%2C600%0A%0AINCLUDED%3A%0A-%20A5%20size%0A-%20100%20copies%0A-%20360%20to%20400%20pages%0A-%20Gloss%20or%20matte%20cover%0A-%20Perfect%20binding%0A-%20Black%20and%20white%20inners%0A-%20White%20paper%0A%0A---%0AMY%20DETAILS%3A%0AName%3A%20%0APhone%3A%20%0ABook%20title%3A%20%0APage%20count%3A%20%0AIs%20your%20book%20already%20typeset%3F%20%0AAny%20notes%3A%20%0A%0AThank%20you%2C" },
 ];
 
 const creamPricing = [
@@ -65,13 +65,11 @@ function PricingCard({ pkg, paperType }) {
       whileHover={{ y: -6, transition: { duration: 0.22 } }}
       className="relative flex flex-col overflow-hidden"
       style={{
-        background: pkg.popular ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)' : 'rgba(255,255,255,0.72)',
+        background: 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        border: pkg.popular ? '1.5px solid rgba(184,149,91,0.55)' : '1px solid rgba(255,255,255,0.85)',
-        boxShadow: pkg.popular
-          ? '0 24px 60px rgba(184,149,91,0.18), inset 0 1px 0 rgba(255,255,255,1)'
-          : '0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)',
+        border: '1.5px solid rgba(184,149,91,0.55)',
+        boxShadow: '0 24px 60px rgba(184,149,91,0.18), inset 0 1px 0 rgba(255,255,255,1)',
         borderRadius: '16px',
       }}
     >
@@ -89,7 +87,7 @@ function PricingCard({ pkg, paperType }) {
 
       <div className="p-6 flex-1">
         <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
-          style={{ color: pkg.popular ? '#B8955B' : 'rgba(11,18,32,0.4)' }}>{pkg.name}</p>
+          style={{ color: '#B8955B' }}>{pkg.name}</p>
 
         {/* Price */}
         <div className="mb-2">
@@ -99,23 +97,23 @@ function PricingCard({ pkg, paperType }) {
         {/* Page count — smaller, below price */}
         <p className="text-xs text-[#2B2B2B]/45 font-body mb-5">{pkg.pages} pages</p>
 
-        <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(0,0,0,0.06)' }} />
+        <div className="h-px mb-5" style={{ background: 'rgba(184,149,91,0.2)' }} />
 
         {/* Features */}
         <ul className="space-y-2.5 mb-6">
           {packageFeatures.map(f => (
             <li key={f} className="flex items-center gap-2.5">
               <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(11,18,32,0.06)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(11,18,32,0.1)'}` }}>
-                <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : '#0B1220' }} strokeWidth={2.5} />
+                style={{ background: 'rgba(184,149,91,0.12)', border: '1px solid rgba(184,149,91,0.3)' }}>
+                <Check className="w-2.5 h-2.5" style={{ color: '#B8955B' }} strokeWidth={2.5} />
               </div>
               <span className="text-xs font-body text-[#2B2B2B]/70">{f}</span>
             </li>
           ))}
           <li className="flex items-center gap-2.5">
             <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(11,18,32,0.06)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(11,18,32,0.1)'}` }}>
-              <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : '#0B1220' }} strokeWidth={2.5} />
+              style={{ background: 'rgba(184,149,91,0.12)', border: '1px solid rgba(184,149,91,0.3)' }}>
+              <Check className="w-2.5 h-2.5" style={{ color: '#B8955B' }} strokeWidth={2.5} />
             </div>
             <span className="text-xs font-body text-[#2B2B2B]/70">{paperType}</span>
           </li>
@@ -129,7 +127,7 @@ function PricingCard({ pkg, paperType }) {
   );
 }
 
-// ─── Dark Pricing Card (for cream section on dark bg) ─────────────────────────
+// ─── Dark Pricing Card (for white paper section on dark bg) ──────────────────
 function DarkPricingCard({ pkg, paperType, i }) {
   return (
     <motion.div
@@ -140,18 +138,16 @@ function DarkPricingCard({ pkg, paperType, i }) {
       whileHover={{ y: -6, transition: { duration: 0.22 } }}
       className="relative flex flex-col overflow-hidden"
       style={{
-        background: pkg.popular ? 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)' : 'rgba(255,255,255,0.06)',
+        background: 'linear-gradient(160deg, #ffffff 0%, #fdf9f4 100%)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        border: pkg.popular ? '1.5px solid rgba(184,149,91,0.6)' : '1px solid rgba(255,255,255,0.1)',
-        boxShadow: pkg.popular
-          ? '0 24px 60px rgba(184,149,91,0.22), inset 0 1px 0 rgba(255,255,255,1)'
-          : '0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)',
+        border: '1.5px solid rgba(184,149,91,0.6)',
+        boxShadow: '0 24px 60px rgba(184,149,91,0.22), inset 0 1px 0 rgba(255,255,255,1)',
         borderRadius: '16px',
       }}
     >
       <div className="absolute top-0 left-4 right-4 h-px"
-        style={{ background: pkg.popular ? 'linear-gradient(90deg, transparent, rgba(184,149,91,0.8), transparent)' : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.8), transparent)' }} />
 
       {pkg.popular && (
         <div className="absolute top-4 right-4">
@@ -164,31 +160,31 @@ function DarkPricingCard({ pkg, paperType, i }) {
 
       <div className="p-6 flex-1">
         <p className="text-[10px] font-semibold tracking-[0.25em] uppercase font-body mb-2"
-          style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.4)' }}>{pkg.name}</p>
+          style={{ color: '#B8955B' }}>{pkg.name}</p>
 
         <div className="mb-2">
-          <span className="font-heading text-4xl font-bold" style={{ color: pkg.popular ? '#0B1220' : '#fff' }}>{pkg.price}</span>
+          <span className="font-heading text-4xl font-bold" style={{ color: '#0B1220' }}>{pkg.price}</span>
         </div>
-        <p className="text-xs font-body mb-5" style={{ color: pkg.popular ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.35)' }}>{pkg.pages} pages</p>
+        <p className="text-xs font-body mb-5" style={{ color: 'rgba(0,0,0,0.4)' }}>{pkg.pages} pages</p>
 
-        <div className="h-px mb-5" style={{ background: pkg.popular ? 'rgba(184,149,91,0.2)' : 'rgba(255,255,255,0.08)' }} />
+        <div className="h-px mb-5" style={{ background: 'rgba(184,149,91,0.2)' }} />
 
         <ul className="space-y-2.5 mb-6">
           {packageFeatures.map(f => (
             <li key={f} className="flex items-center gap-2.5">
               <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(255,255,255,0.08)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(255,255,255,0.15)'}` }}>
-                <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.7)' }} strokeWidth={2.5} />
+                style={{ background: 'rgba(184,149,91,0.12)', border: '1px solid rgba(184,149,91,0.3)' }}>
+                <Check className="w-2.5 h-2.5" style={{ color: '#B8955B' }} strokeWidth={2.5} />
               </div>
-              <span className="text-xs font-body" style={{ color: pkg.popular ? 'rgba(11,18,32,0.65)' : 'rgba(255,255,255,0.55)' }}>{f}</span>
+              <span className="text-xs font-body" style={{ color: 'rgba(11,18,32,0.65)' }}>{f}</span>
             </li>
           ))}
           <li className="flex items-center gap-2.5">
             <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: pkg.popular ? 'rgba(184,149,91,0.12)' : 'rgba(255,255,255,0.08)', border: `1px solid ${pkg.popular ? 'rgba(184,149,91,0.3)' : 'rgba(255,255,255,0.15)'}` }}>
-              <Check className="w-2.5 h-2.5" style={{ color: pkg.popular ? '#B8955B' : 'rgba(255,255,255,0.7)' }} strokeWidth={2.5} />
+              style={{ background: 'rgba(184,149,91,0.12)', border: '1px solid rgba(184,149,91,0.3)' }}>
+              <Check className="w-2.5 h-2.5" style={{ color: '#B8955B' }} strokeWidth={2.5} />
             </div>
-            <span className="text-xs font-body" style={{ color: pkg.popular ? 'rgba(11,18,32,0.65)' : 'rgba(255,255,255,0.55)' }}>{paperType}</span>
+            <span className="text-xs font-body" style={{ color: 'rgba(11,18,32,0.65)' }}>{paperType}</span>
           </li>
         </ul>
       </div>
