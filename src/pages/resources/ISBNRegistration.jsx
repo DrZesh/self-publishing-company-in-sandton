@@ -110,7 +110,8 @@ export default function ISBNRegistration() {
   return (
     <>
       <PageMeta
-        title="ISBN Registration"
+        title="ISBN Registration in South Africa"
+        canonical="https://www.creativebooks.co.za/isbn"
         description="How to register a free ISBN with the National Library of South Africa. Step-by-step guide for self-published authors with forms and timelines."
         keywords="ISBN South Africa, how to get ISBN number South Africa, NLSA ISBN registration, ISBN registration South Africa"
       />
