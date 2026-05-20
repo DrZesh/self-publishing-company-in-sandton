@@ -295,6 +295,7 @@ const AuthenticatedApp = () => {
         <Route path="/ebookpublishing" element={<EbookPublishing />} />
         <Route path="/amazonkdp" element={<Navigate to="/ebookpublishing" replace />} />
         <Route path="/kindlepublishing" element={<Navigate to="/ebookpublishing" replace />} />
+        <Route path="/ebook-packages" element={<Navigate to="/ebookpublishing" replace />} />
 
         {/* Writing Silo */}
         <Route path="/ghostwriting" element={<Ghostwriting />} />
