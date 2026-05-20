@@ -238,7 +238,7 @@ const AuthenticatedApp = () => {
         <Route path="/publishingpackages/mini" element={<MiniPackages />} />
         <Route path="/publishingpackages/a5" element={<FullPackagesA5 />} />
         <Route path="/publishingpackages/6x9" element={<FullPackages6x9 />} />
-        <Route path="/premiumpublishingpackage" element={<Navigate to="/publishingpackages" replace />} />
+        <Route path="/premiumpublishingpackage" element={<Navigate to="/publishingpackages/a5" replace />} />
         <Route path="/christianbookpublishing" element={<Navigate to="/bookpublishing" replace />} />
         <Route path="/childrensbookpublishing" element={<Navigate to="/childrensbookpackages" replace />} />
         <Route path="/memoirpublishing" element={<Navigate to="/memoirwriting" replace />} />
@@ -553,10 +553,9 @@ const AuthenticatedApp = () => {
         <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
         <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
-        <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbnregistration" replace />} />
+        <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
 
         {/* 301 Redirects for deleted "New" SEO pages */}
-        <Route path="/publishingcompaniesinsouthafrica" element={<Navigate to="/publishingcompaniessouthafrica" replace />} />
         <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
         <Route path="/selfpublishingcompaniesinsouthafrica" element={<SelfPublishingCompaniesSouthAfrica />} />
         <Route path="/bookprintingjohannesburgnew" element={<Navigate to="/bookprintingjohannesburg" replace />} />
