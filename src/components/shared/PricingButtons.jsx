@@ -29,8 +29,8 @@ export default function PricingButtons({ mailtoUrl, quoteOnly = false }) {
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1">
           <a
             href={mailtoUrl}
-            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-sm font-medium transition-all text-[#0F0F0F]/70 hover:text-copper hover:border-copper"
-            style={{ border: '1px solid rgba(0,0,0,0.15)' }}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-full text-sm font-medium transition-all"
+            style={{ color: '#B87333', border: '1px solid rgba(184,115,51,0.5)' }}
           >
             <Mail className="w-3.5 h-3.5" /> Email Now
           </a>
