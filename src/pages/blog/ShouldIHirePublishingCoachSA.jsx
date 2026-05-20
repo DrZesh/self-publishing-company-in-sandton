@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/shouldihirepublishingcoachinsouthafrica',
-  title: 'Should I Hire a Publishing Coach? | Honest Guide',
+  title: 'Should I Hire a Publishing Coach in South Africa?',
   description: 'Should you hire a publishing coach in South Africa? What they do, when it makes sense, and when your production partner already provides that guidance.',
   category: 'Publishing Tips',
   readTime: '5 min read',

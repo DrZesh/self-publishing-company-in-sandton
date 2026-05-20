@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/howmuchwilliearnfrommyfirstbook',
-  title: 'How Much Will I Earn From My First Book in South Africa?',
+  title: 'How Much Will I Earn From My First Book?',
   description: 'Realistic first-book earnings for South African authors — royalty rates, print-run economics and what\'s typical for self-published vs traditional debuts.',
   category: 'Publishing Tips',
   readTime: '7 min read',

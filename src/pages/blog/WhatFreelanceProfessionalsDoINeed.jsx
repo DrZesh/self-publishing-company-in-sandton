@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatfreelanceprofessionalsdoineedtoselfpublish',
-  title: 'Which Freelance Professionals Do Authors Need?',
+  title: 'What Freelance Professionals Do I Need to Publish a Book?',
   description: 'Which freelance professionals do self-publishing authors need? Editors, designers, typesetters and proofreaders explained — and why one-stop services save money.',
   category: 'Publishing Tips',
   readTime: '6 min read',

@@ -4,7 +4,7 @@ export const blogArticles = {
 
   '/printondemandbooksinsouthafrica': {
     url: '/printondemandbooksinsouthafrica',
-    title: 'Print on Demand in South Africa | Author\'s Guide',
+    title: 'Print on Demand in South Africa',
     description: 'Print on demand in South Africa explained — when POD works, when bulk printing is better, and how to prepare your book for either option.',
     category: 'Printing Guides',
     readTime: '7 min read',
@@ -70,7 +70,7 @@ export const blogArticles = {
 
   '/professionalcopyeditingservices': {
     url: '/professionalcopyeditingservices',
-    title: 'Professional Copy Editing | What It Is & Why You Need It',
+    title: 'Professional Copy Editing',
     description: 'Professional copy editing explained — what it includes, how it differs from proofreading, and when South African authors need it before publishing.',
     category: 'Editing Guides',
     readTime: '7 min read',
@@ -101,7 +101,7 @@ export const blogArticles = {
 
   '/whatisghostwriting': {
     url: '/whatisghostwriting',
-    title: 'What Is Ghostwriting? | How It Works & What It Costs',
+    title: 'What Is Ghostwriting?',
     description: 'What is ghostwriting? How it works, who needs it, and how to turn your story or expertise into a professionally written book in South Africa.',
     category: 'Writing Tips',
     readTime: '7 min read',
@@ -132,7 +132,7 @@ export const blogArticles = {
 
   '/writingabookdedication': {
     url: '/writingabookdedication',
-    title: 'How to Write a Book Dedication | Tips & Examples',
+    title: 'How to Write a Book Dedication',
     description: 'How to write a book dedication — examples, what to say, what to avoid, and where it fits in your book layout for fiction and non-fiction.',
     category: 'Writing Tips',
     readTime: '5 min read',
@@ -164,7 +164,7 @@ export const blogArticles = {
 
   '/writingabookacknowledgment': {
     url: '/writingabookacknowledgment',
-    title: 'How to Write Book Acknowledgements | Tips & Examples',
+    title: 'How to Write a Book Acknowledgment',
     description: 'How to write book acknowledgements — who to thank, what to say, how long it should be, and examples for memoir, fiction and non-fiction authors.',
     category: 'Writing Tips',
     readTime: '6 min read',
@@ -196,7 +196,7 @@ export const blogArticles = {
 
   '/howtonameyourbook': {
     url: '/howtonameyourbook',
-    title: 'How to Name Your Book | Title Tips That Sell',
+    title: 'How to Name Your Book',
     description: 'How to name your book — practical tips on choosing a title that sells, genre conventions, subtitle use and how to test your title before publishing.',
     category: 'Writing Tips',
     readTime: '6 min read',
@@ -228,7 +228,7 @@ export const blogArticles = {
 
   '/howtoprintyourselfpublishedbookinsouthafrica': {
     url: '/howtoprintyourselfpublishedbookinsouthafrica',
-    title: 'How to Print a Self-Published Book | Author Guide',
+    title: 'How to Print a Self-Published Book',
     description: 'How to print your self-published book in South Africa — from editing and typesetting to cover design, ISBNs and choosing the right print run.',
     category: 'Printing Guides',
     readTime: '8 min read',
@@ -328,7 +328,7 @@ export const blogArticles = {
 
   '/howlongdoesittaketoselfpublish': {
     url: '/howlongdoesittaketoselfpublish',
-    title: 'How Long Does It Take to Self-Publish a Book?',
+    title: 'How Long Does Self-Publishing Take?',
     description: 'How long does self-publishing take in South Africa? Realistic timelines for editing, layout, cover design, ISBN and printing — stage by stage.',
     category: 'Publishing Tips',
     readTime: '6 min read',
@@ -427,7 +427,7 @@ export const blogArticles = {
 
   '/isbnregistrationsouthafrica': {
     url: '/isbnregistrationsouthafrica',
-    title: 'ISBN Registration in South Africa | Free Step-by-Step',
+    title: 'ISBN Registration in South Africa',
     description: 'ISBN registration in South Africa — free through the NLSA, who needs one, where it goes in your book, and common mistakes to avoid.',
     category: 'Publishing Tips',
     readTime: '6 min read',
@@ -460,7 +460,7 @@ export const blogArticles = {
 
   '/howtogetanisbnforyourbook': {
     url: '/howtogetanisbnforyourbook',
-    title: 'How to Get an ISBN for Your Book | South Africa Guide',
+    title: 'How to Get an ISBN',
     description: 'How to get an ISBN for your book in South Africa — step-by-step NLSA registration, barcode placement and when to apply before printing.',
     category: 'Publishing Tips',
     readTime: '6 min read',
@@ -530,7 +530,7 @@ export const blogArticles = {
 
   '/howtoselfpublishchildrensbooks': {
     url: '/howtoselfpublishchildrensbooks',
-    title: "How to Self-Publish a Children's Book | Complete Guide",
+    title: "How to Self-Publish Children's Books",
     description: "How to self-publish a children's book in South Africa — illustration briefs, colour printing costs, ISBN, age-appropriate layout and selling strategies.",
     category: 'Publishing Tips',
     readTime: '8 min read',
@@ -565,7 +565,7 @@ export const blogArticles = {
 
   '/whatisselfpublishing': {
     url: '/whatisselfpublishing',
-    title: 'What Is Self-Publishing? | A Complete Beginner\'s Guide',
+    title: 'What Is Self-Publishing?',
     description: 'What is self-publishing? How it works for South African authors, what you pay for, how to sell your book, and how it compares to traditional publishing.',
     category: 'Publishing Tips',
     readTime: '7 min read',

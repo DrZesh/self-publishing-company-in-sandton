@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatpublishingjobsareavailableinsouthafrica',
-  title: 'What Publishing Jobs Are Available in South Africa?',
+  title: 'What Publishing Jobs Are Available?',
   description: 'Publishing jobs in South Africa — editorial, design, production, sales and marketing roles explained, with advice on how to break into the industry.',
   category: 'Publishing Tips',
   readTime: '6 min read',

@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/whatisafairbookdealforsouthafricanauthors',
-  title: 'What Is a Fair Book Deal for South African Authors?',
+  title: 'What Is a Fair Book Deal?',
   description: 'What South African authors should look for in a publishing contract — royalty rates, rights ownership, advances and the red flags that signal a bad deal.',
   category: 'Publishing Tips',
   readTime: '7 min read',

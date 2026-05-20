@@ -3,7 +3,7 @@ import BlogArticlePage from './BlogArticlePage';
 
 const article = {
   url: '/questionstoaskapublisher',
-  title: 'Questions to Ask a Publisher Before You Sign | Checklist',
+  title: 'Questions to Ask a Publisher',
   description: '17 essential questions to ask a publisher before you sign — covering fees, contracts, file ownership, royalties, Amazon accounts and what is included.',
   category: 'Publishing Tips',
   readTime: '14 min read',
