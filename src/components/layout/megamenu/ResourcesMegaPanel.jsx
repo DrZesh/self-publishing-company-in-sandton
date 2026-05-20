@@ -23,7 +23,7 @@ export default function ResourcesMegaPanel() {
             </Link>
           </li>
           <li>
-            <Link to="/resources/ISBNRegistration" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/isbn" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               ISBN Registration Guide
             </Link>
           </li>
@@ -45,22 +45,22 @@ export default function ResourcesMegaPanel() {
             </Link>
           </li>
           <li>
-            <Link to="/blog/HowToGetISBN" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/howtogetanisbnforyourbook" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               How to Get an ISBN
             </Link>
           </li>
           <li>
-            <Link to="/seo/longtail/HowToSelfPublishABook" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/howtoselfpublishabook" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               How to Self-Publish a Book
             </Link>
           </li>
           <li>
-            <Link to="/blog/HowToMarketSelfPublishedBookSA" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/howtomarketandsellyourselfpublishedbookinsouthafrica" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               How to Market Your Book
             </Link>
           </li>
           <li>
-            <Link to="/blog/BestPlatformsToSelfPublishSA" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/bestplatformstoselfpublishinsouthafrica" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Best Self-Publishing Platforms
             </Link>
           </li>
