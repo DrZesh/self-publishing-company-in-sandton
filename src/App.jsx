@@ -547,7 +547,19 @@ const AuthenticatedApp = () => {
         <Route path="/childrens-books" element={<Navigate to="/printing/childrensbooks" replace />} />
         <Route path="/ebook-cover-design" element={<Navigate to="/ebookpublishing" replace />} />
         <Route path="/book-printing-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
+        <Route path="/book-printing-in-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
         <Route path="/book-publishing-south-africa" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
+        <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/book-cover-design-south-africa" element={<Navigate to="/bookcoverdesignsouthafrica" replace />} />
+        <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
+        <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
+        <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
+        {/* Legacy WordPress-style URL redirects */}
+        <Route path="/website-design" element={<Navigate to="/authorwebsites" replace />} />
+        <Route path="/product/typesetting" element={<Navigate to="/typesetting" replace />} />
+        <Route path="/get-quote" element={<Navigate to="/getquote" replace />} />
+        <Route path="/self-publishing-quote" element={<Navigate to="/getquote" replace />} />
         <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
         <Route path="/book-cover-design-south-africa" element={<Navigate to="/bookcoverdesignsouthafrica" replace />} />
         <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
