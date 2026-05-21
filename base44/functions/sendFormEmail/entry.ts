@@ -7,7 +7,8 @@ const TEXT_COLOR = '#2C2C2C';
 const MUTED_COLOR = '#6B6B6B';
 const DIVIDER_COLOR = '#E5E0D5';
 const LOGO_URL = 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png';
-const BUSINESS_EMAIL = 'info@creativebookssa.co.za';
+const BUSINESS_EMAIL = 'info@creativebooks.co.za';
+const BUSINESS_EMAIL_CC = 'draubreyzesh@gmail.com';
 
 function gradientBar() {
   return `<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td height="6" style="background:linear-gradient(90deg,${BRAND_COLOR},${LIGHT_COPPER});font-size:0;line-height:0;">&nbsp;</td></tr></table>`;
@@ -221,6 +222,12 @@ Deno.serve(async (req) => {
 
     await base44.integrations.Core.SendEmail({
       to: BUSINESS_EMAIL,
+      subject: businessSubject || `New ${formType} from ${submitterName}`,
+      body: businessHtml,
+    });
+
+    await base44.integrations.Core.SendEmail({
+      to: BUSINESS_EMAIL_CC,
       subject: businessSubject || `New ${formType} from ${submitterName}`,
       body: businessHtml,
     });
