@@ -209,7 +209,7 @@ export default function Contact() {
           </motion.div>
           <div className="rounded-2xl overflow-hidden shadow-xl border border-[#0F0F0F]/10" style={{ height: '450px' }}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3581.942980532926!2d28.0061!3d-26.0167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9574c8b5b5b5b5%3A0x5b5b5b5b5b5b5b5b!2sPrism%20Office%20Park%2C%201%20Ruby%20Cl%2C%20Fourways%2C%202191%2C%20South%20Africa!5e0!3m2!1sen!2sza!4v1234567890"
+              src="https://maps.google.com/maps?q=Creative+Books+SA,+Prism+Office+Park,+1+Ruby+Cl,+Fourways,+2191,+South+Africa&output=embed&z=17"
               width="100%"
               height="100%"
               style={{ border: 0 }}
