@@ -556,6 +556,7 @@ const AuthenticatedApp = () => {
         <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
         {/* Legacy WordPress-style URL redirects */}
+        <Route path="/product/reflections-of-a-convoluted-mind-dr-samke-j-ngcobo" element={<Navigate to="/portfolio" replace />} />
         <Route path="/website-design" element={<Navigate to="/authorwebsites" replace />} />
         <Route path="/product/typesetting" element={<Navigate to="/typesetting" replace />} />
         <Route path="/get-quote" element={<Navigate to="/getquote" replace />} />
