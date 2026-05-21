@@ -1,7 +1,7 @@
 import React from 'react';
 import LazySection from '../components/shared/LazySection';
 import PageMeta from '../components/shared/PageMeta';
-import { faqSchema, mainLocalBusinessSchema } from '../lib/seo/schemas';
+import { mainLocalBusinessSchema } from '../lib/seo/schemas';
 
 // Hero — unchanged
 import HeroSlider from '../components/home/HeroSlider';
@@ -21,14 +21,7 @@ import FinalCTA from '../components/home/FinalCTA';
 import FeaturedBlog from '../components/home/FeaturedBlog';
 
 
-const homeFaqs = [
-  { question: 'Do you help first-time authors?', answer: 'Yes. Creative Books SA helps first-time authors with editing, book cover design, typesetting, printing and self-publishing support.' },
-  { question: 'Do I keep ownership of my book?', answer: 'Yes. Our self-publishing support allows you to remain in control of your book, your rights and your profits. We are a service provider, not a rights holder.' },
-  { question: 'Do you charge royalties?', answer: 'No. Creative Books SA works with once-off service charges for selected services, which means you do not have to deal with ongoing royalty deductions.' },
-  { question: 'What is the minimum quantity for book printing?', answer: 'Our minimum quantity for book printing is 100 copies.' },
-  { question: 'Can you help with ebooks?', answer: 'Yes. We assist with ebook cover design, ebook formatting and digital publishing support.' },
-  { question: 'Do you work with authors outside Johannesburg?', answer: 'Yes. We assist authors across South Africa and can support authors outside South Africa depending on the service required.' },
-];
+
 
 export default function Home() {
   return (
@@ -38,7 +31,7 @@ export default function Home() {
         description="Self-publishing services in South Africa — editing, cover design, typesetting and printing from R21,000. Based in Sandton, working with authors nationwide."
         keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
         canonical="https://www.creativebooks.co.za/"
-        schema={{ '@graph': [mainLocalBusinessSchema(), faqSchema(homeFaqs)] }}
+        schema={{ '@graph': [mainLocalBusinessSchema()] }}
       />
 
       {/* 1. Hero — design completely unchanged */}
