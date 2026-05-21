@@ -62,7 +62,7 @@ const services = [
 
 const pricing = [
   {
-    title: 'Copy Edit', price: 'R0.25', cents: '25c', badge: null,
+    title: 'Copy Edit', price: 'R0.30', cents: '30c', badge: null,
     includes: ['Spelling', 'Grammar', 'Syntax', 'Tenses', 'Punctuation', 'Suggestions-based editing', 'Two returned manuscript versions', 'One week review period per 30,000 words'],
     process: ['50% upfront payment', 'Word or Google Docs accepted', 'Suggestions visible version included', 'Final accepted version included'],
     cta: 'Get Started',
