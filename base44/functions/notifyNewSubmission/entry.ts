@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
 
     await resend.emails.send({
       from: 'Creative Books CRM <onboarding@resend.dev>',
-      to: 'draubreyzesh@gmail.com',
+      to: 'info@creativebooks.co.za',
       subject: `📬 New Submission: ${sub.full_name || 'Unknown'} — ${(sub.form_type || 'enquiry').replace(/_/g, ' ')}`,
       html,
     });
