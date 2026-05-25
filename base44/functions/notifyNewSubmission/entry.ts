@@ -3,14 +3,6 @@ const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 const TO_EMAIL = 'info@creativebooks.co.za';
 const TO_CC = 'draubreyzesh@gmail.com';
 
-// Twilio WhatsApp config
-const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
-const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
-const TWILIO_API_KEY_SID = Deno.env.get('TWILIO_API_KEY_SID');
-const TWILIO_API_KEY_SECRET = Deno.env.get('TWILIO_API_KEY_SECRET');
-const WHATSAPP_FROM = 'whatsapp:+14155238886';
-const WHATSAPP_TO = 'whatsapp:+27625891937';
-
 
 
 Deno.serve(async (req) => {
@@ -87,71 +79,7 @@ Deno.serve(async (req) => {
       throw new Error(`Resend failed: ${err}`);
     }
 
-    console.log('Resend successful, proceeding to WhatsApp');
-    console.log('Twilio API Key SID present:', !!TWILIO_API_KEY_SID);
-    // Send WhatsApp notification via Twilio
-    console.log('Attempting WhatsApp send to:', WHATSAPP_TO, 'from:', WHATSAPP_FROM);
-    try {
-      const msgLines = [
-        `📬 *New Enquiry — Creative Books SA*`,
-        ``,
-        `*Name:* ${sub.full_name || '—'}`,
-        `*Email:* ${sub.email || '—'}`,
-        `*Phone:* ${sub.phone || '—'}`,
-        `*Services:* ${services}`,
-        sub.book_title ? `*Book Title:* ${sub.book_title}` : null,
-        sub.message ? `*Message:* ${sub.message.substring(0, 200)}` : null,
-        ``,
-        `View: https://creativebooks.co.za/admin/submissions`,
-      ].filter(Boolean).join('\n');
-
-      console.log('Twilio request:', {
-        url: `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
-        from: WHATSAPP_FROM,
-        to: WHATSAPP_TO,
-        body_preview: msgLines.substring(0, 100),
-      });
-
-      // Use Auth Token authentication
-      const credentials = `${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`;
-      const encoded = btoa(
-        new TextEncoder().encode(credentials).reduce((data, byte) => data + String.fromCharCode(byte), '')
-      );
-
-      const twilioRes = await fetch(
-        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Basic ' + encoded,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-            From: WHATSAPP_FROM,
-            To: WHATSAPP_TO,
-            Body: msgLines,
-          }).toString(),
-        }
-      );
-
-      const twilioBody = await twilioRes.text();
-      console.log('Twilio response:', {
-        status: twilioRes.status,
-        statusText: twilioRes.statusText,
-        body: twilioBody,
-      });
-
-      if (!twilioRes.ok) {
-        console.error('WhatsApp send failed:', twilioRes.status, twilioBody);
-      } else {
-        const parsed = JSON.parse(twilioBody);
-        console.log('WhatsApp sent, SID:', parsed.sid, 'Status:', parsed.status, 'Direction:', parsed.direction);
-      }
-    } catch (waErr) {
-      console.error('WhatsApp error:', waErr.message);
-    }
-
-    console.log('About to return success response');
+    console.log('Email notification sent successfully');
     return Response.json({ success: true });
   } catch (error) {
     console.error('notifyNewSubmission error:', error.message, error.stack);
