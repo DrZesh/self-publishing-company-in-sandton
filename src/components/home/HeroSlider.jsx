@@ -8,7 +8,7 @@ const slides = [
     id: 0,
     eyebrow: 'Publishing Company · South Africa',
     heading: ['Self Publishing', 'Company in South Africa'],
-    accentLine: 1,
+    accentLine: 0,
     subheading: 'From manuscript to printed book, we help authors publish professionally with expert support.',
     primary: { label: 'Request a Quote', to: '/getquote' },
     secondary: { label: 'View Services', to: '/bookpublishing' },
