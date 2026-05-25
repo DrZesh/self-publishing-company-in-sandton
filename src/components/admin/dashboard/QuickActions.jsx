@@ -1,14 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { UserPlus, Users, FileText, Mail, BarChart2, Phone } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserPlus, Users, FileText, Mail, BarChart2, Inbox } from 'lucide-react';
 
 const ACTIONS = [
-  { icon: UserPlus, label: 'Add New Lead', sub: 'Start a deal', to: '/admin/submissions', color: 'bg-[#B87333]' },
-  { icon: Users, label: 'Add Contact', sub: 'New author or client', to: '/admin/submissions', color: 'bg-blue-500' },
-  { icon: FileText, label: 'Create Quote', sub: 'Build an estimate', to: '/calculator', color: 'bg-purple-500' },
-  { icon: Mail, label: 'Send Email', sub: 'Compose message', href: 'mailto:', color: 'bg-emerald-600' },
+  { icon: UserPlus, label: 'New Lead', sub: 'Add a lead', to: '/admin/leads', color: 'bg-[#B87333]' },
+  { icon: Users, label: 'New Contact', sub: 'Add an author/client', to: '/admin/contacts', color: 'bg-blue-500' },
+  { icon: FileText, label: 'Create Quote', sub: 'Build an estimate', to: '/admin/quotes/new', color: 'bg-purple-500' },
+  { icon: Mail, label: 'Send Email', sub: 'Email a contact', to: '/admin/contacts', color: 'bg-emerald-600' },
   { icon: BarChart2, label: 'SEO Report', sub: 'Search performance', to: '/admin/seo', color: 'bg-indigo-500' },
-  { icon: Phone, label: 'Log Activity', sub: 'Call, email, meeting', to: '/admin/submissions', color: 'bg-amber-500' },
+  { icon: Inbox, label: 'Submissions', sub: 'View enquiry inbox', to: '/admin/submissions', color: 'bg-amber-500' },
 ];
 
 export default function QuickActions() {
@@ -32,7 +32,7 @@ export default function QuickActions() {
               </div>
             </div>
           );
-          if (a.href) return <a key={i} href={a.href}>{inner}</a>;
+          if (a.href) return <a key={i} href={a.href} target="_blank" rel="noreferrer">{inner}</a>;
           return <Link key={i} to={a.to}>{inner}</Link>;
         })}
       </div>

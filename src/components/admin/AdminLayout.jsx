@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 import AdminSidebar from './AdminSidebar';
 
 export default function AdminLayout({ children }) {
@@ -17,7 +18,51 @@ export default function AdminLayout({ children }) {
   }, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifPermission, setNotifPermission] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'denied');
+  const lastSeenRef = useRef(new Set());
   const navigate = useNavigate();
+
+  // Request notification permission on first load
+  useEffect(() => {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission().then(p => setNotifPermission(p));
+    }
+  }, []);
+
+  // Load initial unread count
+  useEffect(() => {
+    base44.entities.Submission.filter({ status: 'new' })
+      .then(subs => {
+        subs.forEach(s => lastSeenRef.current.add(s.id));
+        setUnreadCount(subs.length);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Subscribe to new submissions in real-time
+  useEffect(() => {
+    const unsubscribe = base44.entities.Submission.subscribe((event) => {
+      if (event.type === 'create') {
+        if (!lastSeenRef.current.has(event.id)) {
+          lastSeenRef.current.add(event.id);
+          setUnreadCount(prev => prev + 1);
+          // Browser push notification
+          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            const sub = event.data;
+            new Notification('New Submission — Creative Books SA', {
+              body: `${sub?.full_name || 'Someone'} submitted an enquiry${
+                sub?.service_interest?.length ? ` about ${sub.service_interest[0]}` : ''
+              }`,
+              icon: '/favicon.ico',
+              tag: event.id,
+            });
+          }
+        }
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminRememberMe');
@@ -71,9 +116,17 @@ export default function AdminLayout({ children }) {
             <span className="text-sm text-[#2B2B2B]/60 hidden sm:inline">{currentTime}</span>
 
             {/* Notifications */}
-            <button className="relative p-2 hover:bg-[#f0f0f0] rounded-lg">
+            <button
+              onClick={() => { setUnreadCount(0); navigate('/admin/submissions'); }}
+              className="relative p-2 hover:bg-[#f0f0f0] rounded-lg"
+              title="View submissions"
+            >
               <Bell className="w-5 h-5 text-[#2B2B2B]" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center px-1">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </button>
 
             {/* Logout */}

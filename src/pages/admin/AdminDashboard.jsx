@@ -26,7 +26,7 @@ export default function AdminDashboard() {
     try {
       const [meRes, metricsRes] = await Promise.all([
         base44.auth.me(),
-        base44.functions.invoke('getAdminDashboardMetrics', {}),
+        base44.functions.invoke('getAdminDashboardMetrics', { dateRange }),
       ]);
       setUser(meRes);
       setDashData(metricsRes.data);
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [dateRange]);
 
   useEffect(() => {
     fetchDashboard();
