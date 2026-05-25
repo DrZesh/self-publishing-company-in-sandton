@@ -17,6 +17,8 @@ import ServiceBreakdownCard from '@/components/admin/dashboard/ServiceBreakdownC
 import QuoteConversionFunnel from '@/components/admin/dashboard/QuoteConversionFunnel';
 import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
 import ResponseTimeTracker from '@/components/admin/dashboard/ResponseTimeTracker';
+import AICopilot from '@/components/admin/dashboard/AICopilot';
+import AIInsightsPanel from '@/components/admin/dashboard/AIInsightsPanel';
 
 export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState('month');
@@ -103,6 +105,12 @@ export default function AdminDashboard() {
           <QuoteConversionFunnel />
           <QuoteExpiryAlerts />
           <ResponseTimeTracker />
+        </div>
+
+        {/* AI Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AICopilot data={{ leads: dashData?.leads, quotes: dashData?.quotes, submissions: dashData?.submissions }} />
+          <AIInsightsPanel insights={dashData?.aiInsights || []} />
         </div>
 
         {/* Activity Feed */}

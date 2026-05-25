@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import LeadDetailPanel from '@/components/admin/leads/LeadDetailPanel';
 import LeadEditModal from '@/components/admin/leads/LeadEditModal';
-import { Search, Plus, ChevronRight, Download, MessageCircle } from 'lucide-react';
+import AILeadSummary from '@/components/admin/leads/AILeadSummary';
+import { Search, Plus, ChevronRight, Download, MessageCircle, Brain, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STAGES = ['new', 'contacted', 'qualified', 'quoted', 'negotiating', 'won', 'lost'];
@@ -254,23 +255,48 @@ export default function AdminLeads() {
 
         {/* Detail panel */}
         {selectedLead && (
-          <LeadDetailPanel
-            lead={selectedLead}
-            contact={contactMap[selectedLead.contact_id]}
-            submissions={submissions.filter(s => {
-              const c = contactMap[selectedLead.contact_id];
-              return s.email === c?.email;
-            })}
-            onClose={() => setSelectedLead(null)}
-            onEdit={() => { setEditLead(selectedLead); setShowEditModal(true); }}
-            onDelete={handleDelete}
-            onStageChange={async (newStage) => {
-              await base44.entities.Lead.update(selectedLead.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
-              setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, stage: newStage } : l));
-              setSelectedLead(prev => ({ ...prev, stage: newStage }));
-              toast.success(`Stage updated to ${newStage}`);
-            }}
-          />
+          <div className="flex-1 max-w-2xl border-l border-gray-200 bg-white overflow-y-auto">
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-[#2B2B2B]">Lead Details</h2>
+                <button onClick={() => setSelectedLead(null)} className="text-gray-400 hover:text-gray-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* AI Lead Intelligence */}
+              <AILeadSummary
+                lead={selectedLead}
+                contact={contactMap[selectedLead.contact_id]}
+                submission={submissions.find(s => s.email === contactMap[selectedLead.contact_id]?.email)}
+                onGenerateSummary={(analysis) => {
+                  console.log('AI Analysis:', analysis);
+                }}
+                onGenerateReply={(reply) => {
+                  console.log('AI Reply:', reply);
+                }}
+              />
+
+              {/* Rest of lead details */}
+              <LeadDetailPanel
+                lead={selectedLead}
+                contact={contactMap[selectedLead.contact_id]}
+                submissions={submissions.filter(s => {
+                  const c = contactMap[selectedLead.contact_id];
+                  return s.email === c?.email;
+                })}
+                onClose={() => setSelectedLead(null)}
+                onEdit={() => { setEditLead(selectedLead); setShowEditModal(true); }}
+                onDelete={handleDelete}
+                onStageChange={async (newStage) => {
+                  await base44.entities.Lead.update(selectedLead.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
+                  setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, stage: newStage } : l));
+                  setSelectedLead(prev => ({ ...prev, stage: newStage }));
+                  toast.success(`Stage updated to ${newStage}`);
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
 
