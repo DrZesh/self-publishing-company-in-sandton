@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Phone, Calendar, ArrowRight, Trash2, Flag, Archive, ExternalLink, BookOpen } from 'lucide-react';
+import { X, Mail, Phone, Calendar, ArrowRight, Trash2, Flag, Archive, Send, ChevronDown, ChevronUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -34,6 +34,42 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
   const [converting, setConverting] = useState(false);
   const [notes, setNotes] = useState(submission.internal_notes || '');
   const [savingNotes, setSavingNotes] = useState(false);
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replySubject, setReplySubject] = useState(`Re: Your enquiry — Creative Books SA`);
+  const [replyBody, setReplyBody] = useState(`Hi ${submission.full_name?.split(' ')[0] || 'there'},\n\nThank you for reaching out to Creative Books SA.\n\n`);
+  const [sending, setSending] = useState(false);
+
+  const handleSendReply = async () => {
+    if (!replyBody.trim() || !replySubject.trim()) { toast.error('Subject and message are required'); return; }
+    setSending(true);
+    try {
+      await base44.integrations.Core.SendEmail({
+        to: submission.email,
+        subject: replySubject,
+        body: replyBody.replace(/\n/g, '<br/>'),
+        from_name: 'Creative Books SA',
+      });
+      // Log as an EmailMessage if contact is linked
+      if (submission.contact_id) {
+        await base44.entities.EmailMessage.create({
+          contact_id: submission.contact_id,
+          direction: 'outbound',
+          from_address: 'noreply@creativebooks.co.za',
+          to_addresses: [submission.email],
+          subject: replySubject,
+          body_text: replyBody,
+          status: 'sent',
+          sent_at: new Date().toISOString(),
+        });
+      }
+      toast.success(`Reply sent to ${submission.email}`);
+      setReplyOpen(false);
+    } catch (e) {
+      toast.error('Failed to send: ' + e.message);
+    } finally {
+      setSending(false);
+    }
+  };
 
   const handleSaveNotes = async () => {
     setSavingNotes(true);
@@ -128,6 +164,18 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
           </div>
         )}
 
+        {/* Additional custom fields */}
+        {submission.additional_fields && Object.keys(submission.additional_fields).length > 0 && (
+          <div>
+            <h3 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-2">Additional Details</h3>
+            <div className="bg-[#F9F7F2] rounded-xl p-4 space-y-2 border border-black/5">
+              {Object.entries(submission.additional_fields).map(([k, v]) => (
+                <DetailRow key={k} label={k.replace(/_/g, ' ')} value={String(v)} />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Book details */}
         {(submission.book_title || submission.book_genre || submission.book_page_count || submission.book_word_count) && (
           <div>
@@ -189,13 +237,51 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
             </button>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href={`mailto:${submission.email}?subject=Re: Your enquiry with Creative Books&body=Hi ${submission.full_name.split(' ')[0]},%0A%0A`}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#B87333]/10 text-[#B87333] rounded-xl hover:bg-[#B87333]/15 font-semibold text-sm transition-colors border border-[#B87333]/20"
+          {/* Inline reply compose */}
+          <div className="border border-[#B87333]/25 rounded-xl overflow-hidden">
+            <button
+              onClick={() => setReplyOpen(r => !r)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-[#B87333]/8 text-[#B87333] hover:bg-[#B87333]/12 font-semibold text-sm transition-colors"
             >
-              <Mail className="w-4 h-4" /> Reply
-            </a>
+              <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> Reply to {submission.full_name?.split(' ')[0]}</span>
+              {replyOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+            {replyOpen && (
+              <div className="p-4 bg-white space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-black/40 uppercase tracking-wide block mb-1">To</label>
+                  <div className="px-3 py-2 bg-[#f5f5f5] rounded-lg text-sm text-black/60">{submission.email}</div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-black/40 uppercase tracking-wide block mb-1">Subject</label>
+                  <input
+                    value={replySubject}
+                    onChange={e => setReplySubject(e.target.value)}
+                    className="w-full px-3 py-2 border border-black/10 rounded-lg text-sm focus:outline-none focus:border-[#B87333]"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-black/40 uppercase tracking-wide block mb-1">Message</label>
+                  <textarea
+                    value={replyBody}
+                    onChange={e => setReplyBody(e.target.value)}
+                    rows={7}
+                    className="w-full px-3 py-2 border border-black/10 rounded-lg text-sm focus:outline-none focus:border-[#B87333] resize-y font-mono"
+                  />
+                </div>
+                <button
+                  onClick={handleSendReply}
+                  disabled={sending}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-lg font-semibold text-sm hover:bg-[#a06428] disabled:opacity-50 transition-colors"
+                >
+                  <Send className="w-4 h-4" />
+                  {sending ? 'Sending…' : 'Send Reply'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
             {submission.status !== 'archived' && (
               <button
                 onClick={() => onStatusChange(submission.id, 'archived')}
