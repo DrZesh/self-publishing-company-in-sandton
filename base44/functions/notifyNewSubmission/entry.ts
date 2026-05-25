@@ -3,8 +3,9 @@ const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 const TO_EMAIL = 'info@creativebooks.co.za';
 const TO_CC = 'draubreyzesh@gmail.com';
 
-// Twilio WhatsApp config - using API Key auth (more secure)
+// Twilio WhatsApp config
 const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
+const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
 const TWILIO_API_KEY_SID = Deno.env.get('TWILIO_API_KEY_SID');
 const TWILIO_API_KEY_SECRET = Deno.env.get('TWILIO_API_KEY_SECRET');
 const WHATSAPP_FROM = 'whatsapp:+14155238886';
