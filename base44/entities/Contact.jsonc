@@ -133,15 +133,23 @@
     "pipeline_stage": {
       "type": "string",
       "enum": [
-        "Lead Contacted",
+        "New Enquiry",
+        "Information Requested",
+        "Quote in Progress",
         "Quote Sent",
-        "Negotiating",
-        "Won",
-        "In Production",
+        "Payment Pending",
+        "Project Started",
+        "Editing",
+        "Cover Design",
+        "Typesetting",
+        "Sample Queued",
+        "Sample Approved",
+        "Mass Production",
         "Completed",
+        "Delivered",
         "Lost"
       ],
-      "default": "Lead Contacted",
+      "default": "New Enquiry",
       "description": "Pipeline stage"
     },
     "pipeline_stage_changed_at": {

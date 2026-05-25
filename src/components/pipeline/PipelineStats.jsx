@@ -1,7 +1,7 @@
 import React from 'react';
 import { TrendingUp, DollarSign, Clock, AlertTriangle } from 'lucide-react';
 
-const ACTIVE_STAGES = ['Lead Contacted', 'Quote Sent', 'Negotiating', 'Won', 'In Production'];
+const ACTIVE_STAGES = ['New Enquiry', 'Information Requested', 'Quote in Progress', 'Quote Sent', 'Payment Pending', 'Project Started', 'Editing', 'Cover Design', 'Typesetting', 'Sample Queued', 'Sample Approved', 'Mass Production'];
 
 export default function PipelineStats({ contacts, history }) {
   const activeContacts = contacts.filter(c => ACTIVE_STAGES.includes(c.pipeline_stage));
@@ -15,11 +15,11 @@ export default function PipelineStats({ contacts, history }) {
 
   // Avg days from "Lead Contacted" to "Won" using history
   let avgDaysToWon = null;
-  const wonContacts = contacts.filter(c => c.pipeline_stage === 'Won');
+  const wonContacts = contacts.filter(c => ['Completed', 'Delivered'].includes(c.pipeline_stage));
   const durations = wonContacts.map(c => {
     const entries = history.filter(h => h.contact_id === c.id).sort((a, b) => new Date(a.changed_at) - new Date(b.changed_at));
-    const firstEntry = entries.find(h => h.to_stage === 'Lead Contacted' || h.from_stage === null);
-    const wonEntry = entries.find(h => h.to_stage === 'Won');
+    const firstEntry = entries.find(h => h.to_stage === 'New Enquiry' || h.from_stage === null);
+    const wonEntry = entries.find(h => ['Completed', 'Delivered'].includes(h.to_stage));
     if (!firstEntry || !wonEntry) return null;
     return (new Date(wonEntry.changed_at) - new Date(firstEntry.changed_at)) / (1000 * 60 * 60 * 24);
   }).filter(d => d !== null);

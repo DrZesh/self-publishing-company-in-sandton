@@ -26,7 +26,6 @@ export default function PipelineCard({ contact, isDragging }) {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
-    // Don't navigate if we just finished dragging
     if (isDragging) return;
     navigate(`/admin/contacts?id=${contact.id}`);
   };
@@ -41,7 +40,10 @@ export default function PipelineCard({ contact, isDragging }) {
         <DaysIndicator changedAt={contact.pipeline_stage_changed_at} />
       </div>
       {contact.book_title && (
-        <p className="text-xs text-black/50 mb-2 truncate">📖 {contact.book_title}</p>
+        <p className="text-xs text-black/50 mb-1 truncate">📖 {contact.book_title}</p>
+      )}
+      {contact.pipeline_stage && (
+        <p className="text-xs text-black/40 mb-1 truncate">{contact.pipeline_stage === 'Editing' || contact.pipeline_stage === 'Cover Design' || contact.pipeline_stage === 'Typesetting' ? '🔧 ' : ''}{contact.pipeline_stage}</p>
       )}
       <div className="flex items-center justify-between">
         {contact.pipeline_value ? (

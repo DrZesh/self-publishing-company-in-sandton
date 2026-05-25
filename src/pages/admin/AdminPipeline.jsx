@@ -19,7 +19,7 @@ export default function AdminPipeline() {
   const load = useCallback(async () => {
     const [me, allContacts, allHistory] = await Promise.all([
       base44.auth.me(),
-      base44.entities.Contact.list('-pipeline_stage_changed_at', 500),
+      base44.entities.Contact.list('-updated_date', 500),
       base44.entities.PipelineStageHistory.list('-changed_at', 1000),
     ]);
     setUser(me);
@@ -82,7 +82,7 @@ export default function AdminPipeline() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-[#1A1208]">Pipeline</h1>
-            <p className="text-sm text-black/50 mt-1">Manage your deals and track progress</p>
+            <p className="text-sm text-black/50 mt-1">Track every project from first enquiry through to delivery</p>
           </div>
         </div>
 
