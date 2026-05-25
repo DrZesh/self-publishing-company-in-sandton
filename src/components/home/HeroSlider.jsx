@@ -111,14 +111,14 @@ export default function HeroSlider({ locationData }) {
   const slide = currentSlide;
 
   const bgVariants = {
-    enter: (d) => ({ opacity: 0, scale: 1.08, x: d > 0 ? 40 : -40 }),
-    center: { opacity: 0.5, scale: 1.03, x: 0, transition: { duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] } },
-    exit: (d) => ({ opacity: 0, scale: 1, x: d > 0 ? -40 : 40, transition: { duration: 0.8, ease: 'easeIn' } }),
+    enter: (d) => ({ opacity: 0, scale: 1.12 }),
+    center: { opacity: 1, scale: 1.06, x: 0, transition: { duration: 1.8, ease: [0.25, 0.46, 0.45, 0.94] } },
+    exit: (d) => ({ opacity: 0, scale: 1.02, transition: { duration: 1.0, ease: 'easeIn' } }),
   };
 
   return (
     <section
-      className="relative min-h-screen flex items-center overflow-hidden bg-[#080604]"
+      className="relative min-h-screen flex items-center overflow-hidden bg-[#040302]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={handleTouchStart}
@@ -127,160 +127,146 @@ export default function HeroSlider({ locationData }) {
       tabIndex={-1}
       aria-label="Hero section"
     >
-      {/* ── Background image at 50% opacity ── */}
+      {/* ── Cinematic letterbox bars ── */}
+      <div className="absolute top-0 left-0 right-0 h-16 bg-black z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-black z-10 pointer-events-none" />
+
+      {/* ── Background image with Ken Burns ── */}
       <AnimatePresence initial={false} custom={direction}>
-        <motion.img
+        <motion.div
           key={`bg-${current}`}
-          src={slide.bg}
-          alt=""
-          aria-hidden="true"
+          className="absolute inset-0 w-full h-full"
           custom={direction}
           variants={bgVariants}
           initial="enter"
           animate="center"
           exit="exit"
-          className="absolute inset-0 w-full h-full object-cover will-change-transform"
-          srcSet={`${slide.bg.split('?')[0]}?w=480&q=70 480w, ${slide.bg.split('?')[0]}?w=768&q=75 768w, ${slide.bg.split('?')[0]}?w=1200&q=80 1200w`}
-          sizes="100vw"
-          fetchPriority={current === 0 ? 'high' : 'auto'}
-          decoding="async"
-        />
+        >
+          {/* Ken Burns continuous pan */}
+          <motion.img
+            src={slide.bg}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+            animate={{ scale: [1.05, 1.12], x: [0, -16] }}
+            transition={{ duration: 12, ease: 'linear', repeat: Infinity, repeatType: 'reverse' }}
+            srcSet={`${slide.bg.split('?')[0]}?w=480&q=70 480w, ${slide.bg.split('?')[0]}?w=768&q=75 768w, ${slide.bg.split('?')[0]}?w=1200&q=80 1200w`}
+            sizes="100vw"
+            fetchPriority={current === 0 ? 'high' : 'auto'}
+            decoding="async"
+          />
+        </motion.div>
       </AnimatePresence>
 
-      {/* ── Dark overlay on top of image for text readability ── */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F]/90 via-[#0F0F0F]/75 to-[#0F0F0F]/60" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] via-transparent to-transparent opacity-70" />
+      {/* ── Cinematic overlays ── */}
+      {/* Vignette all sides */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%)' }} />
+      {/* Left-to-right gradient for text area */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#000000]/80 via-[#000000]/50 to-transparent pointer-events-none" />
+      {/* Bottom fade */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#000000]/90 via-transparent to-[#000000]/30 pointer-events-none" />
 
-      {/* ── Animated ambient glow ── */}
-      <motion.div className="absolute rounded-full pointer-events-none"
-        animate={{ scale: [1, 1.15, 1], x: [0, 20, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ width: 700, height: 700, right: '5%', top: '-10%', background: 'radial-gradient(circle, rgba(184,115,51,0.10) 0%, transparent 65%)' }} />
-      <motion.div className="absolute rounded-full pointer-events-none"
-        animate={{ scale: [1, 1.2, 1], y: [0, -20, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        style={{ width: 500, height: 500, left: '-5%', bottom: '-10%', background: 'radial-gradient(circle, rgba(184,115,51,0.07) 0%, transparent 65%)' }} />
+      {/* ── Film grain texture ── */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-overlay"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`, backgroundSize: '180px 180px' }} />
 
-      {/* ── Subtle grid overlay ── */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+      {/* ── Copper accent light streak ── */}
+      <motion.div className="absolute pointer-events-none"
+        animate={{ opacity: [0, 0.12, 0], x: ['-20%', '120%'] }}
+        transition={{ duration: 5, repeat: Infinity, repeatDelay: 8, ease: 'easeInOut' }}
+        style={{ top: '30%', left: 0, width: '40%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(184,115,51,0.8), transparent)', filter: 'blur(1px)' }}
+      />
 
-      {/* ── Particles ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {PARTICLES.map(p => (
-          <motion.div key={p.id}
-            className="absolute rounded-full bg-copper/25"
-            style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-            animate={{ y: [0, -28, 0], opacity: [0.15, 0.5, 0.15], scale: [1, 1.5, 1] }}
-            transition={{ duration: 4.5 + p.delay, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
-          />
-        ))}
-      </div>
-
-      {/* ── Main content (full width, centered) ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full pt-28 pb-24 md:pt-36 md:pb-28">
+      {/* ── Main content ── */}
+      <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-10 w-full pt-32 pb-32 md:pt-40 md:pb-36">
         <AnimatePresence mode="wait">
           <motion.div key={`text-${current}`}
-            initial={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
-            transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.0, ease: 'easeInOut' }}
             className="max-w-3xl">
 
             {/* Eyebrow */}
-            <motion.div className="flex items-center gap-3 mb-6"
-              initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}>
-              <motion.div className="h-px bg-copper"
-                initial={{ width: 0 }} animate={{ width: 40 }} transition={{ duration: 0.6, delay: 0.3 }} />
-              <span className="text-copper text-xs sm:text-sm font-body tracking-[0.25em] uppercase">{slide.eyebrow}</span>
+            <motion.div className="flex items-center gap-4 mb-8"
+              initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}>
+              <div className="h-px bg-copper" style={{ width: 48 }} />
+              <span className="text-copper/90 text-xs font-body tracking-[0.35em] uppercase">{slide.eyebrow}</span>
             </motion.div>
 
-            {/* Glass card */}
+            {/* Heading — open cinematic type, no card */}
+            <div className="mb-8">
+              {slide.id === 0 ? (
+                <h1 className="font-heading font-bold text-white leading-[1.0]" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 1px 0 rgba(0,0,0,0.6)', letterSpacing: '-0.02em' }}>
+                  {slide.heading.map((line, i) => (
+                    <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
+                      initial={{ opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' }}
+                      animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+                      transition={{ duration: 0.9, delay: 0.3 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}>
+                      {line}
+                    </motion.span>
+                  ))}
+                </h1>
+              ) : (
+                <div className="font-heading font-bold text-white leading-[1.0]" role="heading" aria-level="2"
+                  style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 1px 0 rgba(0,0,0,0.6)', letterSpacing: '-0.02em' }}>
+                  {slide.heading.map((line, i) => (
+                    <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
+                      initial={{ opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' }}
+                      animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+                      transition={{ duration: 0.9, delay: 0.3 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}>
+                      {line}
+                    </motion.span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Thin copper rule */}
             <motion.div
-              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative rounded-3xl p-8 md:p-10"
-              style={{
-                background: 'rgba(15,10,6,0.82)',
-                backdropFilter: 'blur(24px)',
-                border: '1px solid rgba(184,115,51,0.18)',
-                boxShadow: '0 32px 64px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(184,115,51,0.05)',
-              }}>
-              {/* Corner accent */}
-              <div className="absolute top-0 left-0 w-20 h-20 rounded-tl-3xl overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-0 w-full h-full"
-                  style={{ background: 'linear-gradient(135deg, rgba(184,115,51,0.15) 0%, transparent 60%)' }} />
-              </div>
+              initial={{ scaleX: 0, originX: 0 }} animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="h-px bg-gradient-to-r from-copper via-copper/50 to-transparent mb-7" style={{ width: 200 }}
+            />
 
-              {/* Heading */}
-              <div className="mb-5">
-                {slide.id === 0 ? (
-                  <h1 className="font-heading font-bold text-white leading-[1.08]" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
-                    {slide.heading.map((line, i) => (
-                      <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
-                        initial={{ opacity: 0, y: 30, skewY: 2 }}
-                        animate={{ opacity: 1, y: 0, skewY: 0 }}
-                        transition={{ duration: 0.65, delay: 0.3 + i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}>
-                        {line}
-                      </motion.span>
-                    ))}
-                  </h1>
-                ) : (
-                  <div className="font-heading font-bold text-white leading-[1.08]" role="heading" aria-level="2"
-                    style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
-                    {slide.heading.map((line, i) => (
-                      <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
-                        initial={{ opacity: 0, y: 30, skewY: 2 }}
-                        animate={{ opacity: 1, y: 0, skewY: 0 }}
-                        transition={{ duration: 0.65, delay: 0.3 + i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}>
-                        {line}
-                      </motion.span>
-                    ))}
-                  </div>
-                )}
-              </div>
+            {/* Subheading */}
+            <motion.p className="text-white/70 text-base md:text-xl leading-relaxed mb-10 font-body max-w-xl"
+              style={{ textShadow: '0 1px 12px rgba(0,0,0,0.8)' }}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}>
+              {slide.subheading}
+            </motion.p>
 
-              {/* Divider */}
-              <motion.div className="h-px w-12 bg-copper/50 mb-5"
-                initial={{ width: 0 }} animate={{ width: 48 }} transition={{ duration: 0.5, delay: 0.55 }} />
-
-              {/* Subheading */}
-              <motion.p className="text-white/75 text-base md:text-lg leading-relaxed mb-8 font-body"
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}>
-                {slide.subheading}
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div className="flex flex-col sm:flex-row gap-3"
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.65 }}>
-                <Link to={slide.primary.to}
-                  className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all shadow-lg shadow-copper/25 text-sm md:text-base">
-                  {slide.primary.label}
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <button
-                  onClick={() => {
-                    const servicesSection = document.getElementById('our-services');
-                    if (servicesSection) {
-                      servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-white/20 text-white/90 rounded-full hover:border-copper hover:text-copper transition-all text-sm md:text-base">
-                  {slide.secondary.label}
-                </button>
-              </motion.div>
+            {/* CTAs */}
+            <motion.div className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}>
+              <Link to={slide.primary.to}
+                className="group inline-flex items-center justify-center gap-2.5 px-8 py-4 text-white font-medium rounded-full transition-all text-sm md:text-base"
+                style={{ background: 'linear-gradient(135deg, #B87333 0%, #9a6030 100%)', boxShadow: '0 0 40px rgba(184,115,51,0.4), 0 8px 32px rgba(0,0,0,0.5)' }}>
+                {slide.primary.label}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <button
+                onClick={() => {
+                  const servicesSection = document.getElementById('our-services');
+                  if (servicesSection) servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-white/80 rounded-full transition-all text-sm md:text-base hover:text-copper"
+                style={{ border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.05)' }}>
+                {slide.secondary.label}
+              </button>
             </motion.div>
 
             {/* Stats */}
-            <motion.div className="grid grid-cols-3 gap-5 mt-8 pt-6 border-t border-white/10 max-w-sm"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.85 }}>
-              {stats.map(s => (
+            <motion.div className="flex items-center gap-10 mt-12 pt-8"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.0 }}>
+              {stats.map((s, i) => (
                 <div key={s.label}>
-                  <p className="font-heading text-2xl md:text-3xl font-bold text-copper">{s.value}</p>
-                  <p className="text-white/40 text-xs font-body mt-0.5">{s.label}</p>
+                  <p className="font-heading text-3xl md:text-4xl font-bold text-copper" style={{ textShadow: '0 0 30px rgba(184,115,51,0.5)' }}>{s.value}</p>
+                  <p className="text-white/35 text-xs font-body tracking-widest uppercase mt-1">{s.label}</p>
                 </div>
               ))}
             </motion.div>
@@ -289,7 +275,7 @@ export default function HeroSlider({ locationData }) {
       </div>
 
       {/* ── Bottom controls ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-8 pb-6 pt-4">
+      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-8 pb-6 pt-4" style={{ marginBottom: '4px' }}>
         <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 2 }} aria-hidden="true">
           <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1">
             <div className="w-1 h-2 rounded-full bg-copper" />
