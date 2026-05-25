@@ -559,6 +559,7 @@ const AuthenticatedApp = () => {
         {/* Legacy WordPress-style URL redirects */}
         <Route path="/product/reflections-of-a-convoluted-mind-dr-samke-j-ngcobo" element={<Navigate to="/portfolio" replace />} />
         <Route path="/website-design" element={<Navigate to="/authorwebsites" replace />} />
+        <Route path="/website-design-sandton" element={<Navigate to="/authorwebsites" replace />} />
         <Route path="/product/typesetting" element={<Navigate to="/typesetting" replace />} />
         <Route path="/get-quote" element={<Navigate to="/getquote" replace />} />
         <Route path="/self-publishing-quote" element={<Navigate to="/getquote" replace />} />
@@ -568,6 +569,9 @@ const AuthenticatedApp = () => {
         <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
+        {/* Legacy URLs with trailing slashes */}
+        <Route path="/book-printing-in-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
+        <Route path="/book-printing-in-johannesburg/" element={<Navigate to="/bookprintingjohannesburg" replace />} />
 
         {/* 301 Redirects for deleted "New" SEO pages */}
         <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
