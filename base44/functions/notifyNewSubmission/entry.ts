@@ -111,8 +111,8 @@ Deno.serve(async (req) => {
         body_preview: msgLines.substring(0, 100),
       });
 
-      // Use API Key authentication (recommended by Twilio)
-      const credentials = `${TWILIO_API_KEY_SID}:${TWILIO_API_KEY_SECRET}`;
+      // Use Auth Token authentication
+      const credentials = `${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`;
       const encoded = btoa(
         new TextEncoder().encode(credentials).reduce((data, byte) => data + String.fromCharCode(byte), '')
       );
