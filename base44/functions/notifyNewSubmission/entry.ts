@@ -3,6 +3,13 @@ const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 const TO_EMAIL = 'info@creativebooks.co.za';
 const TO_CC = 'draubreyzesh@gmail.com';
 
+// Twilio WhatsApp config
+const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
+const TWILIO_API_KEY_SID = Deno.env.get('TWILIO_API_KEY_SID');
+const TWILIO_API_KEY_SECRET = Deno.env.get('TWILIO_API_KEY_SECRET');
+const WHATSAPP_FROM = 'whatsapp:+14155238886'; // Twilio sandbox sender (update if you have an approved sender)
+const WHATSAPP_TO = 'whatsapp:+14783758499';   // Your WhatsApp number
+
 Deno.serve(async (req) => {
   try {
     const body = await req.json();
@@ -74,6 +81,47 @@ Deno.serve(async (req) => {
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`Resend failed: ${err}`);
+    }
+
+    // Send WhatsApp notification via Twilio
+    try {
+      const msgLines = [
+        `📬 *New Enquiry — Creative Books SA*`,
+        ``,
+        `*Name:* ${sub.full_name || '—'}`,
+        `*Email:* ${sub.email || '—'}`,
+        `*Phone:* ${sub.phone || '—'}`,
+        `*Services:* ${services}`,
+        sub.book_title ? `*Book Title:* ${sub.book_title}` : null,
+        sub.message ? `*Message:* ${sub.message.substring(0, 200)}` : null,
+        ``,
+        `View: https://creativebooks.co.za/admin/submissions`,
+      ].filter(Boolean).join('\n');
+
+      const twilioRes = await fetch(
+        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Basic ' + btoa(`${TWILIO_API_KEY_SID}:${TWILIO_API_KEY_SECRET}`),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            From: WHATSAPP_FROM,
+            To: WHATSAPP_TO,
+            Body: msgLines,
+          }).toString(),
+        }
+      );
+
+      if (!twilioRes.ok) {
+        const err = await twilioRes.text();
+        console.error('WhatsApp send failed:', err);
+      } else {
+        console.log('WhatsApp notification sent');
+      }
+    } catch (waErr) {
+      console.error('WhatsApp error:', waErr.message);
     }
 
     return Response.json({ success: true });
