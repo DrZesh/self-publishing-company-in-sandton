@@ -46,21 +46,14 @@ export default function QuoteView() {
 
   const handleSignatureComplete = async (signatureData) => {
     try {
-      // Upload signature image
-      const fileBlob = await fetch(signatureData.signature_image_url).then(r => r.blob());
-      const file = new File([fileBlob], 'signature.png', { type: 'image/png' });
-      
-      // Use Base44 upload
-      const uploadRes = await base44.integrations.Core.UploadFile({ file: signatureData.signature_image_url });
-      
-      // Save signature
+      // Save signature to entity
       await base44.entities.QuoteSignature.create({
         quote_id: id,
         signer_name: signatureData.signer_name,
         signer_email: signatureData.signer_email,
         signer_ip: 'web',
         signer_user_agent: navigator.userAgent,
-        signature_image_url: uploadRes.file_url,
+        signature_image_url: signatureData.signature_image_url,
         signed_at: new Date().toISOString(),
         signature_method: signatureData.signature_method,
         legal_acknowledgment_checked: signatureData.legal_acknowledgment_checked,
