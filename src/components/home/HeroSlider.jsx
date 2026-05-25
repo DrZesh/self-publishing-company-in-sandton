@@ -192,7 +192,7 @@ export default function HeroSlider({ locationData }) {
               initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}>
               <div className="h-px bg-copper" style={{ width: 48 }} />
-              <span className="text-copper/90 text-xs font-body tracking-[0.35em] uppercase">{slide.eyebrow}</span>
+              <span className="text-copper text-xs font-body tracking-[0.35em] uppercase" style={{ opacity: 0.9 }}>{slide.eyebrow}</span>
             </motion.div>
 
             {/* Heading — open cinematic type, no card */}
