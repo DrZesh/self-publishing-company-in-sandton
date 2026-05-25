@@ -3,10 +3,20 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import LeadDetailPanel from '@/components/admin/leads/LeadDetailPanel';
 import LeadEditModal from '@/components/admin/leads/LeadEditModal';
-import { Search, Plus, ChevronRight, Filter } from 'lucide-react';
+import { Search, Plus, ChevronRight, Download, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STAGES = ['new', 'contacted', 'qualified', 'quoted', 'negotiating', 'won', 'lost'];
+
+const STAGE_LABELS = {
+  new: 'New',
+  contacted: 'Contacted',
+  qualified: 'Waiting for Client',
+  quoted: 'Quote Sent',
+  negotiating: 'Quote Accepted',
+  won: 'Completed',
+  lost: 'Lost',
+};
 
 const STAGE_COLORS = {
   new: 'bg-blue-100 text-blue-700',
@@ -117,10 +127,24 @@ export default function AdminLeads() {
                   {openLeads.length} open · R{pipelineValue.toLocaleString()} pipeline · R{wonValue.toLocaleString()} won
                 </p>
               </div>
-              <button onClick={() => { setEditLead(null); setShowEditModal(true); }}
-                className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-lg text-sm font-semibold hover:bg-[#a06428] transition-colors">
-                <Plus className="w-4 h-4" /> New Lead
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => {
+                  const headers = ['Name','Email','Phone','Stage','Service','Book Title','Value (R)','Date'];
+                  const rows = filtered.map(l => {
+                    const c = contactMap[l.contact_id];
+                    return [c?.full_name||'',c?.email||'',c?.phone||'',STAGE_LABELS[l.stage]||l.stage,(l.service_interest||[]).join('; '),c?.book_title||'',l.estimated_value||0,new Date(l.created_date).toLocaleDateString('en-ZA')];
+                  });
+                  const csv = [headers,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+                  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`leads-${new Date().toISOString().slice(0,10)}.csv`;a.click();
+                }}
+                  className="flex items-center gap-2 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-semibold hover:border-[#B87333] hover:text-[#B87333] transition-colors bg-white">
+                  <Download className="w-4 h-4" /> Export CSV
+                </button>
+                <button onClick={() => { setEditLead(null); setShowEditModal(true); }}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-lg text-sm font-semibold hover:bg-[#a06428] transition-colors">
+                  <Plus className="w-4 h-4" /> New Lead
+                </button>
+              </div>
             </div>
 
             {/* Stage filter pills */}
@@ -132,7 +156,7 @@ export default function AdminLeads() {
               {STAGES.map(s => (
                 <button key={s} onClick={() => setStageFilter(s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === s ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
-                  {s.charAt(0).toUpperCase() + s.slice(1)} ({leads.filter(l => l.stage === s).length})
+                  {STAGE_LABELS[s] || s} ({leads.filter(l => l.stage === s).length})
                 </button>
               ))}
             </div>
@@ -201,7 +225,7 @@ export default function AdminLeads() {
                             </td>
                             <td className="px-4 py-3">
                               <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STAGE_COLORS[lead.stage] || 'bg-gray-100 text-gray-600'}`}>
-                                {lead.stage}
+                                {STAGE_LABELS[lead.stage] || lead.stage}
                               </span>
                             </td>
                             <td className="px-4 py-3 text-right hidden md:table-cell">

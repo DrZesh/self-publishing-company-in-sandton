@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ContactEmailThread from '@/components/admin/email/ContactEmailThread';
-import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
 
@@ -93,6 +93,14 @@ export default function AdminContactDetail() {
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            {(contact.whatsapp_number || contact.phone) && (
+              <a
+                href={`https://wa.me/${(contact.whatsapp_number || contact.phone).replace(/[^0-9]/g, '').replace(/^0/, '27')}`}
+                target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-500 text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors">
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </a>
+            )}
             <button onClick={() => { setTab('Emails'); }}
               className="flex items-center gap-1.5 px-3 py-2 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428]">
               <Mail className="w-4 h-4" /> Email

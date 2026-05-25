@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 import { 
   LayoutDashboard, Inbox, Target, Users, Settings, 
   BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail
@@ -23,6 +24,14 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminSidebar({ open, onClose }) {
+  const [theme, setTheme] = useState(() => getTheme(localStorage.getItem(CURRENT_THEME_KEY) || 'brand'));
+  useEffect(() => {
+    const poll = setInterval(() => {
+      const stored = localStorage.getItem(CURRENT_THEME_KEY) || 'brand';
+      setTheme(t => t.id !== stored ? getTheme(stored) : t);
+    }, 500);
+    return () => clearInterval(poll);
+  }, []);
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -37,7 +46,7 @@ export default function AdminSidebar({ open, onClose }) {
   }, []);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full w-64" style={{ background: '#1A3C34', color: 'white' }}>
+    <div className="flex flex-col h-full w-64" style={{ background: theme.sidebar, color: 'white', borderRight: theme.sidebarBorder || 'none' }}>
       {/* Logo */}
       <div className="px-5 py-4 border-b border-white/10">
         <Link to="/admin/dashboard" className="flex items-center gap-3">
@@ -61,12 +70,10 @@ export default function AdminSidebar({ open, onClose }) {
               key={path}
               to={path}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                active
-                  ? 'text-white'
-                  : 'text-white/60 hover:text-white hover:bg-white/8'
-              }`}
-              style={active ? { background: 'rgba(184,115,51,0.85)' } : {}}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all`}
+              style={active
+                ? { background: theme.sidebarActiveBg, color: theme.sidebarActiveText }
+                : { color: theme.sidebarText }}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
               <span className="flex-1">{label}</span>

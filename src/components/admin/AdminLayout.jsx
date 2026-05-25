@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import AdminSidebar from './AdminSidebar';
+import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 export default function AdminLayout({ children }) {
   // Prevent admin pages from being indexed by search engines
@@ -19,6 +20,21 @@ export default function AdminLayout({ children }) {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [theme, setTheme] = useState(() => getTheme(localStorage.getItem(CURRENT_THEME_KEY) || 'brand'));
+
+  // Listen for theme changes from Settings
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === CURRENT_THEME_KEY) setTheme(getTheme(e.newValue || 'brand'));
+    };
+    window.addEventListener('storage', onStorage);
+    // Also poll localStorage for same-tab changes
+    const poll = setInterval(() => {
+      const stored = localStorage.getItem(CURRENT_THEME_KEY) || 'brand';
+      setTheme(t => t.id !== stored ? getTheme(stored) : t);
+    }, 500);
+    return () => { window.removeEventListener('storage', onStorage); clearInterval(poll); };
+  }, []);
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'denied');
   const lastSeenRef = useRef(new Set());
   const navigate = useNavigate();
@@ -76,7 +92,7 @@ export default function AdminLayout({ children }) {
   });
 
   return (
-    <div className="flex h-screen" style={{ background: '#F4F6F8' }}>
+    <div className="flex h-screen" style={{ background: theme.bg, '--admin-accent': theme.accent }}>
       {/* Sidebar */}
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { BarChart2, Shield, ExternalLink, Users, Target, FileText, Columns, Mail, BookOpen, Inbox, LayoutDashboard, Search } from 'lucide-react';
+import { BarChart2, Shield, ExternalLink, Users, Target, FileText, Columns, Mail, BookOpen, Inbox, LayoutDashboard, Search, CheckCircle } from 'lucide-react';
+import { ADMIN_THEMES, getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 function Section({ title, sub, children }) {
   return (
@@ -29,6 +30,12 @@ function Row({ label, sub, children }) {
 export default function AdminSettings() {
   const [counts, setCounts] = useState({});
   const [loadingCounts, setLoadingCounts] = useState(true);
+  const [activeTheme, setActiveTheme] = useState(() => localStorage.getItem(CURRENT_THEME_KEY) || 'brand');
+
+  const applyTheme = (id) => {
+    localStorage.setItem(CURRENT_THEME_KEY, id);
+    setActiveTheme(id);
+  };
 
   useEffect(() => {
     Promise.all([
@@ -75,6 +82,36 @@ export default function AdminSettings() {
           <h1 className="text-2xl font-bold text-[#1A1208]">Settings</h1>
           <p className="text-sm text-black/50 mt-0.5">Admin panel configuration, integrations and portal overview</p>
         </div>
+
+        {/* Theme Selector */}
+        <Section title="Dashboard Theme" sub="Choose a visual style for the entire admin dashboard">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {ADMIN_THEMES.map(t => {
+              const isActive = activeTheme === t.id;
+              return (
+                <button key={t.id} onClick={() => applyTheme(t.id)}
+                  className={`relative rounded-xl p-3 border-2 transition-all text-left ${
+                    isActive ? 'border-[#B87333] shadow-md' : 'border-gray-200 hover:border-gray-400'
+                  }`}>
+                  {/* Color swatch */}
+                  <div className="w-full h-10 rounded-lg mb-2 overflow-hidden" style={{ background: t.preview }}>
+                    <div className="w-1/3 h-full" style={{ background: 'rgba(255,255,255,0.15)' }} />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm">{t.badge}</span>
+                    <span className="text-xs font-semibold text-gray-800 truncate">{t.name}</span>
+                  </div>
+                  {isActive && (
+                    <div className="absolute top-2 right-2">
+                      <CheckCircle className="w-4 h-4 text-[#B87333]" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-black/40 mt-3">Theme applies immediately across the sidebar, backgrounds and accent colours. Refresh if any component doesn't update.</p>
+        </Section>
 
         {/* Data Overview */}
         <Section title="Data Overview" sub="Current counts across your CRM">
