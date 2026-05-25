@@ -5,8 +5,7 @@ const TO_CC = 'draubreyzesh@gmail.com';
 
 // Twilio WhatsApp config
 const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
-const TWILIO_API_KEY_SID = Deno.env.get('TWILIO_API_KEY_SID');
-const TWILIO_API_KEY_SECRET = Deno.env.get('TWILIO_API_KEY_SECRET');
+const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
 const WHATSAPP_FROM = 'whatsapp:+14155238886'; // Twilio sandbox sender (update if you have an approved sender)
 const WHATSAPP_TO = 'whatsapp:+14783758499';   // Your WhatsApp number
 
@@ -103,7 +102,7 @@ Deno.serve(async (req) => {
         {
           method: 'POST',
           headers: {
-            'Authorization': 'Basic ' + btoa(`${TWILIO_API_KEY_SID}:${TWILIO_API_KEY_SECRET}`),
+            'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
