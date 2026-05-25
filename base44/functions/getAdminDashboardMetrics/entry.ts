@@ -17,11 +17,12 @@ Deno.serve(async (req) => {
     const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
 
     // Fetch all data in parallel
-    const [submissions, leads, contacts, notes] = await Promise.all([
+    const [submissions, leads, contacts, notes, quotes] = await Promise.all([
       base44.asServiceRole.entities.Submission.list(),
       base44.asServiceRole.entities.Lead.list(),
       base44.asServiceRole.entities.Contact.list(),
       base44.asServiceRole.entities.Note.list(),
+      base44.asServiceRole.entities.Quote.list(),
     ]);
 
     // --- SUBMISSIONS ---
@@ -35,7 +36,6 @@ Deno.serve(async (req) => {
       const d = new Date(s.created_date);
       return d >= startOfLastMonth && d <= endOfLastMonth;
     });
-
     const newSubmissions = submissions.filter(s => s.status === 'new').length;
 
     // --- LEADS ---
@@ -48,6 +48,8 @@ Deno.serve(async (req) => {
       const d = new Date(l.created_date);
       return d >= startOfLastMonth && d <= endOfLastMonth;
     });
+    const convertedLeads = wonLeads.filter(l => new Date(l.stage_changed_at || l.updated_date) >= startOfMonth);
+    const lostThisMonth = lostLeads.filter(l => new Date(l.stage_changed_at || l.updated_date) >= startOfMonth);
 
     // Pipeline by stage
     const pipelineByStage = {};
@@ -80,16 +82,14 @@ Deno.serve(async (req) => {
     openStages.forEach(stage => {
       const stageLeads = leads.filter(l => l.stage === stage && l.stage_changed_at);
       if (stageLeads.length) {
-        const avgMs = stageLeads.reduce((s, l) => {
-          return s + (now - new Date(l.stage_changed_at));
-        }, 0) / stageLeads.length;
+        const avgMs = stageLeads.reduce((s, l) => s + (now - new Date(l.stage_changed_at)), 0) / stageLeads.length;
         avgTimeInStage[stage] = Math.round(avgMs / (1000 * 60 * 60 * 24));
       } else {
         avgTimeInStage[stage] = 0;
       }
     });
 
-    // Response time (submission created → first note)
+    // Response time
     const responseTimes = [];
     submissions.slice(0, 50).forEach(sub => {
       const subNotes = notes.filter(n => n.entity_type === 'submission' && n.entity_id === sub.id);
@@ -117,13 +117,64 @@ Deno.serve(async (req) => {
     ['subscriber', 'lead', 'customer', 'repeat_customer', 'past_customer'].forEach(stage => {
       contactsByStage[stage] = contacts.filter(c => c.lifecycle_stage === stage).length;
     });
-
-    // At-risk: past customers not contacted in 6 months
     const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
     const atRiskContacts = contacts.filter(c =>
       c.lifecycle_stage === 'past_customer' &&
       (!c.last_contact_date || new Date(c.last_contact_date) < sixMonthsAgo)
     ).length;
+
+    // --- QUOTES ---
+    const pendingQuotes = quotes.filter(q => q.status === 'Draft').length;
+    const sentQuotes = quotes.filter(q => ['Sent', 'Delivered', 'Opened', 'Viewed'].includes(q.status)).length;
+    const acceptedQuotes = quotes.filter(q => q.status === 'Accepted').length;
+    const declinedQuotes = quotes.filter(q => q.status === 'Declined').length;
+    const expiredQuotes = quotes.filter(q => q.status === 'Expired').length;
+    const monthQuotes = quotes.filter(q => new Date(q.created_date) >= startOfMonth);
+    const monthQuoteValue = monthQuotes.reduce((s, q) => s + (q.total || 0), 0);
+    const acceptedQuoteValue = quotes.filter(q => q.status === 'Accepted').reduce((s, q) => s + (q.total || 0), 0);
+
+    // Quote conversion rate
+    const totalQuotesSent = sentQuotes + acceptedQuotes + declinedQuotes + expiredQuotes;
+    const quoteConversionRate = totalQuotesSent > 0 ? Math.round((acceptedQuotes / totalQuotesSent) * 100) : 0;
+
+    // --- LEADS BY SERVICE ---
+    const serviceCount = {};
+    submissions.filter(s => new Date(s.created_date) >= startOfMonth).forEach(s => {
+      const services = Array.isArray(s.service_interest) ? s.service_interest : [];
+      services.forEach(svc => {
+        serviceCount[svc] = (serviceCount[svc] || 0) + 1;
+      });
+      // Also check message for keywords if service_interest empty
+      if (!services.length && s.form_type) {
+        serviceCount[s.form_type] = (serviceCount[s.form_type] || 0) + 1;
+      }
+    });
+    const topService = Object.entries(serviceCount).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+
+    // --- MONTHLY TREND (last 6 months) ---
+    const monthlyTrend = [];
+    for (let i = 5; i >= 0; i--) {
+      const mStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const mEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+      const mSubs = submissions.filter(s => {
+        const d = new Date(s.created_date);
+        return d >= mStart && d <= mEnd;
+      }).length;
+      const mLeads = leads.filter(l => {
+        const d = new Date(l.created_date);
+        return d >= mStart && d <= mEnd;
+      }).length;
+      const mRevenue = wonLeads.filter(l => {
+        const d = new Date(l.stage_changed_at || l.updated_date);
+        return d >= mStart && d <= mEnd;
+      }).reduce((s, l) => s + (l.estimated_value || 0), 0);
+      monthlyTrend.push({
+        month: mStart.toLocaleString('en-ZA', { month: 'short' }),
+        submissions: mSubs,
+        leads: mLeads,
+        revenue: mRevenue,
+      });
+    }
 
     // --- LEAD SOURCES ---
     const leadSources = {};
@@ -158,7 +209,19 @@ Deno.serve(async (req) => {
         date: l.updated_date,
       }));
 
-    const allActivity = [...recentSubmissions, ...recentLeadChanges]
+    const recentQuoteActivity = quotes
+      .filter(q => q.updated_date && new Date(q.updated_date) >= new Date(now - 48 * 60 * 60 * 1000))
+      .sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date))
+      .slice(0, 4)
+      .map(q => ({
+        type: q.status === 'Accepted' ? 'won' : 'quote',
+        id: q.id,
+        label: `Quote ${q.quote_number || ''} ${q.status.toLowerCase()} — R${(q.total || 0).toLocaleString()}`,
+        sub: q.contact_snapshot?.full_name || '',
+        date: q.updated_date,
+      }));
+
+    const allActivity = [...recentSubmissions, ...recentLeadChanges, ...recentQuoteActivity]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 15);
 
@@ -191,9 +254,24 @@ Deno.serve(async (req) => {
         openLeadsCount: openLeads.length,
         monthLeads: monthLeads.length,
         lastMonthLeads: lastMonthLeads.length,
+        convertedLeadsThisMonth: convertedLeads.length,
+        lostLeadsThisMonth: lostThisMonth.length,
         totalPipelineValue,
         revenueThisMonth,
         revenueLastMonth,
+        // Quotes
+        pendingQuotes,
+        sentQuotes,
+        acceptedQuotes,
+        declinedQuotes,
+        expiredQuotes,
+        monthQuoteValue,
+        acceptedQuoteValue,
+        quoteConversionRate,
+        totalQuotesSent,
+        // Services
+        topService,
+        serviceCount,
         // Response
         avgResponseHours,
         // Contacts
@@ -210,6 +288,7 @@ Deno.serve(async (req) => {
           noOwnerCount: noOwner.length,
         },
       },
+      monthlyTrend,
       leadSources,
       activity: allActivity,
       followUps,

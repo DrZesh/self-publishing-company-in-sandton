@@ -45,7 +45,7 @@ export default function ActivityFeed({ activity, loading }) {
           <h2 className="text-base font-semibold text-gray-900">Recent Activity</h2>
           <p className="text-xs text-gray-400">What's happening across Creative Books</p>
         </div>
-        <Link to="/admin/submissions" className="text-xs font-medium hover:underline" style={{ color: '#B87333' }}>View all →</Link>
+        <Link to="/admin/leads" className="text-xs font-medium hover:underline" style={{ color: '#B87333' }}>View all →</Link>
       </div>
 
       {isEmpty ? (

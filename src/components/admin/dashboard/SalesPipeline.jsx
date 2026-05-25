@@ -65,7 +65,7 @@ export default function SalesPipeline({ pipeline, loading }) {
           <h2 className="text-base font-semibold text-gray-900">Sales Pipeline</h2>
           <p className="text-xs text-gray-400">Where every open deal stands</p>
         </div>
-        <Link to="/admin/submissions" className="text-xs font-medium hover:underline" style={{ color: '#B87333' }}>View all leads →</Link>
+        <Link to="/admin/pipeline" className="text-xs font-medium hover:underline" style={{ color: '#B87333' }}>View pipeline →</Link>
       </div>
 
       {isEmpty ? (
@@ -126,14 +126,14 @@ export default function SalesPipeline({ pipeline, loading }) {
             <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5 border border-red-100">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span><strong>{flags.quotedOldCount} leads</strong> in 'Quoted' stage &gt;7 days with no follow-up</span>
-              <Link to="/admin/submissions" className="ml-auto text-xs underline shrink-0">View →</Link>
+              <Link to="/admin/leads" className="ml-auto text-xs underline shrink-0">View →</Link>
             </div>
           )}
           {flags.noOwnerCount > 0 && (
             <div className="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 rounded-xl px-4 py-2.5 border border-amber-100">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span><strong>{flags.noOwnerCount} leads</strong> have no assigned owner</span>
-              <Link to="/admin/submissions" className="ml-auto text-xs underline shrink-0">View →</Link>
+              <Link to="/admin/leads" className="ml-auto text-xs underline shrink-0">View →</Link>
             </div>
           )}
         </div>

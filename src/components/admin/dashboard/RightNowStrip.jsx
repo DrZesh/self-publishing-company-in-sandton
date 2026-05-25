@@ -49,7 +49,7 @@ export default function RightNowStrip({ metrics, loading }) {
         sub={todayVsYesterday >= 0 ? `+${todayVsYesterday} vs yesterday` : `${todayVsYesterday} vs yesterday`}
         color="bg-[#B87333]"
         accent="#B87333"
-        linkTo="/admin/submissions"
+        linkTo="/admin/leads"
       />
       <RightNowCard
         icon={Users}
@@ -58,7 +58,7 @@ export default function RightNowStrip({ metrics, loading }) {
         sub="Waiting for response"
         color="bg-red-500"
         accent="#ef4444"
-        linkTo="/admin/submissions"
+        linkTo="/admin/leads"
       />
       <RightNowCard
         icon={Calculator}
@@ -67,7 +67,7 @@ export default function RightNowStrip({ metrics, loading }) {
         sub={`${metrics?.lastMonthSubmissions ?? 0} last month`}
         color="bg-blue-500"
         accent="#3b82f6"
-        linkTo="/admin/submissions"
+        linkTo="/admin/leads"
       />
       <RightNowCard
         icon={FolderOpen}
@@ -77,7 +77,7 @@ export default function RightNowStrip({ metrics, loading }) {
         pulse
         color="bg-emerald-600"
         accent="#059669"
-        linkTo="/admin/submissions"
+        linkTo="/admin/leads"
       />
     </div>
   );

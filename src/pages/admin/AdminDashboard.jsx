@@ -12,6 +12,8 @@ import AuthorInsights from '@/components/admin/dashboard/AuthorInsights';
 import SearchConsoleMini from '@/components/admin/dashboard/SearchConsoleMini';
 import LeadSourcesChart from '@/components/admin/dashboard/LeadSourcesChart';
 import RevenueGoalCard from '@/components/admin/dashboard/RevenueGoalCard';
+import MonthlyTrendChart from '@/components/admin/dashboard/MonthlyTrendChart';
+import ServiceBreakdownCard from '@/components/admin/dashboard/ServiceBreakdownCard';
 
 export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState('month');
@@ -48,6 +50,7 @@ export default function AdminDashboard() {
   const activity = dashData?.activity;
   const followUps = dashData?.followUps;
   const leadSources = dashData?.leadSources;
+  const monthlyTrend = dashData?.monthlyTrend;
 
   return (
     <AdminLayout>
@@ -70,6 +73,12 @@ export default function AdminDashboard() {
 
         {/* Section 4 — Sales Pipeline */}
         <SalesPipeline pipeline={pipeline} loading={loading} />
+
+        {/* Monthly Trend + Service Breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MonthlyTrendChart monthlyTrend={monthlyTrend} loading={loading} />
+          <ServiceBreakdownCard metrics={metrics} loading={loading} />
+        </div>
 
         {/* Lead Sources + Author Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -33,7 +33,7 @@ export default function AuthorInsights({ metrics, loading }) {
           <h2 className="text-base font-semibold text-gray-900">Your Authors</h2>
           <p className="text-xs text-gray-400">Customer relationships at a glance</p>
         </div>
-        <Link to="/admin/submissions" className="text-xs text-[#B87333] hover:underline">View contacts →</Link>
+        <Link to="/admin/contacts" className="text-xs text-[#B87333] hover:underline">View contacts →</Link>
       </div>
 
       {total === 0 ? (
