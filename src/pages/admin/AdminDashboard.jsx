@@ -19,6 +19,8 @@ import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
 import ResponseTimeTracker from '@/components/admin/dashboard/ResponseTimeTracker';
 import AICopilot from '@/components/admin/dashboard/AICopilot';
 import AIInsightsPanel from '@/components/admin/dashboard/AIInsightsPanel';
+import FollowUpReminders from '@/components/admin/dashboard/FollowUpReminders';
+import RevenueForecast from '@/components/admin/dashboard/RevenueForecast';
 
 export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState('month');
@@ -75,6 +77,12 @@ export default function AdminDashboard() {
 
         {/* Revenue Goal Banner — owner only */}
         {isOwner && <RevenueGoalCard metrics={metrics} loading={loading} />}
+
+        {/* NEW: Revenue Forecast */}
+        <RevenueForecast />
+
+        {/* NEW: Follow-up Reminders */}
+        <FollowUpReminders />
 
         {/* Section 4 — Sales Pipeline */}
         <SalesPipeline pipeline={pipeline} loading={loading} />

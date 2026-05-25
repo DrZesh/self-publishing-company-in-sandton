@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ContactEmailThread from '@/components/admin/email/ContactEmailThread';
+import CommunicationTimeline from '@/components/admin/contacts/CommunicationTimeline';
 import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus } from 'lucide-react';
 import ContactTimeline from '@/components/admin/ContactTimeline';
 import { toast } from 'sonner';
@@ -204,9 +205,12 @@ export default function AdminContactDetail() {
 
         {/* Tab: Timeline */}
         {tab === 'Timeline' && (
-          <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
-            <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-4">Activity Timeline</h2>
-            <ContactTimeline contact={contact} />
+          <div className="space-y-5">
+            <CommunicationTimeline contactId={contact.id} />
+            <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
+              <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-4">Activity Timeline</h2>
+              <ContactTimeline contact={contact} />
+            </div>
           </div>
         )}
 
