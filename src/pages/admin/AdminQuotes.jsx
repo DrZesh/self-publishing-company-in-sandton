@@ -45,6 +45,15 @@ export default function AdminQuotes() {
     }
   };
 
+  const handleSend = async (quote) => {
+    if (!confirm(`Send quote ${quote.quote_number} to ${quote.contact_snapshot?.email}?`)) return;
+    const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
+    if (res.data?.success) {
+      setQuotes(prev => prev.map(q => q.id === quote.id ? { ...q, status: 'Sent', sent_at: new Date().toISOString() } : q));
+      toast.success('Quote sent successfully');
+    }
+  };
+
   const handleResend = async (quote) => {
     if (!confirm(`Resend quote ${quote.quote_number} to ${quote.contact_snapshot?.email}?`)) return;
     const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
@@ -168,13 +177,16 @@ export default function AdminQuotes() {
                       <td className="px-4 py-3 text-xs text-black/50 hidden lg:table-cell">{q.valid_until || '—'}</td>
                       <td className="px-4 py-3 text-xs text-black/40 hidden xl:table-cell">{new Date(q.created_date).toLocaleDateString('en-ZA')}</td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-1 justify-end">
-                          <Link to={`/admin/quotes/${q.id}`} title="View" className="p-1.5 hover:bg-black/5 rounded-lg"><Eye className="w-4 h-4 text-black/40" /></Link>
-                          {(q.status === 'Sent' || q.status === 'Viewed') && (
-                            <button onClick={() => handleResend(q)} title="Resend" className="p-1.5 hover:bg-black/5 rounded-lg"><Send className="w-4 h-4 text-blue-400" /></button>
-                          )}
-                          <button onClick={() => handleDuplicate(q.id)} title="Duplicate" className="p-1.5 hover:bg-black/5 rounded-lg"><Copy className="w-4 h-4 text-black/40" /></button>
-                        </div>
+                      <div className="flex items-center gap-1 justify-end">
+                        <Link to={`/admin/quotes/${q.id}`} title="View" className="p-1.5 hover:bg-black/5 rounded-lg"><Eye className="w-4 h-4 text-black/40" /></Link>
+                        {q.status === 'Draft' && (
+                          <button onClick={() => handleSend(q)} title="Send" className="p-1.5 hover:bg-black/5 rounded-lg"><Send className="w-4 h-4 text-emerald-600" /></button>
+                        )}
+                        {(q.status === 'Sent' || q.status === 'Viewed') && (
+                          <button onClick={() => handleResend(q)} title="Resend" className="p-1.5 hover:bg-black/5 rounded-lg"><Send className="w-4 h-4 text-blue-400" /></button>
+                        )}
+                        <button onClick={() => handleDuplicate(q.id)} title="Duplicate" className="p-1.5 hover:bg-black/5 rounded-lg"><Copy className="w-4 h-4 text-black/40" /></button>
+                      </div>
                       </td>
                     </tr>
                   );
