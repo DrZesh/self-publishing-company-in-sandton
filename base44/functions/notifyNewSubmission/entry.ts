@@ -3,18 +3,14 @@ const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
 const TO_EMAIL = 'info@creativebooks.co.za';
 const TO_CC = 'draubreyzesh@gmail.com';
 
-// Twilio WhatsApp config
+// Twilio WhatsApp config - using API Key auth (more secure)
 const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
-const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
-const WHATSAPP_FROM = 'whatsapp:+14155238886'; // Twilio sandbox sender (update if you have an approved sender)
-const WHATSAPP_TO = 'whatsapp:+27625891937';   // Your WhatsApp number
+const TWILIO_API_KEY_SID = Deno.env.get('TWILIO_API_KEY_SID');
+const TWILIO_API_KEY_SECRET = Deno.env.get('TWILIO_API_KEY_SECRET');
+const WHATSAPP_FROM = 'whatsapp:+14155238886';
+const WHATSAPP_TO = 'whatsapp:+27625891937';
 
-console.log('Twilio env check:', {
-  has_sid: !!TWILIO_ACCOUNT_SID,
-  sid_preview: TWILIO_ACCOUNT_SID?.substring(0, 10),
-  has_token: !!TWILIO_AUTH_TOKEN,
-  token_preview: TWILIO_AUTH_TOKEN?.substring(0, 10),
-});
+
 
 Deno.serve(async (req) => {
   try {
@@ -91,8 +87,9 @@ Deno.serve(async (req) => {
     }
 
     console.log('Resend successful, proceeding to WhatsApp');
+    console.log('Twilio API Key SID present:', !!TWILIO_API_KEY_SID);
     // Send WhatsApp notification via Twilio
-    console.log('Attempting WhatsApp send to:', WHATSAPP_TO);
+    console.log('Attempting WhatsApp send to:', WHATSAPP_TO, 'from:', WHATSAPP_FROM);
     try {
       const msgLines = [
         `📬 *New Enquiry — Creative Books SA*`,
@@ -114,8 +111,8 @@ Deno.serve(async (req) => {
         body_preview: msgLines.substring(0, 100),
       });
 
-      // Use TextEncoder for base64 in Deno
-      const credentials = `${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`;
+      // Use API Key authentication (recommended by Twilio)
+      const credentials = `${TWILIO_API_KEY_SID}:${TWILIO_API_KEY_SECRET}`;
       const encoded = btoa(
         new TextEncoder().encode(credentials).reduce((data, byte) => data + String.fromCharCode(byte), '')
       );
@@ -153,9 +150,10 @@ Deno.serve(async (req) => {
       console.error('WhatsApp error:', waErr.message);
     }
 
+    console.log('About to return success response');
     return Response.json({ success: true });
   } catch (error) {
-    console.error('notifyNewSubmission error:', error.message);
+    console.error('notifyNewSubmission error:', error.message, error.stack);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
