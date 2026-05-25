@@ -262,6 +262,23 @@ export default function AdminServices() {
             className="w-full pl-9 pr-4 py-2.5 border border-black/10 rounded-xl text-sm focus:outline-none focus:border-[#B87333] bg-white" />
         </div>
 
+        {/* Stats */}
+        {!loading && services.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {[
+              { label: 'Total Entries', value: services.length },
+              { label: 'Active', value: services.filter(s => s.active !== false).length },
+              { label: 'Categories', value: new Set(services.map(s => s.category)).size },
+              { label: 'Inactive', value: services.filter(s => s.active === false).length },
+            ].map(stat => (
+              <div key={stat.label} className="bg-white rounded-2xl border border-black/8 p-4">
+                <p className="text-xs text-black/40 font-semibold uppercase tracking-wide mb-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-[#1A1208]">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         {loading ? (
           <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-14 bg-black/5 rounded-xl animate-pulse" />)}</div>
         ) : filtered.length === 0 ? (

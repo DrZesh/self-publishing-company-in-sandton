@@ -1,54 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Pencil, Trash2, X, Save, FileText, ChevronDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, FileText, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CATEGORIES = ['general', 'follow_up', 'quote', 'onboarding', 'invoice', 'marketing'];
+const CATEGORY_LABELS = { general: 'General', follow_up: 'Follow-Up', quote: 'Quote', onboarding: 'Onboarding', invoice: 'Invoice', marketing: 'Marketing' };
 const MERGE_FIELDS = ['{first_name}', '{full_name}', '{email}', '{book_title}', '{company}', '{quote_number}'];
 
 const STARTER_TEMPLATES = [
   {
-    name: 'Initial Follow-Up',
-    category: 'follow_up',
+    name: 'Initial Follow-Up', category: 'follow_up',
     subject: 'Following up on your enquiry — Creative Books SA',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Creative Books SA</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Hi {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Thank you for reaching out to Creative Books SA! I wanted to follow up on your recent enquiry and see if you have any questions we can help answer.</p><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">We'd love to help you bring your book project to life. Would you be available for a quick call this week to discuss your project in more detail?</p><div style="background: #faf8f4; border: 1px solid rgba(184,115,51,0.15); border-radius: 12px; padding: 20px; margin: 24px 0;"><p style="margin: 0; color: #555; font-size: 14px; line-height: 1.6;"><strong>What happens next:</strong></p><ul style="margin: 12px 0 0 20px; padding: 0; color: #555; font-size: 14px; line-height: 1.8;"><li>Quick discovery call to understand your vision</li><li>Custom quote tailored to your needs</li><li>Timeline and next steps outlined</li></ul></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">Looking forward to hearing from you!</p><p style="margin: 0; color: #888; font-size: 14px;">Warm regards,<br><strong style="color: #1A1208;">The Creative Books SA Team</strong></p><hr style="border: none; border-top: 1px solid #e5e5e5; margin: 32px 0;" /><p style="margin: 0; color: #999; font-size: 12px;">Questions? Reply to this email or call <strong style="color: #1A1208;">010 500 3331</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Creative Books SA</h1><p style="margin:10px 0 0;color:rgba(255,255,255,.5);font-size:13px">Professional Publishing Services</p></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Hi {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Thank you for reaching out to Creative Books SA! I wanted to follow up on your recent enquiry and see if you have any questions we can help answer.</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">We'd love to help you bring your book project to life. Would you be available for a quick call this week?</p><p style="margin:0;color:#888;font-size:14px">Warm regards,<br><strong style="color:#1A1208">The Creative Books SA Team</strong></p></div></div>`,
   },
   {
-    name: 'Quote Follow-Up',
-    category: 'quote',
+    name: 'Quote Follow-Up', category: 'quote',
     subject: 'Your quote from Creative Books SA — any questions?',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Creative Books SA</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Hi {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">I hope this email finds you well. I wanted to check in to see if you've had a chance to review the quote we sent you for <strong style="color: #1A1208;">{book_title}</strong>.</p><div style="background: linear-gradient(135deg, #faf8f4 0%, #f5f0e8 100%); border: 1px solid rgba(184,115,51,0.15); border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;"><p style="margin: 0 0 12px; color: #888; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Need Help Deciding?</p><p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">We're happy to answer questions, adjust services, or create a custom package that works for your budget.</p></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">If you have any questions about the pricing, services included, or would like to make any adjustments, please don't hesitate to reach out.</p><p style="margin: 0; color: #888; font-size: 14px;">We look forward to working with you!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;">Warm regards,<br><strong style="color: #1A1208;">The Creative Books SA Team</strong></p><hr style="border: none; border-top: 1px solid #e5e5e5; margin: 32px 0;" /><p style="margin: 0; color: #999; font-size: 12px;">Call us: <strong style="color: #1A1208;">010 500 3331</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Creative Books SA</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Hi {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">I wanted to check in to see if you've had a chance to review the quote we sent you for <strong style="color:#1A1208">{book_title}</strong>.</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">If you have any questions about pricing or services, please don't hesitate to reach out.</p><p style="margin:0;color:#888;font-size:14px">Warm regards,<br><strong style="color:#1A1208">The Creative Books SA Team</strong></p></div></div>`,
   },
   {
-    name: 'Welcome — New Client',
-    category: 'onboarding',
+    name: 'Welcome — New Client', category: 'onboarding',
     subject: 'Welcome to Creative Books SA, {first_name}!',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Welcome Aboard!</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Dear {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Welcome to Creative Books SA! We're thrilled to have you on board and are looking forward to working on <strong style="color: #1A1208;">{book_title}</strong> with you.</p><div style="background: #faf8f4; border-left: 3px solid #B87333; border-radius: 12px; padding: 24px; margin: 24px 0;"><p style="margin: 0 0 16px; color: #B87333; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">What Happens Next</p><ol style="margin: 0; padding-left: 20px; color: #555; font-size: 15px; line-height: 1.8;"><li>Our team will review your project details and be in touch within 24 hours</li><li>We'll schedule a kick-off call to align on timelines and deliverables</li><li>You'll receive a project brief to confirm all details before we begin</li></ol></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">If you have any immediate questions, reply directly to this email or call us on <strong style="color: #1A1208;">010 500 3331</strong>.</p><p style="margin: 0; color: #888; font-size: 14px;">Excited to get started!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;"><strong style="color: #1A1208;">The Creative Books SA Team</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Welcome Aboard!</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Dear {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Welcome to Creative Books SA! We're thrilled to have you on board and look forward to working on <strong style="color:#1A1208">{book_title}</strong> with you.</p><div style="background:#faf8f4;border-left:3px solid #B87333;border-radius:12px;padding:24px;margin:24px 0"><p style="margin:0 0 16px;color:#B87333;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">What Happens Next</p><ol style="margin:0;padding-left:20px;color:#555;font-size:15px;line-height:1.8"><li>Our team will review your project details within 24 hours</li><li>We'll schedule a kick-off call to align on timelines</li><li>You'll receive a project brief before we begin</li></ol></div><p style="margin:0;color:#888;font-size:14px"><strong style="color:#1A1208">The Creative Books SA Team</strong></p></div></div>`,
   },
   {
-    name: 'Manuscript Received',
-    category: 'onboarding',
-    subject: 'We\'ve received your manuscript — {book_title}',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Manuscript Received ✓</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Hi {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Great news — we've received your manuscript for <strong style="color: #1A1208;">{book_title}</strong> and it's now in our system.</p><div style="background: #f0f9ff; border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;"><p style="margin: 0 0 12px; color: #0369a1; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Next Steps</p><p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">Our team will review the document over the next 1–2 business days and be in touch with any clarifying questions or next steps.</p></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">In the meantime, if you'd like to make any changes to the manuscript, please let us know as soon as possible so we can update our records before work begins.</p><p style="margin: 0; color: #888; font-size: 14px;">Thank you for entrusting us with your book!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;">Warm regards,<br><strong style="color: #1A1208;">Creative Books SA</strong></p></div></div>`,
+    name: 'Manuscript Received', category: 'onboarding',
+    subject: "We've received your manuscript — {book_title}",
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Manuscript Received ✓</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Hi {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Great news — we've received your manuscript for <strong style="color:#1A1208">{book_title}</strong> and it's now in our system.</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">Our team will review it over the next 1–2 business days and be in touch with next steps.</p><p style="margin:0;color:#888;font-size:14px"><strong style="color:#1A1208">Creative Books SA</strong></p></div></div>`,
   },
   {
-    name: 'Payment Reminder',
-    category: 'invoice',
+    name: 'Payment Reminder', category: 'invoice',
     subject: 'Friendly payment reminder — Creative Books SA',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Payment Reminder</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Hi {first_name},</p><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">I hope you're well. This is a gentle reminder that a payment for your project is due.</p><div style="background: #faf8f4; border: 1px solid rgba(184,115,51,0.15); border-radius: 12px; padding: 24px; margin: 24px 0;"><p style="margin: 0 0 12px; color: #B87333; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Banking Details</p><p style="margin: 0; color: #555; font-size: 15px; line-height: 1.8;"><strong>Bank:</strong> FNB<br><strong>Account Name:</strong> Creative Books SA<br><strong>Branch Code:</strong> 250655</p></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">If you've already processed this payment, please disregard this email and accept our thanks. If you have any questions about the invoice or would like to arrange alternative payment, please don't hesitate to reply to this email.</p><p style="margin: 0; color: #888; font-size: 14px;">Thank you for your continued support!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;"><strong style="color: #1A1208;">Creative Books SA</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Payment Reminder</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Hi {first_name},</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">This is a gentle reminder that a payment for your project is due.</p><div style="background:#faf8f4;border:1px solid rgba(184,115,51,.15);border-radius:12px;padding:24px;margin:24px 0"><p style="margin:0 0 12px;color:#B87333;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Banking Details</p><p style="margin:0;color:#555;font-size:15px;line-height:1.8"><strong>Bank:</strong> FNB<br><strong>Account Name:</strong> Creative Books SA<br><strong>Branch Code:</strong> 250655</p></div><p style="margin:0;color:#888;font-size:14px"><strong style="color:#1A1208">Creative Books SA</strong></p></div></div>`,
   },
   {
-    name: 'Project Complete',
-    category: 'general',
+    name: 'Project Complete', category: 'general',
     subject: 'Your project is complete — {book_title}',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">🎉 Project Complete!</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Dear {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Congratulations! We're pleased to let you know that work on <strong style="color: #1A1208;">{book_title}</strong> is now complete.</p><div style="background: #f0fdf4; border: 1px solid rgba(34,197,94,0.2); border-radius: 12px; padding: 20px; margin: 24px 0;"><p style="margin: 0; color: #166534; font-size: 15px; line-height: 1.6;"><strong>✓ Final files attached</strong><br>Please review and let us know if you have any questions.</p></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">We'd love to hear your feedback on the final result. If you'd like to leave us a Google review, it would mean the world to our small team:</p><div style="text-align: center; margin: 24px 0;"><a href="https://www.google.com/search?q=creative+books+sa" style="display: inline-block; background: linear-gradient(135deg, #B87333 0%, #D4A574 100%); color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(184,115,51,0.3);">Leave a Review</a></div><p style="margin: 0; color: #888; font-size: 14px;">It has been an absolute pleasure working with you. We hope to work with you again in the future!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;">Warm regards,<br><strong style="color: #1A1208;">The Creative Books SA Team</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">🎉 Project Complete!</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Dear {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Congratulations! Work on <strong style="color:#1A1208">{book_title}</strong> is now complete.</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">We'd love to hear your feedback. A Google review would mean the world to our team!</p><p style="margin:0;color:#888;font-size:14px">Warm regards,<br><strong style="color:#1A1208">The Creative Books SA Team</strong></p></div></div>`,
   },
   {
-    name: 'No Response — Last Attempt',
-    category: 'follow_up',
+    name: 'No Response — Last Attempt', category: 'follow_up',
     subject: 'Last check-in from Creative Books SA',
-    body_html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);"><div style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 40px 32px; text-align: center;"><h1 style="margin: 0; color: #B87333; font-size: 26px; font-weight: 700;">Quick Check-In</h1><p style="margin: 10px 0 0; color: rgba(255,255,255,0.5); font-size: 13px;">Professional Publishing Services</p></div><div style="padding: 40px 32px;"><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">Hi {first_name},</p><p style="margin: 0 0 20px; color: #555; font-size: 16px; line-height: 1.6;">I hope you're doing well. I've reached out a couple of times regarding your book project and haven't heard back — which is completely fine!</p><div style="background: #faf8f4; border: 1px solid rgba(184,115,51,0.15); border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;"><p style="margin: 0 0 12px; color: #555; font-size: 15px; line-height: 1.6;">If you're still interested in publishing <strong style="color: #1A1208;">{book_title}</strong>, we'd love to pick up where we left off.</p><p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">If your plans have changed or you've gone in a different direction, no hard feelings at all.</p></div><p style="margin: 0 0 24px; color: #555; font-size: 16px; line-height: 1.6;">Just reply to this email with a quick "yes" or "not now" and we'll take it from there.</p><p style="margin: 0; color: #888; font-size: 14px;">Wishing you all the best!</p><p style="margin: 24px 0 0; color: #888; font-size: 14px;"><strong style="color: #1A1208;">Creative Books SA</strong></p></div></div>`,
+    body_html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;max-width:640px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden"><div style="background:linear-gradient(135deg,#1A1208,#2C1E0F);padding:40px 32px;text-align:center"><h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700">Quick Check-In</h1></div><div style="padding:40px 32px"><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">Hi {first_name},</p><p style="margin:0 0 20px;color:#555;font-size:16px;line-height:1.6">I've reached out a couple of times regarding your book project and haven't heard back — which is completely fine!</p><p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6">If you're still interested in publishing <strong style="color:#1A1208">{book_title}</strong>, we'd love to pick up where we left off. Just reply with a quick "yes" or "not now".</p><p style="margin:0;color:#888;font-size:14px"><strong style="color:#1A1208">Creative Books SA</strong></p></div></div>`,
   },
 ];
 
@@ -65,21 +59,11 @@ function TemplateEditor({ template, onClose, onSave }) {
   const [showMerge, setShowMerge] = useState(false);
 
   useEffect(() => {
-    if (editorRef.current && form.body_html) {
-      editorRef.current.innerHTML = form.body_html;
-    }
+    if (editorRef.current && form.body_html) editorRef.current.innerHTML = form.body_html;
   }, []);
 
-  const execCmd = (cmd, value = null) => {
-    document.execCommand(cmd, false, value);
-    editorRef.current?.focus();
-  };
-
-  const insertMerge = (field) => {
-    document.execCommand('insertText', false, field);
-    editorRef.current?.focus();
-    setShowMerge(false);
-  };
+  const execCmd = (cmd, value = null) => { document.execCommand(cmd, false, value); editorRef.current?.focus(); };
+  const insertMerge = (field) => { document.execCommand('insertText', false, field); editorRef.current?.focus(); setShowMerge(false); };
 
   const handleSave = async () => {
     if (!form.name || !form.subject) { toast.error('Name and subject are required'); return; }
@@ -96,7 +80,6 @@ function TemplateEditor({ template, onClose, onSave }) {
           <h2 className="text-lg font-bold text-[#1A1208]">{template ? 'Edit Template' : 'New Template'}</h2>
           <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-lg"><X className="w-5 h-5" /></button>
         </div>
-
         <div className="overflow-y-auto flex-1 p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -108,30 +91,26 @@ function TemplateEditor({ template, onClose, onSave }) {
               <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Category</label>
               <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
                 className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]">
-                {CATEGORIES.map(c => <option key={c} value={c}>{c.replace(/_/g, ' ')}</option>)}
+                {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
           </div>
-
           <div>
             <label className="block text-xs font-semibold text-black/50 uppercase tracking-wide mb-1.5">Subject Line *</label>
             <input value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
-              className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="Email subject (supports {merge_fields})" />
+              className="w-full px-3 py-2.5 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" placeholder="Email subject" />
           </div>
-
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-semibold text-black/50 uppercase tracking-wide">Body *</label>
               <div className="flex items-center gap-1">
-                <div className="flex items-center gap-0.5">
-                  <button onMouseDown={e => { e.preventDefault(); execCmd('bold'); }} className="p-1.5 hover:bg-black/8 rounded text-xs font-bold text-black/50">B</button>
-                  <button onMouseDown={e => { e.preventDefault(); execCmd('italic'); }} className="p-1.5 hover:bg-black/8 rounded italic text-xs text-black/50">I</button>
-                  <button onMouseDown={e => { e.preventDefault(); execCmd('insertUnorderedList'); }} className="p-1.5 hover:bg-black/8 rounded text-xs text-black/50">•</button>
-                </div>
+                <button onMouseDown={e => { e.preventDefault(); execCmd('bold'); }} className="p-1.5 hover:bg-black/8 rounded text-xs font-bold text-black/50">B</button>
+                <button onMouseDown={e => { e.preventDefault(); execCmd('italic'); }} className="p-1.5 hover:bg-black/8 rounded italic text-xs text-black/50">I</button>
+                <button onMouseDown={e => { e.preventDefault(); execCmd('insertUnorderedList'); }} className="p-1.5 hover:bg-black/8 rounded text-xs text-black/50">•</button>
                 <div className="relative">
                   <button onMouseDown={e => { e.preventDefault(); setShowMerge(!showMerge); }}
                     className="flex items-center gap-1 px-2.5 py-1 bg-[#B87333]/10 text-[#B87333] rounded-lg text-xs font-semibold">
-                    {'{}'} Merge Fields <ChevronDown className="w-3 h-3" />
+                    {'{}'} Merge <ChevronDown className="w-3 h-3" />
                   </button>
                   {showMerge && (
                     <div className="absolute right-0 top-full mt-1 bg-white border border-black/10 rounded-xl shadow-xl z-10 min-w-[160px]">
@@ -144,20 +123,14 @@ function TemplateEditor({ template, onClose, onSave }) {
                 </div>
               </div>
             </div>
-            <div
-              ref={editorRef}
-              contentEditable
-              suppressContentEditableWarning
-              className="min-h-[200px] border border-black/15 rounded-xl p-4 text-sm outline-none focus:border-[#B87333] prose prose-sm max-w-none"
-            />
+            <div ref={editorRef} contentEditable suppressContentEditableWarning
+              className="min-h-[200px] border border-black/15 rounded-xl p-4 text-sm outline-none focus:border-[#B87333] prose prose-sm max-w-none" />
           </div>
-
           <div className="flex items-center gap-2">
             <input type="checkbox" id="active" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} />
             <label htmlFor="active" className="text-sm text-black/60">Active (available in compose)</label>
           </div>
         </div>
-
         <div className="flex gap-3 px-6 py-4 border-t border-black/8 shrink-0">
           <button onClick={handleSave} disabled={saving}
             className="flex-1 py-3 bg-[#B87333] text-white rounded-xl font-semibold text-sm hover:bg-[#a06428] disabled:opacity-50 flex items-center justify-center gap-2">
@@ -170,12 +143,57 @@ function TemplateEditor({ template, onClose, onSave }) {
   );
 }
 
+function TemplatePreview({ template, onEdit, onDelete, onClose }) {
+  return (
+    <div className="w-full lg:w-[460px] border-l border-gray-200 bg-white flex flex-col h-full shrink-0 overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-gray-50">
+        <div className="min-w-0">
+          <p className="font-semibold text-gray-900 text-sm truncate">{template.name}</p>
+          <span className="text-xs text-gray-400">{CATEGORY_LABELS[template.category]}</span>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button onClick={onEdit} className="p-1.5 hover:bg-gray-200 rounded-lg" title="Edit">
+            <Pencil className="w-4 h-4 text-gray-500" />
+          </button>
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-lg">
+            <X className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+      </div>
+      <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50">
+        <p className="text-xs text-gray-400">Subject:</p>
+        <p className="text-sm font-medium text-gray-800 mt-0.5">{template.subject}</p>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <iframe
+          srcDoc={template.body_html}
+          title="Email preview"
+          className="w-full h-full border-0"
+          sandbox="allow-same-origin"
+        />
+      </div>
+      <div className="border-t border-gray-200 px-5 py-3 flex gap-2">
+        <button onClick={onEdit}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-[#B87333] text-white rounded-lg text-xs font-semibold hover:bg-[#a06428] transition-colors">
+          <Pencil className="w-3.5 h-3.5" /> Edit Template
+        </button>
+        <button onClick={() => onDelete(template.id)}
+          className="flex items-center gap-1.5 px-3 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 text-xs font-semibold transition-colors">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminEmailTemplates() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [seeding, setSeeding] = useState(false);
+  const [catFilter, setCatFilter] = useState('all');
 
   useEffect(() => {
     base44.entities.EmailTemplate.list('-created_date', 100).then(data => {
@@ -186,8 +204,9 @@ export default function AdminEmailTemplates() {
 
   const handleSave = async (data) => {
     if (editingTemplate?.id) {
-      const updated = await base44.entities.EmailTemplate.update(editingTemplate.id, data);
+      await base44.entities.EmailTemplate.update(editingTemplate.id, data);
       setTemplates(prev => prev.map(t => t.id === editingTemplate.id ? { ...t, ...data } : t));
+      if (selectedTemplate?.id === editingTemplate.id) setSelectedTemplate(prev => ({ ...prev, ...data }));
       toast.success('Template updated');
     } else {
       const created = await base44.entities.EmailTemplate.create(data);
@@ -202,6 +221,7 @@ export default function AdminEmailTemplates() {
     if (!confirm('Delete this template?')) return;
     await base44.entities.EmailTemplate.delete(id);
     setTemplates(prev => prev.filter(t => t.id !== id));
+    if (selectedTemplate?.id === id) setSelectedTemplate(null);
     toast.success('Template deleted');
   };
 
@@ -216,83 +236,111 @@ export default function AdminEmailTemplates() {
     toast.success('7 starter templates added!');
   };
 
-  const grouped = CATEGORIES.reduce((acc, cat) => {
-    acc[cat] = templates.filter(t => t.category === cat);
-    return acc;
-  }, {});
+  const filtered = catFilter === 'all' ? templates : templates.filter(t => t.category === catFilter);
 
   return (
     <AdminLayout>
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-[#1A1208]">Email Templates</h1>
-            <p className="text-sm text-black/50 mt-1">{templates.length} templates · Supports {'{'}merge fields{'}'}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {templates.length === 0 && (
-              <button onClick={handleSeedStarters} disabled={seeding}
-                className="flex items-center gap-2 px-4 py-2.5 border border-[#B87333]/40 text-[#B87333] rounded-xl text-sm font-semibold hover:bg-[#B87333]/5 disabled:opacity-50">
-                {seeding ? 'Adding…' : '✨ Add Starter Templates'}
+      <div className="flex h-full gap-0">
+        {/* List panel */}
+        <div className={`flex-1 min-w-0 overflow-y-auto ${selectedTemplate ? 'hidden lg:block' : ''}`}>
+          <div className="max-w-4xl mx-auto px-4 lg:px-6 py-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Email Templates</h1>
+                <p className="text-sm text-gray-500 mt-0.5">{templates.length} templates · Click to preview</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {templates.length === 0 && (
+                  <button onClick={handleSeedStarters} disabled={seeding}
+                    className="flex items-center gap-2 px-4 py-2 border border-[#B87333]/40 text-[#B87333] rounded-lg text-sm font-semibold hover:bg-[#B87333]/5 disabled:opacity-50">
+                    {seeding ? 'Adding…' : '✨ Starter Templates'}
+                  </button>
+                )}
+                <button onClick={() => { setEditingTemplate(null); setShowEditor(true); }}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-lg text-sm font-semibold hover:bg-[#a06428]">
+                  <Plus className="w-4 h-4" /> New
+                </button>
+              </div>
+            </div>
+
+            {/* Merge fields */}
+            <div className="bg-amber-50 border border-[#B87333]/20 rounded-xl p-3 mb-5">
+              <p className="text-xs font-bold text-[#B87333] uppercase tracking-wide mb-2">Merge Fields</p>
+              <div className="flex flex-wrap gap-1.5">
+                {MERGE_FIELDS.map(f => (
+                  <code key={f} className="px-2 py-0.5 bg-white border border-[#B87333]/20 rounded text-xs text-[#B87333] font-mono">{f}</code>
+                ))}
+              </div>
+            </div>
+
+            {/* Category filter */}
+            <div className="flex gap-2 flex-wrap mb-5">
+              <button onClick={() => setCatFilter('all')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${catFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
+                All ({templates.length})
               </button>
-            )}
-            <button onClick={() => { setEditingTemplate(null); setShowEditor(true); }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428]">
-              <Plus className="w-4 h-4" /> New Template
-            </button>
-          </div>
-        </div>
+              {CATEGORIES.map(c => {
+                const count = templates.filter(t => t.category === c).length;
+                if (!count) return null;
+                return (
+                  <button key={c} onClick={() => setCatFilter(c)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${catFilter === c ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
+                    {CATEGORY_LABELS[c]} ({count})
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* Merge Fields reference */}
-        <div className="bg-[#faf8f4] border border-[#B87333]/20 rounded-2xl p-4 mb-6">
-          <div className="text-xs font-bold text-[#B87333] uppercase tracking-wide mb-2">Available Merge Fields</div>
-          <div className="flex flex-wrap gap-2">
-            {MERGE_FIELDS.map(f => (
-              <code key={f} className="px-2.5 py-1 bg-white border border-[#B87333]/20 rounded-lg text-xs text-[#B87333] font-mono">{f}</code>
-            ))}
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="space-y-3">{[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-black/5 rounded-2xl animate-pulse" />)}</div>
-        ) : templates.length === 0 ? (
-          <div className="py-20 text-center">
-            <FileText className="w-12 h-12 text-black/15 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-black/40">No templates yet</p>
-            <button onClick={handleSeedStarters} disabled={seeding} className="mt-3 text-[#B87333] text-sm font-semibold hover:underline">
-              {seeding ? 'Adding starter templates…' : 'Add 7 starter templates →'}
-            </button>
-          </div>
-        ) : (
-          CATEGORIES.map(cat => {
-            if (!grouped[cat]?.length) return null;
-            return (
-              <div key={cat} className="mb-8">
-                <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-3 flex items-center gap-2">
-                  <span className="w-4 h-px bg-black/20" />{cat.replace(/_/g, ' ')} ({grouped[cat].length})
-                </h2>
-                <div className="grid gap-3">
-                  {grouped[cat].map(t => (
-                    <div key={t.id} className={`bg-white rounded-2xl border p-4 flex items-start justify-between gap-4 ${t.is_active ? 'border-black/8' : 'border-black/5 opacity-60'}`}>
+            {loading ? (
+              <div className="space-y-3">{[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />)}</div>
+            ) : filtered.length === 0 ? (
+              <div className="py-20 text-center bg-white rounded-xl border border-gray-200">
+                <FileText className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                <p className="text-sm font-semibold text-gray-400">No templates yet</p>
+                <button onClick={handleSeedStarters} disabled={seeding} className="mt-3 text-[#B87333] text-sm font-semibold hover:underline">
+                  {seeding ? 'Adding…' : 'Add 7 starter templates →'}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filtered.map(t => {
+                  const isSelected = selectedTemplate?.id === t.id;
+                  return (
+                    <div key={t.id}
+                      onClick={() => setSelectedTemplate(isSelected ? null : t)}
+                      className={`bg-white rounded-xl border p-4 flex items-start justify-between gap-4 cursor-pointer transition-all ${isSelected ? 'border-[#B87333] shadow-sm bg-amber-50/30' : t.is_active ? 'border-gray-200 hover:border-[#B87333]/40' : 'border-gray-100 opacity-60'}`}>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-[#1A1208] text-sm">{t.name}</span>
-                          {!t.is_active && <span className="text-xs bg-black/5 text-black/40 px-2 py-0.5 rounded-full">Inactive</span>}
+                          <span className="font-semibold text-gray-900 text-sm">{t.name}</span>
+                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{CATEGORY_LABELS[t.category]}</span>
+                          {!t.is_active && <span className="text-xs bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full">Inactive</span>}
                         </div>
-                        <div className="text-xs text-black/50 truncate">{t.subject}</div>
+                        <div className="text-xs text-gray-400 truncate">{t.subject}</div>
                       </div>
-                      <div className="flex items-center gap-1 shrink-0">
+                      <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setSelectedTemplate(t)} title="Preview"
+                          className="p-1.5 hover:bg-gray-100 rounded-lg"><Eye className="w-4 h-4 text-gray-400" /></button>
                         <button onClick={() => { setEditingTemplate(t); setShowEditor(true); }}
-                          className="p-2 hover:bg-black/5 rounded-lg"><Pencil className="w-4 h-4 text-black/40" /></button>
+                          className="p-1.5 hover:bg-gray-100 rounded-lg"><Pencil className="w-4 h-4 text-gray-400" /></button>
                         <button onClick={() => handleDelete(t.id)}
-                          className="p-2 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4 text-red-400" /></button>
+                          className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4 text-red-400" /></button>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            );
-          })
+            )}
+          </div>
+        </div>
+
+        {/* Preview panel */}
+        {selectedTemplate && (
+          <TemplatePreview
+            template={selectedTemplate}
+            onEdit={() => { setEditingTemplate(selectedTemplate); setShowEditor(true); }}
+            onDelete={handleDelete}
+            onClose={() => setSelectedTemplate(null)}
+          />
         )}
       </div>
 
