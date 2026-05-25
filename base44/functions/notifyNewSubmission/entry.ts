@@ -113,11 +113,12 @@ Deno.serve(async (req) => {
         }
       );
 
+      const twilioBody = await twilioRes.text();
       if (!twilioRes.ok) {
-        const err = await twilioRes.text();
-        console.error('WhatsApp send failed:', err);
+        console.error('WhatsApp send failed:', twilioRes.status, twilioBody);
       } else {
-        console.log('WhatsApp notification sent');
+        const parsed = JSON.parse(twilioBody);
+        console.log('WhatsApp sent, SID:', parsed.sid, 'Status:', parsed.status);
       }
     } catch (waErr) {
       console.error('WhatsApp error:', waErr.message);
