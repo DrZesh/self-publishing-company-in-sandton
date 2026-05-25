@@ -239,6 +239,88 @@ Deno.serve(async (req) => {
         daysAgo: Math.floor((now - new Date(s.created_date)) / (1000 * 60 * 60 * 24)),
       }));
 
+    // --- AI INSIGHTS ---
+    const aiInsights = [];
+
+    // Hot leads needing response
+    const newLeads = leads.filter(l => l.stage === 'new' && new Date(l.created_date) < new Date(now - 24 * 60 * 60 * 1000));
+    newLeads.slice(0, 3).forEach(lead => {
+      aiInsights.push({
+        type: 'Hot',
+        title: `New lead: ${lead.contact_id ? 'Contact pending' : 'Unassigned'}`,
+        reason: 'Lead created over 24h ago, needs initial contact',
+        priority: 'Urgent',
+        actionLabel: 'Contact Lead',
+        relatedRecord: lead.id,
+      });
+    });
+
+    // Overdue quotes
+    const overdueQuotes = quotes.filter(q => 
+      (q.status === 'Sent' || q.status === 'Viewed') && 
+      q.valid_until && 
+      new Date(q.valid_until) < now
+    );
+    overdueQuotes.slice(0, 3).forEach(quote => {
+      aiInsights.push({
+        type: 'Overdue',
+        title: `Quote ${quote.quote_number} expired`,
+        reason: `Expired on ${new Date(quote.valid_until).toLocaleDateString()}`,
+        priority: 'High',
+        actionLabel: 'Follow Up',
+        relatedRecord: quote.id,
+      });
+    });
+
+    // Stalled pipeline
+    const stalledLeads = leads.filter(l => {
+      if (!['quoted', 'negotiating'].includes(l.stage)) return false;
+      const updated = new Date(l.updated_date || l.created_date);
+      return (now - updated) > 10 * 24 * 60 * 60 * 1000;
+    });
+    stalledLeads.slice(0, 2).forEach(lead => {
+      aiInsights.push({
+        type: 'Pending',
+        title: `Deal stalled in ${lead.stage}`,
+        reason: 'No movement in 10+ days',
+        priority: 'Medium',
+        actionLabel: 'Review Deal',
+        relatedRecord: lead.id,
+      });
+    });
+
+    // Missing information
+    const incompleteLeads = leads.filter(l => {
+      const contact = contacts.find(c => c.id === l.contact_id);
+      return !contact?.phone || !contact?.email || (l.service_interest && l.service_interest.length === 0);
+    }).slice(0, 2);
+    incompleteLeads.forEach(lead => {
+      aiInsights.push({
+        type: 'Missing',
+        title: 'Incomplete lead information',
+        reason: 'Missing contact details or service interest',
+        priority: 'Low',
+        actionLabel: 'Update Info',
+        relatedRecord: lead.id,
+      });
+    });
+
+    // High-value opportunities
+    const highValueLeads = leads.filter(l => 
+      (l.estimated_value || 0) > 15000 && 
+      ['qualified', 'negotiating'].includes(l.stage)
+    ).slice(0, 2);
+    highValueLeads.forEach(lead => {
+      aiInsights.push({
+        type: 'Target',
+        title: `High-value opportunity: R${(lead.estimated_value || 0).toLocaleString()}`,
+        reason: 'Priority follow-up recommended',
+        priority: 'High',
+        actionLabel: 'Priority Contact',
+        relatedRecord: lead.id,
+      });
+    });
+
     return Response.json({
       user: { email: user.email, role: user.role, name: user.full_name },
       metrics: {
@@ -292,6 +374,13 @@ Deno.serve(async (req) => {
       leadSources,
       activity: allActivity,
       followUps,
+      aiInsights,
+      leads: leads.map(l => ({
+        ...l,
+        contact_name: contacts.find(c => c.id === l.contact_id)?.full_name,
+      })),
+      quotes,
+      submissions,
     });
   } catch (error) {
     console.error('Dashboard metrics error:', error);

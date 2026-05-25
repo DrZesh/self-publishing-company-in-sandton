@@ -79,6 +79,12 @@ export default function AdminDashboard() {
         {/* Section 4 — Sales Pipeline */}
         <SalesPipeline pipeline={pipeline} loading={loading} />
 
+        {/* AI Section — Moved up for visibility */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AICopilot data={{ leads: dashData?.leads, quotes: dashData?.quotes, submissions: dashData?.submissions }} />
+          <AIInsightsPanel insights={dashData?.aiInsights || []} />
+        </div>
+
         {/* Monthly Trend + Service Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <MonthlyTrendChart monthlyTrend={monthlyTrend} loading={loading} />
@@ -105,12 +111,6 @@ export default function AdminDashboard() {
           <QuoteConversionFunnel />
           <QuoteExpiryAlerts />
           <ResponseTimeTracker />
-        </div>
-
-        {/* AI Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AICopilot data={{ leads: dashData?.leads, quotes: dashData?.quotes, submissions: dashData?.submissions }} />
-          <AIInsightsPanel insights={dashData?.aiInsights || []} />
         </div>
 
         {/* Activity Feed */}
