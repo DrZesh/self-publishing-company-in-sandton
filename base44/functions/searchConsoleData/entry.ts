@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.30';
 
 const SITE_URL = 'sc-domain:creativebooks.co.za';
 const GSC_BASE = 'https://www.googleapis.com/webmasters/v3';
