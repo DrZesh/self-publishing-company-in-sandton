@@ -14,6 +14,9 @@ import LeadSourcesChart from '@/components/admin/dashboard/LeadSourcesChart';
 import RevenueGoalCard from '@/components/admin/dashboard/RevenueGoalCard';
 import MonthlyTrendChart from '@/components/admin/dashboard/MonthlyTrendChart';
 import ServiceBreakdownCard from '@/components/admin/dashboard/ServiceBreakdownCard';
+import QuoteConversionFunnel from '@/components/admin/dashboard/QuoteConversionFunnel';
+import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
+import ResponseTimeTracker from '@/components/admin/dashboard/ResponseTimeTracker';
 
 export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState('month');
@@ -94,6 +97,13 @@ export default function AdminDashboard() {
 
         {/* Search Console Mini */}
         <SearchConsoleMini />
+
+        {/* Quote Funnel + Expiry Alerts + Response Time */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <QuoteConversionFunnel />
+          <QuoteExpiryAlerts />
+          <ResponseTimeTracker />
+        </div>
 
         {/* Activity Feed */}
         <ActivityFeed activity={activity} loading={loading} />

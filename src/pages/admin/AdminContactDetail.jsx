@@ -4,10 +4,11 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ContactEmailThread from '@/components/admin/email/ContactEmailThread';
 import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus } from 'lucide-react';
+import ContactTimeline from '@/components/admin/ContactTimeline';
 import { toast } from 'sonner';
 import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
 
-const TABS = ['Overview', 'Emails', 'Notes'];
+const TABS = ['Overview', 'Timeline', 'Emails', 'Notes'];
 
 function InfoRow({ icon: IconComp, label, value }) {
   if (!value) return null;
@@ -198,6 +199,14 @@ export default function AdminContactDetail() {
                 <button onClick={() => { setEditing(false); setForm(contact); }} className="px-5 py-3 border border-black/15 text-black/60 rounded-xl font-semibold text-sm hover:bg-black/5">Cancel</button>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab: Timeline */}
+        {tab === 'Timeline' && (
+          <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
+            <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-4">Activity Timeline</h2>
+            <ContactTimeline contact={contact} />
           </div>
         )}
 
