@@ -8,7 +8,6 @@ const slides = [
     id: 0,
     eyebrow: 'Publishing Company · South Africa',
     heading: ['Self Publishing', 'Company in South Africa'],
-    accentLine: 0,
     subheading: 'From manuscript to printed book, we help authors publish professionally with expert support.',
     primary: { label: 'Request a Quote', to: '/getquote' },
     secondary: { label: 'View Services', to: '/bookpublishing' },
@@ -18,8 +17,7 @@ const slides = [
     id: 1,
     eyebrow: 'Book Printing · Johannesburg',
     heading: ['Professional', 'Book Printing'],
-    accentLine: 1,
-    subheading: 'High-quality A5, 6×9, hardcover, and children\'s book printing for authors and publishers.',
+    subheading: "High-quality A5, 6×9, hardcover, and children's book printing for authors and publishers.",
     primary: { label: 'Get Printing Quote', to: '/getquote' },
     secondary: { label: 'View Services', to: '/bookprinting' },
     bg: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1800&q=80',
@@ -28,7 +26,6 @@ const slides = [
     id: 2,
     eyebrow: 'Editing & Design · South Africa',
     heading: ['Editing, Layout', '& Cover Design'],
-    accentLine: 1,
     subheading: 'Give your manuscript a professional finish with editing, typesetting, and custom book cover design.',
     primary: { label: 'Start Your Project', to: '/getquote' },
     secondary: { label: 'View Services', to: '/bookcoverdesign' },
@@ -38,7 +35,6 @@ const slides = [
     id: 3,
     eyebrow: 'Author Branding · South Africa',
     heading: ['Build Your', 'Author Brand'],
-    accentLine: 1,
     subheading: 'We help authors with publishing support, author websites, book design, and launch-ready presentation.',
     primary: { label: 'Book a Consultation', to: '/contact' },
     secondary: { label: 'View Services', to: '/bookpublishing' },
@@ -52,28 +48,19 @@ const stats = [
   { value: '98%', label: 'Satisfaction' },
 ];
 
-const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
-  id: i, delay: i * 0.35,
-  x: 5 + (i * 7.9) % 90,
-  y: 5 + (i * 11.3) % 85,
-  size: 2 + (i % 4),
-}));
-
 export default function HeroSlider({ locationData }) {
   const [current, setCurrent] = useState(0);
-  
-  // If locationData is provided, use a single location-specific slide
+
   const locationSlide = locationData ? {
     id: 'location',
     eyebrow: `${locationData.serviceType} · ${locationData.city}`,
     heading: [locationData.serviceType, `in ${locationData.city}`],
-    accentLine: 1,
     subheading: `Professional ${locationData.serviceType.toLowerCase()} services for ${locationData.city} and ${locationData.province}. Fast turnaround, competitive pricing, and expert support for authors and businesses.`,
     primary: { label: 'Get a Quote', to: '/getquote' },
     secondary: { label: 'View Services', to: locationData.serviceType === 'Book Printing' ? '/bookprinting' : '/selfpublishingsouthafrica' },
     bg: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1800&q=80',
   } : null;
-  
+
   const activeSlides = locationSlide ? [locationSlide] : slides;
   const currentSlide = activeSlides[current];
   const [direction, setDirection] = useState(1);
@@ -111,9 +98,15 @@ export default function HeroSlider({ locationData }) {
   const slide = currentSlide;
 
   const bgVariants = {
-    enter: (d) => ({ opacity: 0, scale: 1.12 }),
+    enter: () => ({ opacity: 0, scale: 1.12 }),
     center: { opacity: 1, scale: 1.06, x: 0, transition: { duration: 1.8, ease: [0.25, 0.46, 0.45, 0.94] } },
-    exit: (d) => ({ opacity: 0, scale: 1.02, transition: { duration: 1.0, ease: 'easeIn' } }),
+    exit: () => ({ opacity: 0, scale: 1.02, transition: { duration: 1.0, ease: 'easeIn' } }),
+  };
+
+  const headingStyle = {
+    fontSize: 'clamp(2.8rem, 7vw, 5.5rem)',
+    textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 1px 0 rgba(0,0,0,0.6)',
+    letterSpacing: '-0.02em',
   };
 
   return (
@@ -142,7 +135,6 @@ export default function HeroSlider({ locationData }) {
           animate="center"
           exit="exit"
         >
-          {/* Ken Burns continuous pan */}
           <motion.img
             src={slide.bg}
             alt=""
@@ -159,11 +151,8 @@ export default function HeroSlider({ locationData }) {
       </AnimatePresence>
 
       {/* ── Cinematic overlays ── */}
-      {/* Vignette all sides */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%)' }} />
-      {/* Left-to-right gradient for text area */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#000000]/80 via-[#000000]/50 to-transparent pointer-events-none" />
-      {/* Bottom fade */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#000000]/90 via-transparent to-[#000000]/30 pointer-events-none" />
 
       {/* ── Film grain texture ── */}
@@ -195,12 +184,12 @@ export default function HeroSlider({ locationData }) {
               <span className="text-white text-xs font-body tracking-[0.35em] uppercase" style={{ opacity: 0.85 }}>{slide.eyebrow}</span>
             </motion.div>
 
-            {/* Heading — open cinematic type, no card */}
+            {/* Heading */}
             <div className="mb-8">
               {slide.id === 0 ? (
-                <h1 className="font-heading font-bold text-white leading-[1.0]" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 1px 0 rgba(0,0,0,0.6)', letterSpacing: '-0.02em' }}>
+                <h1 className="font-heading font-bold text-white leading-[1.0]" style={headingStyle}>
                   {slide.heading.map((line, i) => (
-                    <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
+                    <motion.span key={i} className="block"
                       initial={{ opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' }}
                       animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
                       transition={{ duration: 0.9, delay: 0.3 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}>
@@ -209,10 +198,9 @@ export default function HeroSlider({ locationData }) {
                   ))}
                 </h1>
               ) : (
-                <div className="font-heading font-bold text-white leading-[1.0]" role="heading" aria-level="2"
-                  style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 1px 0 rgba(0,0,0,0.6)', letterSpacing: '-0.02em' }}>
+                <div className="font-heading font-bold text-white leading-[1.0]" role="heading" aria-level="2" style={headingStyle}>
                   {slide.heading.map((line, i) => (
-                    <motion.span key={i} className={`block ${i === slide.accentLine ? 'text-gradient-copper italic' : ''}`}
+                    <motion.span key={i} className="block"
                       initial={{ opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' }}
                       animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
                       transition={{ duration: 0.9, delay: 0.3 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}>
@@ -263,10 +251,10 @@ export default function HeroSlider({ locationData }) {
             <motion.div className="flex items-center gap-10 mt-12 pt-8"
               style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.0 }}>
-              {stats.map((s, i) => (
+              {stats.map((s) => (
                 <div key={s.label}>
                   <p className="font-heading text-3xl md:text-4xl font-bold text-copper" style={{ textShadow: '0 0 30px rgba(184,115,51,0.5)' }}>{s.value}</p>
-                  <p className="text-white/35 text-xs font-body tracking-widest uppercase mt-1">{s.label}</p>
+                  <p className="text-white/50 text-xs font-body tracking-widest uppercase mt-1">{s.label}</p>
                 </div>
               ))}
             </motion.div>
