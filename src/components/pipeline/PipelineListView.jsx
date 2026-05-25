@@ -4,12 +4,20 @@ import { ChevronRight } from 'lucide-react';
 import { PIPELINE_STAGES } from './KanbanBoard';
 
 const STAGE_BADGE = {
-  'Lead Contacted': 'bg-blue-100 text-blue-700',
+  'New Enquiry': 'bg-blue-100 text-blue-700',
+  'Information Requested': 'bg-sky-100 text-sky-700',
+  'Quote in Progress': 'bg-violet-100 text-violet-700',
   'Quote Sent': 'bg-purple-100 text-purple-700',
-  'Negotiating': 'bg-amber-100 text-amber-700',
-  'Won': 'bg-emerald-100 text-emerald-700',
-  'In Production': 'bg-[#B87333]/10 text-[#B87333]',
-  'Completed': 'bg-gray-100 text-gray-600',
+  'Payment Pending': 'bg-amber-100 text-amber-700',
+  'Project Started': 'bg-orange-100 text-orange-700',
+  'Editing': 'bg-yellow-100 text-yellow-700',
+  'Cover Design': 'bg-pink-100 text-pink-700',
+  'Typesetting': 'bg-rose-100 text-rose-700',
+  'Sample Queued': 'bg-[#B87333]/10 text-[#B87333]',
+  'Sample Approved': 'bg-lime-100 text-lime-700',
+  'Mass Production': 'bg-teal-100 text-teal-700',
+  'Completed': 'bg-emerald-100 text-emerald-700',
+  'Delivered': 'bg-green-100 text-green-700',
   'Lost': 'bg-red-100 text-red-600',
 };
 
@@ -51,7 +59,7 @@ export default function PipelineListView({ contacts, onStageChange }) {
               <td className="px-4 py-3 hidden md:table-cell text-xs text-black/60">{c.book_title || '—'}</td>
               <td className="px-4 py-3">
                 <select
-                  value={c.pipeline_stage || 'Lead Contacted'}
+                  value={c.pipeline_stage || 'New Enquiry'}
                   onClick={e => e.stopPropagation()}
                   onChange={e => {
                     const newStage = e.target.value;

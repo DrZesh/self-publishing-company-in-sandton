@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 const STATUS_COLORS = {
   Draft: 'bg-gray-100 text-gray-600',
   Sent: 'bg-blue-100 text-blue-700',
+  Delivered: 'bg-indigo-100 text-indigo-700',
+  Opened: 'bg-sky-100 text-sky-700',
   Viewed: 'bg-purple-100 text-purple-700',
   Accepted: 'bg-emerald-100 text-emerald-700',
   Declined: 'bg-red-100 text-red-700',
@@ -52,7 +54,7 @@ export default function AdminQuotes() {
     }
   };
 
-  const statuses = ['Draft', 'Sent', 'Viewed', 'Accepted', 'Declined', 'Expired'];
+  const statuses = ['Draft', 'Sent', 'Delivered', 'Opened', 'Viewed', 'Accepted', 'Declined', 'Expired'];
 
   const filtered = quotes.filter(q => {
     if (statusFilter !== 'all' && q.status !== statusFilter) return false;
@@ -134,11 +136,12 @@ export default function AdminQuotes() {
                 <tr className="bg-[#F9F7F2] border-b border-black/8">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">Quote #</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">Contact</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden md:table-cell">Book Title</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">Status</th>
                   <th className="px-4 py-3 text-right text-xs font-semibold text-black/40 uppercase tracking-wide">Total</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden md:table-cell">Valid Until</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden lg:table-cell">Created</th>
-                  <th className="px-4 py-3 w-32" />
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden lg:table-cell">Valid Until</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden xl:table-cell">Created</th>
+                  <th className="px-4 py-3 w-28" />
                 </tr>
               </thead>
               <tbody>
@@ -149,19 +152,21 @@ export default function AdminQuotes() {
                     <tr key={q.id} className="border-b border-black/5 hover:bg-[#faf8f4] transition-colors">
                       <td className="px-4 py-3">
                         <Link to={`/admin/quotes/${q.id}`} className="font-bold text-[#B87333] hover:underline">{q.quote_number}</Link>
+                        {q.mode === 'premium' && <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-[#B87333]/10 text-[#B87333] rounded font-semibold">Premium</span>}
                       </td>
                       <td className="px-4 py-3">
                         <div className="font-medium text-[#1A1208]">{contact.full_name || '—'}</div>
                         <div className="text-xs text-black/40">{contact.email || ''}</div>
                       </td>
+                      <td className="px-4 py-3 hidden md:table-cell text-xs text-black/60 max-w-[160px] truncate">{q.book_title || contact.book_title || '—'}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[isExpired ? 'Expired' : q.status] || 'bg-gray-100 text-gray-600'}`}>
                           {isExpired ? 'Expired' : q.status}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-semibold text-[#1A1208]">R {Number(q.total || 0).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</td>
-                      <td className="px-4 py-3 text-xs text-black/50 hidden md:table-cell">{q.valid_until || '—'}</td>
-                      <td className="px-4 py-3 text-xs text-black/40 hidden lg:table-cell">{new Date(q.created_date).toLocaleDateString('en-ZA')}</td>
+                      <td className="px-4 py-3 text-xs text-black/50 hidden lg:table-cell">{q.valid_until || '—'}</td>
+                      <td className="px-4 py-3 text-xs text-black/40 hidden xl:table-cell">{new Date(q.created_date).toLocaleDateString('en-ZA')}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
                           <Link to={`/admin/quotes/${q.id}`} title="View" className="p-1.5 hover:bg-black/5 rounded-lg"><Eye className="w-4 h-4 text-black/40" /></Link>

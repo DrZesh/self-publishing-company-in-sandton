@@ -27,7 +27,7 @@ function ContactModal({ contact, onClose, onSave, onDelete }) {
     website_url: contact?.website_url || '',
     description: contact?.description || '',
     book_title: contact?.book_title || '',
-    pipeline_stage: contact?.pipeline_stage || 'Lead Contacted',
+    pipeline_stage: contact?.pipeline_stage || 'New Enquiry',
     pipeline_value: contact?.pipeline_value || '',
     pipeline_owner: contact?.pipeline_owner || '',
     lost_reason: contact?.lost_reason || '',
@@ -260,9 +260,10 @@ export default function AdminContacts() {
                 <tr className="bg-[#F9F7F2] border-b border-black/8">
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden sm:table-cell">Stage</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden md:table-cell">Role</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden md:table-cell">Book Title</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden lg:table-cell">Pipeline Stage</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden lg:table-cell">Location</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden lg:table-cell">Added</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-black/40 uppercase tracking-wide hidden xl:table-cell">Added</th>
                   <th className="px-4 py-3 w-8" />
                 </tr>
               </thead>
@@ -283,9 +284,14 @@ export default function AdminContacts() {
                         {c.lifecycle_stage?.replace(/_/g, ' ') || '—'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 hidden md:table-cell text-xs text-black/60">{c.role || '—'}</td>
+                    <td className="px-4 py-3 hidden md:table-cell text-xs text-black/60 truncate max-w-[140px]">{c.book_title || '—'}</td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      {c.pipeline_stage && (
+                        <span className="text-xs text-black/60 bg-black/5 px-2 py-0.5 rounded-full">{c.pipeline_stage}</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 hidden lg:table-cell text-xs text-black/60">{[c.city, c.province].filter(Boolean).join(', ') || '—'}</td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-xs text-black/40">{new Date(c.created_date).toLocaleDateString('en-ZA')}</td>
+                    <td className="px-4 py-3 hidden xl:table-cell text-xs text-black/40">{new Date(c.created_date).toLocaleDateString('en-ZA')}</td>
                     <td className="px-4 py-3"><ChevronRight className="w-4 h-4 text-black/20" /></td>
                   </tr>
                 ))}
