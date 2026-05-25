@@ -9,6 +9,13 @@ const TWILIO_AUTH_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
 const WHATSAPP_FROM = 'whatsapp:+14155238886'; // Twilio sandbox sender (update if you have an approved sender)
 const WHATSAPP_TO = 'whatsapp:+27625891937';   // Your WhatsApp number
 
+console.log('Twilio env check:', {
+  has_sid: !!TWILIO_ACCOUNT_SID,
+  sid_preview: TWILIO_ACCOUNT_SID?.substring(0, 10),
+  has_token: !!TWILIO_AUTH_TOKEN,
+  token_preview: TWILIO_AUTH_TOKEN?.substring(0, 10),
+});
+
 Deno.serve(async (req) => {
   try {
     const body = await req.json();
@@ -79,10 +86,13 @@ Deno.serve(async (req) => {
 
     if (!res.ok) {
       const err = await res.text();
+      console.error('Resend failed:', err);
       throw new Error(`Resend failed: ${err}`);
     }
 
+    console.log('Resend successful, proceeding to WhatsApp');
     // Send WhatsApp notification via Twilio
+    console.log('Attempting WhatsApp send to:', WHATSAPP_TO);
     try {
       const msgLines = [
         `📬 *New Enquiry — Creative Books SA*`,
@@ -97,12 +107,25 @@ Deno.serve(async (req) => {
         `View: https://creativebooks.co.za/admin/submissions`,
       ].filter(Boolean).join('\n');
 
+      console.log('Twilio request:', {
+        url: `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+        from: WHATSAPP_FROM,
+        to: WHATSAPP_TO,
+        body_preview: msgLines.substring(0, 100),
+      });
+
+      // Use TextEncoder for base64 in Deno
+      const credentials = `${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`;
+      const encoded = btoa(
+        new TextEncoder().encode(credentials).reduce((data, byte) => data + String.fromCharCode(byte), '')
+      );
+
       const twilioRes = await fetch(
         `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
         {
           method: 'POST',
           headers: {
-            'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
+            'Authorization': 'Basic ' + encoded,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
@@ -114,11 +137,17 @@ Deno.serve(async (req) => {
       );
 
       const twilioBody = await twilioRes.text();
+      console.log('Twilio response:', {
+        status: twilioRes.status,
+        statusText: twilioRes.statusText,
+        body: twilioBody,
+      });
+
       if (!twilioRes.ok) {
         console.error('WhatsApp send failed:', twilioRes.status, twilioBody);
       } else {
         const parsed = JSON.parse(twilioBody);
-        console.log('WhatsApp sent, SID:', parsed.sid, 'Status:', parsed.status);
+        console.log('WhatsApp sent, SID:', parsed.sid, 'Status:', parsed.status, 'Direction:', parsed.direction);
       }
     } catch (waErr) {
       console.error('WhatsApp error:', waErr.message);
