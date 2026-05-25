@@ -194,6 +194,7 @@ const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes'));
 const AdminQuoteBuilder = lazy(() => import('./pages/admin/AdminQuoteBuilder.jsx'));
 const AdminEmailTemplates = lazy(() => import('./pages/admin/AdminEmailTemplates'));
 const AdminContactDetail = lazy(() => import('./pages/admin/AdminContactDetail'));
+const AdminSignatures = lazy(() => import('./pages/admin/AdminSignatures'));
 const QuoteView = lazy(() => import('./pages/QuoteView'));
 
 const AuthenticatedApp = () => {
@@ -598,6 +599,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/quotes/:id" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/email-templates" element={<ProtectedAdminRoute><AdminEmailTemplates /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts/detail" element={<ProtectedAdminRoute><AdminContactDetail /></ProtectedAdminRoute>} />
+      <Route path="/admin/signatures" element={<ProtectedAdminRoute><AdminSignatures /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />

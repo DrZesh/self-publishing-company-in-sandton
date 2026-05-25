@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 import { 
   LayoutDashboard, Inbox, Target, Users, Settings, 
-  BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail
+  BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail, PenTool
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { label: 'Leads', path: '/admin/leads', icon: Target },
   { label: 'Pipeline', path: '/admin/pipeline', icon: Columns },
   { label: 'Quotes', path: '/admin/quotes', icon: FileText },
+  { label: 'E-Signatures', path: '/admin/signatures', icon: PenTool },
   { label: 'Contacts', path: '/admin/contacts', icon: Users },
   { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
   { label: 'Services', path: '/admin/services', icon: BookOpen },

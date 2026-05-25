@@ -423,6 +423,86 @@ Deno.serve(async (req) => {
         : { status: 'Declined', declined_at: new Date().toISOString() };
 
       const updated = await base44.asServiceRole.entities.Quote.update(quote_id, updateData);
+
+      // Send confirmation email if accepted
+      if (response === 'accept') {
+        const contactEmail = quote.contact_snapshot?.email;
+        const contactName = quote.contact_snapshot?.full_name || 'there';
+        
+        const confirmHtml = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f7;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <tr><td style="background:linear-gradient(135deg,#1A1208 0%,#2C1E0F 100%);padding:48px 40px;text-align:center;">
+          <h1 style="margin:0;color:#B87333;font-size:28px;font-weight:700;">Creative Books SA</h1>
+          <p style="margin:12px 0 0;color:rgba(255,255,255,0.5);font-size:14px;">Professional Publishing Services</p>
+        </td></tr>
+        <tr><td style="padding:48px 40px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="width:64px;height:64px;background:#10b981;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            </div>
+            <h2 style="margin:0 0 16px;color:#1A1208;font-size:24px;font-weight:600;">Quote Accepted!</h2>
+            <p style="margin:0 0 24px;color:#555;font-size:16px;line-height:1.6;">
+              Thank you, ${contactName}! Your quote <strong>${quote.quote_number}</strong> has been successfully accepted.
+            </p>
+          </div>
+          
+          <div style="background:#faf8f4;border:1px solid rgba(184,115,51,0.15);border-radius:16px;padding:32px;margin:32px 0;">
+            <div style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Contract Signed</div>
+            <div style="font-size:14px;color:#555;line-height:1.8;">
+              Your electronic signature has been recorded and this agreement is now legally binding.<br/>
+              A member of our team will contact you within <strong>24-48 hours</strong> to discuss next steps and begin your project.
+            </div>
+          </div>
+
+          <div style="background:#f0f9ff;border:1px solid #0ea5e9;border-radius:12px;padding:20px;margin:24px 0;">
+            <div style="font-size:13px;color:#0369a1;font-weight:600;margin-bottom:8px;">📋 What Happens Next?</div>
+            <ul style="margin:0;padding-left:20px;color:#0c4a6e;font-size:14px;line-height:1.8;">
+              <li>Our team will review your project requirements</li>
+              <li>We'll schedule a kick-off call to align on timelines</li>
+              <li>You'll receive a project brief before work begins</li>
+              <li>Regular updates throughout the production process</li>
+            </ul>
+          </div>
+
+          <p style="margin:32px 0 16px;color:#888;font-size:14px;line-height:1.6;">
+            Questions? Reply to this email or call us at <strong style="color:#1A1208;">010 500 3331</strong>.
+          </p>
+        </td></tr>
+        <tr><td style="background:#fafafa;padding:32px 40px;text-align:center;border-top:1px solid #e5e5e5;">
+          <p style="margin:0;color:#999;font-size:12px;line-height:1.6;">
+            <strong style="color:#1A1208;">Creative Books SA</strong><br/>
+            info@creativebooks.co.za · www.creativebooks.co.za<br/>
+            Proudly South African 🇿🇦
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+        `;
+
+        try {
+          await resend.emails.send({
+            from: 'Creative Books SA <info@creativebooks.co.za>',
+            to: [contactEmail],
+            subject: `Quote Accepted - ${quote.quote_number} | Creative Books SA`,
+            html: confirmHtml,
+          });
+          console.log('Acceptance confirmation email sent to:', contactEmail);
+        } catch (emailErr) {
+          console.error('Failed to send confirmation email:', emailErr);
+        }
+      }
+
       return Response.json({ success: true, quote: updated });
     }
 

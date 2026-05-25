@@ -174,15 +174,25 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
             )}
           </div>
 
-          <div className="flex items-start gap-3">
-            <Checkbox
-              id="legal"
-              checked={legalChecked}
-              onCheckedChange={setLegalChecked}
-            />
-            <label htmlFor="legal" className="text-sm text-gray-600 leading-tight">
-              I acknowledge that this electronic signature is legally binding and I agree to the terms and conditions of this quote.
-            </label>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="legal"
+                checked={legalChecked}
+                onCheckedChange={setLegalChecked}
+                className="mt-0.5"
+              />
+              <label htmlFor="legal" className="text-sm text-amber-900 leading-tight">
+                <span className="font-semibold block mb-1">Legal Acknowledgment</span>
+                By checking this box, you agree that:
+                <ul className="list-disc list-inside text-xs mt-2 space-y-1 text-amber-800">
+                  <li>This electronic signature has the same legal validity as a handwritten signature</li>
+                  <li>You are authorized to sign this agreement on behalf of yourself or your organization</li>
+                  <li>You agree to the terms and conditions outlined in this quote</li>
+                  <li>Your IP address, timestamp, and device information will be recorded for audit purposes</li>
+                </ul>
+              </label>
+            </div>
           </div>
 
           <Button onClick={handleSubmit} disabled={!legalChecked} className="w-full">
