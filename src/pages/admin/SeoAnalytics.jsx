@@ -107,17 +107,21 @@ export default function SeoAnalytics() {
     <AdminLayout>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <Link to="/admin/dashboard" className="flex items-center gap-1.5 text-sm text-black/50 hover:text-black/80 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Dashboard
-          </Link>
-          <span className="text-black/20">/</span>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#B87333] flex items-center justify-center">
-              <BarChart2 className="w-4 h-4 text-white" />
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#B87333] flex items-center justify-center">
+              <BarChart2 className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-[#1A1208]">Search Console Analytics</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-[#1A1208]">SEO Analytics</h1>
+              <p className="text-xs text-black/40">creativebooks.co.za · Google Search Console</p>
+            </div>
           </div>
+          <button onClick={handleRefresh} disabled={refreshing || refreshCooldown}
+            className="flex items-center gap-2 px-3 py-2 border border-black/10 rounded-xl text-xs font-semibold text-black/60 hover:border-[#B87333] hover:text-[#B87333] disabled:opacity-40 transition-all">
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Refreshing…' : refreshCooldown ? 'Refreshed' : 'Refresh Data'}
+          </button>
         </div>
 
         {error && (
@@ -126,7 +130,7 @@ export default function SeoAnalytics() {
           </div>
         )}
 
-        {/* Date range + refresh */}
+        {/* Date range */}
         <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-5 mb-6">
           <GscDateRangeSelector
             days={days} onDaysChange={setDays}
@@ -272,6 +276,46 @@ export default function SeoAnalytics() {
             </div>
           </div>
         )}
+
+        {/* Keyword Opportunities */}
+        {!loading && queryRows.length > 0 && (() => {
+          const opportunities = queryRows
+            .filter(r => r.impressions >= 50 && r.ctr < 0.03 && r.position <= 20)
+            .sort((a, b) => b.impressions - a.impressions)
+            .slice(0, 8);
+          if (!opportunities.length) return null;
+          return (
+            <div className="bg-white rounded-2xl border border-amber-200 shadow-sm p-6 mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">💡</span>
+                <h2 className="text-base font-bold text-[#1A1208]">Keyword Opportunities</h2>
+              </div>
+              <p className="text-xs text-black/40 mb-4">High-impression queries with low CTR — improving titles/meta descriptions here could drive more clicks</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="bg-amber-50">
+                    {['Query', 'Impressions', 'Clicks', 'CTR', 'Position'].map(h => (
+                      <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">{h}</th>
+                    ))}
+                  </tr></thead>
+                  <tbody>
+                    {opportunities.map((r, i) => (
+                      <tr key={i} className="border-t border-black/5 hover:bg-amber-50/40 transition-colors">
+                        <td className="px-3 py-2 font-medium text-[#1A1208] max-w-[240px] truncate">{r.keys[0]}</td>
+                        <td className="px-3 py-2 font-semibold text-[#B87333]">{r.impressions.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-black/60">{r.clicks}</td>
+                        <td className="px-3 py-2">
+                          <span className="px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs font-semibold">{(r.ctr * 100).toFixed(1)}%</span>
+                        </td>
+                        <td className="px-3 py-2 text-black/60">#{r.position.toFixed(1)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Smart Insights */}
         <div className="mb-6">
