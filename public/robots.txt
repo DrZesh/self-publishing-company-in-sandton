@@ -1,5 +1,5 @@
 User-agent: *
-Allow: /
 Disallow: /admin/
+Disallow: /admin/*
 
-Sitemap: https://www.creativebooks.co.za/sitemap.xml
+Sitemap: https://creativebooks.co.za/sitemap.xml

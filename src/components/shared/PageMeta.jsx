@@ -12,7 +12,7 @@ export default function PageMeta({
   noindex = false,
 }) {
   useEffect(() => {
-    const siteUrl = 'https://www.creativebooks.co.za';
+    const siteUrl = 'https://creativebooks.co.za';
 
     // Add hreflang tags
     const addHreflang = (lang, href) => {
