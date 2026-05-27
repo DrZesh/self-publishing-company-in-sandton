@@ -193,7 +193,7 @@ export default function AdminQuotes() {
                         {q.mode === 'premium' && <span className="ml-1.5 text-[10px] px-1.5 py-0.5 bg-[#B87333]/10 text-[#B87333] rounded font-semibold">Premium</span>}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-[#1A1208]">{contact.full_name || '—'}</div>
+                        <Link to={`/admin/contacts/detail?id=${q.contact_id}`} className="font-medium text-[#1A1208] hover:text-[#B87333] hover:underline" onClick={e => e.stopPropagation()}>{contact.full_name || '—'}</Link>
                         <div className="text-xs text-black/40">{contact.email || ''}</div>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell text-xs text-black/60 max-w-[160px] truncate">{q.book_title || contact.book_title || '—'}</td>

@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 import { Plus, Search, FileText, Download } from 'lucide-react';
 import InvoiceModal from '@/components/admin/invoices/InvoiceModal';
 import InvoiceDetailPanel from '@/components/admin/invoices/InvoiceDetailPanel';
@@ -120,7 +121,7 @@ export default function AdminInvoices() {
                   return (
                     <tr key={inv.id} className="hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => setSelected(inv)}>
                       <td className="px-4 py-3 font-mono text-sm text-gray-700">{inv.invoice_number}</td>
-                      <td className="px-4 py-3 text-gray-700">{contact?.full_name || '—'}</td>
+                      <td className="px-4 py-3"><Link to={`/admin/contacts/detail?id=${inv.contact_id}`} className="text-gray-700 hover:text-[#B87333] hover:underline" onClick={e => e.stopPropagation()}>{contact?.full_name || '—'}</Link></td>
                       <td className="px-4 py-3 text-gray-600">{inv.book_title || '—'}</td>
                       <td className="px-4 py-3 font-medium text-gray-900">R {(inv.total || 0).toLocaleString()}</td>
                       <td className={`px-4 py-3 font-medium ${(inv.balance_due || 0) > 0 ? 'text-orange-600' : 'text-gray-400'}`}>

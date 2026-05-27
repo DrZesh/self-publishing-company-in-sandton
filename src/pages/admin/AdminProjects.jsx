@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 import { Plus, Search, AlertTriangle, BookOpen, ChevronRight } from 'lucide-react';
 import ProjectModal from '@/components/admin/projects/ProjectModal';
 import ProjectDetailPanel from '@/components/admin/projects/ProjectDetailPanel';
@@ -156,7 +157,7 @@ export default function AdminProjects() {
                         </div>
                         <div className="text-xs text-gray-400">{project.author_name}</div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{contact?.full_name || '—'}</td>
+                      <td className="px-4 py-3"><Link to={`/admin/contacts/detail?id=${project.contact_id}`} className="text-gray-600 hover:text-[#B87333] hover:underline" onClick={e => e.stopPropagation()}>{contact?.full_name || '—'}</Link></td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${STAGE_COLORS[project.stage] || 'bg-gray-100 text-gray-600'}`}>
                           {project.stage}

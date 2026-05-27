@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 import { Plus, Search, FolderOpen, Download, Archive, Trash2, Send, RotateCcw, Activity, X, RefreshCw, Clock } from 'lucide-react';
 import DocumentUploadModal from '@/components/admin/documents/DocumentUploadModal';
 import DocumentActivityPanel from '@/components/admin/documents/DocumentActivityPanel';
@@ -225,7 +226,7 @@ export default function AdminDocuments() {
                         {doc.book_title && <p className="text-xs text-gray-400 truncate">{doc.book_title}</p>}
                         {!doc.is_latest_version && <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded mt-0.5 inline-block">Old version</span>}
                       </td>
-                      <td className="px-4 py-3 text-gray-600 text-sm">{contact?.full_name || '—'}</td>
+                      <td className="px-4 py-3"><Link to={`/admin/contacts/detail?id=${doc.contact_id}`} className="text-gray-600 text-sm hover:text-[#B87333] hover:underline" onClick={e => e.stopPropagation()}>{contact?.full_name || '—'}</Link></td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${CATEGORY_COLORS[doc.category] || 'bg-gray-100 text-gray-600'}`}>
                           {doc.category}
