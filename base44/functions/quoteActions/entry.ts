@@ -132,7 +132,7 @@ Deno.serve(async (req) => {
       const contactEmail = quote.contact_snapshot?.email;
       if (!contactEmail) return Response.json({ error: 'Contact has no email address' }, { status: 400 });
 
-      const viewUrl = `${req.headers.get('origin') || 'https://www.creativebooks.co.za'}/quote/view/${quote.id}/${quote.view_token}`;
+      const viewUrl = `https://www.creativebooks.co.za/quote/view/${quote.id}/${quote.view_token}`;
       const contactName = quote.contact_snapshot?.full_name || 'there';
 
       // Generate PDF
@@ -276,9 +276,11 @@ Deno.serve(async (req) => {
       pdf.setFontSize(9);
       pdf.text('Creative Books SA · Proudly South African · www.creativebooks.co.za', 105, 289, { align: 'center' });
 
-      const pdfBlob = pdf.output('blob');
-      const pdfArrayBuffer = await pdfBlob.arrayBuffer();
-      const pdfBase64 = Buffer.from(pdfArrayBuffer).toString('base64');
+      const pdfArrayBuffer = pdf.output('arraybuffer');
+      const uint8 = new Uint8Array(pdfArrayBuffer);
+      let binary = '';
+      uint8.forEach(b => binary += String.fromCharCode(b));
+      const pdfBase64 = btoa(binary);
 
       // Modern high-end email HTML
       const emailHtml = `
