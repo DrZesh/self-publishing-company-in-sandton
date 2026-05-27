@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
 
       const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
       await resend.emails.send({
-        from: 'Creative Books SA <info@creativebookssa.co.za>',
+        from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contact.email],
         subject: `${doc.category} — ${doc.file_name} | Creative Books SA`,
         html: getDocEmailTemplate(doc, contact, actionUrl, origin),
@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
 
       const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
       await resend.emails.send({
-        from: 'Creative Books SA <info@creativebookssa.co.za>',
+        from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contact.email],
         subject: `Reminder: ${doc.category} — ${doc.file_name} | Creative Books SA`,
         html: getDocEmailTemplate(doc, contact, actionUrl, origin),

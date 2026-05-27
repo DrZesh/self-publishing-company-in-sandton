@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Creative Books SA <info@creativebookssa.co.za>',
+        from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contact.email],
         subject: `Invoice ${invoice.invoice_number} – Creative Books SA`,
         html: emailHtml,

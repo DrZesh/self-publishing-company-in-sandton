@@ -365,7 +365,7 @@ Deno.serve(async (req) => {
       `;
 
       await resend.emails.send({
-        from: 'Creative Books SA <info@creativebookssa.co.za>',
+        from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [contactEmail],
         subject: `Your Custom Quote — ${quote.quote_number} | Creative Books SA`,
         html: emailHtml,
@@ -490,7 +490,7 @@ Deno.serve(async (req) => {
 
         try {
           await resend.emails.send({
-            from: 'Creative Books SA <info@creativebookssa.co.za>',
+            from: 'Creative Books SA <info@creativebooks.co.za>',
             to: [contactEmail],
             subject: `Quote Accepted - ${quote.quote_number} | Creative Books SA`,
             html: confirmHtml,
