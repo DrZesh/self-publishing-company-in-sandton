@@ -132,17 +132,17 @@ function buildUserEmail({ firstName, formType, submitterEmail, fields }) {
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
+          <a href="https://www.creativebooks.co.za/selfpublishingpackagesinsouthafrica" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Browse Publishing Packages →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/howtopublishabook" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
+          <a href="https://www.creativebooks.co.za/howtopublishabook" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">Read the Complete Publishing Guide →</a>
         </td>
       </tr>
       <tr>
         <td style="padding:6px 8px 6px 0;">
-          <a href="https://www.creativebookssa.co.za/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
+          <a href="https://www.creativebooks.co.za/faq" style="display:inline-block;padding:10px 18px;background:${CREAM_BG};border:1px solid ${DIVIDER_COLOR};border-radius:8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:${BRAND_COLOR};text-decoration:none;font-weight:600;">View Our FAQ →</a>
         </td>
       </tr>
     </table>
@@ -238,7 +238,7 @@ Deno.serve(async (req) => {
     // ── Send business notification ────────────────────────────────────────────
     const businessHtml = buildBusinessEmail({
       formType, submitterName, submitterEmail, fields, submittedAt,
-      pageUrl: pageUrl || 'www.creativebookssa.co.za',
+      pageUrl: pageUrl || 'www.creativebooks.co.za',
     });
 
     await base44.integrations.Core.SendEmail({
