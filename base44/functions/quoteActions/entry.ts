@@ -1,9 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 import { jsPDF } from 'npm:jspdf@4.0.0';
-import html2canvas from 'npm:html2canvas@1.4.1';
-
-const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -59,6 +56,7 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const { action } = body;
+    const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
     // CREATE
     if (action === 'create') {
@@ -367,7 +365,7 @@ Deno.serve(async (req) => {
       `;
 
       await resend.emails.send({
-        from: 'Creative Books SA <info@creativebooks.co.za>',
+        from: 'Creative Books SA <info@creativebookssa.co.za>',
         to: [contactEmail],
         subject: `Your Custom Quote — ${quote.quote_number} | Creative Books SA`,
         html: emailHtml,
@@ -492,7 +490,7 @@ Deno.serve(async (req) => {
 
         try {
           await resend.emails.send({
-            from: 'Creative Books SA <info@creativebooks.co.za>',
+            from: 'Creative Books SA <info@creativebookssa.co.za>',
             to: [contactEmail],
             subject: `Quote Accepted - ${quote.quote_number} | Creative Books SA`,
             html: confirmHtml,

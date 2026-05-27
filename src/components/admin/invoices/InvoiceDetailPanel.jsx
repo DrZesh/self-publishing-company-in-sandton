@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { X, Edit2, Send, Download } from 'lucide-react';
+import { X, Edit2, Send, Download, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import InvoiceModal from './InvoiceModal';
 
 const STATUS_COLORS = {
@@ -15,6 +16,26 @@ const STATUS_COLORS = {
 export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdated }) {
   const [showEdit, setShowEdit] = useState(false);
   const [marking, setMarking] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const handleSendEmail = async () => {
+    if (!contact?.email) { toast.error('Contact has no email address.'); return; }
+    if (!confirm(`Send invoice ${invoice.invoice_number} to ${contact.email}?`)) return;
+    setSending(true);
+    try {
+      const res = await base44.functions.invoke('sendInvoiceEmail', { invoice_id: invoice.id });
+      if (res.data?.success) {
+        toast.success(`Invoice sent to ${contact.email}`);
+        onUpdated();
+      } else {
+        toast.error(res.data?.error || 'Failed to send invoice.');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to send invoice.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   const markPaid = async () => {
     setMarking(true);
@@ -135,8 +156,9 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
                   {marking ? 'Updating...' : 'Mark as Paid'}
                 </Button>
               )}
-              <Button variant="outline" onClick={() => base44.entities.Invoice.update(invoice.id, { status: 'Sent', sent_at: new Date().toISOString() }).then(onUpdated)} className="flex-1">
-                <Send className="w-4 h-4 mr-2" /> Mark Sent
+              <Button variant="outline" onClick={handleSendEmail} disabled={sending} className="flex-1">
+                {sending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                {sending ? 'Sending...' : 'Email Invoice'}
               </Button>
             </div>
           </div>
