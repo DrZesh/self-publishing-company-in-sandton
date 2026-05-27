@@ -216,6 +216,7 @@ const WalkInCheckin = lazy(() => import('./pages/WalkInCheckin'));
 const AdminBookLibrary = lazy(() => import('./pages/admin/AdminBookLibrary'));
 const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
 const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
+const ContractSign = lazy(() => import('./pages/ContractSign'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -647,6 +648,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/authors" element={<ProtectedAdminRoute><AdminAuthors /></ProtectedAdminRoute>} />
       <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
       <Route path="/portal/:token" element={<ClientPortal />} />
+      <Route path="/sign/contract/:token" element={<ContractSign />} />
     </Routes>
     </Suspense>
   );

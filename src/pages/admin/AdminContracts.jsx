@@ -4,22 +4,35 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, FileSignature, Upload, Send, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Plus, Search, FileSignature, Upload, Send, CheckCircle, Clock, AlertTriangle, RefreshCw, Eye } from 'lucide-react';
 import ContractModal from '@/components/admin/contracts/ContractModal';
+import ContractAuditPanel from '@/components/admin/contracts/ContractAuditPanel';
+import { toast } from 'sonner';
 
 const STATUS_COLORS = {
   'Draft': 'bg-gray-100 text-gray-600',
-  'Sent': 'bg-blue-100 text-blue-700',
+  'Sent for Signature': 'bg-blue-100 text-blue-700',
+  'Opened': 'bg-yellow-100 text-yellow-700',
+  'Viewed': 'bg-yellow-100 text-yellow-800',
+  'Signing Started': 'bg-purple-100 text-purple-700',
   'Signed': 'bg-green-100 text-green-700',
+  'Declined': 'bg-red-100 text-red-700',
   'Expired': 'bg-red-100 text-red-700',
+  'Resent': 'bg-blue-100 text-blue-600',
   'Cancelled': 'bg-gray-200 text-gray-500',
+  'Archived': 'bg-gray-100 text-gray-500',
 };
 
 const STATUS_ICONS = {
   'Draft': Clock,
-  'Sent': Send,
+  'Sent for Signature': Send,
+  'Opened': Eye,
+  'Viewed': Eye,
+  'Signing Started': FileSignature,
   'Signed': CheckCircle,
+  'Declined': AlertTriangle,
   'Expired': AlertTriangle,
+  'Resent': RefreshCw,
   'Cancelled': AlertTriangle,
 };
 
@@ -29,6 +42,8 @@ export default function AdminContracts() {
   const [statusFilter, setStatusFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingContract, setEditingContract] = useState(null);
+  const [auditContract, setAuditContract] = useState(null);
+  const [sendingId, setSendingId] = useState(null);
 
   const { data: contracts = [], isLoading } = useQuery({
     queryKey: ['contracts'],
@@ -47,6 +62,18 @@ export default function AdminContracts() {
 
   const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
 
+  const handleSendForSignature = async (contract) => {
+    setSendingId(contract.id);
+    const res = await base44.functions.invoke('contractSignature', { action: 'send', contract_id: contract.id });
+    setSendingId(null);
+    if (res.data?.success) {
+      toast.success('Signing link sent to client');
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
+    } else {
+      toast.error(res.data?.error || 'Failed to send');
+    }
+  };
+
   const filtered = contracts.filter(c => {
     const q = search.toLowerCase();
     const contact = contactMap[c.contact_id];
@@ -55,7 +82,7 @@ export default function AdminContracts() {
     return matchSearch && matchStatus;
   });
 
-  const unsignedCount = contracts.filter(c => c.status === 'Sent').length;
+  const unsignedCount = contracts.filter(c => ['Sent for Signature', 'Opened', 'Viewed', 'Signing Started', 'Resent'].includes(c.status)).length;
   const signedCount = contracts.filter(c => c.status === 'Signed').length;
   const expiredCount = contracts.filter(c => c.status === 'Expired').length;
 
@@ -103,7 +130,7 @@ export default function AdminContracts() {
 
         {/* Status Tabs */}
         <div className="flex gap-2 flex-wrap">
-          {['', 'Draft', 'Sent', 'Signed', 'Expired', 'Cancelled'].map(s => (
+          {['', 'Draft', 'Sent for Signature', 'Signed', 'Declined', 'Expired', 'Cancelled'].map(s => (
             <button
               key={s || 'all'}
               onClick={() => setStatusFilter(s)}
@@ -165,16 +192,20 @@ export default function AdminContracts() {
                         <Button variant="outline" size="sm">View</Button>
                       </a>
                     )}
-                    {contract.status === 'Draft' && (
-                      <Button variant="outline" size="sm" onClick={() => markSent(contract)}>
-                        <Send className="w-3 h-3 mr-1" /> Mark Sent
+                    {['Draft', 'Sent for Signature', 'Opened', 'Viewed', 'Signing Started', 'Resent', 'Expired'].includes(contract.status) && contract.contract_file_url && (
+                      <Button
+                        size="sm"
+                        disabled={sendingId === contract.id}
+                        onClick={() => handleSendForSignature(contract)}
+                        className="bg-[#B87333] hover:bg-[#A06828] text-white gap-1"
+                      >
+                        <Send className="w-3 h-3" />
+                        {sendingId === contract.id ? 'Sending...' : contract.status === 'Draft' ? 'Send for Signature' : 'Resend'}
                       </Button>
                     )}
-                    {contract.status === 'Sent' && (
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => markSigned(contract)}>
-                        <CheckCircle className="w-3 h-3 mr-1" /> Mark Signed
-                      </Button>
-                    )}
+                    <Button variant="outline" size="sm" onClick={() => setAuditContract(contract)}>
+                      <Eye className="w-3 h-3 mr-1" /> Audit
+                    </Button>
                     <Button variant="ghost" size="sm" onClick={() => { setEditingContract(contract); setShowModal(true); }}>Edit</Button>
                   </div>
                 </div>
@@ -183,6 +214,14 @@ export default function AdminContracts() {
           )}
         </div>
       </div>
+
+      {auditContract && (
+        <ContractAuditPanel
+          contract={auditContract}
+          onClose={() => setAuditContract(null)}
+          onUpdated={() => { queryClient.invalidateQueries({ queryKey: ['contracts'] }); setAuditContract(null); }}
+        />
+      )}
 
       {showModal && (
         <ContractModal

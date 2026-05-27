@@ -20,10 +20,16 @@
       "type": "string",
       "enum": [
         "Draft",
-        "Sent",
+        "Sent for Signature",
+        "Opened",
+        "Viewed",
+        "Signing Started",
         "Signed",
+        "Declined",
         "Expired",
-        "Cancelled"
+        "Resent",
+        "Cancelled",
+        "Archived"
       ],
       "default": "Draft"
     },
@@ -35,13 +41,60 @@
       "type": "string",
       "description": "Signed contract file URL"
     },
+    "sign_token": {
+      "type": "string",
+      "description": "Secure token for signing link"
+    },
+    "sign_token_expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When signing link expires"
+    },
+    "signer_name": {
+      "type": "string"
+    },
+    "signer_email": {
+      "type": "string"
+    },
+    "signer_ip": {
+      "type": "string"
+    },
+    "signer_user_agent": {
+      "type": "string"
+    },
+    "signature_image_url": {
+      "type": "string",
+      "description": "URL to the captured signature image"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Full audit trail events"
+    },
     "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewed_at": {
       "type": "string",
       "format": "date-time"
     },
     "signed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "declined_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "declined_reason": {
+      "type": "string"
     },
     "expiry_date": {
       "type": "string",
@@ -50,6 +103,14 @@
     "reminder_sent_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "reminder_count": {
+      "type": "number",
+      "default": 0
+    },
+    "legal_consent_checked": {
+      "type": "boolean",
+      "default": false
     },
     "notes": {
       "type": "string"
