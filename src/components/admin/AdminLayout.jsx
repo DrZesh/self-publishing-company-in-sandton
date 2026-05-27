@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import AdminSidebar from './AdminSidebar';
+import CommandPalette from './CommandPalette';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 export default function AdminLayout({ children }) {
@@ -19,6 +20,7 @@ export default function AdminLayout({ children }) {
   }, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cmdOpen, setCmdOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [theme, setTheme] = useState(() => getTheme(localStorage.getItem(CURRENT_THEME_KEY) || 'brand'));
 
@@ -38,6 +40,18 @@ export default function AdminLayout({ children }) {
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'denied');
   const lastSeenRef = useRef(new Set());
   const navigate = useNavigate();
+
+  // Global Cmd+K / Ctrl+K handler
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   // Request notification permission on first load
   useEffect(() => {
@@ -115,16 +129,17 @@ export default function AdminLayout({ children }) {
               )}
             </button>
 
-            {/* Search */}
-            <div className="hidden sm:flex items-center flex-1 max-w-md">
-              <Search className="w-4 h-4 text-[#2B2B2B]/40 absolute ml-3" />
-              <input
-                type="text"
-                placeholder="Search submissions, leads, contacts..."
-                className="w-full pl-9 pr-4 py-2 bg-[#f5f5f5] rounded-lg text-sm border border-[#ddd]/30 focus:outline-none focus:border-[#B8955B]"
-              />
-              <span className="text-xs text-[#2B2B2B]/40 ml-2 hidden md:inline">Cmd+K</span>
-            </div>
+            {/* Search → opens Command Palette */}
+            <button
+              onClick={() => setCmdOpen(true)}
+              className="hidden sm:flex items-center gap-2 flex-1 max-w-md px-4 py-2 bg-[#f5f5f5] rounded-lg text-sm text-[#2B2B2B]/50 border border-[#ddd]/30 hover:border-[#B8955B]/50 hover:bg-[#f0f0f0] transition-colors"
+            >
+              <Search className="w-4 h-4 flex-shrink-0" />
+              <span className="flex-1 text-left">Search or jump to...</span>
+              <kbd className="hidden md:inline-flex items-center gap-1 text-xs font-mono text-[#2B2B2B]/40 bg-white border border-gray-200 rounded px-1.5 py-0.5">
+                <span>⌘</span>K
+              </kbd>
+            </button>
           </div>
 
           <div className="flex items-center gap-4">
@@ -163,6 +178,8 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
       </div>
+
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
     </div>
   );
 }
