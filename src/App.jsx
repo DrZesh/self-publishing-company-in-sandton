@@ -209,6 +209,9 @@ const AdminAutomations = lazy(() => import('./pages/admin/AdminAutomations'));
 const QuoteView = lazy(() => import('./pages/QuoteView'));
 const DocumentView = lazy(() => import('./pages/DocumentView'));
 const AdminDocumentDashboard = lazy(() => import('./pages/admin/AdminDocumentDashboard'));
+const ProductionBoard = lazy(() => import('./pages/admin/ProductionBoard'));
+const RevenueForecast = lazy(() => import('./pages/admin/RevenueForecast'));
+const WalkInCheckin = lazy(() => import('./pages/WalkInCheckin'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -632,6 +635,9 @@ const AuthenticatedApp = () => {
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />
       <Route path="/doc/view/:id/:token" element={<DocumentView />} />
       <Route path="/admin/document-dashboard" element={<ProtectedAdminRoute><AdminDocumentDashboard /></ProtectedAdminRoute>} />
+      <Route path="/admin/production-board" element={<ProtectedAdminRoute><ProductionBoard /></ProtectedAdminRoute>} />
+      <Route path="/admin/revenue-forecast" element={<ProtectedAdminRoute><RevenueForecast /></ProtectedAdminRoute>} />
+      <Route path="/walk-in" element={<WalkInCheckin />} />
       <Route path="/portal/:token" element={<ClientPortal />} />
     </Routes>
     </Suspense>
