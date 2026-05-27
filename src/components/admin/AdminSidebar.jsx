@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Inbox, Target, Users, Settings, 
   BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail, PenTool,
   FolderKanban, Receipt, CreditCard, CheckSquare, FolderOpen, FileSignature, CalendarDays,
-  BarChart3, Globe
+  BarChart3, Globe, Zap
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -27,6 +27,7 @@ const NAV_ITEMS = [
   { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
   { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
   { label: 'Client Portal', path: '/admin/client-portal', icon: Globe },
+  { label: 'Automations', path: '/admin/automations', icon: Zap },
   { label: 'Contacts', path: '/admin/contacts', icon: Users },
   { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
   { label: 'Services', path: '/admin/services', icon: BookOpen },
