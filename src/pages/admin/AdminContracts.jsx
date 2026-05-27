@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Plus, Search, FileSignature, Upload, Send, CheckCircle, Clock, AlertTriangle, RefreshCw, Eye } from 'lucide-react';
 import ContractModal from '@/components/admin/contracts/ContractModal';
 import ContractAuditPanel from '@/components/admin/contracts/ContractAuditPanel';
+import AdobeSignModal from '@/components/admin/contracts/AdobeSignModal';
 import { toast } from 'sonner';
 
 const STATUS_COLORS = {
@@ -44,6 +45,7 @@ export default function AdminContracts() {
   const [editingContract, setEditingContract] = useState(null);
   const [auditContract, setAuditContract] = useState(null);
   const [sendingId, setSendingId] = useState(null);
+  const [adobeSignContract, setAdobeSignContract] = useState(null);
 
   const { data: contracts = [], isLoading } = useQuery({
     queryKey: ['contracts'],
@@ -192,6 +194,17 @@ export default function AdminContracts() {
                         <Button variant="outline" size="sm">View</Button>
                       </a>
                     )}
+                    {['Draft', 'Sent for Signature', 'Opened', 'Viewed', 'Signing Started', 'Resent', 'Expired'].includes(contract.status) && (
+                      <Button
+                        size="sm"
+                        onClick={() => setAdobeSignContract(contract)}
+                        className="bg-red-600 hover:bg-red-700 text-white gap-1"
+                        title="Send via Adobe Acrobat Sign"
+                      >
+                        <FileSignature className="w-3 h-3" />
+                        Adobe Sign
+                      </Button>
+                    )}
                     {['Draft', 'Sent for Signature', 'Opened', 'Viewed', 'Signing Started', 'Resent', 'Expired'].includes(contract.status) && contract.contract_file_url && (
                       <Button
                         size="sm"
@@ -200,7 +213,7 @@ export default function AdminContracts() {
                         className="bg-[#B87333] hover:bg-[#A06828] text-white gap-1"
                       >
                         <Send className="w-3 h-3" />
-                        {sendingId === contract.id ? 'Sending...' : contract.status === 'Draft' ? 'Send for Signature' : 'Resend'}
+                        {sendingId === contract.id ? 'Sending...' : contract.status === 'Draft' ? 'Send Link' : 'Resend Link'}
                       </Button>
                     )}
                     <Button variant="outline" size="sm" onClick={() => setAuditContract(contract)}>
@@ -214,6 +227,15 @@ export default function AdminContracts() {
           )}
         </div>
       </div>
+
+      {adobeSignContract && (
+        <AdobeSignModal
+          contract={adobeSignContract}
+          contact={contactMap[adobeSignContract.contact_id]}
+          onClose={() => setAdobeSignContract(null)}
+          onSent={() => { queryClient.invalidateQueries({ queryKey: ['contracts'] }); }}
+        />
+      )}
 
       {auditContract && (
         <ContractAuditPanel
