@@ -3,80 +3,60 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import PipelineCard from './PipelineCard';
 import LostReasonModal from './LostReasonModal';
 
+// Default stages used when no custom pipeline is selected
 export const PIPELINE_STAGES = [
-  'New Enquiry',
-  'Information Requested',
-  'Quote in Progress',
-  'Quote Sent',
-  'Payment Pending',
-  'Project Started',
-  'Editing',
-  'Cover Design',
-  'Typesetting',
-  'Sample Queued',
-  'Sample Approved',
-  'Mass Production',
-  'Completed',
-  'Delivered',
-  'Lost',
+  'New Enquiry', 'Information Requested', 'Quote in Progress', 'Quote Sent',
+  'Payment Pending', 'Project Started', 'Editing', 'Cover Design', 'Typesetting',
+  'Sample Queued', 'Sample Approved', 'Mass Production', 'Completed', 'Delivered', 'Lost',
 ];
 
-// Group stages for visual grouping
-export const STAGE_GROUPS = {
-  'Sales': ['New Enquiry', 'Information Requested', 'Quote in Progress', 'Quote Sent', 'Payment Pending'],
-  'Production': ['Project Started', 'Editing', 'Cover Design', 'Typesetting', 'Sample Queued', 'Sample Approved', 'Mass Production'],
-  'Done': ['Completed', 'Delivered', 'Lost'],
+const DEFAULT_STAGE_COLORS = {
+  'New Enquiry': { bg: 'bg-blue-50', border: 'border-blue-200', header: 'text-blue-700', dot: '#3b82f6' },
+  'Information Requested': { bg: 'bg-sky-50', border: 'border-sky-200', header: 'text-sky-700', dot: '#0ea5e9' },
+  'Quote in Progress': { bg: 'bg-violet-50', border: 'border-violet-200', header: 'text-violet-700', dot: '#8b5cf6' },
+  'Quote Sent': { bg: 'bg-purple-50', border: 'border-purple-200', header: 'text-purple-700', dot: '#a855f7' },
+  'Payment Pending': { bg: 'bg-amber-50', border: 'border-amber-200', header: 'text-amber-700', dot: '#f59e0b' },
+  'Project Started': { bg: 'bg-orange-50', border: 'border-orange-200', header: 'text-orange-700', dot: '#f97316' },
+  'Editing': { bg: 'bg-yellow-50', border: 'border-yellow-200', header: 'text-yellow-700', dot: '#eab308' },
+  'Cover Design': { bg: 'bg-pink-50', border: 'border-pink-200', header: 'text-pink-700', dot: '#ec4899' },
+  'Typesetting': { bg: 'bg-rose-50', border: 'border-rose-200', header: 'text-rose-700', dot: '#f43f5e' },
+  'Sample Queued': { bg: 'bg-[#B87333]/5', border: 'border-[#B87333]/30', header: 'text-[#B87333]', dot: '#B87333' },
+  'Sample Approved': { bg: 'bg-lime-50', border: 'border-lime-200', header: 'text-lime-700', dot: '#84cc16' },
+  'Mass Production': { bg: 'bg-teal-50', border: 'border-teal-200', header: 'text-teal-700', dot: '#14b8a6' },
+  'Completed': { bg: 'bg-emerald-50', border: 'border-emerald-200', header: 'text-emerald-700', dot: '#10b981' },
+  'Delivered': { bg: 'bg-green-50', border: 'border-green-200', header: 'text-green-700', dot: '#22c55e' },
+  'Lost': { bg: 'bg-red-50', border: 'border-red-200', header: 'text-red-600', dot: '#ef4444' },
 };
 
-const STAGE_COLORS = {
-  'New Enquiry': 'border-blue-300 bg-blue-50',
-  'Information Requested': 'border-sky-300 bg-sky-50',
-  'Quote in Progress': 'border-violet-300 bg-violet-50',
-  'Quote Sent': 'border-purple-300 bg-purple-50',
-  'Payment Pending': 'border-amber-300 bg-amber-50',
-  'Project Started': 'border-orange-300 bg-orange-50',
-  'Editing': 'border-yellow-300 bg-yellow-50',
-  'Cover Design': 'border-pink-300 bg-pink-50',
-  'Typesetting': 'border-rose-300 bg-rose-50',
-  'Sample Queued': 'border-[#B87333]/50 bg-[#B87333]/5',
-  'Sample Approved': 'border-lime-300 bg-lime-50',
-  'Mass Production': 'border-teal-300 bg-teal-50',
-  'Completed': 'border-emerald-300 bg-emerald-50',
-  'Delivered': 'border-green-300 bg-green-50',
-  'Lost': 'border-red-300 bg-red-50',
-};
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `${r},${g},${b}`;
+}
 
-const STAGE_HEADER_COLORS = {
-  'New Enquiry': 'text-blue-700',
-  'Information Requested': 'text-sky-700',
-  'Quote in Progress': 'text-violet-700',
-  'Quote Sent': 'text-purple-700',
-  'Payment Pending': 'text-amber-700',
-  'Project Started': 'text-orange-700',
-  'Editing': 'text-yellow-700',
-  'Cover Design': 'text-pink-700',
-  'Typesetting': 'text-rose-700',
-  'Sample Queued': 'text-[#B87333]',
-  'Sample Approved': 'text-lime-700',
-  'Mass Production': 'text-teal-700',
-  'Completed': 'text-emerald-700',
-  'Delivered': 'text-green-700',
-  'Lost': 'text-red-600',
-};
+// Build stage config from custom pipeline or defaults
+function buildStageConfig(customStages) {
+  if (!customStages?.length) {
+    return PIPELINE_STAGES.map(name => ({
+      name,
+      color: DEFAULT_STAGE_COLORS[name]?.dot || '#6b7280',
+      icon: '',
+      checklist: [],
+    }));
+  }
+  return [...customStages].sort((a, b) => (a.order || 0) - (b.order || 0));
+}
 
-const GROUP_COLORS = {
-  'Sales': 'text-blue-600 bg-blue-50 border-blue-200',
-  'Production': 'text-orange-600 bg-orange-50 border-orange-200',
-  'Done': 'text-emerald-600 bg-emerald-50 border-emerald-200',
-};
-
-export default function KanbanBoard({ contacts, onStageChange }) {
+export default function KanbanBoard({ contacts, onStageChange, customPipeline }) {
   const [lostModal, setLostModal] = useState(null);
   const [draggingId, setDraggingId] = useState(null);
-  const [groupView, setGroupView] = useState(false);
 
-  const byStage = PIPELINE_STAGES.reduce((acc, s) => {
-    acc[s] = contacts.filter(c => (c.pipeline_stage || 'New Enquiry') === s);
+  const stages = buildStageConfig(customPipeline?.stages);
+  const stageNames = stages.map(s => s.name);
+
+  const byStage = stageNames.reduce((acc, s) => {
+    acc[s] = contacts.filter(c => (c.pipeline_stage || stageNames[0]) === s);
     return acc;
   }, {});
 
@@ -89,87 +69,101 @@ export default function KanbanBoard({ contacts, onStageChange }) {
     if (!contact || contact.pipeline_stage === newStage) return;
 
     if (newStage === 'Lost') {
-      setLostModal({ contactId: draggableId, contactName: contact.full_name, destStage: newStage });
+      setLostModal({ contactId: draggableId, contactName: contact.full_name });
     } else {
       onStageChange(draggableId, newStage, null);
     }
   };
 
-  const handleLostConfirm = (reason) => {
-    onStageChange(lostModal.contactId, 'Lost', reason);
-    setLostModal(null);
-  };
+  const totalValue = contacts.reduce((s, c) => s + (c.pipeline_value || 0), 0);
 
   return (
     <>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex gap-3 text-xs text-gray-500">
-          {Object.entries(STAGE_GROUPS).map(([group, stages]) => {
-            const count = stages.reduce((s, stage) => s + (byStage[stage]?.length || 0), 0);
-            return (
-              <span key={group} className={`px-2.5 py-1 rounded-full border font-medium ${GROUP_COLORS[group]}`}>
-                {group}: {count}
-              </span>
-            );
-          })}
-        </div>
+      {/* Summary Row */}
+      <div className="flex items-center gap-4 mb-3 flex-wrap text-xs text-gray-500">
+        <span className="font-semibold text-gray-700">{contacts.length} contacts</span>
+        {totalValue > 0 && (
+          <span className="text-emerald-700 font-bold">Pipeline value: R {totalValue.toLocaleString('en-ZA')}</span>
+        )}
+        {customPipeline && (
+          <span className="px-2 py-1 bg-[#B87333]/10 text-[#B87333] rounded-full font-semibold">{customPipeline.name}</span>
+        )}
       </div>
 
-      <DragDropContext
-        onDragStart={r => setDraggingId(r.draggableId)}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="flex gap-3 overflow-x-auto pb-4" style={{ minHeight: '500px' }}>
-          {PIPELINE_STAGES.map(stage => (
-            <div key={stage} className="flex-shrink-0 w-52">
-              <div className={`rounded-2xl border-2 ${STAGE_COLORS[stage]} flex flex-col`} style={{ minHeight: 500 }}>
-                <div className="px-3 py-2.5 border-b border-black/8">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-xs font-bold uppercase tracking-wide leading-tight ${STAGE_HEADER_COLORS[stage]}`}>{stage}</span>
-                    <span className="text-xs font-bold text-black/40 bg-white rounded-full px-2 py-0.5 ml-1 shrink-0">
-                      {byStage[stage].length}
-                    </span>
-                  </div>
-                  {byStage[stage].some(c => c.pipeline_value) && (
-                    <p className="text-xs text-black/40 mt-0.5">
-                      R{byStage[stage].reduce((s, c) => s + (c.pipeline_value || 0), 0).toLocaleString('en-ZA')}
-                    </p>
-                  )}
-                </div>
-                <Droppable droppableId={stage}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className={`flex-1 p-2 space-y-2 min-h-[100px] rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-black/5' : ''}`}
-                    >
-                      {byStage[stage].map((contact, index) => (
-                        <Draggable key={contact.id} draggableId={contact.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <PipelineCard contact={contact} isDragging={snapshot.isDragging} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
+      <DragDropContext onDragStart={r => setDraggingId(r.draggableId)} onDragEnd={handleDragEnd}>
+        <div className="flex gap-3 overflow-x-auto pb-4" style={{ minHeight: 520 }}>
+          {stages.map(stage => {
+            const cards = byStage[stage.name] || [];
+            const stageValue = cards.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+            const defaultColors = DEFAULT_STAGE_COLORS[stage.name];
+            const rgb = stage.color ? hexToRgb(stage.color) : null;
+
+            const bgStyle = rgb ? { background: `rgba(${rgb},0.06)`, borderColor: `rgba(${rgb},0.3)` } : {};
+            const headerStyle = rgb ? { color: stage.color } : {};
+
+            return (
+              <div key={stage.name} className="flex-shrink-0 w-56">
+                <div
+                  className={`rounded-2xl border-2 flex flex-col ${defaultColors ? `${defaultColors.bg} ${defaultColors.border}` : 'bg-gray-50 border-gray-200'}`}
+                  style={rgb && !defaultColors ? bgStyle : {}}
+                >
+                  {/* Stage Header */}
+                  <div className="px-3 py-2.5 border-b border-black/8">
+                    <div className="flex items-center justify-between gap-1">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {stage.icon && <span className="text-sm flex-shrink-0">{stage.icon}</span>}
+                        <span
+                          className={`text-[11px] font-bold uppercase tracking-wide leading-tight truncate ${defaultColors ? defaultColors.header : ''}`}
+                          style={rgb && !defaultColors ? headerStyle : {}}
+                        >
+                          {stage.name}
+                        </span>
+                      </div>
+                      <span className="text-xs font-bold text-black/40 bg-white rounded-full px-2 py-0.5 flex-shrink-0">
+                        {cards.length}
+                      </span>
                     </div>
-                  )}
-                </Droppable>
+                    {stageValue > 0 && (
+                      <p className="text-xs text-black/40 mt-0.5">R{stageValue.toLocaleString('en-ZA')}</p>
+                    )}
+                  </div>
+
+                  <Droppable droppableId={stage.name}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={`flex-1 p-2 space-y-2 min-h-[100px] rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-black/5' : ''}`}
+                      >
+                        {cards.map((contact, index) => (
+                          <Draggable key={contact.id} draggableId={contact.id} index={index}>
+                            {(prov, snap) => (
+                              <div
+                                ref={prov.innerRef}
+                                {...prov.draggableProps}
+                                {...prov.dragHandleProps}
+                                className="select-none cursor-grab active:cursor-grabbing"
+                              >
+                                <PipelineCard contact={contact} isDragging={snap.isDragging} />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </DragDropContext>
 
       {lostModal && (
         <LostReasonModal
           contactName={lostModal.contactName}
-          onConfirm={handleLostConfirm}
+          onConfirm={(reason) => { onStageChange(lostModal.contactId, 'Lost', reason); setLostModal(null); }}
           onCancel={() => setLostModal(null)}
         />
       )}

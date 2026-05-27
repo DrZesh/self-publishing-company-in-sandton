@@ -5,11 +5,16 @@ import PipelineStats from '@/components/pipeline/PipelineStats';
 import PipelineFilters from '@/components/pipeline/PipelineFilters';
 import KanbanBoard from '@/components/pipeline/KanbanBoard';
 import PipelineListView from '@/components/pipeline/PipelineListView';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Settings, ChevronDown } from 'lucide-react';
 
 export default function AdminPipeline() {
   const [contacts, setContacts] = useState([]);
   const [history, setHistory] = useState([]);
+  const [pipelines, setPipelines] = useState([]);
+  const [selectedPipeline, setSelectedPipeline] = useState(null);
+  const [showPipelineMenu, setShowPipelineMenu] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [view, setView] = useState('kanban');
@@ -17,14 +22,19 @@ export default function AdminPipeline() {
   const [ownerFilter, setOwnerFilter] = useState('');
 
   const load = useCallback(async () => {
-    const [me, allContacts, allHistory] = await Promise.all([
+    const [me, allContacts, allHistory, allPipelines] = await Promise.all([
       base44.auth.me(),
       base44.entities.Contact.list('-updated_date', 500),
       base44.entities.PipelineStageHistory.list('-changed_at', 1000),
+      base44.entities.Pipeline.list('-created_date', 50),
     ]);
     setUser(me);
     setContacts(allContacts);
     setHistory(allHistory);
+    setPipelines(allPipelines);
+    if (allPipelines.length > 0 && !selectedPipeline) {
+      setSelectedPipeline(allPipelines[0]);
+    }
     setLoading(false);
   }, []);
 
@@ -84,6 +94,45 @@ export default function AdminPipeline() {
             <h1 className="text-3xl font-bold text-[#1A1208]">Pipeline</h1>
             <p className="text-sm text-black/50 mt-1">Track every project from first enquiry through to delivery</p>
           </div>
+          <div className="flex items-center gap-2">
+            {/* Pipeline Selector */}
+            {pipelines.length > 0 && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowPipelineMenu(v => !v)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-[#B87333]/40 transition-colors"
+                >
+                  <span>{selectedPipeline?.name || 'Default Pipeline'}</span>
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                </button>
+                {showPipelineMenu && (
+                  <div className="absolute right-0 top-11 z-20 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-52 space-y-0.5">
+                    <button
+                      onClick={() => { setSelectedPipeline(null); setShowPipelineMenu(false); }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50 ${!selectedPipeline ? 'font-semibold text-[#B87333]' : 'text-gray-700'}`}
+                    >
+                      Default Stages
+                    </button>
+                    {pipelines.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => { setSelectedPipeline(p); setShowPipelineMenu(false); }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50 ${selectedPipeline?.id === p.id ? 'font-semibold text-[#B87333]' : 'text-gray-700'}`}
+                      >
+                        {p.name}
+                        <span className="text-xs text-gray-400 ml-1">({p.stages?.length || 0} stages)</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            <Link to="/admin/pipeline-builder">
+              <button className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-xl text-sm font-medium hover:bg-[#A06828] transition-colors">
+                <Settings className="w-4 h-4" /> Build Pipeline
+              </button>
+            </Link>
+          </div>
         </div>
 
         {loading ? (
@@ -105,7 +154,7 @@ export default function AdminPipeline() {
               onView={setView}
             />
             {view === 'kanban' ? (
-              <KanbanBoard contacts={filtered} onStageChange={handleStageChange} />
+              <KanbanBoard contacts={filtered} onStageChange={handleStageChange} customPipeline={selectedPipeline} />
             ) : (
               <PipelineListView contacts={filtered} onStageChange={handleStageChange} />
             )}

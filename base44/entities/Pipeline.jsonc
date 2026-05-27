@@ -1,0 +1,93 @@
+{
+  "name": "Pipeline",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Pipeline name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "pipeline_type": {
+      "type": "string",
+      "enum": [
+        "sales",
+        "printing",
+        "editing",
+        "cover_design",
+        "typesetting",
+        "full_publishing",
+        "ghostwriting",
+        "author_website",
+        "contract",
+        "invoice",
+        "delivery",
+        "custom"
+      ],
+      "default": "sales"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "checklist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "assigned_to": {
+            "type": "string"
+          },
+          "auto_move_trigger": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Ordered list of pipeline stages"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "project"
+      ],
+      "default": "contact",
+      "description": "Whether this pipeline manages contacts or projects"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
