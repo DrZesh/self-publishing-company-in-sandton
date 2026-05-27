@@ -19,6 +19,8 @@ export default function DocumentView() {
   const [clientNotes, setClientNotes] = useState('');
   const [proofFile, setProofFile] = useState(null);
   const [done, setDone] = useState(null);
+  const [identity, setIdentity] = useState({ full_name: '', email: '', phone: '', company: '', authorised: false });
+  const [consents, setConsents] = useState({});
   const [sigData, setSigData] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef(null);
@@ -92,8 +94,34 @@ export default function DocumentView() {
     window.open(doc.file_url, '_blank');
   };
 
+  const getConsentsForAction = (clientAction, category) => {
+    const all = {
+      approve: [
+        { key: 'checked_proof', text: 'I confirm that I have carefully reviewed this document and all details are correct.' },
+        { key: 'authorise_print', text: category === 'Proof Approval' ? 'I understand that by approving this proof, the files may proceed to print and changes may carry additional costs.' : 'I understand this approval is legally binding.' },
+      ],
+      sign: [
+        { key: 'read_contract', text: 'I confirm that I have read and understood the full contract.' },
+        { key: 'authorised_sign', text: 'I confirm that I am authorised to sign this contract on behalf of myself or my organisation.' },
+        { key: 'agree_terms', text: 'I agree to the terms and conditions set out in this contract.' },
+      ],
+      'upload_proof': [
+        { key: 'payment_made', text: 'I confirm that I have made this payment and the attached proof is correct.' },
+      ],
+    };
+    return all[clientAction] || [];
+  };
+
   const handleAction = async (clientAction) => {
     if (submitting) return;
+    // Check identity required for sign/approve
+    const needsIdentity = ['sign', 'approve'].includes(clientAction);
+    if (needsIdentity && !identity.full_name.trim()) { alert('Please enter your full name.'); return; }
+    if (needsIdentity && !identity.email.trim()) { alert('Please enter your email address.'); return; }
+    if (needsIdentity && !identity.authorised) { alert('Please confirm you are authorised to sign/approve.'); return; }
+    // Check all consents ticked
+    const requiredConsents = getConsentsForAction(clientAction, doc?.category);
+    if (requiredConsents.some(c => !consents[c.key])) { alert('Please tick all required confirmation boxes.'); return; }
     setSubmitting(true);
     try {
       let proof_url = null;
@@ -117,6 +145,10 @@ export default function DocumentView() {
         notes: clientNotes,
         proof_url,
         signature_url,
+        identity_name: identity.full_name,
+        identity_email: identity.email,
+        identity_phone: identity.phone,
+        identity_company: identity.company,
       });
       if (res.data?.success) {
         const messages = {
@@ -333,6 +365,48 @@ export default function DocumentView() {
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs text-yellow-800">
                 <strong>Important:</strong> By approving, you confirm the proof is correct and ready to print.
                 This approval is legally binding and cannot be undone.
+              </div>
+            )}
+
+            {/* Identity confirmation for sign/approve */}
+            {['sign', 'approve'].includes(activeModal) && (
+              <div className="space-y-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Identity Confirmation</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Full Name *</label>
+                    <input value={identity.full_name} onChange={e => setIdentity(p => ({...p, full_name: e.target.value}))} placeholder="Your full name" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#B87333]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Email Address *</label>
+                    <input type="email" value={identity.email} onChange={e => setIdentity(p => ({...p, email: e.target.value}))} placeholder="Your email" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#B87333]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Phone Number</label>
+                    <input value={identity.phone} onChange={e => setIdentity(p => ({...p, phone: e.target.value}))} placeholder="+27..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#B87333]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Company (if applicable)</label>
+                    <input value={identity.company} onChange={e => setIdentity(p => ({...p, company: e.target.value}))} placeholder="Company name" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#B87333]" />
+                  </div>
+                </div>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={identity.authorised} onChange={e => setIdentity(p => ({...p, authorised: e.target.checked}))} className="mt-0.5 w-4 h-4 accent-[#B87333]" />
+                  <span className="text-xs text-gray-700">I confirm that I am authorised to sign or approve this document on behalf of myself or my organisation.</span>
+                </label>
+              </div>
+            )}
+
+            {/* Legal consent checkboxes */}
+            {getConsentsForAction(activeModal, doc?.category).length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Legal Confirmation</p>
+                {getConsentsForAction(activeModal, doc?.category).map(c => (
+                  <label key={c.key} className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!consents[c.key]} onChange={e => setConsents(p => ({...p, [c.key]: e.target.checked}))} className="mt-0.5 w-4 h-4 accent-[#B87333]" />
+                    <span className="text-xs text-gray-700">{c.text}</span>
+                  </label>
+                ))}
               </div>
             )}
 

@@ -92,8 +92,19 @@ export default function ClientPortal() {
   );
 
   const allowed = access?.allowed_sections || [];
+
+  // Action Required items
+  const actionItems = [
+    ...documents.filter(d => d.category === 'Quotation' && !['Approved','Rejected'].includes(d.status) && d.secure_token).map(d => ({ type: 'quote', label: 'Quote awaiting acceptance', doc: d, color: 'bg-blue-50 border-blue-200 text-blue-800' })),
+    ...documents.filter(d => ['Unsigned Contract'].includes(d.category) && d.status !== 'Signed' && d.secure_token).map(d => ({ type: 'contract', label: 'Contract awaiting signature', doc: d, color: 'bg-yellow-50 border-yellow-200 text-yellow-800' })),
+    ...documents.filter(d => d.category === 'Invoice' && !['Approved','Payment Proof Uploaded'].includes(d.status) && d.secure_token).map(d => ({ type: 'invoice', label: 'Invoice awaiting payment', doc: d, color: 'bg-orange-50 border-orange-200 text-orange-800' })),
+    ...documents.filter(d => d.category === 'Proof Approval' && !['Approved','Rejected'].includes(d.status) && d.secure_token).map(d => ({ type: 'proof', label: 'Proof awaiting approval', doc: d, color: 'bg-red-50 border-red-200 text-red-800' })),
+    ...documents.filter(d => d.status === 'Changes Requested' && d.secure_token).map(d => ({ type: 'changes', label: 'Corrections requested', doc: d, color: 'bg-purple-50 border-purple-200 text-purple-800' })),
+  ];
+
   const tabs = [
     { key: 'overview', label: 'Overview', icon: BookOpen },
+    actionItems.length > 0 && { key: 'action_required', label: `Action Required (${actionItems.length})`, icon: AlertTriangle, urgent: true },
     allowed.includes('quotes') && { key: 'quotes', label: `Quotes (${quotes.length})`, icon: FileText },
     allowed.includes('invoices') && { key: 'invoices', label: `Invoices (${invoices.length})`, icon: CreditCard },
     allowed.includes('projects') && { key: 'projects', label: `Projects (${projects.length})`, icon: CheckCircle },
@@ -134,12 +145,51 @@ export default function ClientPortal() {
         <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${activeTab === tab.key ? 'bg-white shadow-sm text-[#B87333] border border-[#B87333]/20' : 'text-gray-500 hover:bg-white/70'}`}>
-              <tab.icon className="w-4 h-4" />
+              className={`relative flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === tab.key
+                  ? (tab.urgent ? 'bg-red-50 shadow-sm text-red-700 border border-red-200' : 'bg-white shadow-sm text-[#B87333] border border-[#B87333]/20')
+                  : (tab.urgent ? 'bg-red-50/60 text-red-600 hover:bg-red-50' : 'text-gray-500 hover:bg-white/70')
+              }`}>
+              <tab.icon className={`w-4 h-4 ${tab.urgent ? 'text-red-500' : ''}`} />
               {tab.label}
+              {tab.urgent && actionItems.length > 0 && (
+                <span className="ml-0.5 w-5 h-5 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center">{actionItems.length}</span>
+              )}
             </button>
           ))}
         </div>
+
+        {/* Action Required */}
+        {activeTab === 'action_required' && (
+          <div className="space-y-3">
+            {actionItems.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-400">
+                <CheckCircle className="w-10 h-10 mx-auto mb-3 text-green-300" />
+                No action required right now.
+              </div>
+            ) : actionItems.map((item, i) => {
+              const secureUrl = `/doc/view/${item.doc.id}/${item.doc.secure_token}`;
+              const isExpired = item.doc.expires_at && new Date(item.doc.expires_at) < new Date();
+              return (
+                <div key={i} className={`rounded-2xl border p-4 ${item.color}`}>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-semibold text-sm">{item.label}</p>
+                      <p className="text-xs mt-0.5 opacity-80">{item.doc.file_name}{item.doc.book_title ? ` · ${item.doc.book_title}` : ''}</p>
+                      {isExpired && <p className="text-xs mt-1 opacity-70">⚠️ Link expired — please contact us</p>}
+                    </div>
+                  </div>
+                  {!isExpired && (
+                    <a href={secureUrl} className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-white rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition-shadow">
+                      <ChevronRight className="w-4 h-4" />
+                      Open &amp; Take Action
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Overview */}
         {activeTab === 'overview' && (
@@ -148,6 +198,12 @@ export default function ClientPortal() {
               {allowed.includes('quotes') && <div className="bg-white rounded-xl border border-gray-100 p-4 text-center"><p className="text-2xl font-bold text-[#B87333]">{quotes.length}</p><p className="text-xs text-gray-500 mt-1">Quotes</p></div>}
               {allowed.includes('invoices') && <div className="bg-white rounded-xl border border-gray-100 p-4 text-center"><p className="text-2xl font-bold text-blue-600">{invoices.length}</p><p className="text-xs text-gray-500 mt-1">Invoices</p></div>}
               {allowed.includes('projects') && <div className="bg-white rounded-xl border border-gray-100 p-4 text-center"><p className="text-2xl font-bold text-green-600">{projects.filter(p => !['Completed', 'Delivered'].includes(p.stage)).length}</p><p className="text-xs text-gray-500 mt-1">Active Projects</p></div>}
+              {actionItems.length > 0 && (
+                <div className="col-span-2 md:col-span-1 bg-red-50 border border-red-200 rounded-xl p-4 text-center cursor-pointer hover:bg-red-100 transition-colors" onClick={() => setActiveTab('action_required')}>
+                  <p className="text-2xl font-bold text-red-600">{actionItems.length}</p>
+                  <p className="text-xs text-red-700 mt-1 font-semibold">Action Required</p>
+                </div>
+              )}
               {allowed.includes('documents') && <div className="bg-white rounded-xl border border-gray-100 p-4 text-center"><p className="text-2xl font-bold text-purple-600">{documents.length}</p><p className="text-xs text-gray-500 mt-1">Documents</p></div>}
             </div>
 

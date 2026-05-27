@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { X, Edit2, AlertTriangle, CheckCircle } from 'lucide-react';
 import ProjectModal from './ProjectModal';
+import PrintChecklist from './PrintChecklist';
 
 const STAGES = [
   'Enquiry Received', 'Quote Sent', 'Quote Accepted', 'Contract Sent', 'Contract Signed',
@@ -133,6 +134,12 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
                   <span className="text-gray-900 font-medium">{d.value}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Print Checklist */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Pre-Production Checklist</h3>
+              <PrintChecklist project={project} />
             </div>
 
             {/* Notes */}

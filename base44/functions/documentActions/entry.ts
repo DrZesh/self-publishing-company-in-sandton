@@ -414,6 +414,54 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, doc: newDoc });
     }
 
+    // ─── VERIFY PAYMENT PROOF (admin only) ─────────────────────────────────────
+    if (action === 'verify_payment') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { document_id, verified, rejection_reason, amount_confirmed } = body;
+      const docs = await base44.asServiceRole.entities.Document.filter({ id: document_id });
+      if (!docs.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const doc = docs[0];
+
+      const newStatus = verified ? 'Approved' : 'Rejected';
+      await base44.asServiceRole.entities.Document.update(document_id, {
+        status: newStatus,
+        approved_at: verified ? new Date().toISOString() : null,
+        rejected_at: !verified ? new Date().toISOString() : null,
+        internal_notes: rejection_reason || doc.internal_notes,
+      });
+
+      // Update linked invoice
+      if (doc.invoice_id && verified) {
+        const invs = await base44.asServiceRole.entities.Invoice.filter({ id: doc.invoice_id });
+        if (invs.length) {
+          const inv = invs[0];
+          const amountPaid = (inv.amount_paid || 0) + (amount_confirmed || 0);
+          const balanceDue = Math.max(0, (inv.total || 0) - amountPaid);
+          const invStatus = balanceDue <= 0 ? 'Paid' : 'Partially Paid';
+          await base44.asServiceRole.entities.Invoice.update(doc.invoice_id, {
+            status: invStatus,
+            amount_paid: amountPaid,
+            balance_due: balanceDue,
+            paid_at: invStatus === 'Paid' ? new Date().toISOString() : null,
+          });
+        }
+      }
+
+      await base44.asServiceRole.entities.DocumentActivity.create({
+        document_id,
+        contact_id: doc.contact_id,
+        action: verified ? 'approved' : 'rejected',
+        actor_type: 'admin',
+        actor_email: user.email,
+        notes: verified ? `Payment verified by admin. Amount confirmed: R${amount_confirmed || 0}` : `Payment rejected: ${rejection_reason}`,
+        timestamp: new Date().toISOString(),
+      });
+
+      return Response.json({ success: true, status: newStatus });
+    }
+
     // ─── GENERATE APPROVAL CERTIFICATE ────────────────────────────────────────
     if (action === 'generate_certificate') {
       const user = await base44.auth.me();
