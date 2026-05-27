@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { X, Edit2, AlertTriangle, CheckCircle } from 'lucide-react';
@@ -24,6 +25,12 @@ const STAGE_COLORS = {
 
 export default function ProjectDetailPanel({ project, contact, onClose, onUpdated }) {
   const [showEdit, setShowEdit] = useState(false);
+
+  const { data: contacts = [] } = useQuery({
+    queryKey: ['contacts'],
+    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    enabled: showEdit,
+  });
   const [updatingStage, setUpdatingStage] = useState(false);
 
   const handleStageChange = async (newStage) => {
@@ -142,7 +149,7 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
       {showEdit && (
         <ProjectModal
           project={project}
-          contacts={contact ? [contact] : []}
+          contacts={contacts.length > 0 ? contacts : contact ? [contact] : []}
           onClose={() => setShowEdit(false)}
           onSaved={() => { setShowEdit(false); onUpdated(); }}
         />
