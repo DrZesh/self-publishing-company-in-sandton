@@ -96,6 +96,8 @@ export default function AdminContracts() {
     updateContract.mutate({ id: contract.id, data: { status: 'Sent', sent_at: new Date().toISOString() } });
   };
 
+
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -253,6 +255,8 @@ export default function AdminContracts() {
           onSaved={() => { queryClient.invalidateQueries({ queryKey: ['contracts'] }); setShowModal(false); setEditingContract(null); }}
         />
       )}
+
+
     </AdminLayout>
   );
 }
