@@ -195,6 +195,7 @@ const AdminQuoteBuilder = lazy(() => import('./pages/admin/AdminQuoteBuilder.jsx
 const AdminEmailTemplates = lazy(() => import('./pages/admin/AdminEmailTemplates'));
 const AdminContactDetail = lazy(() => import('./pages/admin/AdminContactDetail'));
 const AdminSignatures = lazy(() => import('./pages/admin/AdminSignatures'));
+const AdminSigningWorkflow = lazy(() => import('./pages/admin/AdminSigningWorkflow'));
 const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
 const AdminInvoices = lazy(() => import('./pages/admin/AdminInvoices'));
 const AdminPayments = lazy(() => import('./pages/admin/AdminPayments'));
@@ -620,6 +621,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/email-templates" element={<ProtectedAdminRoute><AdminEmailTemplates /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts/detail" element={<ProtectedAdminRoute><AdminContactDetail /></ProtectedAdminRoute>} />
       <Route path="/admin/signatures" element={<ProtectedAdminRoute><AdminSignatures /></ProtectedAdminRoute>} />
+      <Route path="/admin/signing" element={<ProtectedAdminRoute><AdminSigningWorkflow /></ProtectedAdminRoute>} />
       <Route path="/admin/projects" element={<ProtectedAdminRoute><AdminProjects /></ProtectedAdminRoute>} />
       <Route path="/admin/invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
       <Route path="/admin/payments" element={<ProtectedAdminRoute><AdminPayments /></ProtectedAdminRoute>} />

@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { label: 'Pipeline', path: '/admin/pipeline', icon: Columns },
   { label: 'Quotes', path: '/admin/quotes', icon: FileText },
   { label: 'E-Signatures', path: '/admin/signatures', icon: PenTool },
+  { label: 'Signing Workflow', path: '/admin/signing', icon: FileSignature },
   { label: 'Projects', path: '/admin/projects', icon: FolderKanban },
   { label: 'Invoices', path: '/admin/invoices', icon: Receipt },
   { label: 'Payments', path: '/admin/payments', icon: CreditCard },
