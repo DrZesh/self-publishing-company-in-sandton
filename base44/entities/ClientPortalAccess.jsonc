@@ -1,0 +1,45 @@
+{
+  "name": "ClientPortalAccess",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "access_token": {
+      "type": "string",
+      "description": "Unique secure token for portal URL"
+    },
+    "email": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_accessed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "access_count": {
+      "type": "number",
+      "default": 0
+    },
+    "allowed_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Which sections client can see: quotes, invoices, projects, documents"
+    }
+  },
+  "required": [
+    "contact_id",
+    "access_token",
+    "email"
+  ]
+}

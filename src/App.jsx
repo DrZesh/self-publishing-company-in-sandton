@@ -202,6 +202,9 @@ const AdminTasks = lazy(() => import('./pages/admin/AdminTasks'));
 const AdminDocuments = lazy(() => import('./pages/admin/AdminDocuments'));
 const AdminContracts = lazy(() => import('./pages/admin/AdminContracts'));
 const AdminCalendar = lazy(() => import('./pages/admin/AdminCalendar'));
+const AdminReports = lazy(() => import('./pages/admin/AdminReports'));
+const AdminClientPortal = lazy(() => import('./pages/admin/AdminClientPortal'));
+const ClientPortal = lazy(() => import('./pages/ClientPortal'));
 const QuoteView = lazy(() => import('./pages/QuoteView'));
 
 const AuthenticatedApp = () => {
@@ -618,9 +621,12 @@ const AuthenticatedApp = () => {
       <Route path="/admin/documents" element={<ProtectedAdminRoute><AdminDocuments /></ProtectedAdminRoute>} />
       <Route path="/admin/contracts" element={<ProtectedAdminRoute><AdminContracts /></ProtectedAdminRoute>} />
       <Route path="/admin/calendar" element={<ProtectedAdminRoute><AdminCalendar /></ProtectedAdminRoute>} />
+      <Route path="/admin/reports" element={<ProtectedAdminRoute><AdminReports /></ProtectedAdminRoute>} />
+      <Route path="/admin/client-portal" element={<ProtectedAdminRoute><AdminClientPortal /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />
+      <Route path="/portal/:token" element={<ClientPortal />} />
     </Routes>
     </Suspense>
   );
