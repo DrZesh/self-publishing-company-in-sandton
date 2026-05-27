@@ -219,6 +219,35 @@ Deno.serve(async (req) => {
       if (!r2.ok) console.error(`Admin email to ${adminEmail} failed: ${await r2.text()}`);
     }
 
+    // ── WhatsApp notification via CallMeBot ──────────────────────────────────
+    try {
+      const waNumber = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
+      const waApiKey = Deno.env.get('CALLMEBOT_API_KEY');
+      if (waNumber && waApiKey) {
+        const submittedAt = new Date().toLocaleString('en-ZA', {
+          timeZone: 'Africa/Johannesburg',
+          day: '2-digit', month: 'long', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: false,
+        }).replace(',', ' at');
+        const servicesList = (answers?.extras || []).join(', ') || '–';
+        const waMessage =
+          `📬 *New Quote Request — Creative Books SA*\n` +
+          `🕐 ${submittedAt}\n\n` +
+          `👤 *Name:* ${clientInfo.name}\n` +
+          `📧 *Email:* ${clientInfo.email}\n` +
+          `📞 *Phone:* ${clientInfo.phone || '–'}\n` +
+          `📖 *Book Type:* ${answers?.projectType || '–'}\n` +
+          `📄 *Pages:* ${answers?.pages || '–'}\n` +
+          `💰 *Estimate:* R${Math.round(total).toLocaleString()}\n` +
+          `🔖 *Ref:* ${quoteNumber}`;
+        const phone = waNumber.replace(/[^0-9]/g, '');
+        const waRes = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(waMessage)}&apikey=${waApiKey}`);
+        console.log('WhatsApp sent:', await waRes.text());
+      }
+    } catch (waErr) {
+      console.error('WhatsApp notification failed:', waErr.message);
+    }
+
     return Response.json({ success: true, quoteNumber });
   } catch (error) {
     console.error('sendEstimateNotification error:', error.message);
