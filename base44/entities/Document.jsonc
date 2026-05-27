@@ -45,10 +45,16 @@
       "enum": [
         "Draft",
         "Sent to Client",
+        "Opened",
+        "Viewed",
+        "Downloaded",
         "Awaiting Signature",
         "Signed",
+        "Awaiting Approval",
         "Approved",
         "Rejected",
+        "Changes Requested",
+        "Payment Proof Uploaded",
         "Expired",
         "Archived"
       ],
@@ -70,14 +76,91 @@
       "type": "number",
       "default": 1
     },
+    "parent_doc_id": {
+      "type": "string",
+      "description": "Previous version document ID"
+    },
+    "is_latest_version": {
+      "type": "boolean",
+      "default": true
+    },
     "book_title": {
       "type": "string"
     },
     "notes": {
       "type": "string"
     },
+    "internal_notes": {
+      "type": "string",
+      "description": "Admin-only notes"
+    },
     "uploaded_by": {
       "type": "string"
+    },
+    "secure_token": {
+      "type": "string",
+      "description": "Unique token for secure client access link"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When secure link expires"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "downloaded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "download_count": {
+      "type": "number",
+      "default": 0
+    },
+    "open_count": {
+      "type": "number",
+      "default": 0
+    },
+    "client_message": {
+      "type": "string",
+      "description": "Message from client (changes request, question)"
+    },
+    "proof_url": {
+      "type": "string",
+      "description": "Uploaded payment proof or signed copy URL"
+    },
+    "signature_url": {
+      "type": "string",
+      "description": "Electronic signature image URL"
+    },
+    "reminder_sent_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_reminder_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [

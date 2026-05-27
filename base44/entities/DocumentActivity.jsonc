@@ -1,0 +1,76 @@
+{
+  "name": "DocumentActivity",
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "Linked Document ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "sent",
+        "resent",
+        "opened",
+        "viewed",
+        "downloaded",
+        "signed",
+        "approved",
+        "rejected",
+        "expired",
+        "archived",
+        "payment_proof_uploaded",
+        "changes_requested",
+        "question_asked",
+        "link_clicked",
+        "password_entered",
+        "version_created",
+        "reminder_sent"
+      ]
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "client"
+      ],
+      "default": "client"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_ip": {
+      "type": "string"
+    },
+    "actor_device": {
+      "type": "string"
+    },
+    "actor_browser": {
+      "type": "string"
+    },
+    "actor_user_agent": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Extra data e.g. file URL for proof uploads"
+    }
+  },
+  "required": [
+    "document_id",
+    "action",
+    "timestamp"
+  ]
+}

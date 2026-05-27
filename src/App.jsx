@@ -207,6 +207,7 @@ const AdminClientPortal = lazy(() => import('./pages/admin/AdminClientPortal'));
 const ClientPortal = lazy(() => import('./pages/ClientPortal'));
 const AdminAutomations = lazy(() => import('./pages/admin/AdminAutomations'));
 const QuoteView = lazy(() => import('./pages/QuoteView'));
+const DocumentView = lazy(() => import('./pages/DocumentView'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -628,6 +629,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />
+      <Route path="/doc/view/:id/:token" element={<DocumentView />} />
       <Route path="/portal/:token" element={<ClientPortal />} />
     </Routes>
     </Suspense>
