@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { label: 'Payments', path: '/admin/payments', icon: CreditCard },
   { label: 'Tasks', path: '/admin/tasks', icon: CheckSquare },
   { label: 'Documents', path: '/admin/documents', icon: FolderOpen },
+  { label: 'Doc Dashboard', path: '/admin/document-dashboard', icon: BarChart3 },
   { label: 'Contracts', path: '/admin/contracts', icon: FileSignature },
   { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
   { label: 'Reports', path: '/admin/reports', icon: BarChart3 },

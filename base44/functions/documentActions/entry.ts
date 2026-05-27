@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
+import { jsPDF } from 'npm:jspdf@4.0.0';
 
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -276,6 +277,54 @@ Deno.serve(async (req) => {
 
       await base44.asServiceRole.entities.Document.update(document_id, updates);
 
+      // ─── AUTOMATIC WORKFLOW TRIGGERS ─────────────────────────────────────────
+      try {
+        // Quote accepted → update Quote entity status
+        if (doc.category === 'Quotation' && client_action === 'approve') {
+          if (doc.quote_id) {
+            await base44.asServiceRole.entities.Quote.update(doc.quote_id, {
+              status: 'Accepted',
+              accepted_at: new Date().toISOString(),
+            });
+          }
+          // Update contact pipeline stage
+          if (doc.contact_id) {
+            await base44.asServiceRole.entities.Contact.update(doc.contact_id, {
+              pipeline_stage: 'Payment Pending',
+            });
+          }
+        }
+        // Quote declined → update Quote entity status
+        if (doc.category === 'Quotation' && client_action === 'reject') {
+          if (doc.quote_id) {
+            await base44.asServiceRole.entities.Quote.update(doc.quote_id, {
+              status: 'Declined',
+              declined_at: new Date().toISOString(),
+              declined_reason: clientNotes || '',
+            });
+          }
+        }
+        // Contract signed → update Project contract_status
+        if (['Unsigned Contract'].includes(doc.category) && ['sign', 'upload_signed'].includes(client_action)) {
+          if (doc.project_id) {
+            await base44.asServiceRole.entities.Project.update(doc.project_id, {
+              contract_status: 'Signed',
+            });
+          }
+        }
+        // Proof approved → update Project stage to Final Approval Received
+        if (doc.category === 'Proof Approval' && client_action === 'approve') {
+          if (doc.project_id) {
+            await base44.asServiceRole.entities.Project.update(doc.project_id, {
+              stage: 'Final Approval Received',
+              stage_changed_at: new Date().toISOString(),
+            });
+          }
+        }
+      } catch (wfErr) {
+        console.error('Workflow trigger error (non-fatal):', wfErr.message);
+      }
+
       const activityMap = {
         approve: 'approved', reject: 'rejected', sign: 'signed',
         upload_proof: 'payment_proof_uploaded', changes_requested: 'changes_requested',
@@ -363,6 +412,175 @@ Deno.serve(async (req) => {
       });
 
       return Response.json({ success: true, doc: newDoc });
+    }
+
+    // ─── GENERATE APPROVAL CERTIFICATE ────────────────────────────────────────
+    if (action === 'generate_certificate') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { document_id } = body;
+      const docs = await base44.asServiceRole.entities.Document.filter({ id: document_id });
+      if (!docs.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const doc = docs[0];
+
+      const contacts = await base44.asServiceRole.entities.Document.filter({ id: document_id });
+      const contactList = await base44.asServiceRole.entities.Contact.filter({ id: doc.contact_id });
+      const contact = contactList[0];
+
+      const activities = await base44.asServiceRole.entities.DocumentActivity.filter({ document_id });
+      const approvalActivity = activities.find(a => a.action === 'approved');
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      // Background
+      pdf.setFillColor(26, 18, 8);
+      pdf.rect(0, 0, 210, 50, 'F');
+      pdf.setFillColor(184, 115, 51);
+      pdf.rect(0, 48, 210, 3, 'F');
+
+      // Header
+      pdf.setTextColor(184, 115, 51);
+      pdf.setFontSize(20);
+      pdf.text('CREATIVE BOOKS SA', 15, 20);
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(10);
+      pdf.text('APPROVAL CERTIFICATE', 15, 30);
+      pdf.setFontSize(9);
+      pdf.text('This document certifies that the following approval was given electronically.', 15, 38);
+
+      // Certificate number top right
+      pdf.setTextColor(184, 115, 51);
+      pdf.setFontSize(18);
+      pdf.text('CERT', 195, 20, { align: 'right' });
+      pdf.setFontSize(10);
+      pdf.setTextColor(255, 255, 255);
+      pdf.text(new Date().getFullYear().toString(), 195, 28, { align: 'right' });
+
+      // Body
+      const fields = [
+        { label: 'Client Name', value: contact?.full_name || 'N/A' },
+        { label: 'Client Email', value: contact?.email || 'N/A' },
+        { label: 'Book Title', value: doc.book_title || 'N/A' },
+        { label: 'Document', value: doc.file_name },
+        { label: 'Document Type', value: doc.category },
+        { label: 'Version', value: `v${doc.version || 1}` },
+        { label: 'Approval Date', value: doc.approved_at ? new Date(doc.approved_at).toLocaleString('en-ZA') : new Date().toLocaleString('en-ZA') },
+        { label: 'Client IP Address', value: approvalActivity?.actor_ip || 'Not recorded' },
+        { label: 'Device', value: approvalActivity?.actor_device || 'Not recorded' },
+        { label: 'Approved By Admin', value: user.email },
+      ];
+
+      let y = 70;
+      fields.forEach(({ label, value }) => {
+        pdf.setFillColor(250, 248, 244);
+        pdf.roundedRect(15, y - 5, 180, 12, 2, 2, 'F');
+        pdf.setTextColor(150, 120, 80);
+        pdf.setFontSize(8);
+        pdf.text(label.toUpperCase(), 20, y + 1);
+        pdf.setTextColor(26, 18, 8);
+        pdf.setFontSize(10);
+        pdf.text(String(value), 80, y + 1);
+        y += 16;
+      });
+
+      // Approval statement
+      y += 5;
+      pdf.setFillColor(26, 18, 8);
+      pdf.roundedRect(15, y, 180, 25, 3, 3, 'F');
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(9);
+      const stmt = `I, ${contact?.full_name || 'the client'}, confirm that I have reviewed and approved the above document for use. This approval is legally binding and cannot be undone.`;
+      const stmtLines = pdf.splitTextToSize(stmt, 170);
+      pdf.text(stmtLines, 20, y + 9);
+
+      // Footer
+      y += 40;
+      pdf.setTextColor(150, 150, 150);
+      pdf.setFontSize(8);
+      pdf.text('Creative Books SA · info@creativebooks.co.za · www.creativebooks.co.za · 010 500 3331', 105, 285, { align: 'center' });
+      pdf.text('This certificate was generated automatically by the Creative Books SA CRM.', 105, 290, { align: 'center' });
+
+      const pdfBlob = pdf.output('blob');
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+      return Response.json({ success: true, pdf_base64: base64, filename: `ApprovalCertificate_${doc.file_name.replace(/[^a-z0-9]/gi, '_')}.pdf` });
+    }
+
+    // ─── EXPORT AUDIT TRAIL PDF ────────────────────────────────────────────────
+    if (action === 'export_audit_trail') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { document_id } = body;
+      const docs = await base44.asServiceRole.entities.Document.filter({ id: document_id });
+      if (!docs.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const doc = docs[0];
+
+      const contactList = await base44.asServiceRole.entities.Contact.filter({ id: doc.contact_id });
+      const contact = contactList[0];
+
+      const activities = await base44.asServiceRole.entities.DocumentActivity.filter({ document_id });
+      activities.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      pdf.setFillColor(26, 18, 8);
+      pdf.rect(0, 0, 210, 35, 'F');
+      pdf.setTextColor(184, 115, 51);
+      pdf.setFontSize(16);
+      pdf.text('DOCUMENT AUDIT TRAIL', 15, 15);
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(9);
+      pdf.text(`Creative Books SA · Exported: ${new Date().toLocaleString('en-ZA')}`, 15, 24);
+
+      // Doc info
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(11);
+      pdf.text('Document Information', 15, 48);
+      pdf.setFontSize(9);
+      pdf.setTextColor(80, 80, 80);
+      pdf.text(`File: ${doc.file_name}`, 15, 56);
+      pdf.text(`Category: ${doc.category} · Version: v${doc.version || 1} · Status: ${doc.status}`, 15, 62);
+      pdf.text(`Client: ${contact?.full_name || 'N/A'} (${contact?.email || 'N/A'})`, 15, 68);
+
+      pdf.setDrawColor(200, 200, 200);
+      pdf.line(15, 73, 195, 73);
+
+      // Activity rows
+      pdf.setFontSize(10);
+      pdf.setTextColor(26, 18, 8);
+      pdf.text('Activity Timeline', 15, 82);
+
+      let y = 90;
+      activities.forEach((a, i) => {
+        if (y > 270) { pdf.addPage(); y = 20; }
+        pdf.setFillColor(i % 2 === 0 ? 250 : 255, i % 2 === 0 ? 248 : 255, i % 2 === 0 ? 244 : 255);
+        pdf.rect(15, y - 4, 180, 14, 'F');
+        pdf.setTextColor(184, 115, 51);
+        pdf.setFontSize(8);
+        pdf.text(a.action.toUpperCase().replace('_', ' '), 18, y + 2);
+        pdf.setTextColor(80, 80, 80);
+        pdf.text(new Date(a.timestamp).toLocaleString('en-ZA'), 60, y + 2);
+        pdf.setTextColor(120, 120, 120);
+        pdf.text(`${a.actor_type || ''} ${a.actor_email || ''} ${a.actor_ip ? '· ' + a.actor_ip : ''} ${a.actor_device ? '· ' + a.actor_device : ''}`.trim(), 18, y + 8);
+        if (a.notes) {
+          pdf.setFontSize(7);
+          pdf.text(`Note: ${a.notes}`, 18, y + 13);
+        }
+        y += 16;
+      });
+
+      pdf.setTextColor(150, 150, 150);
+      pdf.setFontSize(8);
+      pdf.text('Creative Books SA · This audit trail was generated from the CRM and is for internal record-keeping purposes.', 105, 290, { align: 'center' });
+
+      const pdfBlob = pdf.output('blob');
+      const arrayBuffer = await pdfBlob.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+      return Response.json({ success: true, pdf_base64: base64, filename: `AuditTrail_${doc.file_name.replace(/[^a-z0-9]/gi, '_')}.pdf` });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });

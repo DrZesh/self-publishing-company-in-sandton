@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,61 @@ export default function DocumentView() {
   const [clientNotes, setClientNotes] = useState('');
   const [proofFile, setProofFile] = useState(null);
   const [done, setDone] = useState(null);
+  const [sigData, setSigData] = useState(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const canvasRef = useRef(null);
+  const lastPos = useRef(null);
   const tracked = useRef(false);
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  };
+
+  const startDraw = useCallback((e) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setIsDrawing(true);
+    lastPos.current = getPos(e, canvas);
+  }, []);
+
+  const draw = useCallback((e) => {
+    e.preventDefault();
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = '#1A1208';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    lastPos.current = pos;
+  }, [isDrawing]);
+
+  const stopDraw = useCallback(() => {
+    setIsDrawing(false);
+    const canvas = canvasRef.current;
+    if (canvas) setSigData(canvas.toDataURL('image/png'));
+  }, []);
+
+  const clearSig = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setSigData(null);
+  };
 
   useEffect(() => {
     if (tracked.current) return;
@@ -43,9 +97,17 @@ export default function DocumentView() {
     setSubmitting(true);
     try {
       let proof_url = null;
+      let signature_url = null;
       if (proofFile) {
         const uploaded = await base44.integrations.Core.UploadFile({ file: proofFile });
         proof_url = uploaded.file_url;
+      }
+      // Convert canvas signature to file and upload
+      if (clientAction === 'sign' && sigData) {
+        const blob = await fetch(sigData).then(r => r.blob());
+        const sigFile = new File([blob], 'signature.png', { type: 'image/png' });
+        const uploaded = await base44.integrations.Core.UploadFile({ file: sigFile });
+        signature_url = uploaded.file_url;
       }
       const res = await base44.functions.invoke('documentActions', {
         action: 'client_action',
@@ -54,6 +116,7 @@ export default function DocumentView() {
         client_action: clientAction,
         notes: clientNotes,
         proof_url,
+        signature_url,
       });
       if (res.data?.success) {
         const messages = {
@@ -273,6 +336,37 @@ export default function DocumentView() {
               </div>
             )}
 
+            {/* Signature canvas for sign action */}
+            {activeModal === 'sign' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Draw your signature below:</label>
+                <div className="relative border-2 border-gray-200 rounded-xl bg-gray-50 overflow-hidden" style={{ touchAction: 'none' }}>
+                  <canvas
+                    ref={canvasRef}
+                    width={420}
+                    height={160}
+                    className="w-full cursor-crosshair"
+                    onMouseDown={startDraw}
+                    onMouseMove={draw}
+                    onMouseUp={stopDraw}
+                    onMouseLeave={stopDraw}
+                    onTouchStart={startDraw}
+                    onTouchMove={draw}
+                    onTouchEnd={stopDraw}
+                  />
+                  {!sigData && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <p className="text-gray-300 text-sm">Sign here with your mouse or finger</p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <button onClick={clearSig} className="text-xs text-red-500 hover:underline">Clear signature</button>
+                  {sigData && <span className="text-xs text-green-600 font-medium">✓ Signature captured</span>}
+                </div>
+              </div>
+            )}
+
             {(activeModal === 'upload_proof' || activeModal === 'upload_signed') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -310,7 +404,7 @@ export default function DocumentView() {
               </Button>
               <Button
                 onClick={() => handleAction(activeModal)}
-                disabled={submitting || ((activeModal === 'upload_proof' || activeModal === 'upload_signed') && !proofFile)}
+                disabled={submitting || ((activeModal === 'upload_proof' || activeModal === 'upload_signed') && !proofFile) || (activeModal === 'sign' && !sigData)}
                 className={`flex-1 text-white ${
                   activeModal === 'reject' ? 'bg-red-600 hover:bg-red-700' :
                   activeModal === 'approve' ? 'bg-green-600 hover:bg-green-700' :

@@ -254,24 +254,47 @@ export default function ClientPortal() {
         {activeTab === 'documents' && (
           <div className="space-y-3">
             {documents.length === 0 ? <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-400">No documents yet</div> :
-              documents.map(doc => (
-                <div key={doc.id} className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{doc.file_name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{doc.category} {doc.book_title && `· ${doc.book_title}`}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <StatusBadge status={doc.status} />
-                    {doc.file_url && (
-                      <a href={doc.file_url} target="_blank" rel="noreferrer">
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#B87333] hover:bg-[#A06828] text-white rounded-lg text-xs font-medium transition-colors">
+              documents.map(doc => {
+                const hasSecureLink = doc.secure_token && doc.expires_at && new Date(doc.expires_at) > new Date();
+                const isExpired = doc.expires_at && new Date(doc.expires_at) < new Date();
+                const secureUrl = hasSecureLink ? `/doc/view/${doc.id}/${doc.secure_token}` : null;
+                const needsAction = ['Sent to Client','Opened','Awaiting Signature','Awaiting Approval'].includes(doc.status);
+                return (
+                  <div key={doc.id} className={`bg-white rounded-2xl border p-4 ${needsAction ? 'border-[#B87333]/30 bg-orange-50/30' : 'border-gray-100'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-medium text-gray-900 text-sm">{doc.file_name}</p>
+                          {doc.version > 1 && <span className="text-[10px] bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">v{doc.version}</span>}
+                          {needsAction && <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-semibold">Action needed</span>}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-0.5">{doc.category}{doc.book_title ? ` · ${doc.book_title}` : ''}</p>
+                        {isExpired && <p className="text-xs text-orange-500 mt-0.5">⏱ Link expired — please contact us for a new link</p>}
+                        {doc.sent_at && <p className="text-xs text-gray-400 mt-0.5">Sent: {new Date(doc.sent_at).toLocaleDateString('en-ZA')}</p>}
+                      </div>
+                      <StatusBadge status={doc.status} />
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      {secureUrl && (
+                        <a href={secureUrl} className="flex items-center gap-1.5 px-3 py-2 bg-[#B87333] hover:bg-[#A06828] text-white rounded-lg text-xs font-semibold transition-colors">
+                          <ChevronRight className="w-3 h-3" />
+                          {needsAction ? 'Open & Take Action' : 'View Document'}
+                        </a>
+                      )}
+                      {doc.file_url && (
+                        <a href={doc.file_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors">
                           <Download className="w-3 h-3" /> Download
-                        </button>
-                      </a>
-                    )}
+                        </a>
+                      )}
+                      {doc.proof_url && (
+                        <a href={doc.proof_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 border border-teal-200 text-teal-700 rounded-lg text-xs font-medium hover:bg-teal-50 transition-colors">
+                          <Download className="w-3 h-3" /> View Uploaded Proof
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         )}
 
