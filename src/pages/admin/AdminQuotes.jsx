@@ -22,6 +22,7 @@ export default function AdminQuotes() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [sendingId, setSendingId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,20 +47,48 @@ export default function AdminQuotes() {
   };
 
   const handleSend = async (quote) => {
-    if (!confirm(`Send quote ${quote.quote_number} to ${quote.contact_snapshot?.email}?`)) return;
-    const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
-    if (res.data?.success) {
-      setQuotes(prev => prev.map(q => q.id === quote.id ? { ...q, status: 'Sent', sent_at: new Date().toISOString() } : q));
-      toast.success('Quote sent successfully');
+    const email = quote.contact_snapshot?.email;
+    if (!email) {
+      toast.error('No email address on this contact — please update the contact first.');
+      return;
+    }
+    if (!confirm(`Send quote ${quote.quote_number} to ${email}?`)) return;
+    setSendingId(quote.id);
+    try {
+      const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
+      if (res.data?.success) {
+        setQuotes(prev => prev.map(q => q.id === quote.id ? { ...q, status: 'Sent', sent_at: new Date().toISOString() } : q));
+        toast.success(`✅ Quote ${quote.quote_number} sent to ${email}`);
+      } else {
+        toast.error(res.data?.error || 'Failed to send quote. Please try again.');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.error || err.message || 'Failed to send quote.');
+    } finally {
+      setSendingId(null);
     }
   };
 
   const handleResend = async (quote) => {
-    if (!confirm(`Resend quote ${quote.quote_number} to ${quote.contact_snapshot?.email}?`)) return;
-    const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
-    if (res.data?.success) {
-      setQuotes(prev => prev.map(q => q.id === quote.id ? { ...q, status: 'Sent' } : q));
-      toast.success('Quote resent');
+    const email = quote.contact_snapshot?.email;
+    if (!email) {
+      toast.error('No email address on this contact — please update the contact first.');
+      return;
+    }
+    if (!confirm(`Resend quote ${quote.quote_number} to ${email}?`)) return;
+    setSendingId(quote.id);
+    try {
+      const res = await base44.functions.invoke('quoteActions', { action: 'send', quote_id: quote.id });
+      if (res.data?.success) {
+        setQuotes(prev => prev.map(q => q.id === quote.id ? { ...q, status: 'Sent' } : q));
+        toast.success(`✅ Quote ${quote.quote_number} resent to ${email}`);
+      } else {
+        toast.error(res.data?.error || 'Failed to resend quote. Please try again.');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.error || err.message || 'Failed to resend quote.');
+    } finally {
+      setSendingId(null);
     }
   };
 
@@ -180,10 +209,28 @@ export default function AdminQuotes() {
                       <div className="flex items-center gap-1 justify-end">
                         <Link to={`/admin/quotes/${q.id}`} title="View" className="p-1.5 hover:bg-black/5 rounded-lg"><Eye className="w-4 h-4 text-black/40" /></Link>
                         {q.status === 'Draft' && (
-                          <button onClick={() => handleSend(q)} title="Send" className="p-1.5 hover:bg-black/5 rounded-lg"><Send className="w-4 h-4 text-emerald-600" /></button>
+                          <button
+                            onClick={() => handleSend(q)}
+                            title="Send quote"
+                            disabled={sendingId === q.id}
+                            className="p-1.5 hover:bg-black/5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {sendingId === q.id
+                              ? <div className="w-4 h-4 border-2 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+                              : <Send className="w-4 h-4 text-emerald-600" />}
+                          </button>
                         )}
                         {(q.status === 'Sent' || q.status === 'Viewed') && (
-                          <button onClick={() => handleResend(q)} title="Resend" className="p-1.5 hover:bg-black/5 rounded-lg"><Send className="w-4 h-4 text-blue-400" /></button>
+                          <button
+                            onClick={() => handleResend(q)}
+                            title="Resend quote"
+                            disabled={sendingId === q.id}
+                            className="p-1.5 hover:bg-black/5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {sendingId === q.id
+                              ? <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-500 rounded-full animate-spin" />
+                              : <Send className="w-4 h-4 text-blue-400" />}
+                          </button>
                         )}
                         <button onClick={() => handleDuplicate(q.id)} title="Duplicate" className="p-1.5 hover:bg-black/5 rounded-lg"><Copy className="w-4 h-4 text-black/40" /></button>
                       </div>
