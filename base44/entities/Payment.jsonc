@@ -1,0 +1,63 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "invoice_id": {
+      "type": "string",
+      "description": "Linked Invoice ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "EFT",
+        "Cash",
+        "Card",
+        "PayFast",
+        "Other"
+      ],
+      "default": "EFT"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Payment reference or transaction ID"
+    },
+    "proof_url": {
+      "type": "string",
+      "description": "URL to uploaded payment proof"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Confirmed",
+        "Refunded"
+      ],
+      "default": "Confirmed"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "invoice_id",
+    "contact_id",
+    "amount",
+    "payment_date"
+  ]
+}

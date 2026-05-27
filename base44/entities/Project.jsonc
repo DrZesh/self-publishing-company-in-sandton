@@ -1,0 +1,184 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "quote_id": {
+      "type": "string",
+      "description": "Linked Quote ID"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Linked Invoice ID"
+    },
+    "book_title": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "Full Publishing Package",
+        "Printing Only",
+        "Editing Only",
+        "Cover Design Only",
+        "Typesetting Only",
+        "Ebook",
+        "Ghostwriting",
+        "Children's Book",
+        "Academic Editing",
+        "Custom"
+      ],
+      "default": "Full Publishing Package"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "Enquiry Received",
+        "Quote Sent",
+        "Quote Accepted",
+        "Contract Sent",
+        "Contract Signed",
+        "Payment Received",
+        "Manuscript Received",
+        "Editing",
+        "Proofreading",
+        "Typesetting",
+        "Cover Design",
+        "Client Approval",
+        "Changes Requested",
+        "Final Approval Received",
+        "Sample Print Queued",
+        "Sample Print Completed",
+        "Mass Production Started",
+        "Ready for Collection",
+        "Courier Booked",
+        "Delivered",
+        "Completed"
+      ],
+      "default": "Enquiry Received"
+    },
+    "stage_changed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "project_value": {
+      "type": "number",
+      "default": 0
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "Unpaid",
+        "Deposit Paid",
+        "Partially Paid",
+        "Fully Paid",
+        "Overdue"
+      ],
+      "default": "Unpaid"
+    },
+    "contract_status": {
+      "type": "string",
+      "enum": [
+        "Not Sent",
+        "Sent",
+        "Signed",
+        "Expired"
+      ],
+      "default": "Not Sent"
+    },
+    "assigned_editor": {
+      "type": "string"
+    },
+    "assigned_designer": {
+      "type": "string"
+    },
+    "assigned_typesetter": {
+      "type": "string"
+    },
+    "assigned_manager": {
+      "type": "string"
+    },
+    "book_spec": {
+      "type": "object",
+      "description": "Book specification sheet",
+      "properties": {
+        "book_size": {
+          "type": "string"
+        },
+        "page_count": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "interior_colour": {
+          "type": "string",
+          "enum": [
+            "Black & White",
+            "Full Colour",
+            "Mixed"
+          ]
+        },
+        "paper_type": {
+          "type": "string"
+        },
+        "cover_finish": {
+          "type": "string",
+          "enum": [
+            "Matte",
+            "Gloss",
+            "Soft Touch"
+          ]
+        },
+        "binding_type": {
+          "type": "string",
+          "enum": [
+            "Perfect Bound",
+            "Saddle Stitch",
+            "Hardcover",
+            "Spiral"
+          ]
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "special_instructions": {
+          "type": "string"
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal admin notes"
+    },
+    "client_notes": {
+      "type": "string",
+      "description": "Notes visible to client"
+    },
+    "is_at_risk": {
+      "type": "boolean",
+      "default": false
+    },
+    "risk_reason": {
+      "type": "string"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "contact_id",
+    "book_title"
+  ]
+}

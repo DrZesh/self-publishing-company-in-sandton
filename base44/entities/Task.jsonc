@@ -1,0 +1,79 @@
+{
+  "name": "Task",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "Quote Follow-up",
+        "Payment Follow-up",
+        "Contract Reminder",
+        "Client Approval",
+        "Production Deadline",
+        "Collection Reminder",
+        "Reprint Follow-up",
+        "Review Request",
+        "General"
+      ],
+      "default": "General"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "lead",
+        "quote",
+        "invoice",
+        "project"
+      ],
+      "description": "Type of entity this task relates to"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "contact_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Urgent"
+      ],
+      "default": "Medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "In Progress",
+        "Done",
+        "Cancelled"
+      ],
+      "default": "Pending"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Staff member email"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "due_date"
+  ]
+}

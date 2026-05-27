@@ -1,0 +1,119 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string",
+      "description": "Auto-generated invoice number e.g. INV-2026-0001"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "quote_id": {
+      "type": "string",
+      "description": "Linked Quote ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent",
+        "Viewed",
+        "Partially Paid",
+        "Paid",
+        "Overdue",
+        "Cancelled",
+        "Refunded"
+      ],
+      "default": "Draft"
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          },
+          "line_total": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0
+    },
+    "vat_rate": {
+      "type": "number",
+      "default": 15
+    },
+    "vat_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "include_vat": {
+      "type": "boolean",
+      "default": true
+    },
+    "total": {
+      "type": "number",
+      "default": 0
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "balance_due": {
+      "type": "number",
+      "default": 0
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_terms": {
+      "type": "string",
+      "default": "Payment due within 7 days of invoice date."
+    },
+    "banking_details": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "book_title": {
+      "type": "string"
+    },
+    "contact_snapshot": {
+      "type": "object"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "paid_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "pdf_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "contact_id",
+    "invoice_number"
+  ]
+}
