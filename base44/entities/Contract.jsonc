@@ -1,0 +1,62 @@
+{
+  "name": "Contract",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "title": {
+      "type": "string"
+    },
+    "book_title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent",
+        "Signed",
+        "Expired",
+        "Cancelled"
+      ],
+      "default": "Draft"
+    },
+    "contract_file_url": {
+      "type": "string",
+      "description": "Unsigned contract file URL"
+    },
+    "signed_file_url": {
+      "type": "string",
+      "description": "Signed contract file URL"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reminder_sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "contact_id",
+    "title"
+  ]
+}

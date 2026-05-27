@@ -1,0 +1,89 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "quote_id": {
+      "type": "string",
+      "description": "Linked Quote ID"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Linked Invoice ID"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Signed Contract",
+        "Unsigned Contract",
+        "Quotation",
+        "Invoice",
+        "Payment Proof",
+        "Manuscript",
+        "Book Cover File",
+        "Typesetting File",
+        "Final Print File",
+        "Proof Approval",
+        "ISBN Document",
+        "Copyright Page",
+        "Printing Spec",
+        "Courier Document",
+        "Client Supplied",
+        "Internal Admin"
+      ],
+      "default": "Client Supplied"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent to Client",
+        "Awaiting Signature",
+        "Signed",
+        "Approved",
+        "Rejected",
+        "Expired",
+        "Archived"
+      ],
+      "default": "Draft"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_type": {
+      "type": "string"
+    },
+    "file_size_kb": {
+      "type": "number"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "book_title": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "uploaded_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "contact_id",
+    "category",
+    "file_name",
+    "file_url"
+  ]
+}

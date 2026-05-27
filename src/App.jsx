@@ -199,6 +199,9 @@ const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
 const AdminInvoices = lazy(() => import('./pages/admin/AdminInvoices'));
 const AdminPayments = lazy(() => import('./pages/admin/AdminPayments'));
 const AdminTasks = lazy(() => import('./pages/admin/AdminTasks'));
+const AdminDocuments = lazy(() => import('./pages/admin/AdminDocuments'));
+const AdminContracts = lazy(() => import('./pages/admin/AdminContracts'));
+const AdminCalendar = lazy(() => import('./pages/admin/AdminCalendar'));
 const QuoteView = lazy(() => import('./pages/QuoteView'));
 
 const AuthenticatedApp = () => {
@@ -612,6 +615,9 @@ const AuthenticatedApp = () => {
       <Route path="/admin/invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
       <Route path="/admin/payments" element={<ProtectedAdminRoute><AdminPayments /></ProtectedAdminRoute>} />
       <Route path="/admin/tasks" element={<ProtectedAdminRoute><AdminTasks /></ProtectedAdminRoute>} />
+      <Route path="/admin/documents" element={<ProtectedAdminRoute><AdminDocuments /></ProtectedAdminRoute>} />
+      <Route path="/admin/contracts" element={<ProtectedAdminRoute><AdminContracts /></ProtectedAdminRoute>} />
+      <Route path="/admin/calendar" element={<ProtectedAdminRoute><AdminCalendar /></ProtectedAdminRoute>} />
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />

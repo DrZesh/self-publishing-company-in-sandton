@@ -4,7 +4,7 @@ import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 import { 
   LayoutDashboard, Inbox, Target, Users, Settings, 
   BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail, PenTool,
-  FolderKanban, Receipt, CreditCard, CheckSquare
+  FolderKanban, Receipt, CreditCard, CheckSquare, FolderOpen, FileSignature, CalendarDays
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -21,6 +21,9 @@ const NAV_ITEMS = [
   { label: 'Invoices', path: '/admin/invoices', icon: Receipt },
   { label: 'Payments', path: '/admin/payments', icon: CreditCard },
   { label: 'Tasks', path: '/admin/tasks', icon: CheckSquare },
+  { label: 'Documents', path: '/admin/documents', icon: FolderOpen },
+  { label: 'Contracts', path: '/admin/contracts', icon: FileSignature },
+  { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
   { label: 'Contacts', path: '/admin/contacts', icon: Users },
   { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
   { label: 'Services', path: '/admin/services', icon: BookOpen },
