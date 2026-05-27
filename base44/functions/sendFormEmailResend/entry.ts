@@ -215,6 +215,28 @@ Deno.serve(async (req) => {
       hour: '2-digit', minute: '2-digit', hour12: false,
     }).replace(',', ' at');
 
+    // ── WhatsApp notification via CallMeBot ──────────────────────────────────
+    try {
+      const waNumber = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
+      const waApiKey = Deno.env.get('CALLMEBOT_API_KEY');
+      if (waNumber && waApiKey) {
+        const fieldLines = (fields || [])
+          .filter(([, v]) => v !== '' && v !== undefined && v !== null)
+          .map(([label, value]) => `• *${label}:* ${value}`)
+          .join('\n');
+        const waMessage =
+          `📬 *New ${formType} — Creative Books SA*\n` +
+          `🕐 ${submittedAt}\n` +
+          `🌐 ${pageUrl || SITE_URL}\n\n` +
+          fieldLines;
+        const phone = waNumber.replace(/[^0-9]/g, '');
+        const waRes = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(waMessage)}&apikey=${waApiKey}`);
+        console.log('WhatsApp sent:', await waRes.text());
+      }
+    } catch (waErr) {
+      console.error('WhatsApp notification failed:', waErr.message);
+    }
+
     // Build email bodies
     const businessHtml = buildBusinessEmail({
       formType, submitterName, submitterEmail, fields, submittedAt,
