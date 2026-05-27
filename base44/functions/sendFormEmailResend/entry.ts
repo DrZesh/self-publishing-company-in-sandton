@@ -215,26 +215,23 @@ Deno.serve(async (req) => {
       hour: '2-digit', minute: '2-digit', hour12: false,
     }).replace(',', ' at');
 
-    // ── WhatsApp notification via CallMeBot ──────────────────────────────────
-    try {
-      const waNumber = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
-      const waApiKey = Deno.env.get('CALLMEBOT_API_KEY');
-      if (waNumber && waApiKey) {
-        const fieldLines = (fields || [])
-          .filter(([, v]) => v !== '' && v !== undefined && v !== null)
-          .map(([label, value]) => `• *${label}:* ${value}`)
-          .join('\n');
-        const waMessage =
-          `📬 *New ${formType} — Creative Books SA*\n` +
-          `🕐 ${submittedAt}\n` +
-          `🌐 ${pageUrl || SITE_URL}\n\n` +
-          fieldLines;
-        const phone = waNumber.replace(/[^0-9]/g, '');
-        const waRes = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(waMessage)}&apikey=${waApiKey}`);
-        console.log('WhatsApp sent:', await waRes.text());
-      }
-    } catch (waErr) {
-      console.error('WhatsApp notification failed:', waErr.message);
+    // Build WhatsApp message (fire in parallel with emails)
+    const waNumber = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
+    const waApiKey = Deno.env.get('CALLMEBOT_API_KEY');
+    let waPromise = Promise.resolve();
+    if (waNumber && waApiKey) {
+      const fieldLines = (fields || [])
+        .filter(([, v]) => v !== '' && v !== undefined && v !== null)
+        .map(([label, value]) => `• *${label}:* ${value}`)
+        .join('\n');
+      const waMessage =
+        `📬 *New ${formType} — Creative Books SA*\n` +
+        `🕐 ${submittedAt}\n` +
+        `🌐 ${pageUrl || SITE_URL}\n\n` +
+        fieldLines;
+      const phone = waNumber.replace(/[^0-9]/g, '');
+      waPromise = fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(waMessage)}&apikey=${waApiKey}`)
+        .catch(waErr => console.error('WhatsApp notification failed:', waErr.message));
     }
 
     // Build email bodies
@@ -247,44 +244,33 @@ Deno.serve(async (req) => {
       firstName, formType, submitterEmail, fields,
     });
 
-    // Send via Resend (works for external emails)
-    const resendRes1 = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: [BUSINESS_EMAIL, BUSINESS_EMAIL_CC],
-        subject: businessSubject || `New ${formType} from ${submitterName}`,
-        html: businessHtml,
+    // Send via Resend in parallel with WhatsApp
+    const [resendRes1, resendRes2] = await Promise.all([
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: [BUSINESS_EMAIL, BUSINESS_EMAIL_CC],
+          subject: businessSubject || `New ${formType} from ${submitterName}`,
+          html: businessHtml,
+        }),
       }),
-    });
-
-    if (!resendRes1.ok) {
-      const err = await resendRes1.text();
-      throw new Error(`Resend business email failed: ${err}`);
-    }
-
-    const resendRes2 = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: submitterEmail,
-        subject: userSubject || 'Thanks for reaching out to Creative Books SA',
-        html: userHtml,
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: submitterEmail,
+          subject: userSubject || 'Thanks for reaching out to Creative Books SA',
+          html: userHtml,
+        }),
       }),
-    });
+      waPromise,
+    ]);
 
-    if (!resendRes2.ok) {
-      const err = await resendRes2.text();
-      throw new Error(`Resend user email failed: ${err}`);
-    }
+    if (!resendRes1.ok) throw new Error(`Resend business email failed: ${await resendRes1.text()}`);
+    if (!resendRes2.ok) throw new Error(`Resend user email failed: ${await resendRes2.text()}`);
 
     return Response.json({ success: true });
   } catch (error) {
