@@ -67,6 +67,36 @@
       "type": "string",
       "format": "date-time"
     },
+    "waiting_on": {
+      "type": "string",
+      "enum": [
+        "Client",
+        "Admin",
+        "Editor",
+        "Designer",
+        "Typesetter",
+        "Production",
+        "Courier",
+        "Payment",
+        "Approval",
+        "Documents",
+        "None"
+      ],
+      "default": "None"
+    },
+    "queue_number": {
+      "type": "number",
+      "description": "Production queue number"
+    },
+    "queue_type": {
+      "type": "string",
+      "enum": [
+        "Sample Print Queue",
+        "Mass Production Queue",
+        "Active Print Queue"
+      ],
+      "description": "Which print queue this project belongs to"
+    },
     "deadline": {
       "type": "string",
       "format": "date"
@@ -107,6 +137,50 @@
     },
     "assigned_manager": {
       "type": "string"
+    },
+    "revision_counts": {
+      "type": "object",
+      "description": "How many revision rounds used per service",
+      "properties": {
+        "cover_design": {
+          "type": "number",
+          "default": 0
+        },
+        "editing": {
+          "type": "number",
+          "default": 0
+        },
+        "layout": {
+          "type": "number",
+          "default": 0
+        },
+        "proofreading": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "revision_limits": {
+      "type": "object",
+      "description": "Included revision rounds per service",
+      "properties": {
+        "cover_design": {
+          "type": "number",
+          "default": 2
+        },
+        "editing": {
+          "type": "number",
+          "default": 1
+        },
+        "layout": {
+          "type": "number",
+          "default": 2
+        },
+        "proofreading": {
+          "type": "number",
+          "default": 1
+        }
+      }
     },
     "book_spec": {
       "type": "object",
@@ -156,6 +230,21 @@
           "type": "string"
         }
       }
+    },
+    "is_vip": {
+      "type": "boolean",
+      "default": false
+    },
+    "vip_tag": {
+      "type": "string",
+      "enum": [
+        "Returning Author",
+        "High-Value",
+        "Corporate",
+        "Urgent",
+        "Referral",
+        "Bulk Print"
+      ]
     },
     "notes": {
       "type": "string",

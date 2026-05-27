@@ -1,0 +1,115 @@
+{
+  "name": "BookRecord",
+  "type": "object",
+  "properties": {
+    "book_title": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "pen_name": {
+      "type": "string"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "author_id": {
+      "type": "string",
+      "description": "Linked Author ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "genre": {
+      "type": "string",
+      "enum": [
+        "Fiction",
+        "Non-Fiction",
+        "Christian",
+        "Biography",
+        "Memoir",
+        "Children's",
+        "Poetry",
+        "Academic",
+        "Business",
+        "Self-Help",
+        "Other"
+      ]
+    },
+    "services_provided": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "print_specs": {
+      "type": "object",
+      "properties": {
+        "book_size": {
+          "type": "string"
+        },
+        "page_count": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "interior_colour": {
+          "type": "string"
+        },
+        "paper_type": {
+          "type": "string"
+        },
+        "cover_finish": {
+          "type": "string"
+        },
+        "binding_type": {
+          "type": "string"
+        },
+        "isbn": {
+          "type": "string"
+        }
+      }
+    },
+    "final_cover_url": {
+      "type": "string"
+    },
+    "final_interior_url": {
+      "type": "string"
+    },
+    "thumbnail_url": {
+      "type": "string"
+    },
+    "reprint_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_reprint_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "project_status": {
+      "type": "string",
+      "enum": [
+        "In Progress",
+        "Completed",
+        "Delivered",
+        "Archived"
+      ],
+      "default": "In Progress"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "year_completed": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "book_title",
+    "author_name"
+  ]
+}

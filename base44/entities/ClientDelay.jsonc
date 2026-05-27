@@ -1,0 +1,59 @@
+{
+  "name": "ClientDelay",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "delay_type": {
+      "type": "string",
+      "enum": [
+        "Late Manuscript",
+        "Late Payment",
+        "Late Approval",
+        "Late Corrections",
+        "Wrong File Sent",
+        "Changed Specifications",
+        "Client Unresponsive",
+        "Contract Delay",
+        "Other"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "days_delayed": {
+      "type": "number",
+      "default": 0
+    },
+    "reported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resolved": {
+      "type": "boolean",
+      "default": false
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "impact_on_deadline": {
+      "type": "string"
+    },
+    "notified_client": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "project_id",
+    "delay_type",
+    "reported_at"
+  ]
+}

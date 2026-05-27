@@ -1,0 +1,88 @@
+{
+  "name": "Author",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "pen_name": {
+      "type": "string"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "books_published": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of book titles"
+    },
+    "services_used": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_book_size": {
+      "type": "string"
+    },
+    "author_website": {
+      "type": "string"
+    },
+    "author_bio": {
+      "type": "string"
+    },
+    "profile_photo_url": {
+      "type": "string"
+    },
+    "marketing_permissions": {
+      "type": "boolean",
+      "default": false,
+      "description": "Consented to marketing"
+    },
+    "testimonial": {
+      "type": "string"
+    },
+    "testimonial_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_vip": {
+      "type": "boolean",
+      "default": false
+    },
+    "vip_reason": {
+      "type": "string"
+    },
+    "reprint_history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "total_books_printed": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "full_name"
+  ]
+}

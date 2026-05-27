@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Inbox, Target, Users, Settings, 
   BookOpen, BarChart2, Search, X, ChevronRight, Columns, FileText, Mail, PenTool,
   FolderKanban, Receipt, CreditCard, CheckSquare, FolderOpen, FileSignature, CalendarDays,
-  BarChart3, Globe, Zap, TrendingUp
+  BarChart3, Globe, Zap, TrendingUp, BookMarked, UserSquare2, Package
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -27,6 +27,9 @@ const NAV_ITEMS = [
   { label: 'Doc Dashboard', path: '/admin/document-dashboard', icon: BarChart3 },
   { label: 'Production Board', path: '/admin/production-board', icon: FolderKanban },
   { label: 'Revenue Forecast', path: '/admin/revenue-forecast', icon: TrendingUp },
+  { label: 'Book Library', path: '/admin/books', icon: BookMarked },
+  { label: 'Authors', path: '/admin/authors', icon: UserSquare2 },
+  { label: 'Collections', path: '/admin/collections', icon: Package },
   { label: 'Contracts', path: '/admin/contracts', icon: FileSignature },
   { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
   { label: 'Reports', path: '/admin/reports', icon: BarChart3 },

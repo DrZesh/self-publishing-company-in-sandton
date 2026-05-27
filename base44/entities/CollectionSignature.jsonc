@@ -1,0 +1,55 @@
+{
+  "name": "CollectionSignature",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID"
+    },
+    "book_title": {
+      "type": "string"
+    },
+    "collected_by": {
+      "type": "string",
+      "description": "Full name of person collecting"
+    },
+    "collector_id_number": {
+      "type": "string"
+    },
+    "collection_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quantity_collected": {
+      "type": "number"
+    },
+    "signature_image_url": {
+      "type": "string",
+      "description": "Digital signature image URL"
+    },
+    "staff_member": {
+      "type": "string"
+    },
+    "collection_notes": {
+      "type": "string"
+    },
+    "invoice_id": {
+      "type": "string"
+    },
+    "fully_paid_at_collection": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "project_id",
+    "contact_id",
+    "collected_by",
+    "collection_date",
+    "quantity_collected"
+  ]
+}

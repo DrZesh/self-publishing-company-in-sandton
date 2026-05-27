@@ -213,6 +213,9 @@ const AdminDocumentDashboard = lazy(() => import('./pages/admin/AdminDocumentDas
 const ProductionBoard = lazy(() => import('./pages/admin/ProductionBoard'));
 const RevenueForecast = lazy(() => import('./pages/admin/RevenueForecast'));
 const WalkInCheckin = lazy(() => import('./pages/WalkInCheckin'));
+const AdminBookLibrary = lazy(() => import('./pages/admin/AdminBookLibrary'));
+const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
+const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -640,6 +643,9 @@ const AuthenticatedApp = () => {
       <Route path="/admin/production-board" element={<ProtectedAdminRoute><ProductionBoard /></ProtectedAdminRoute>} />
       <Route path="/admin/revenue-forecast" element={<ProtectedAdminRoute><RevenueForecast /></ProtectedAdminRoute>} />
       <Route path="/walk-in" element={<WalkInCheckin />} />
+      <Route path="/admin/books" element={<ProtectedAdminRoute><AdminBookLibrary /></ProtectedAdminRoute>} />
+      <Route path="/admin/authors" element={<ProtectedAdminRoute><AdminAuthors /></ProtectedAdminRoute>} />
+      <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
       <Route path="/portal/:token" element={<ClientPortal />} />
     </Routes>
     </Suspense>

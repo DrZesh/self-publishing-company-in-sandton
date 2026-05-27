@@ -153,9 +153,14 @@ export default function AdminProjects() {
                       <td className="px-4 py-3 font-medium text-gray-900">
                         <div className="flex items-center gap-2">
                           {project.is_at_risk && <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />}
+                          {project.is_vip && <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-bold">VIP</span>}
                           <span>{project.book_title}</span>
                         </div>
-                        <div className="text-xs text-gray-400">{project.author_name}</div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {project.author_name && <span className="text-xs text-gray-400">{project.author_name}</span>}
+                          {project.queue_number && <span className="text-[10px] bg-teal-100 text-teal-700 px-1.5 py-0.5 rounded font-bold">#{String(project.queue_number).padStart(3, '0')}</span>}
+                          {project.waiting_on && project.waiting_on !== 'None' && <span className="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded font-semibold">⏳ {project.waiting_on}</span>}
+                        </div>
                       </td>
                       <td className="px-4 py-3"><Link to={`/admin/contacts/detail?id=${project.contact_id}`} className="text-gray-600 hover:text-[#B87333] hover:underline" onClick={e => e.stopPropagation()}>{contact?.full_name || '—'}</Link></td>
                       <td className="px-4 py-3">
