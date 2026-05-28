@@ -291,12 +291,8 @@ Deno.serve(async (req) => {
         return Response.json({ success: true, status: 'declined' });
       }
 
-      // SIGNED — upload signature image
-      let signature_image_url = '';
-      if (signature_image_data) {
-        const uploadResult = await base44.asServiceRole.integrations.Core.UploadFile({ file: signature_image_data });
-        signature_image_url = uploadResult.file_url;
-      }
+      // Accept pre-uploaded URL from frontend (signature_image_url) or fall back to raw dataUrl
+      const signature_image_url = body.signature_image_url || signature_image_data || '';
 
       const signedAt = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 
