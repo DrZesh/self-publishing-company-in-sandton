@@ -29,8 +29,8 @@ export const FormSubmissionEmailTemplate = `<!DOCTYPE html>
             overflow: hidden;
         }
         .gradient-bar {
-            height: 6px;
-            background: linear-gradient(to right, #d9534f, #f0ad4e, #5cb85c, #5bc0de, #9b59b6);
+            height: 10px;
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f1c40f, #2ecc71, #3498db, #9b59b6);
         }
         .header-section {
             padding: 40px 30px;
@@ -104,6 +104,7 @@ export const FormSubmissionEmailTemplate = `<!DOCTYPE html>
         }
         .detail-value {
             font-size: 13px;
+            font-weight: 700;
             color: #0f0f0f;
             word-break: break-word;
             flex: 1;
