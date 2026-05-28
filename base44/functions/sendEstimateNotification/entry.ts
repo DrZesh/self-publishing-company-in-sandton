@@ -18,7 +18,7 @@ const LOGO_URL = 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab4
 const SITE_URL = 'https://www.creativebooks.co.za';
 
 function bar() {
-  return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="5" style="background:linear-gradient(90deg,${BRAND_COLOR},#D4A574);font-size:0;">&nbsp;</td></tr></table>`;
+  return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr></table>`;
 }
 function logoRow() {
   return `<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:28px 0 20px;"><img src="${LOGO_URL}" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;" /></td></tr></table>`;

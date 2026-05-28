@@ -30,7 +30,8 @@ function signingEmailHtml({ contactName, contractTitle, signingUrl, expiryDate }
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">
   <tr><td align="center" style="padding:24px 16px;">
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-      <tr><td height="6" style="background:linear-gradient(90deg,${BRAND},#D4A574);font-size:0;">&nbsp;</td></tr>
+      <tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
       <tr><td align="center" style="padding:32px 32px 8px;">
         <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" />
       </td></tr>
@@ -70,7 +71,8 @@ function adminNotifyHtml({ contactName, contactEmail, contractTitle, signedAt, s
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">
   <tr><td align="center" style="padding:24px 16px;">
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-      <tr><td height="6" style="background:linear-gradient(90deg,#22c55e,#16a34a);font-size:0;">&nbsp;</td></tr>
+      <tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
       <tr><td style="padding:32px 40px;">
         <h1 style="font-size:22px;font-weight:700;color:#1a1a1a;margin:0 0 6px;">✅ Contract Signed</h1>
         <p style="font-size:15px;color:#555;margin:0 0 24px;">A client has just electronically signed a contract.</p>
@@ -96,7 +98,8 @@ function signedConfirmHtml({ signerName, contractTitle, signedAt, contractFileUr
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">
   <tr><td align="center" style="padding:24px 16px;">
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-      <tr><td height="6" style="background:linear-gradient(90deg,#22c55e,#16a34a);font-size:0;">&nbsp;</td></tr>
+      <tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
       <tr><td style="padding:32px 40px;text-align:center;">
         <div style="width:64px;height:64px;background:#F0FDF4;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:32px;">✅</div>
         <h1 style="font-size:24px;font-weight:700;color:#1a1a1a;margin:0 0 8px;">Contract Signed Successfully</h1>

@@ -42,9 +42,12 @@ Deno.serve(async (req) => {
 <head><meta charset="utf-8"></head>
 <body style="font-family:Georgia,serif;color:#1a1a1a;margin:0;padding:0;background:#f9f7f2">
 <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
-  <div style="background:#B87333;padding:32px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:1px">CREATIVE BOOKS SA</h1>
-    <p style="color:rgba(255,255,255,0.85);margin:6px 0 0;font-size:13px">Project Update</p>
+  <div style="height:10px;background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);"></div>
+  <div style="text-align:center;padding:28px 0 8px;">
+    <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;margin:0 auto;" />
+  </div>
+  <div style="text-align:center;padding:0 32px 12px;">
+    <p style="font-family:sans-serif;color:#B87333;margin:0;font-size:12px;font-weight:700;letter-spacing:0.12em;">PROJECT UPDATE</p>
   </div>
   <div style="padding:32px">
     <p style="color:#6b7280;margin:0 0 8px;font-size:14px">Dear ${contact.full_name},</p>

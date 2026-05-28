@@ -33,10 +33,9 @@ function getSigningEmailHtml(req, signingUrl) {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 20px;">
 <tr><td align="center">
 <table width="100%" style="max-width:600px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-<tr><td style="background:linear-gradient(135deg,#1A1208 0%,#2C1E0F 100%);padding:40px;text-align:center;">
-  <h1 style="margin:0;color:#B87333;font-size:26px;font-weight:700;">Creative Books SA</h1>
-  <p style="margin:8px 0 0;color:rgba(255,255,255,0.5);font-size:13px;">Document Signing Request</p>
-</td></tr>
+<tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+<tr><td align="center" style="padding:28px 0 8px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
+<tr><td align="center" style="padding:0 32px 16px;font-family:sans-serif;font-size:12px;font-weight:700;color:#888;letter-spacing:0.1em;">DOCUMENT SIGNING REQUEST</td></tr>
 <tr><td style="padding:40px;">
   <h2 style="margin:0 0 12px;color:#1A1208;font-size:22px;">Hi ${req.recipient_name},</h2>
   <p style="color:#555;font-size:15px;line-height:1.6;">${req.email_message || 'Please review and sign the document below.'}</p>
@@ -290,7 +289,8 @@ Deno.serve(async (req) => {
         from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [adminEmail],
         subject: `✅ Document Signed: ${esigReq.title}`,
-        html: `<p><strong>${confirmed_name}</strong> (${confirmed_email}) has signed <strong>${esigReq.title}</strong>.</p><p>Signed at: ${new Date(now).toLocaleString('en-ZA')}</p>`,
+        html: `<table width="100%" style="background:#F5F5F5;padding:24px;"><tr><td align="center"><table width="600" style="max-width:600px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;">&nbsp;</td></tr><tr><td align="center" style="padding:24px 0 12px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" width="130" style="max-width:130px;height:auto;" /></td></tr><tr><td style="padding:8px 32px 32px;"><h2 style="font-family:sans-serif;font-size:20px;color:#1a1a1a;margin:0 0 10px;">&#9989; Document Signed</h2><p style="font-family:sans-serif;font-size:15px;color:#555;margin:0 0 14px;"><strong>${confirmed_name}</strong> (${confirmed_email}) has signed <strong>${esigReq.title}</strong>.</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0 0 20px;">Signed: ${new Date(now).toLocaleString('en-ZA')}</p><a href="https://creativebooks.co.za/admin/esignatures" style="display:inline-block;background:#B87333;color:#fff;padding:11px 22px;border-radius:8px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:14px;">View in CRM &#8594;</a></td></tr><tr><td style="padding:14px 32px;border-top:1px solid #e5e5e5;text-align:center;font-family:sans-serif;font-size:11px;color:#aaa;">Creative Books SA &middot; info@creativebooks.co.za</td></tr></table></td></tr></table>`,
+
       }).catch(() => {});
 
       // Send signed copy to recipient
@@ -299,7 +299,7 @@ Deno.serve(async (req) => {
           from: 'Creative Books SA <info@creativebooks.co.za>',
           to: [confirmed_email],
           subject: `Your signed document: ${esigReq.title}`,
-          html: `<p>Hi ${confirmed_name},</p><p>Thank you for signing <strong>${esigReq.title}</strong>. Your signed document has been saved.</p><p>Creative Books SA</p>`,
+          html: `<table width="100%" style="background:#F5F5F5;padding:24px;"><tr><td align="center"><table width="600" style="max-width:600px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;">&nbsp;</td></tr><tr><td align="center" style="padding:24px 0 12px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" width="130" style="max-width:130px;height:auto;" /></td></tr><tr><td style="padding:8px 32px 32px;text-align:center;"><h2 style="font-family:sans-serif;font-size:20px;color:#1a1a1a;margin:0 0 10px;">Document Signed &#9989;</h2><p style="font-family:sans-serif;font-size:15px;color:#555;margin:0 0 14px;">Hi ${confirmed_name}, thank you for signing <strong>${esigReq.title}</strong>. Your signature has been recorded and saved securely.</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0 0 16px;">Signed: ${new Date(now).toLocaleString('en-ZA')}</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0;">Questions? <a href="mailto:info@creativebooks.co.za" style="color:#B87333;">info@creativebooks.co.za</a> &middot; 084 230 5393</p></td></tr><tr><td style="padding:14px 32px;border-top:1px solid #e5e5e5;text-align:center;font-family:sans-serif;font-size:11px;color:#aaa;">Creative Books SA &middot; info@creativebooks.co.za</td></tr></table></td></tr></table>`,
         }).catch(() => {});
       }
 

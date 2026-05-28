@@ -29,8 +29,12 @@ Deno.serve(async (req) => {
 <head><meta charset="utf-8"></head>
 <body style="font-family:Georgia,serif;background:#f9f7f2;margin:0;padding:0">
 <div style="max-width:580px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
-  <div style="background:#dc2626;padding:24px 32px">
-    <h2 style="color:#fff;margin:0;font-size:18px">Payment Reminder — Creative Books SA</h2>
+  <div style="height:10px;background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);"></div>
+  <div style="text-align:center;padding:28px 0 8px;">
+    <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;margin:0 auto;" />
+  </div>
+  <div style="text-align:center;padding:0 32px 12px;">
+    <p style="font-family:sans-serif;color:#dc2626;margin:0;font-size:13px;font-weight:700;letter-spacing:0.05em;">&#9888;&#65039; PAYMENT REMINDER</p>
   </div>
   <div style="padding:32px">
     <p style="color:#374151">Dear <strong>${contact.full_name}</strong>,</p>
