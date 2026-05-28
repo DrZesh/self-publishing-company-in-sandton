@@ -92,10 +92,10 @@ export default function AdminCommunication() {
     if (!emailForm.subject || !emailForm.body) { toast.error('Subject and body are required'); return; }
     isTest ? setTestingEmail(true) : setSendingEmail(true);
     const res = await base44.functions.invoke('sendContactEmail', {
+      action: 'send',
       to,
       subject: emailForm.subject,
-      body: `<p>${emailForm.body.replace(/\n/g, '<br/>')}</p>`,
-      contact_name: emailForm.to || 'Client',
+      body_html: `<p>${emailForm.body.replace(/\n/g, '<br/>')}</p>`,
     });
     isTest ? setTestingEmail(false) : setSendingEmail(false);
     if (res.data?.success) { toast.success(isTest ? '✅ Test email sent!' : '✅ Email sent!'); if (!isTest) setEmailForm({ to: '', subject: '', body: '' }); }
