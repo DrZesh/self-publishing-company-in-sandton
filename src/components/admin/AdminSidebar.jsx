@@ -55,10 +55,10 @@ const NAV_GROUPS = [
     label: 'Documents',
     items: [
       { label: 'Documents', path: '/admin/documents', icon: FolderOpen },
-      { label: 'Document Builder', path: '/admin/document-builder', icon: FileText },
-      { label: 'Clause Library', path: '/admin/clause-library', icon: BookOpen },
-      { label: 'Contracts', path: '/admin/contracts', icon: FileSignature },
-      { label: 'E-Signatures', path: '/admin/signatures', icon: PenTool },
+      { label: 'E-Signatures', path: '/admin/esignatures', icon: FileSignature },
+      { label: 'Contracts', path: '/admin/contracts', icon: FileText },
+      { label: 'Document Builder', path: '/admin/document-builder', icon: PenTool },
+      { label: 'Clause Library', path: '/admin/clause-library', icon: BookMarked },
     ],
   },
   {

@@ -222,6 +222,8 @@ const AdminClauseLibrary = lazy(() => import('./pages/admin/AdminClauseLibrary')
 const AdminDocumentBuilder = lazy(() => import('./pages/admin/AdminDocumentBuilder'));
 const AdminFinance = lazy(() => import('./pages/admin/AdminFinance'));
 const AdminCommunication = lazy(() => import('./pages/admin/AdminCommunication'));
+const AdminESignatures = lazy(() => import('./pages/admin/AdminESignatures'));
+const ESignatureSigning = lazy(() => import('./pages/ESignatureSigning'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -659,6 +661,8 @@ const AuthenticatedApp = () => {
       <Route path="/admin/document-builder" element={<ProtectedAdminRoute><AdminDocumentBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/finance" element={<ProtectedAdminRoute><AdminFinance /></ProtectedAdminRoute>} />
       <Route path="/admin/communication" element={<ProtectedAdminRoute><AdminCommunication /></ProtectedAdminRoute>} />
+      <Route path="/admin/esignatures" element={<ProtectedAdminRoute><AdminESignatures /></ProtectedAdminRoute>} />
+      <Route path="/sign/esig/:requestId/:token" element={<ESignatureSigning />} />
     </Routes>
     </Suspense>
   );

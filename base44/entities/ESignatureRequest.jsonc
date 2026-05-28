@@ -1,0 +1,208 @@
+{
+  "name": "ESignatureRequest",
+  "type": "object",
+  "properties": {
+    "document_id": {
+      "type": "string",
+      "description": "Linked Document ID"
+    },
+    "contact_id": {
+      "type": "string",
+      "description": "Linked Contact ID (optional)"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Linked Project ID (optional)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Document title shown to signer"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of document to sign"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "document_category": {
+      "type": "string",
+      "description": "NDA, Contract, Publishing Agreement, etc."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Prepared",
+        "Sent",
+        "Delivered",
+        "Opened",
+        "Viewed",
+        "Signing Started",
+        "Signed",
+        "Declined",
+        "Expired",
+        "Cancelled",
+        "Archived"
+      ],
+      "default": "Draft"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "recipient_email": {
+      "type": "string"
+    },
+    "recipient_phone": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "sign_token": {
+      "type": "string",
+      "description": "Secure unique token for signing link"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "allow_download_before_sign": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_download_after_sign": {
+      "type": "boolean",
+      "default": true
+    },
+    "send_whatsapp": {
+      "type": "boolean",
+      "default": false
+    },
+    "email_subject": {
+      "type": "string"
+    },
+    "email_message": {
+      "type": "string"
+    },
+    "reminder_days": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Days after sending to auto-remind"
+    },
+    "reminder_sent_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_reminder_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "viewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signing_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "declined_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decline_reason": {
+      "type": "string"
+    },
+    "signature_image_url": {
+      "type": "string",
+      "description": "URL of captured signature image"
+    },
+    "signature_method": {
+      "type": "string",
+      "enum": [
+        "drawn",
+        "typed"
+      ],
+      "description": "How the signature was created"
+    },
+    "signer_confirmed_name": {
+      "type": "string"
+    },
+    "signer_confirmed_email": {
+      "type": "string"
+    },
+    "signer_ip": {
+      "type": "string"
+    },
+    "signer_device": {
+      "type": "string"
+    },
+    "signer_browser": {
+      "type": "string"
+    },
+    "signer_user_agent": {
+      "type": "string"
+    },
+    "consent_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "consent_identity": {
+      "type": "boolean",
+      "default": false
+    },
+    "consent_authorised": {
+      "type": "boolean",
+      "default": false
+    },
+    "consent_electronic": {
+      "type": "boolean",
+      "default": false
+    },
+    "consent_submit": {
+      "type": "boolean",
+      "default": false
+    },
+    "signed_document_url": {
+      "type": "string",
+      "description": "URL to the final signed PDF/certificate"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Full chronological audit trail"
+    },
+    "sent_by": {
+      "type": "string",
+      "description": "Admin email who sent this"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "open_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "recipient_email",
+    "file_url"
+  ]
+}
