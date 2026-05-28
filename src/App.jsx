@@ -220,6 +220,8 @@ const ContractSign = lazy(() => import('./pages/ContractSign'));
 const AdminPipelineBuilder = lazy(() => import('./pages/admin/AdminPipelineBuilder'));
 const AdminClauseLibrary = lazy(() => import('./pages/admin/AdminClauseLibrary'));
 const AdminDocumentBuilder = lazy(() => import('./pages/admin/AdminDocumentBuilder'));
+const AdminFinance = lazy(() => import('./pages/admin/AdminFinance'));
+const AdminCommunication = lazy(() => import('./pages/admin/AdminCommunication'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -655,6 +657,8 @@ const AuthenticatedApp = () => {
       <Route path="/admin/pipeline-builder" element={<ProtectedAdminRoute><AdminPipelineBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/clause-library" element={<ProtectedAdminRoute><AdminClauseLibrary /></ProtectedAdminRoute>} />
       <Route path="/admin/document-builder" element={<ProtectedAdminRoute><AdminDocumentBuilder /></ProtectedAdminRoute>} />
+      <Route path="/admin/finance" element={<ProtectedAdminRoute><AdminFinance /></ProtectedAdminRoute>} />
+      <Route path="/admin/communication" element={<ProtectedAdminRoute><AdminCommunication /></ProtectedAdminRoute>} />
     </Routes>
     </Suspense>
   );
