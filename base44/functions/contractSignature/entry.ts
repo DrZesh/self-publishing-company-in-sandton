@@ -90,7 +90,7 @@ function adminNotifyHtml({ contactName, contactEmail, contractTitle, signedAt, s
 </body></html>`;
 }
 
-function signedConfirmHtml({ signerName, contractTitle, signedAt }) {
+function signedConfirmHtml({ signerName, contractTitle, signedAt, contractFileUrl }) {
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F5F5F5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">
@@ -104,9 +104,12 @@ function signedConfirmHtml({ signerName, contractTitle, signedAt }) {
         <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:16px;margin:0 0 24px;text-align:left;">
           <p style="font-size:14px;color:#166534;margin:0;"><strong>Signed on:</strong> ${signedAt}</p>
           <p style="font-size:14px;color:#166534;margin:8px 0 0;">A copy has been recorded and your project is now moving forward. Our team will be in touch shortly.</p>
-        </div>
-        <p style="font-size:13px;color:#888;margin:0;">Questions? Reply to this email or call <strong>084 230 5393</strong>.</p>
-      </td></tr>
+          </div>
+          <div style="text-align:center;margin:0 0 24px;">
+          <a href="${contractFileUrl}" style="display:inline-block;background:#1a4a2a;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">📄 Download Original Contract</a>
+          </div>
+          <p style="font-size:13px;color:#888;margin:0;">Questions? Reply to this email or call <strong>084 230 5393</strong>.</p>
+          </td></tr>
       <tr><td style="padding:20px 32px;border-top:1px solid #E5E0D5;text-align:center;font-size:13px;color:#AAAAAA;">
         Creative Books SA &nbsp;|&nbsp; info@creativebooks.co.za
       </td></tr>
@@ -358,11 +361,11 @@ Deno.serve(async (req) => {
       // Confirm to signer
       if (signer_email) {
         await sendEmail(signer_email, `Signed: ${contract.title} — Creative Books SA`,
-          signedConfirmHtml({ signerName: signer_name, contractTitle: contract.title, signedAt })
+          signedConfirmHtml({ signerName: signer_name, contractTitle: contract.title, signedAt, contractFileUrl: contract.contract_file_url || '' })
         );
       }
 
-      return Response.json({ success: true, signed_at: now });
+      return Response.json({ success: true, signed_at: now, contract_file_url: contract.contract_file_url || '' });
     }
 
     // ── LOG SIGNING STARTED ─────────────────────────────────────────────────

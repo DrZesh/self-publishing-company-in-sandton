@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, AlertTriangle, FileText, PenLine, Type, RotateCcw, Loader2 } from 'lucide-react';
+import { CheckCircle, AlertTriangle, FileText, PenLine, Type, RotateCcw, Loader2, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 const STEPS = ['view', 'sign', 'confirm', 'done'];
 
@@ -20,6 +21,7 @@ export default function ContractSign() {
   const [consent1, setConsent1] = useState(false);
   const [consent2, setConsent2] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [signedData, setSignedData] = useState(null); // { signature_data_url, contract_file_url }
   const [declining, setDeclining] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
   const [showDeclineForm, setShowDeclineForm] = useState(false);
@@ -157,6 +159,10 @@ export default function ContractSign() {
       const res = await Promise.race([invokePromise, timeoutPromise]);
 
       if (res.data?.success) {
+        setSignedData({
+          signature_data_url: dataUrl,
+          contract_file_url: res.data.contract_file_url || contract?.contract_file_url,
+        });
         setStep('done');
       } else {
         setErrorMsg(res.data?.error || 'Signing failed. Please try again or contact Creative Books SA.');
@@ -212,6 +218,75 @@ export default function ContractSign() {
     );
   }
 
+  const downloadCertificate = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const w = 210;
+    // Header bar
+    doc.setFillColor(184, 115, 51);
+    doc.rect(0, 0, w, 10, 'F');
+    // Logo text
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(255, 255, 255);
+    doc.text('Creative Books SA', w / 2, 7, { align: 'center' });
+    // Title
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Electronic Signature Certificate', w / 2, 30, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text('This document confirms that the contract below was electronically signed.', w / 2, 38, { align: 'center' });
+    // Details box
+    doc.setDrawColor(220, 220, 210);
+    doc.setFillColor(250, 248, 245);
+    doc.roundedRect(20, 46, w - 40, 60, 3, 3, 'FD');
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(80, 60, 30);
+    const rows = [
+      ['Contract', contract?.title || ''],
+      ['Signer Name', signerName],
+      ['Email Address', signerEmail],
+      ['Signed At', new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })],
+    ];
+    rows.forEach(([label, value], i) => {
+      const y = 56 + i * 12;
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(100, 70, 20);
+      doc.text(label + ':', 26, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(40, 40, 40);
+      doc.text(String(value), 70, y);
+    });
+    // Signature image
+    if (signedData?.signature_data_url) {
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(80, 60, 30);
+      doc.text('Electronic Signature:', 20, 120);
+      doc.setDrawColor(200, 200, 190);
+      doc.setFillColor(252, 252, 250);
+      doc.roundedRect(20, 124, 130, 36, 2, 2, 'FD');
+      doc.addImage(signedData.signature_data_url, 'PNG', 22, 126, 126, 32);
+    }
+    // Legal notice
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(130, 130, 130);
+    const notice = 'This electronic signature is legally binding in terms of the Electronic Communications and Transactions Act, 2002 (South Africa). The signature was captured via the Creative Books SA secure signing portal.';
+    const lines = doc.splitTextToSize(notice, w - 40);
+    doc.text(lines, 20, 172);
+    // Footer bar
+    doc.setFillColor(184, 115, 51);
+    doc.rect(0, 285, w, 12, 'F');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Creative Books SA  ·  info@creativebooks.co.za  ·  084 230 5393', w / 2, 292, { align: 'center' });
+    doc.save(`${contract?.title || 'Contract'} - Signed Certificate.pdf`);
+  };
+
   // ── SUCCESS ─────────────────────────────────────────────────────────────────
   if (step === 'done') {
     return (
@@ -222,13 +297,31 @@ export default function ContractSign() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Contract Signed!</h2>
           <p className="text-gray-500 mb-6">Thank you, <strong>{signerName}</strong>. Your electronic signature has been recorded and a confirmation email is on its way to <strong>{signerEmail}</strong>.</p>
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-6">
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-5">
             <p className="font-semibold mb-1">✅ What happens next</p>
             <ul className="space-y-1 text-green-700">
               <li>• Your project is now moving to the next stage</li>
               <li>• Our team will contact you within 24 hours</li>
               <li>• A signed confirmation has been emailed to you</li>
             </ul>
+          </div>
+          <div className="space-y-3 mb-6">
+            <button
+              onClick={downloadCertificate}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors"
+            >
+              <Download className="w-4 h-4" /> Download Signed Certificate (PDF)
+            </button>
+            {signedData?.contract_file_url && (
+              <a
+                href={signedData.contract_file_url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                <FileText className="w-4 h-4" /> View Original Contract
+              </a>
+            )}
           </div>
           <p className="text-xs text-gray-400">Questions? <a href="mailto:info@creativebooks.co.za" className="text-[#B87333]">info@creativebooks.co.za</a> · 084 230 5393</p>
         </div>
