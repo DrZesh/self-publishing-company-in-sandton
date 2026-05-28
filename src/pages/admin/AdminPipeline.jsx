@@ -1,79 +1,278 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
-import PipelineStats from '@/components/pipeline/PipelineStats';
-import PipelineFilters from '@/components/pipeline/PipelineFilters';
-import KanbanBoard from '@/components/pipeline/KanbanBoard';
-import PipelineListView from '@/components/pipeline/PipelineListView';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Settings, ChevronDown } from 'lucide-react';
+import { Sparkles, AlertTriangle, ChevronDown, Settings2, Eye, EyeOff, Plus, Search, X, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
+// ── Stage config ──────────────────────────────────────────────────────────────
+const STAGES = [
+  { id: 'Inquiry',   label: 'Inquiry',   color: '#6366f1', prob: 0.20, active: true },
+  { id: 'Quotation', label: 'Quotation', color: '#0ea5e9', prob: 0.55, active: true },
+  { id: 'Won',       label: 'Won',       color: '#16a34a', prob: 1,    active: false },
+  { id: 'Lost',      label: 'Lost',      color: '#e11d48', prob: 0,    active: false },
+  { id: 'Ghosted',   label: 'Ghosted',   color: '#64748b', prob: 0,    active: false },
+];
+
+// Map Contact.pipeline_stage → our 5 stages
+function mapStage(contact) {
+  const s = contact.pipeline_stage || '';
+  const lr = (contact.lost_reason || '').toLowerCase();
+  if (lr.includes('ghost')) return 'Ghosted';
+  const WON = ['Project Started','Editing','Cover Design','Typesetting','Sample Queued','Sample Approved','Mass Production','Completed','Delivered'];
+  const QUOT = ['Quote in Progress','Quote Sent','Payment Pending'];
+  if (WON.includes(s)) return 'Won';
+  if (s === 'Lost') return 'Lost';
+  if (QUOT.includes(s)) return 'Quotation';
+  return 'Inquiry';
+}
+
+// Compute priority from pipeline_value
+function getPriority(value) {
+  if (value >= 50000) return { label: 'Critical', color: '#e11d48', rank: 4 };
+  if (value >= 20000) return { label: 'High',     color: '#f59e0b', rank: 3 };
+  if (value >= 5000)  return { label: 'Medium',   color: '#0ea5e9', rank: 2 };
+  return                     { label: 'Low',      color: '#94a3b8', rank: 1 };
+}
+
+function getDaysInStage(contact) {
+  const d = contact.pipeline_stage_changed_at || contact.updated_date || contact.created_date;
+  if (!d) return 0;
+  return Math.floor((Date.now() - new Date(d)) / 86400000);
+}
+
+function fmtRand(v) {
+  if (!v) return 'R0';
+  if (v >= 1000000) return `R${(v / 1000000).toFixed(1)}M`;
+  if (v >= 1000) return `R${Math.round(v / 1000)}K`;
+  return `R${v.toLocaleString('en-ZA')}`;
+}
+function fmtRandFull(v) {
+  if (!v) return 'R0';
+  return 'R' + Math.round(v).toLocaleString('en-ZA');
+}
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+}
+
+const AVATAR_COLORS = ['#6366f1','#0ea5e9','#f59e0b','#16a34a','#e11d48','#8b5cf6','#ec4899'];
+function avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < (name || '').length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function aiSuggestion(contact, stage) {
+  const days = getDaysInStage(contact);
+  const val = contact.pipeline_value || 0;
+  if (stage === 'Inquiry') {
+    if (days > 3) return 'Follow up — no response in ' + days + ' days';
+    return 'Send intro email with publishing packages';
+  }
+  if (stage === 'Quotation') {
+    if (days > 5) return 'Chase quote — client has not responded';
+    if (val > 30000) return 'High-value deal — offer a discovery call';
+    return 'Send revised quote if no response today';
+  }
+  return null;
+}
+
+// Move stage → update Contact entity stage
+function toContactStage(newStage, lostReason) {
+  if (newStage === 'Inquiry') return { pipeline_stage: 'New Enquiry', lost_reason: '' };
+  if (newStage === 'Quotation') return { pipeline_stage: 'Quote Sent', lost_reason: '' };
+  if (newStage === 'Won') return { pipeline_stage: 'Project Started', lost_reason: '' };
+  if (newStage === 'Lost') return { pipeline_stage: 'Lost', lost_reason: lostReason || 'Did not proceed' };
+  if (newStage === 'Ghosted') return { pipeline_stage: 'Lost', lost_reason: 'Ghosted' };
+  return {};
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
+function Avatar({ name, size = 28 }) {
+  const bg = avatarColor(name);
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.38, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+      {initials(name)}
+    </div>
+  );
+}
+
+// ── Deal card (active stages) ─────────────────────────────────────────────────
+function DealCard({ contact, isTop, showAI, onMove }) {
+  const stage = mapStage(contact);
+  const days = getDaysInStage(contact);
+  const stalled = days > 7;
+  const pri = getPriority(contact.pipeline_value || 0);
+  const ai = showAI ? aiSuggestion(contact, stage) : null;
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <div style={{
+      background: '#fff',
+      borderRadius: 12,
+      border: stalled ? '1.5px solid #f59e0b' : '1px solid #e7e8f0',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      overflow: 'hidden',
+      position: 'relative',
+      marginBottom: 10,
+    }}>
+      {/* Priority bar */}
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: pri.color, borderRadius: '12px 0 0 12px' }} />
+
+      <div style={{ padding: '12px 12px 12px 16px' }}>
+        {/* Top row */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
+            <Avatar name={contact.full_name} size={28} />
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontWeight: 600, fontSize: 13, color: '#1e1e2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {contact.full_name}
+              </div>
+              {contact.book_title && (
+                <div style={{ fontSize: 11, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {contact.book_title}
+                </div>
+              )}
+            </div>
+          </div>
+          <div style={{ position: 'relative', flexShrink: 0, marginLeft: 6 }}>
+            <button onClick={() => setMenuOpen(o => !o)} style={{ padding: '2px 6px', fontSize: 16, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
+            {menuOpen && (
+              <div style={{ position: 'absolute', right: 0, top: 24, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 140, padding: 6 }}>
+                {STAGES.filter(s => s.id !== stage).map(s => (
+                  <button key={s.id} onClick={() => { setMenuOpen(false); onMove(contact.id, s.id); }}
+                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 10px', fontSize: 12, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 6 }}
+                    onMouseEnter={e => e.target.style.background = '#f5f6fa'}
+                    onMouseLeave={e => e.target.style.background = 'none'}
+                  >
+                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: s.color, marginRight: 6 }} />
+                    Move to {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Value */}
+        <div style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 18, color: '#1e1e2e', marginBottom: 8 }}>
+          {fmtRandFull(contact.pipeline_value)}
+        </div>
+
+        {/* Tags row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          {isTop && (
+            <span style={{ background: '#4f46e5', color: '#fff', fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', padding: '2px 7px', borderRadius: 20, textTransform: 'uppercase' }}>
+              Act now
+            </span>
+          )}
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: pri.color, fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: pri.color, display: 'inline-block' }} />
+            {pri.label}
+          </span>
+          <span style={{ fontSize: 11, color: stalled ? '#f59e0b' : '#94a3b8', fontWeight: stalled ? 600 : 400, display: 'flex', alignItems: 'center', gap: 3 }}>
+            {stalled && <AlertTriangle style={{ width: 11, height: 11 }} />}
+            {days}d in stage
+          </span>
+        </div>
+
+        {/* AI suggestion */}
+        {ai && (
+          <div style={{ marginTop: 8, background: '#f5f3ff', border: '1px solid #ede9fe', borderRadius: 8, padding: '6px 10px', display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+            <Sparkles style={{ width: 12, height: 12, color: '#7c3aed', flexShrink: 0, marginTop: 1 }} />
+            <span style={{ fontSize: 11, color: '#5b21b6', lineHeight: 1.4 }}>{ai}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Resolved row (Won / Lost / Ghosted) ───────────────────────────────────────
+function ResolvedRow({ contact, onMove }) {
+  const stage = mapStage(contact);
+  const stageConf = STAGES.find(s => s.id === stage);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const date = contact.pipeline_stage_changed_at
+    ? new Date(contact.pipeline_stage_changed_at).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short' })
+    : '—';
+
+  let sub = '';
+  if (stage === 'Won') sub = `Closed ${date}`;
+  if (stage === 'Lost') sub = `${contact.lost_reason || 'No reason'} · ${date}`;
+  if (stage === 'Ghosted') sub = `Last reply ${date}`;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 9, background: '#fff', border: '1px solid #e7e8f0', marginBottom: 6, opacity: 0.85, position: 'relative' }}>
+      <Avatar name={contact.full_name} size={24} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.full_name}</div>
+        <div style={{ fontSize: 11, color: '#94a3b8' }}>{sub}</div>
+      </div>
+      <div style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 600, color: stageConf.color, flexShrink: 0 }}>{fmtRand(contact.pipeline_value)}</div>
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <button onClick={() => setMenuOpen(o => !o)} style={{ padding: '2px 4px', fontSize: 14, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
+        {menuOpen && (
+          <div style={{ position: 'absolute', right: 0, top: 22, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 140, padding: 6 }}>
+            {STAGES.filter(s => s.id !== stage).map(s => (
+              <button key={s.id} onClick={() => { setMenuOpen(false); onMove(contact.id, s.id); }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 10px', fontSize: 12, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 6 }}
+                onMouseEnter={e => e.target.style.background = '#f5f6fa'}
+                onMouseLeave={e => e.target.style.background = 'none'}
+              >
+                <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: s.color, marginRight: 6 }} />
+                Move to {s.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
 export default function AdminPipeline() {
   const [contacts, setContacts] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [pipelines, setPipelines] = useState([]);
-  const [selectedPipeline, setSelectedPipeline] = useState(null);
-  const [showPipelineMenu, setShowPipelineMenu] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [view, setView] = useState('kanban');
   const [search, setSearch] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
+  const [showAI, setShowAI] = useState(true);
+  const [showTotals, setShowTotals] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [accentColor, setAccentColor] = useState('#4f46e5');
 
   const load = useCallback(async () => {
-    const [me, allContacts, allHistory, allPipelines] = await Promise.all([
-      base44.auth.me(),
-      base44.entities.Contact.list('-updated_date', 500),
-      base44.entities.PipelineStageHistory.list('-changed_at', 1000),
-      base44.entities.Pipeline.list('-created_date', 50),
-    ]);
+    const [me, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
     setUser(me);
-    setContacts(allContacts);
-    setHistory(allHistory);
-    setPipelines(allPipelines);
-    if (allPipelines.length > 0 && !selectedPipeline) {
-      setSelectedPipeline(allPipelines[0]);
-    }
+    setContacts(all);
     setLoading(false);
   }, []);
 
   useEffect(() => { load(); }, [load]);
 
-  const handleStageChange = async (contactId, newStage, lostReason) => {
+  const handleMove = async (contactId, newStage) => {
     const contact = contacts.find(c => c.id === contactId);
     if (!contact) return;
-    const prevStage = contact.pipeline_stage || 'Lead Contacted';
     const now = new Date().toISOString();
-
-    // Optimistically update UI
-    setContacts(prev => prev.map(c => c.id === contactId
-      ? { ...c, pipeline_stage: newStage, pipeline_stage_changed_at: now, lost_reason: lostReason ?? c.lost_reason }
-      : c
-    ));
-
+    const updates = { ...toContactStage(newStage), pipeline_stage_changed_at: now };
+    setContacts(prev => prev.map(c => c.id === contactId ? { ...c, ...updates, _pipelineStageOverride: newStage } : c));
     try {
-      const updateData = { pipeline_stage: newStage, pipeline_stage_changed_at: now };
-      if (lostReason !== null) updateData.lost_reason = lostReason;
-      await base44.entities.Contact.update(contactId, updateData);
-
-      // Log history
-      const historyEntry = await base44.entities.PipelineStageHistory.create({
-        contact_id: contactId,
-        from_stage: prevStage,
-        to_stage: newStage,
-        changed_at: now,
-        changed_by: user?.email || 'admin',
-        notes: lostReason || '',
-      });
-      setHistory(prev => [historyEntry, ...prev]);
+      await base44.entities.Contact.update(contactId, updates);
       toast.success(`Moved to ${newStage}`);
-    } catch (err) {
-      // Revert on failure
+    } catch {
       setContacts(prev => prev.map(c => c.id === contactId ? contact : c));
-      toast.error('Failed to update stage');
+      toast.error('Failed to update');
     }
   };
+
+  // Use override stage if set (immediate feedback)
+  function getEffectiveStage(c) {
+    return c._pipelineStageOverride || mapStage(c);
+  }
 
   const owners = [...new Set(contacts.map(c => c.pipeline_owner).filter(Boolean))];
 
@@ -86,81 +285,207 @@ export default function AdminPipeline() {
     return true;
   });
 
+  // Group by effective stage
+  const byStage = {};
+  STAGES.forEach(s => { byStage[s.id] = []; });
+  filtered.forEach(c => { const st = getEffectiveStage(c); if (byStage[st]) byStage[st].push(c); });
+
+  // Sort active stages: priority desc, then value desc
+  STAGES.filter(s => s.active).forEach(s => {
+    byStage[s.id].sort((a, b) => {
+      const pa = getPriority(a.pipeline_value || 0).rank;
+      const pb = getPriority(b.pipeline_value || 0).rank;
+      if (pb !== pa) return pb - pa;
+      return (b.pipeline_value || 0) - (a.pipeline_value || 0);
+    });
+  });
+
+  // KPIs
+  const openContacts = [...byStage['Inquiry'], ...byStage['Quotation']];
+  const openPipeline = openContacts.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+  const weightedForecast = openContacts.reduce((s, c) => {
+    const prob = getEffectiveStage(c) === 'Quotation' ? 0.55 : 0.20;
+    return s + (c.pipeline_value || 0) * prob;
+  }, 0);
+  const wonCount = byStage['Won'].length;
+  const lostCount = byStage['Lost'].length + byStage['Ghosted'].length;
+  const winRate = (wonCount + lostCount) > 0 ? Math.round((wonCount / (wonCount + lostCount)) * 100) : 0;
+  const stalledCount = openContacts.filter(c => getDaysInStage(c) > 7).length;
+
+  const totalDeals = filtered.length;
+
   return (
     <AdminLayout>
-      <div className="max-w-full">
-        <div className="flex items-center justify-between mb-6">
+      <div style={{ background: '#f5f6fa', minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px' }}>
+
+        {/* Page header */}
+        <div style={{ background: '#fff', borderBottom: '1px solid #e7e8f0', padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 className="text-3xl font-bold text-[#1A1208]">Pipeline</h1>
-            <p className="text-sm text-black/50 mt-1">Track every project from first enquiry through to delivery</p>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1e1e2e', margin: 0, fontFamily: 'var(--font-heading)' }}>Deals Pipeline</h1>
+            <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>
+              {new Date().toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })} · {ownerFilter || 'All owners'} · {totalDeals} deals
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Pipeline Selector */}
-            {pipelines.length > 0 && (
-              <div className="relative">
-                <button
-                  onClick={() => setShowPipelineMenu(v => !v)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-[#B87333]/40 transition-colors"
-                >
-                  <span>{selectedPipeline?.name || 'Default Pipeline'}</span>
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
-                </button>
-                {showPipelineMenu && (
-                  <div className="absolute right-0 top-11 z-20 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-52 space-y-0.5">
-                    <button
-                      onClick={() => { setSelectedPipeline(null); setShowPipelineMenu(false); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50 ${!selectedPipeline ? 'font-semibold text-[#B87333]' : 'text-gray-700'}`}
-                    >
-                      Default Stages
-                    </button>
-                    {pipelines.map(p => (
-                      <button
-                        key={p.id}
-                        onClick={() => { setSelectedPipeline(p); setShowPipelineMenu(false); }}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50 ${selectedPipeline?.id === p.id ? 'font-semibold text-[#B87333]' : 'text-gray-700'}`}
-                      >
-                        {p.name}
-                        <span className="text-xs text-gray-400 ml-1">({p.stages?.length || 0} stages)</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Search */}
+            <div style={{ position: 'relative' }}>
+              <Search style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, color: '#94a3b8' }} />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search deals…"
+                style={{ paddingLeft: 32, paddingRight: 10, height: 36, border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, color: '#374151', background: '#f5f6fa', outline: 'none', width: 180 }} />
+              {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X style={{ width: 13, height: 13 }} /></button>}
+            </div>
+
+            {/* Owner filter */}
+            {owners.length > 0 && (
+              <select value={ownerFilter} onChange={e => setOwnerFilter(e.target.value)}
+                style={{ height: 36, border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, color: '#374151', background: '#f5f6fa', padding: '0 10px', outline: 'none' }}>
+                <option value="">All owners</option>
+                {owners.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
             )}
-            <Link to="/admin/pipeline-builder">
-              <button className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-xl text-sm font-medium hover:bg-[#A06828] transition-colors">
-                <Settings className="w-4 h-4" /> Build Pipeline
+
+            {/* Settings */}
+            <div style={{ position: 'relative' }}>
+              <button onClick={() => setSettingsOpen(o => !o)}
+                style={{ height: 36, padding: '0 14px', border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Settings2 style={{ width: 14, height: 14 }} /> Tweaks
+              </button>
+              {settingsOpen && (
+                <div style={{ position: 'absolute', right: 0, top: 42, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 60, padding: 16, minWidth: 220 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Display settings</p>
+                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}>
+                    <span style={{ fontSize: 13, color: '#374151' }}>AI suggestions</span>
+                    <input type="checkbox" checked={showAI} onChange={e => setShowAI(e.target.checked)} style={{ accentColor }} />
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}>
+                    <span style={{ fontSize: 13, color: '#374151' }}>Column totals</span>
+                    <input type="checkbox" checked={showTotals} onChange={e => setShowTotals(e.target.checked)} style={{ accentColor }} />
+                  </label>
+                  <div style={{ marginTop: 4 }}>
+                    <p style={{ fontSize: 13, color: '#374151', marginBottom: 6 }}>Accent color</p>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      {['#4f46e5','#B87333','#0ea5e9','#16a34a','#e11d48'].map(c => (
+                        <button key={c} onClick={() => setAccentColor(c)}
+                          style={{ width: 22, height: 22, borderRadius: '50%', background: c, border: accentColor === c ? '2px solid #1e1e2e' : '2px solid transparent', cursor: 'pointer' }} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* New deal */}
+            <Link to="/admin/contacts">
+              <button style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Plus style={{ width: 14, height: 14 }} /> New deal
               </button>
             </Link>
           </div>
         </div>
 
         {loading ? (
-          <div className="space-y-4">
-            <div className="grid grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <div key={i} className="h-20 bg-black/5 rounded-2xl animate-pulse" />)}</div>
-            <div className="h-12 bg-black/5 rounded-xl animate-pulse" />
-            <div className="flex gap-3">{[...Array(7)].map((_, i) => <div key={i} className="w-60 h-64 bg-black/5 rounded-2xl animate-pulse flex-shrink-0" />)}</div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
+            <div style={{ width: 32, height: 32, border: '4px solid #e7e8f0', borderTop: `4px solid ${accentColor}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
           </div>
         ) : (
-          <>
-            <PipelineStats contacts={contacts} history={history} />
-            <PipelineFilters
-              search={search}
-              onSearch={setSearch}
-              ownerFilter={ownerFilter}
-              onOwnerFilter={setOwnerFilter}
-              owners={owners}
-              view={view}
-              onView={setView}
-            />
-            {view === 'kanban' ? (
-              <KanbanBoard contacts={filtered} onStageChange={handleStageChange} customPipeline={selectedPipeline} />
-            ) : (
-              <PipelineListView contacts={filtered} onStageChange={handleStageChange} />
-            )}
-          </>
+          <div style={{ padding: '20px 28px 0' }}>
+
+            {/* KPI Strip */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr auto', gap: 12, marginBottom: 20 }}>
+              <KpiTile label="Open Pipeline" value={fmtRand(openPipeline)} sub={`${openContacts.length} active deals`} accent={accentColor} tinted />
+              <KpiTile label="Weighted Forecast" value={fmtRand(weightedForecast)} sub="by stage probability" />
+              <KpiTile label="Win Rate" value={`${winRate}%`} sub={`${wonCount} won, ${lostCount} lost/ghosted`} />
+              <KpiTile label="Needs Attention" value={stalledCount} sub="deals stalled >7 days" warn={stalledCount > 0} />
+              <FunnelCard inquiry={byStage['Inquiry'].length} quotation={byStage['Quotation'].length} won={byStage['Won'].length} accent={accentColor} />
+            </div>
+
+            {/* Kanban */}
+            <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 12, alignItems: 'flex-start' }}>
+              {STAGES.map(stage => {
+                const cards = byStage[stage.id];
+                const colTotal = cards.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+                return (
+                  <div key={stage.id} style={{ minWidth: 260, flex: stage.active ? '0 0 280px' : '0 0 240px', display: 'flex', flexDirection: 'column' }}>
+                    {/* Column header */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, padding: '0 2px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <span style={{ width: 9, height: 9, borderRadius: '50%', background: stage.color, display: 'inline-block', flexShrink: 0 }} />
+                        <span style={{ fontWeight: 700, fontSize: 13, color: '#1e1e2e' }}>{stage.label}</span>
+                        <span style={{ background: '#e7e8f0', color: '#64748b', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '1px 7px' }}>{cards.length}</span>
+                      </div>
+                      {showTotals && colTotal > 0 && (
+                        <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: stage.color }}>{fmtRand(colTotal)}</span>
+                      )}
+                    </div>
+
+                    {/* Cards / rows */}
+                    <div style={{ flex: 1 }}>
+                      {cards.length === 0 && (
+                        <div style={{ border: '2px dashed #e7e8f0', borderRadius: 10, padding: '20px 0', textAlign: 'center', color: '#cbd5e1', fontSize: 12 }}>Empty</div>
+                      )}
+                      {cards.map((c, i) =>
+                        stage.active ? (
+                          <DealCard key={c.id} contact={c} isTop={i === 0} showAI={showAI} onMove={handleMove} />
+                        ) : (
+                          <ResolvedRow key={c.id} contact={c} onMove={handleMove} />
+                        )
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </AdminLayout>
+  );
+}
+
+function KpiTile({ label, value, sub, accent, tinted, warn }) {
+  return (
+    <div style={{
+      background: tinted ? (accent + '12') : '#fff',
+      border: warn ? '1.5px solid #f59e0b' : `1px solid ${tinted ? accent + '30' : '#e7e8f0'}`,
+      borderRadius: 12,
+      padding: '14px 16px',
+    }}>
+      <p style={{ fontSize: 11, color: warn ? '#f59e0b' : '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{label}</p>
+      <p style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 700, color: warn ? '#f59e0b' : '#1e1e2e', margin: '0 0 2px' }}>{value}</p>
+      <p style={{ fontSize: 11, color: '#94a3b8', margin: 0 }}>{sub}</p>
+    </div>
+  );
+}
+
+function FunnelCard({ inquiry, quotation, won, accent }) {
+  const bars = [
+    { label: 'Inquiry', count: inquiry, color: '#6366f1' },
+    { label: 'Quotation', count: quotation, color: '#0ea5e9' },
+    { label: 'Won', count: won, color: '#16a34a' },
+  ];
+  const max = Math.max(...bars.map(b => b.count), 1);
+  const convQ = inquiry > 0 ? Math.round((quotation / inquiry) * 100) : 0;
+  const convW = quotation > 0 ? Math.round((won / quotation) * 100) : 0;
+
+  return (
+    <div style={{ background: '#fff', border: '1px solid #e7e8f0', borderRadius: 12, padding: '14px 16px', minWidth: 160 }}>
+      <p style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Funnel</p>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10 }}>
+        {bars.map((b, i) => (
+          <div key={b.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1 }}>
+            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#1e1e2e' }}>{b.count}</span>
+            <div style={{ width: '100%', background: '#f1f5f9', borderRadius: 4, overflow: 'hidden', height: 40, display: 'flex', alignItems: 'flex-end' }}>
+              <div style={{ width: '100%', background: b.color, height: `${Math.max(8, Math.round((b.count / max) * 40))}px`, borderRadius: 4, transition: 'height 0.3s' }} />
+            </div>
+            {i === 0 && <span style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>{convQ}% →</span>}
+            {i === 1 && <span style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>{convW}% →</span>}
+            {i === 2 && <span style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>&nbsp;</span>}
+            <span style={{ fontSize: 10, color: '#64748b', fontWeight: 500 }}>{b.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
