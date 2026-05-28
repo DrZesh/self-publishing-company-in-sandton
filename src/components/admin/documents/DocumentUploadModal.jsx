@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input';
 import { X, Upload, Loader2 } from 'lucide-react';
 
 const CATEGORIES = [
-  'Signed Contract', 'Unsigned Contract', 'Quotation', 'Invoice',
-  'Payment Proof', 'Manuscript', 'Book Cover File', 'Typesetting File',
-  'Final Print File', 'Proof Approval', 'ISBN Document', 'Copyright Page',
-  'Printing Spec', 'Courier Document', 'Client Supplied', 'Internal Admin'
+  'Signed Contract', 'Unsigned Contract', 'NDA', 'Publishing Agreement',
+  'Quotation', 'Invoice', 'Payment Proof', 'Payment Agreement',
+  'Manuscript', 'Manuscript Submission Form', 'Book Cover File', 'Cover Design Brief',
+  'Typesetting File', 'Final Print File', 'Proof Approval', 'ISBN Document',
+  'Copyright Page', 'Printing Spec', 'Printing Terms', 'Supplier Agreement',
+  'Courier Document', 'Client Supplied', 'Internal Admin'
 ];
 
 export default function DocumentUploadModal({ contacts, document, onClose, onSaved }) {
@@ -19,6 +21,10 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
     book_title: document?.book_title || '',
     notes: document?.notes || '',
     version: document?.version || 1,
+    is_template: document?.is_template || false,
+    template_label: document?.template_label || '',
+    requires_signature: document?.requires_signature || false,
+    default_expiry_days: document?.default_expiry_days || 14,
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -27,7 +33,8 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const handleSave = async () => {
-    if (!form.contact_id || !form.category) return;
+    if (!form.is_template && !form.contact_id) return;
+    if (!form.category) return;
     setSaving(true);
 
     let file_url = document?.file_url || '';
@@ -48,6 +55,8 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
     if (!file_url && !document) { setSaving(false); return; }
 
     const data = { ...form, file_url, file_name, file_type, file_size_kb, uploaded_by: (await base44.auth.me())?.email || '' };
+    // Templates don't require contact_id
+    if (form.is_template) delete data.contact_id;
 
     if (document) await base44.entities.Document.update(document.id, data);
     else await base44.entities.Document.create(data);
@@ -64,13 +73,30 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
           <button onClick={onClose}><X className="w-5 h-5 text-gray-400" /></button>
         </div>
         <div className="p-6 space-y-4">
-          <div>
-            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client *</label>
-            <select value={form.contact_id} onChange={e => set('contact_id', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-              <option value="">Select client...</option>
-              {contacts.map(c => <option key={c.id} value={c.id}>{c.full_name}</option>)}
-            </select>
+          {/* Template toggle */}
+          <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-100 rounded-lg">
+            <input type="checkbox" id="is_template" checked={form.is_template} onChange={e => set('is_template', e.target.checked)} className="w-4 h-4 accent-purple-600" />
+            <label htmlFor="is_template" className="text-sm font-medium text-purple-800 cursor-pointer">
+              Save as Reusable Template (no client required)
+            </label>
           </div>
+
+          {form.is_template && (
+            <div>
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Template Label</label>
+              <input value={form.template_label} onChange={e => set('template_label', e.target.value)} placeholder="e.g. NDA, Publishing Agreement..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+            </div>
+          )}
+
+          {!form.is_template && (
+            <div>
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client *</label>
+              <select value={form.contact_id} onChange={e => set('contact_id', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="">Select client...</option>
+                {contacts.map(c => <option key={c.id} value={c.id}>{c.full_name}</option>)}
+              </select>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Category *</label>
@@ -78,13 +104,30 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div>
-              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Status</label>
-              <select value={form.status} onChange={e => set('status', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-                {['Draft', 'Sent to Client', 'Awaiting Signature', 'Signed', 'Approved', 'Rejected'].map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
+            {!form.is_template && (
+              <div>
+                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Status</label>
+                <select value={form.status} onChange={e => set('status', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                  {['Draft', 'Sent to Client', 'Awaiting Signature', 'Signed', 'Approved', 'Rejected'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            )}
           </div>
+
+          {/* Signature & Expiry for templates */}
+          {form.is_template && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="req_sig" checked={form.requires_signature} onChange={e => set('requires_signature', e.target.checked)} className="w-4 h-4 accent-[#B87333]" />
+                <label htmlFor="req_sig" className="text-sm text-gray-700 cursor-pointer">Requires signature</label>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Default expiry (days)</label>
+                <input type="number" min="1" max="90" value={form.default_expiry_days} onChange={e => set('default_expiry_days', parseInt(e.target.value) || 14)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Book Title</label>
             <Input value={form.book_title} onChange={e => set('book_title', e.target.value)} placeholder="Associated book title" />
@@ -118,7 +161,7 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
         </div>
         <div className="flex gap-3 p-6 border-t">
           <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-          <Button onClick={handleSave} disabled={saving || uploading || !form.contact_id || (!file && !document)} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
+          <Button onClick={handleSave} disabled={saving || uploading || (!form.is_template && !form.contact_id) || (!file && !document)} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
             {uploading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Uploading...</> : saving ? 'Saving...' : document ? 'Update' : 'Upload'}
           </Button>
         </div>

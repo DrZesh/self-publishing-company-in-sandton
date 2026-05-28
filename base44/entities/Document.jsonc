@@ -18,6 +18,29 @@
       "type": "string",
       "description": "Linked Invoice ID"
     },
+    "is_template": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this document is a reusable template"
+    },
+    "is_favourite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Pinned/favourite template"
+    },
+    "template_label": {
+      "type": "string",
+      "description": "Display label for template (e.g. NDA, Publishing Agreement)"
+    },
+    "requires_signature": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether a signature is required"
+    },
+    "default_expiry_days": {
+      "type": "number",
+      "description": "Default days until link expires"
+    },
     "category": {
       "type": "string",
       "enum": [
@@ -36,7 +59,14 @@
         "Printing Spec",
         "Courier Document",
         "Client Supplied",
-        "Internal Admin"
+        "Internal Admin",
+        "NDA",
+        "Publishing Agreement",
+        "Printing Terms",
+        "Supplier Agreement",
+        "Payment Agreement",
+        "Manuscript Submission Form",
+        "Cover Design Brief"
       ],
       "default": "Client Supplied"
     },
@@ -164,7 +194,6 @@
     }
   },
   "required": [
-    "contact_id",
     "category",
     "file_name",
     "file_url"
