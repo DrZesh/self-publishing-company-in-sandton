@@ -13,6 +13,8 @@ import {
 import DocumentUploadModal from '@/components/admin/documents/DocumentUploadModal';
 import DocumentActivityPanel from '@/components/admin/documents/DocumentActivityPanel';
 import QuickSendModal from '@/components/admin/documents/QuickSendModal';
+import DocumentInbox from '@/components/admin/documents/DocumentInbox';
+import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const CATEGORY_COLORS = {
@@ -59,6 +61,7 @@ const STATUS_COLORS = {
 };
 
 const TABS = [
+  { key: 'inbox', label: 'Inbox', icon: FileText },
   { key: 'all', label: 'All Documents', icon: Layers },
   { key: 'templates', label: 'Template Library', icon: BookOpen },
   { key: 'sent', label: 'Sent to Clients', icon: Send },
@@ -206,7 +209,17 @@ export default function AdminDocuments() {
             <h1 className="text-2xl font-bold text-gray-900">Document Command Centre</h1>
             <p className="text-sm text-gray-500 mt-0.5">Templates, client documents, sent history &amp; signed vault</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <RouterLink to="/admin/document-builder">
+              <Button variant="outline" className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50">
+                <FileText className="w-4 h-4" /> Document Builder
+              </Button>
+            </RouterLink>
+            <RouterLink to="/admin/clause-library">
+              <Button variant="outline" className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50">
+                <BookOpen className="w-4 h-4" /> Clause Library
+              </Button>
+            </RouterLink>
             <Button
               onClick={() => setShowQuickSend(true)}
               variant="outline"
@@ -281,6 +294,11 @@ export default function AdminDocuments() {
             );
           })}
         </div>
+
+        {/* Inbox tab */}
+        {activeTab === 'inbox' && (
+          <DocumentInbox contacts={contacts} />
+        )}
 
         {/* Vault locked notice */}
         {isVaultLocked && (

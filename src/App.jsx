@@ -218,6 +218,8 @@ const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
 const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
 const ContractSign = lazy(() => import('./pages/ContractSign'));
 const AdminPipelineBuilder = lazy(() => import('./pages/admin/AdminPipelineBuilder'));
+const AdminClauseLibrary = lazy(() => import('./pages/admin/AdminClauseLibrary'));
+const AdminDocumentBuilder = lazy(() => import('./pages/admin/AdminDocumentBuilder'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -651,6 +653,8 @@ const AuthenticatedApp = () => {
       <Route path="/portal/:token" element={<ClientPortal />} />
       <Route path="/sign/contract/:token" element={<ContractSign />} />
       <Route path="/admin/pipeline-builder" element={<ProtectedAdminRoute><AdminPipelineBuilder /></ProtectedAdminRoute>} />
+      <Route path="/admin/clause-library" element={<ProtectedAdminRoute><AdminClauseLibrary /></ProtectedAdminRoute>} />
+      <Route path="/admin/document-builder" element={<ProtectedAdminRoute><AdminDocumentBuilder /></ProtectedAdminRoute>} />
     </Routes>
     </Suspense>
   );
