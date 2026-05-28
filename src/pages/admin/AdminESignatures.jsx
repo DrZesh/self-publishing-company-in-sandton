@@ -171,6 +171,74 @@ function NewRequestModal({ contacts, documents, onClose, onCreated }) {
   );
 }
 
+function DebugLogPanel({ request, onClose }) {
+  const trail = request.audit_trail || [];
+
+  const steps = [
+    { key: 'created', label: 'Request created', check: () => !!request.created_date },
+    { key: 'sent', label: 'Signing link sent to recipient', check: () => !!request.sent_at },
+    { key: 'opened', label: 'Client opened signing link', check: () => !!request.opened_at },
+    { key: 'signing_started', label: 'Client started signing', check: () => !!request.signing_started_at },
+    { key: 'signed', label: 'Client submitted signature', check: () => request.status === 'Signed' },
+    { key: 'pdf', label: 'Signed PDF / certificate generated', check: () => !!request.signed_document_url },
+    { key: 'status', label: 'Status updated to Signed', check: () => request.status === 'Signed' },
+    { key: 'cert_audit', label: 'Certificate recorded in audit trail', check: () => trail.some(e => e.event === 'certificate_generated') },
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b">
+          <h3 className="font-bold text-gray-900">Submission Debug Log</h3>
+          <button onClick={onClose}><X className="w-5 h-5 text-gray-400" /></button>
+        </div>
+        <div className="p-5 space-y-2">
+          <p className="text-xs text-gray-500 mb-3">Document: <strong>{request.title}</strong></p>
+          {steps.map(step => {
+            const ok = step.check();
+            return (
+              <div key={step.key} className={`flex items-center gap-3 p-3 rounded-lg border ${ok ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold ${ok ? 'bg-green-500' : 'bg-red-400'}`}>
+                  {ok ? '✓' : '✗'}
+                </div>
+                <span className={`text-xs font-medium ${ok ? 'text-green-800' : 'text-red-700'}`}>{step.label}</span>
+              </div>
+            );
+          })}
+          {request.decline_reason && (
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <p className="text-xs font-semibold text-amber-700">Decline Reason:</p>
+              <p className="text-xs text-amber-800 mt-0.5">{request.decline_reason}</p>
+            </div>
+          )}
+          <div className="mt-4 pt-3 border-t">
+            <p className="text-xs font-semibold text-gray-600 mb-2">Raw Audit Trail ({trail.length} events)</p>
+            <div className="space-y-1 max-h-48 overflow-y-auto">
+              {trail.length === 0 && <p className="text-xs text-gray-400">No audit events recorded</p>}
+              {trail.map((e, i) => (
+                <div key={i} className="text-xs bg-gray-50 rounded p-2">
+                  <span className="font-mono font-bold text-[#B87333]">{e.event}</span>
+                  <span className="text-gray-400 ml-2">{e.timestamp ? new Date(e.timestamp).toLocaleString('en-ZA') : ''}</span>
+                  {e.error && <span className="text-red-500 block mt-0.5">Error: {e.error}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {request.signed_document_url && (
+          <div className="px-5 pb-5">
+            <a href={request.signed_document_url} target="_blank" rel="noreferrer">
+              <Button size="sm" className="w-full gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
+                <Download className="w-4 h-4" /> Download Signed Certificate
+              </Button>
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AuditPanel({ request, onClose }) {
   const trail = request.audit_trail || [];
   return (
@@ -232,6 +300,7 @@ export default function AdminESignatures() {
   const [statusFilter, setStatusFilter] = useState('');
   const [auditRequest, setAuditRequest] = useState(null);
   const [sendingId, setSendingId] = useState(null);
+  const [debugRequest, setDebugRequest] = useState(null);
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['esignature-requests'],
@@ -386,6 +455,9 @@ export default function AdminESignatures() {
                                 {sendingId === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4 text-blue-500" />}
                               </Button>
                             )}
+                            <Button variant="ghost" size="sm" title="Submission debug log" onClick={() => setDebugRequest(req)} className="text-orange-500">
+                              <AlertTriangle className="w-4 h-4" />
+                            </Button>
                             <Button variant="ghost" size="sm" title="View audit trail" onClick={() => setAuditRequest(req)}>
                               <Activity className="w-4 h-4 text-purple-500" />
                             </Button>
@@ -426,6 +498,7 @@ export default function AdminESignatures() {
       )}
 
       {auditRequest && <AuditPanel request={auditRequest} onClose={() => setAuditRequest(null)} />}
+      {debugRequest && <DebugLogPanel request={debugRequest} onClose={() => setDebugRequest(null)} />}
     </AdminLayout>
   );
 }

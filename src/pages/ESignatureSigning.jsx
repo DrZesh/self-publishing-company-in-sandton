@@ -42,36 +42,56 @@ export default function ESignatureSigning() {
   };
 
   const handleSubmit = async () => {
-    if (!signature) { toast.error('Please provide your signature'); return; }
-    if (!form.confirmed_name || !form.confirmed_email) { toast.error('Please confirm your name and email'); return; }
-    const allConsents = form.consent_read && form.consent_identity && form.consent_authorised && form.consent_electronic && form.consent_submit;
-    if (!allConsents) { toast.error('Please accept all required consent checkboxes'); return; }
+    // Validation
+    if (!signature) { toast.error('Please provide your signature before submitting.'); return; }
+    if (!form.confirmed_name.trim()) { toast.error('Please enter your full name.'); return; }
+    if (!form.confirmed_email.trim()) { toast.error('Please enter your email address.'); return; }
+    if (!form.consent_read || !form.consent_identity || !form.consent_authorised || !form.consent_electronic || !form.consent_submit) {
+      toast.error('Please accept all required consent checkboxes.'); return;
+    }
+
     setSubmitting(true);
-
-    const res = await base44.functions.invoke('eSignatureActions', {
-      action: 'submit_signature',
-      request_id: requestId,
-      token,
-      signature_image_url: signature.dataUrl,
-      signature_method: signature.method,
-      confirmed_name: form.confirmed_name,
-      confirmed_email: form.confirmed_email,
-      consent_read: form.consent_read,
-      consent_identity: form.consent_identity,
-      consent_authorised: form.consent_authorised,
-      consent_electronic: form.consent_electronic,
-      consent_submit: form.consent_submit,
-    });
-
-    setSubmitting(false);
-    if (res.data?.success) {
-      setSubmitted(true);
-      if (res.data?.certificate_base64) {
-        const certUrl = `data:application/pdf;base64,${res.data.certificate_base64}`;
-        setRequest(r => ({ ...r, signed_document_url: certUrl }));
+    try {
+      // Step 1: Upload signature image to get a proper URL (avoids base64 size limits)
+      let signatureUrl = signature.dataUrl;
+      try {
+        const sigBlob = await fetch(signature.dataUrl).then(r => r.blob());
+        const sigFile = new File([sigBlob], 'signature.png', { type: 'image/png' });
+        const uploaded = await base44.integrations.Core.UploadFile({ file: sigFile });
+        signatureUrl = uploaded.file_url;
+      } catch (uploadErr) {
+        console.warn('Signature upload failed, using dataUrl fallback:', uploadErr);
       }
-    } else {
-      toast.error(res.data?.error || 'Submission failed. Please try again.');
+
+      // Step 2: Submit to backend
+      const res = await base44.functions.invoke('eSignatureActions', {
+        action: 'submit_signature',
+        request_id: requestId,
+        token,
+        signature_image_url: signatureUrl,
+        signature_method: signature.method,
+        confirmed_name: form.confirmed_name,
+        confirmed_email: form.confirmed_email,
+        consent_read: true,
+        consent_identity: true,
+        consent_authorised: true,
+        consent_electronic: true,
+        consent_submit: true,
+      });
+
+      if (res.data?.success) {
+        setSubmitted(true);
+        setRequest(r => ({ ...r, signed_document_url: res.data?.signed_document_url || null }));
+      } else {
+        const errMsg = res.data?.error || 'Submission failed. Please try again or contact Creative Books SA.';
+        toast.error(errMsg);
+        console.error('E-signature submission error:', res.data);
+      }
+    } catch (err) {
+      console.error('Submit exception:', err);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -283,8 +303,14 @@ export default function ESignatureSigning() {
 
             <div className="flex gap-3 pt-2">
               <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-              <Button onClick={handleSubmit} disabled={submitting} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white gap-2">
-                {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><CheckCircle className="w-4 h-4" /> Submit Signed Document</>}
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting || !(form.consent_read && form.consent_identity && form.consent_authorised && form.consent_electronic && form.consent_submit)}
+                className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white gap-2"
+              >
+                {submitting
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing — please wait...</>
+                  : <><CheckCircle className="w-4 h-4" /> Submit Signed Document</>}
               </Button>
             </div>
           </div>

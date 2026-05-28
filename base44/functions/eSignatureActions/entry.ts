@@ -107,13 +107,12 @@ async function generateCertificatePDF(req) {
     y += 14;
   });
 
-  // Signature image placeholder area
   y += 5;
   pdf.setFillColor(26, 18, 8);
   pdf.roundedRect(15, y, 180, 20, 2, 2, 'F');
   pdf.setTextColor(255, 255, 255);
   pdf.setFontSize(9);
-  const stmt = 'The above named individual has electronically signed this document. This certificate constitutes a legally binding record of that signature under applicable electronic communications legislation.';
+  const stmt = 'The above named individual has electronically signed this document. This certificate constitutes a legally binding record of that signature.';
   const lines = pdf.splitTextToSize(stmt, 170);
   pdf.text(lines, 20, y + 7);
 
@@ -122,9 +121,9 @@ async function generateCertificatePDF(req) {
   pdf.text('Creative Books SA · info@creativebooks.co.za · www.creativebooks.co.za · 010 500 3331', 105, 287, { align: 'center' });
   pdf.text('This certificate was generated automatically by the Creative Books SA CRM.', 105, 292, { align: 'center' });
 
-  const blob = pdf.output('blob');
-  const ab = await blob.arrayBuffer();
-  return btoa(String.fromCharCode(...new Uint8Array(ab)));
+  // Return as Uint8Array — avoid spread which can crash on large arrays
+  const pdfBytes = pdf.output('arraybuffer');
+  return new Uint8Array(pdfBytes);
 }
 
 Deno.serve(async (req) => {
@@ -268,11 +267,20 @@ Deno.serve(async (req) => {
         }),
       };
 
-      // Generate certificate PDF
+      // Generate certificate PDF and upload to storage (avoids base64 size limits in DB)
       const mergedReq = { ...esigReq, ...updates };
-      const certBase64 = await generateCertificatePDF(mergedReq);
-      // Store cert as data URL reference (in real production would upload to storage)
-      updates.signed_document_url = `data:application/pdf;base64,${certBase64}`;
+      let signedDocUrl = null;
+      try {
+        const pdfBytes = await generateCertificatePDF(mergedReq);
+        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const uploaded = await base44.asServiceRole.integrations.Core.UploadFile({ file: pdfBlob });
+        signedDocUrl = uploaded.file_url;
+        updates.signed_document_url = signedDocUrl;
+        updates.audit_trail = appendAudit(updates.audit_trail, { event: 'certificate_generated', url: signedDocUrl });
+      } catch (pdfErr) {
+        console.error('PDF generation/upload failed (non-fatal):', pdfErr.message);
+        // Don't block the signing even if PDF fails
+      }
 
       await base44.asServiceRole.entities.ESignatureRequest.update(request_id, updates);
 
@@ -305,7 +313,7 @@ Deno.serve(async (req) => {
         }).catch(() => {});
       }
 
-      return Response.json({ success: true, certificate_base64: certBase64 });
+      return Response.json({ success: true, signed_document_url: signedDocUrl });
     }
 
     // ── DECLINE ─────────────────────────────────────────────────────────────────
