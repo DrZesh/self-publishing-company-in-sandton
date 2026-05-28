@@ -77,6 +77,7 @@ const NAV_GROUPS = [
     items: [
       { label: 'Reports', path: '/admin/reports', icon: BarChart3 },
       { label: 'Revenue Forecast', path: '/admin/revenue-forecast', icon: TrendingUp },
+      { label: 'GA Analytics', path: '/admin/analytics', icon: TrendingUp },
       { label: 'SEO Analytics', path: '/admin/seo', icon: BarChart2 },
       { label: 'Search Console', path: '/admin/search-console', icon: Search },
     ],

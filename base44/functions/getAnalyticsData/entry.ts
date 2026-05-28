@@ -13,11 +13,21 @@ Deno.serve(async (req) => {
     const action = body.action || 'list_properties';
 
     if (action === 'list_properties') {
-      const res = await fetch('https://analyticsadmin.googleapis.com/v1beta/properties?filter=parent:accounts/-', {
+      // First get accounts, then properties
+      const acctRes = await fetch('https://analyticsadmin.googleapis.com/v1beta/accounts', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      const data = await res.json();
-      return Response.json(data);
+      const acctData = await acctRes.json();
+      const accounts = acctData.accounts || [];
+      const allProperties = [];
+      for (const acct of accounts) {
+        const propRes = await fetch(`https://analyticsadmin.googleapis.com/v1beta/properties?filter=parent:${acct.name}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const propData = await propRes.json();
+        if (propData.properties) allProperties.push(...propData.properties);
+      }
+      return Response.json({ properties: allProperties, accounts });
     }
 
     if (action === 'realtime') {
