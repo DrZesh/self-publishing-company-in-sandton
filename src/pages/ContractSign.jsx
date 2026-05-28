@@ -127,21 +127,45 @@ export default function ContractSign() {
   const handleSubmit = async () => {
     if (!isFormValid()) return;
     setSubmitting(true);
-    const signatureData = getSignatureImageData();
-    const res = await base44.functions.invoke('contractSignature', {
-      action: 'sign',
-      token,
-      signer_name: signerName,
-      signer_email: signerEmail,
-      signature_image_data: signatureData,
-      legal_consent: consent1 && consent2,
-      user_agent: navigator.userAgent,
-    });
-    setSubmitting(false);
-    if (res.data?.success) {
-      setStep('done');
-    } else {
-      setErrorMsg(res.data?.error || 'Signing failed. Please try again.');
+    setErrorMsg('');
+    try {
+      // Step 1: Upload signature image from frontend (avoids backend UploadFile issues)
+      const dataUrl = getSignatureImageData();
+      let signatureUrl = dataUrl;
+      try {
+        const blob = await fetch(dataUrl).then(r => r.blob());
+        const file = new File([blob], 'signature.png', { type: 'image/png' });
+        const uploaded = await base44.integrations.Core.UploadFile({ file });
+        if (uploaded?.file_url) signatureUrl = uploaded.file_url;
+      } catch (uploadErr) {
+        console.warn('Signature upload failed, using dataUrl fallback:', uploadErr);
+      }
+
+      // Step 2: Submit with 30-second timeout
+      const invokePromise = base44.functions.invoke('contractSignature', {
+        action: 'sign',
+        token,
+        signer_name: signerName,
+        signer_email: signerEmail,
+        signature_image_url: signatureUrl,
+        legal_consent: consent1 && consent2,
+        user_agent: navigator.userAgent,
+      });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 30000)
+      );
+      const res = await Promise.race([invokePromise, timeoutPromise]);
+
+      if (res.data?.success) {
+        setStep('done');
+      } else {
+        setErrorMsg(res.data?.error || 'Signing failed. Please try again or contact Creative Books SA.');
+      }
+    } catch (err) {
+      console.error('Contract submit error:', err);
+      setErrorMsg(err.message || 'Something went wrong. Please try again or contact Creative Books SA.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
