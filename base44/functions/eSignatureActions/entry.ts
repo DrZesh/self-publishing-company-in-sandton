@@ -267,20 +267,10 @@ Deno.serve(async (req) => {
         }),
       };
 
-      // Generate certificate PDF and upload to storage (avoids base64 size limits in DB)
-      const mergedReq = { ...esigReq, ...updates };
-      let signedDocUrl = null;
-      try {
-        const pdfBytes = await generateCertificatePDF(mergedReq);
-        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const uploaded = await base44.asServiceRole.integrations.Core.UploadFile({ file: pdfBlob });
-        signedDocUrl = uploaded.file_url;
-        updates.signed_document_url = signedDocUrl;
-        updates.audit_trail = appendAudit(updates.audit_trail, { event: 'certificate_generated', url: signedDocUrl });
-      } catch (pdfErr) {
-        console.error('PDF generation/upload failed (non-fatal):', pdfErr.message);
-        // Don't block the signing even if PDF fails
-      }
+      // IMPORTANT: Save signature FIRST, return success immediately.
+      // PDF generation is handled separately via the 'generate_pdf' action
+      // to avoid blocking the client on long-running PDF/upload operations.
+      updates.pdf_generation_status = 'pending';
 
       await base44.asServiceRole.entities.ESignatureRequest.update(request_id, updates);
 
@@ -313,7 +303,55 @@ Deno.serve(async (req) => {
         }).catch(() => {});
       }
 
-      return Response.json({ success: true, signed_document_url: signedDocUrl });
+      return Response.json({ success: true, signed_document_url: null });
+    }
+
+    // ── GENERATE PDF (separate action, called by admin after signing) ─────────────
+    if (action === 'generate_pdf') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { request_id } = body;
+      const reqs = await base44.asServiceRole.entities.ESignatureRequest.filter({ id: request_id });
+      if (!reqs.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const esigReq = reqs[0];
+
+      if (esigReq.status !== 'Signed') return Response.json({ error: 'Document has not been signed yet' }, { status: 400 });
+
+      try {
+        const pdfBytes = await generateCertificatePDF(esigReq);
+        // Convert Uint8Array to base64 safely (no spread to avoid stack overflow)
+        let binary = '';
+        for (let i = 0; i < pdfBytes.length; i++) binary += String.fromCharCode(pdfBytes[i]);
+        const base64 = btoa(binary);
+        const dataUrl = `data:application/pdf;base64,${base64}`;
+
+        // Try to upload via integration; fall back to data URL
+        let pdfUrl = dataUrl;
+        try {
+          const uploaded = await base44.asServiceRole.integrations.Core.UploadFile({
+            file: new Blob([pdfBytes], { type: 'application/pdf' })
+          });
+          if (uploaded?.file_url) pdfUrl = uploaded.file_url;
+        } catch (uploadErr) {
+          console.warn('Upload failed, storing as data URL:', uploadErr.message);
+        }
+
+        await base44.asServiceRole.entities.ESignatureRequest.update(request_id, {
+          signed_document_url: pdfUrl,
+          pdf_generation_status: 'done',
+          audit_trail: appendAudit(esigReq.audit_trail, { event: 'certificate_generated', actor: user.email }),
+        });
+
+        return Response.json({ success: true, signed_document_url: pdfUrl });
+      } catch (pdfErr) {
+        console.error('PDF generation failed:', pdfErr.message);
+        await base44.asServiceRole.entities.ESignatureRequest.update(request_id, {
+          pdf_generation_status: 'failed',
+          audit_trail: appendAudit(esigReq.audit_trail, { event: 'certificate_failed', error: pdfErr.message }),
+        });
+        return Response.json({ error: 'PDF generation failed: ' + pdfErr.message }, { status: 500 });
+      }
     }
 
     // ── DECLINE ─────────────────────────────────────────────────────────────────

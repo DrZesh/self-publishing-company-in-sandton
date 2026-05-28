@@ -337,6 +337,14 @@ export default function AdminESignatures() {
     toast.success('Request cancelled');
   };
 
+  const handleRetryPdf = async (req) => {
+    setSendingId(req.id + '_pdf');
+    const res = await base44.functions.invoke('eSignatureActions', { action: 'generate_pdf', request_id: req.id });
+    setSendingId(null);
+    if (res.data?.success) { toast.success('Certificate generated!'); queryClient.invalidateQueries({ queryKey: ['esignature-requests'] }); }
+    else toast.error(res.data?.error || 'PDF generation failed');
+  };
+
   const filtered = requests.filter(r => {
     const q = search.toLowerCase();
     return (!q || r.title?.toLowerCase().includes(q) || r.recipient_name?.toLowerCase().includes(q) || r.recipient_email?.toLowerCase().includes(q))
@@ -461,6 +469,11 @@ export default function AdminESignatures() {
                             <Button variant="ghost" size="sm" title="View audit trail" onClick={() => setAuditRequest(req)}>
                               <Activity className="w-4 h-4 text-purple-500" />
                             </Button>
+                            {isSigned && !req.signed_document_url && (
+                              <Button variant="ghost" size="sm" title="Retry PDF generation" disabled={sendingId === req.id + '_pdf'} onClick={() => handleRetryPdf(req)}>
+                                {sendingId === req.id + '_pdf' ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4 text-orange-500" />}
+                              </Button>
+                            )}
                             {isSigned && req.signed_document_url && (
                               <a href={req.signed_document_url} download={`signed_${req.title}.pdf`}>
                                 <Button variant="ghost" size="sm" title="Download certificate"><Download className="w-4 h-4 text-green-600" /></Button>

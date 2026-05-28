@@ -63,8 +63,8 @@ export default function ESignatureSigning() {
         console.warn('Signature upload failed, using dataUrl fallback:', uploadErr);
       }
 
-      // Step 2: Submit to backend
-      const res = await base44.functions.invoke('eSignatureActions', {
+      // Step 2: Submit to backend with 30-second timeout
+      const invokePromise = base44.functions.invoke('eSignatureActions', {
         action: 'submit_signature',
         request_id: requestId,
         token,
@@ -78,6 +78,10 @@ export default function ESignatureSigning() {
         consent_electronic: true,
         consent_submit: true,
       });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out after 30 seconds')), 30000)
+      );
+      const res = await Promise.race([invokePromise, timeoutPromise]);
 
       if (res.data?.success) {
         setSubmitted(true);
