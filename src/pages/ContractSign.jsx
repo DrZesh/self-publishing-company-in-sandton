@@ -21,7 +21,9 @@ export default function ContractSign() {
   const [consent1, setConsent1] = useState(false);
   const [consent2, setConsent2] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [signedData, setSignedData] = useState(null); // { signature_data_url, contract_file_url }
+  const [signedData, setSignedData] = useState(null);
+  const [signedAt, setSignedAt] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [declining, setDeclining] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
   const [showDeclineForm, setShowDeclineForm] = useState(false);
@@ -151,6 +153,7 @@ export default function ContractSign() {
         signer_email: signerEmail,
         signature_image_url: signatureUrl,
         legal_consent: consent1 && consent2,
+        sign_mode: signMode,
         user_agent: navigator.userAgent,
       });
       const timeoutPromise = new Promise((_, reject) =>
@@ -162,7 +165,13 @@ export default function ContractSign() {
         setSignedData({
           signature_data_url: dataUrl,
           contract_file_url: res.data.contract_file_url || contract?.contract_file_url,
+          contract_id: res.data.contract_id || '',
+          sent_at: res.data.sent_at || '',
+          opened_at: res.data.opened_at || '',
         });
+        setSignedAt(res.data.signed_at
+          ? new Date(res.data.signed_at).toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })
+          : new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' }));
         setStep('done');
       } else {
         setErrorMsg(res.data?.error || 'Signing failed. Please try again or contact Creative Books SA.');
@@ -218,112 +227,195 @@ export default function ContractSign() {
     );
   }
 
+  const parseBrowser = (ua) => {
+    if (!ua) return 'Unknown';
+    if (ua.includes('Edg')) return 'Microsoft Edge';
+    if (ua.includes('Chrome')) return 'Google Chrome';
+    if (ua.includes('Firefox')) return 'Mozilla Firefox';
+    if (ua.includes('Safari')) return 'Apple Safari';
+    return 'Unknown Browser';
+  };
+
+  const parseDevice = (ua) => {
+    if (!ua) return 'Unknown';
+    if (/Mobile|Android|iPhone/.test(ua)) return 'Mobile Device';
+    if (/iPad|Tablet/.test(ua)) return 'Tablet';
+    return 'Desktop Computer';
+  };
+
+  const downloadSignedContract = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const w = 210;
+    const refNum = `CBSA-${(contract?.id || Date.now().toString(36)).slice(-8).toUpperCase()}`;
+    // Header
+    doc.setFillColor(184, 115, 51); doc.rect(0, 0, w, 14, 'F');
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+    doc.text('CREATIVE BOOKS SA', 14, 6);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Prism Office Park, Fourways  ·  info@creativebooks.co.za  ·  084 230 5393', 14, 11);
+    doc.text(refNum, w - 14, 9, { align: 'right' });
+    // Title
+    doc.setTextColor(30, 30, 30); doc.setFontSize(17); doc.setFont('helvetica', 'bold');
+    doc.text('ELECTRONICALLY SIGNED CONTRACT', w / 2, 28, { align: 'center' });
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 100, 100);
+    doc.text('Official signed copy — retain for your records', w / 2, 35, { align: 'center' });
+    doc.setDrawColor(184, 115, 51); doc.setLineWidth(0.5); doc.line(14, 40, w - 14, 40);
+    // Contract details
+    let y = 50;
+    [['Contract Title', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document Reference', refNum], ['Status', 'SIGNED \u2713']].forEach(([label, value]) => {
+      doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 70, 20);
+      doc.text(label + ':', 14, y);
+      doc.setFont('helvetica', 'normal'); doc.setTextColor(40, 40, 40);
+      doc.text(String(value), 70, y); y += 9;
+    });
+    y += 4;
+    // Signer confirmation box
+    doc.setFillColor(240, 253, 244); doc.setDrawColor(167, 243, 208); doc.roundedRect(14, y, w - 28, 58, 3, 3, 'FD');
+    y += 8;
+    doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 101, 52);
+    doc.text('SIGNATURE CONFIRMATION', 20, y); y += 9;
+    [['Full Name', signerName], ['Email Address', signerEmail], ['Signed At', signedAt || new Date().toLocaleString('en-ZA')], ['Method', signMode === 'type' ? 'Typed Signature' : 'Hand-Drawn Signature'], ['Legal Consent', 'Confirmed \u2014 ECT Act 25 of 2002 (South Africa)']].forEach(([label, value]) => {
+      doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(80, 80, 80);
+      doc.text(label + ':', 20, y);
+      doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30);
+      doc.text(String(value), 70, y); y += 7;
+    });
+    // Signature image
+    y += 8;
+    doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(80, 60, 30);
+    doc.text('Electronic Signature:', 14, y); y += 4;
+    doc.setDrawColor(200, 200, 190); doc.setFillColor(252, 252, 250);
+    doc.roundedRect(14, y, 140, 38, 2, 2, 'FD');
+    if (signedData?.signature_data_url) doc.addImage(signedData.signature_data_url, 'PNG', 16, y + 2, 136, 34);
+    y += 44;
+    // Legal notice
+    doc.setFontSize(8); doc.setFont('helvetica', 'italic'); doc.setTextColor(120, 120, 120);
+    doc.text(doc.splitTextToSize('This signed copy confirms your electronic acceptance. The original contract is available via your confirmation email. This is legally binding under the Electronic Communications and Transactions Act 25 of 2002.', w - 28), 14, y);
+    y += 14;
+    doc.setFillColor(255, 250, 235); doc.setDrawColor(220, 180, 100); doc.roundedRect(14, y, w - 28, 14, 2, 2, 'FD');
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 70, 20);
+    doc.text(`\u2713 Consent confirmed  \u00b7  \u2713 Document read  \u00b7  \u2713 Signature applied  \u00b7  Ref: ${refNum}`, w / 2, y + 9, { align: 'center' });
+    // Footer
+    doc.setFillColor(184, 115, 51); doc.rect(0, 285, w, 12, 'F');
+    doc.setFontSize(8); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal');
+    doc.text(`Ref: ${refNum}  \u00b7  ${new Date().toLocaleString('en-ZA')}  \u00b7  Creative Books SA`, w / 2, 292, { align: 'center' });
+    doc.save(`${contract?.title || 'Contract'} - Signed Copy.pdf`);
+  };
+
   const downloadCertificate = () => {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const w = 210;
-    // Header bar
-    doc.setFillColor(184, 115, 51);
-    doc.rect(0, 0, w, 10, 'F');
-    // Logo text
-    doc.setFontSize(10);
+    const ua = navigator.userAgent;
+    const refNum = `CERT-${(contract?.id || Date.now().toString(36)).slice(-8).toUpperCase()}`;
+    const browser = parseBrowser(ua);
+    const device = parseDevice(ua);
+    // Header
+    doc.setFillColor(22, 78, 99); doc.rect(0, 0, w, 14, 'F');
+    doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+    doc.text('CREATIVE BOOKS SA \u2014 OFFICIAL ELECTRONIC SIGNATURE RECORD', 14, 6);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(255, 255, 255);
-    doc.text('Creative Books SA', w / 2, 7, { align: 'center' });
-    // Title
-    doc.setTextColor(30, 30, 30);
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Electronic Signature Certificate', w / 2, 30, { align: 'center' });
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 100, 100);
-    doc.text('This document confirms that the contract below was electronically signed.', w / 2, 38, { align: 'center' });
-    // Details box
-    doc.setDrawColor(220, 220, 210);
-    doc.setFillColor(250, 248, 245);
-    doc.roundedRect(20, 46, w - 40, 60, 3, 3, 'FD');
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(80, 60, 30);
-    const rows = [
-      ['Contract', contract?.title || ''],
-      ['Signer Name', signerName],
-      ['Email Address', signerEmail],
-      ['Signed At', new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })],
+    doc.text('Legally binding under ECT Act 25 of 2002 (South Africa)', 14, 11);
+    doc.text(refNum, w - 14, 9, { align: 'right' });
+    doc.setTextColor(22, 78, 99); doc.setFontSize(17); doc.setFont('helvetica', 'bold');
+    doc.text('ELECTRONIC SIGNATURE CERTIFICATE', w / 2, 28, { align: 'center' });
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80);
+    doc.text(`Certificate Reference: ${refNum}`, w / 2, 35, { align: 'center' });
+    doc.setDrawColor(22, 78, 99); doc.setLineWidth(0.5); doc.line(14, 40, w - 14, 40);
+    const sections = [
+      { title: 'DOCUMENT INFORMATION', color: [22, 78, 99], rows: [['Document Name', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document ID', contract?.id || 'N/A'], ['Certificate Ref', refNum], ['Final Status', 'SIGNED \u2014 Legally Binding']] },
+      { title: 'SIGNER DETAILS', color: [22, 101, 52], rows: [['Full Name', signerName], ['Email Address', signerEmail], ['Signature Method', signMode === 'type' ? 'Typed Signature' : 'Hand-Drawn Signature']] },
+      { title: 'TIMELINE', color: [120, 60, 10], rows: [['Contract Sent', signedData?.sent_at ? new Date(signedData.sent_at).toLocaleString('en-ZA') : 'N/A'], ['Contract Opened', signedData?.opened_at ? new Date(signedData.opened_at).toLocaleString('en-ZA') : 'N/A'], ['Contract Signed', signedAt || new Date().toLocaleString('en-ZA')]] },
+      { title: 'TECHNICAL DETAILS', color: [60, 60, 60], rows: [['Browser', browser], ['Device Type', device], ['User Agent', ua ? ua.substring(0, 70) + '...' : 'N/A']] },
+      { title: 'CONSENT RECORD', color: [100, 20, 20], rows: [['Read & Understood Contract', '\u2713 Confirmed'], ['Electronic Signature Consent', '\u2713 Confirmed (ECT Act 2002)'], ['Authorised to Sign', '\u2713 Confirmed'], ['Identity Confirmed', '\u2713 Confirmed']] },
     ];
-    rows.forEach(([label, value], i) => {
-      const y = 56 + i * 12;
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(100, 70, 20);
-      doc.text(label + ':', 26, y);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(40, 40, 40);
-      doc.text(String(value), 70, y);
+    let y = 48;
+    sections.forEach(section => {
+      if (y > 255) { doc.addPage(); y = 20; }
+      doc.setFillColor(section.color[0], section.color[1], section.color[2]); doc.rect(14, y, w - 28, 8, 'F');
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+      doc.text(section.title, 18, y + 5.5); y += 8;
+      section.rows.forEach(([label, value]) => {
+        doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(80, 80, 80);
+        doc.text(label + ':', 18, y + 5);
+        doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30);
+        const lines = doc.splitTextToSize(String(value), 105);
+        doc.text(lines, 80, y + 5);
+        y += lines.length > 1 ? lines.length * 5 + 2 : 8;
+      });
+      y += 3;
     });
-    // Signature image
-    if (signedData?.signature_data_url) {
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(80, 60, 30);
-      doc.text('Electronic Signature:', 20, 120);
-      doc.setDrawColor(200, 200, 190);
-      doc.setFillColor(252, 252, 250);
-      doc.roundedRect(20, 124, 130, 36, 2, 2, 'FD');
-      doc.addImage(signedData.signature_data_url, 'PNG', 22, 126, 126, 32);
+    if (signedData?.signature_data_url && y < 245) {
+      doc.setFillColor(22, 78, 99); doc.rect(14, y, w - 28, 8, 'F');
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+      doc.text('CAPTURED SIGNATURE', 18, y + 5.5); y += 10;
+      doc.setDrawColor(200, 200, 190); doc.setFillColor(252, 252, 250);
+      doc.roundedRect(14, y, 130, 34, 2, 2, 'FD');
+      doc.addImage(signedData.signature_data_url, 'PNG', 16, y + 2, 126, 30); y += 38;
     }
-    // Legal notice
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'italic');
-    doc.setTextColor(130, 130, 130);
-    const notice = 'This electronic signature is legally binding in terms of the Electronic Communications and Transactions Act, 2002 (South Africa). The signature was captured via the Creative Books SA secure signing portal.';
-    const lines = doc.splitTextToSize(notice, w - 40);
-    doc.text(lines, 20, 172);
-    // Footer bar
-    doc.setFillColor(184, 115, 51);
-    doc.rect(0, 285, w, 12, 'F');
-    doc.setFontSize(9);
-    doc.setTextColor(255, 255, 255);
-    doc.text('Creative Books SA  ·  info@creativebooks.co.za  ·  084 230 5393', w / 2, 292, { align: 'center' });
-    doc.save(`${contract?.title || 'Contract'} - Signed Certificate.pdf`);
+    doc.setFillColor(22, 78, 99); doc.rect(0, 285, w, 12, 'F');
+    doc.setFontSize(8); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal');
+    doc.text(`${refNum}  \u00b7  Issued: ${new Date().toLocaleString('en-ZA')}  \u00b7  Creative Books SA`, w / 2, 292, { align: 'center' });
+    doc.save(`${contract?.title || 'Contract'} - Signature Certificate.pdf`);
   };
 
-  // ── SUCCESS ─────────────────────────────────────────────────────────────────
+  const sendCopyToEmail = async () => {
+    setSendingEmail(true);
+    try {
+      await base44.functions.invoke('contractSignature', {
+        action: 'resend_signed_copy',
+        contract_id: signedData?.contract_id,
+        signer_email: signerEmail,
+      });
+      alert(`A confirmation with your signed copy has been re-sent to ${signerEmail}.`);
+    } catch {
+      alert('Could not send email. Please contact info@creativebooks.co.za directly.');
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  // \u2500\u2500 SUCCESS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   if (step === 'done') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] to-[#1a4a2a] flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 text-center">
+          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Contract Signed!</h2>
-          <p className="text-gray-500 mb-6">Thank you, <strong>{signerName}</strong>. Your electronic signature has been recorded and a confirmation email is on its way to <strong>{signerEmail}</strong>.</p>
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-5">
-            <p className="font-semibold mb-1">✅ What happens next</p>
-            <ul className="space-y-1 text-green-700">
-              <li>• Your project is now moving to the next stage</li>
-              <li>• Our team will contact you within 24 hours</li>
-              <li>• A signed confirmation has been emailed to you</li>
-            </ul>
-          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Contract Signed Successfully!</h2>
+          <p className="text-gray-500 mb-6 text-sm">Thank you, <strong>{signerName}</strong>. Your signature has been recorded and a confirmation has been emailed to <strong>{signerEmail}</strong>.</p>
+
           <div className="space-y-3 mb-6">
+            <button onClick={downloadSignedContract} className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors">
+              <Download className="w-4 h-4" /> Download Signed Contract (PDF)
+            </button>
+            <button onClick={downloadCertificate} className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#16537e] hover:bg-[#0e3f61] text-white font-semibold rounded-xl transition-colors">
+              <FileText className="w-4 h-4" /> Download Signature Certificate (PDF)
+            </button>
             <button
-              onClick={downloadCertificate}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors"
+              onClick={sendCopyToEmail}
+              disabled={sendingEmail}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border-2 border-[#B87333] text-[#B87333] hover:bg-orange-50 font-semibold rounded-xl transition-colors disabled:opacity-50"
             >
-              <Download className="w-4 h-4" /> Download Signed Certificate (PDF)
+              {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              {sendingEmail ? 'Sending...' : 'Send Signed Copy to My Email'}
             </button>
             {signedData?.contract_file_url && (
-              <a
-                href={signedData.contract_file_url}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
-              >
+              <a href={signedData.contract_file_url} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium rounded-xl transition-colors">
                 <FileText className="w-4 h-4" /> View Original Contract
               </a>
             )}
           </div>
-          <p className="text-xs text-gray-400">Questions? <a href="mailto:info@creativebooks.co.za" className="text-[#B87333]">info@creativebooks.co.za</a> · 084 230 5393</p>
+
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-5">
+            <p className="font-semibold mb-1">\u2705 What happens next</p>
+            <ul className="space-y-1 text-green-700">
+              <li>\u2022 Your project is now moving to the next stage</li>
+              <li>\u2022 Our team will contact you within 24 hours</li>
+              <li>\u2022 Your signed documents have been saved securely</li>
+            </ul>
+          </div>
+          <p className="text-xs text-gray-400">Questions? <a href="mailto:info@creativebooks.co.za" className="text-[#B87333]">info@creativebooks.co.za</a> \u00b7 084 230 5393</p>
         </div>
       </div>
     );

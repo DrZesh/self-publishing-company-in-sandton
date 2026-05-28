@@ -334,6 +334,40 @@ Deno.serve(async (req) => {
         uploaded_by: signer_email,
       });
 
+      // Save ESignatureRequest record
+      try {
+        await base44.asServiceRole.entities.ESignatureRequest.create({
+          title: contract.title,
+          file_url: contract.contract_file_url || '',
+          file_name: `${contract.title}.pdf`,
+          contact_id: contract.contact_id,
+          project_id: contract.project_id || '',
+          status: 'Signed',
+          recipient_name: signer_name,
+          recipient_email: signer_email,
+          signature_image_url,
+          signature_method: body.sign_mode || 'drawn',
+          signer_confirmed_name: signer_name,
+          signer_confirmed_email: signer_email,
+          signer_ip: ip || '',
+          signer_user_agent: user_agent || '',
+          consent_electronic: legal_consent || false,
+          consent_submit: legal_consent || false,
+          consent_read: true,
+          consent_identity: true,
+          consent_authorised: true,
+          signed_at: now,
+          sent_at: contract.sent_at || now,
+          opened_at: contract.opened_at || now,
+          signed_document_url: contract.contract_file_url || '',
+          audit_trail: auditTrail,
+          sent_by: 'Creative Books SA',
+          open_count: 1,
+        });
+      } catch (e) {
+        console.warn('ESignatureRequest log failed:', e.message);
+      }
+
       // Update project stage if linked
       if (contract.project_id) {
         await base44.asServiceRole.entities.Project.update(contract.project_id, {
@@ -365,7 +399,7 @@ Deno.serve(async (req) => {
         );
       }
 
-      return Response.json({ success: true, signed_at: now, contract_file_url: contract.contract_file_url || '' });
+      return Response.json({ success: true, signed_at: now, contract_file_url: contract.contract_file_url || '', contract_id: contract.id, sent_at: contract.sent_at || '', opened_at: contract.opened_at || '' });
     }
 
     // ── LOG SIGNING STARTED ─────────────────────────────────────────────────
@@ -379,6 +413,21 @@ Deno.serve(async (req) => {
         audit_trail: addAuditEvent(contract.audit_trail, 'signing_started'),
       });
       return Response.json({ ok: true });
+    }
+
+    // ── RESEND SIGNED COPY (public — validated by signer email) ──────────────
+    if (action === 'resend_signed_copy') {
+      const { contract_id, signer_email } = body;
+      if (!contract_id || !signer_email) return Response.json({ error: 'Missing fields' }, { status: 400 });
+      const contracts = await base44.asServiceRole.entities.Contract.filter({ id: contract_id });
+      const contract = contracts[0];
+      if (!contract || contract.signer_email !== signer_email) return Response.json({ error: 'Not authorized' }, { status: 403 });
+      if (contract.status !== 'Signed') return Response.json({ error: 'Contract not yet signed' }, { status: 400 });
+      const signedAt = new Date(contract.signed_at).toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
+      await sendEmail(signer_email, `Your Signed Copy: ${contract.title} — Creative Books SA`,
+        signedConfirmHtml({ signerName: contract.signer_name, contractTitle: contract.title, signedAt, contractFileUrl: contract.contract_file_url || '' })
+      );
+      return Response.json({ success: true });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
