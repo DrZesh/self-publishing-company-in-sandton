@@ -131,14 +131,14 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
           {step === 1 && (
             <div className="space-y-3">
               <p className="text-sm text-gray-600 mb-4">Select a reusable document from your Template Library to send:</p>
-              {templates.length === 0 ? (
+              {templates.filter(t => !t.template_status || t.template_status === 'Active').length === 0 ? (
                 <div className="text-center py-8 text-gray-400">
                   <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">No templates available.</p>
-                  <p className="text-xs mt-1">Upload a document and mark it as a template first.</p>
+                  <p className="text-sm">No active templates available.</p>
+                  <p className="text-xs mt-1">Upload a template and set its status to "Active" to send it.</p>
                 </div>
               ) : (
-                templates.map(t => (
+                templates.filter(t => !t.template_status || t.template_status === 'Active').map(t => (
                   <button
                     key={t.id}
                     onClick={() => { setSelectedTemplate(t); setForm(f => ({ ...f, requires_signature: t.requires_signature || false, expiry_days: t.default_expiry_days || 14 })); }}

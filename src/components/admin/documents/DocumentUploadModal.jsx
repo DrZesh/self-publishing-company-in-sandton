@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { X, Upload, Loader2 } from 'lucide-react';
+import { X, Upload, Loader2, Sparkles, Tag } from 'lucide-react';
+
+const DOCUMENT_LABELS = ['Legal', 'Finance', 'Client-Facing', 'Internal', 'Supplier', 'Urgent', 'Confidential', 'Requires Action'];
+const TEMPLATE_STATUSES = ['Draft Template', 'Pending Approval', 'Active', 'Archived Template'];
 
 const CATEGORIES = [
   'Signed Contract', 'Unsigned Contract', 'NDA', 'Publishing Agreement',
@@ -23,12 +26,33 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
     version: document?.version || 1,
     is_template: document?.is_template || false,
     template_label: document?.template_label || '',
+    template_status: document?.template_status || 'Draft Template',
     requires_signature: document?.requires_signature || false,
     default_expiry_days: document?.default_expiry_days || 14,
+    labels: document?.labels || [],
+    ai_summary: document?.ai_summary || '',
   });
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+
+  const toggleLabel = (label) => {
+    setForm(f => ({
+      ...f,
+      labels: f.labels.includes(label) ? f.labels.filter(l => l !== label) : [...f.labels, label]
+    }));
+  };
+
+  const generateAISummary = async () => {
+    if (!form.template_label && !form.category) return;
+    setGeneratingSummary(true);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `Write a brief 1-2 sentence summary explaining what this document type is and when it is used in a self-publishing or book printing company context. Document type: "${form.template_label || form.category}". Keep it practical and clear for staff.`,
+    });
+    setForm(f => ({ ...f, ai_summary: result }));
+    setGeneratingSummary(false);
+  };
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -114,16 +138,24 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
             )}
           </div>
 
-          {/* Signature & Expiry for templates */}
+          {/* Template settings */}
           {form.is_template && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Approval Status</label>
+                  <select value={form.template_status} onChange={e => set('template_status', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                    {TEMPLATE_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Default expiry (days)</label>
+                  <input type="number" min="1" max="90" value={form.default_expiry_days} onChange={e => set('default_expiry_days', parseInt(e.target.value) || 14)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                </div>
+              </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="req_sig" checked={form.requires_signature} onChange={e => set('requires_signature', e.target.checked)} className="w-4 h-4 accent-[#B87333]" />
                 <label htmlFor="req_sig" className="text-sm text-gray-700 cursor-pointer">Requires signature</label>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Default expiry (days)</label>
-                <input type="number" min="1" max="90" value={form.default_expiry_days} onChange={e => set('default_expiry_days', parseInt(e.target.value) || 14)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
               </div>
             </div>
           )}
@@ -153,6 +185,46 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
               )}
             </label>
           </div>
+
+          {/* Labels */}
+          <div>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><Tag className="w-3 h-3" /> Labels</label>
+            <div className="flex flex-wrap gap-2">
+              {DOCUMENT_LABELS.map(label => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => toggleLabel(label)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    form.labels.includes(label)
+                      ? 'bg-[#B87333] text-white border-[#B87333]'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-[#B87333]'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Summary */}
+          {form.is_template && (
+            <div>
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-purple-500" /> AI Summary</span>
+                <button type="button" onClick={generateAISummary} disabled={generatingSummary} className="text-[10px] text-purple-600 hover:underline font-normal">
+                  {generatingSummary ? 'Generating...' : 'Generate'}
+                </button>
+              </label>
+              <textarea
+                value={form.ai_summary}
+                onChange={e => set('ai_summary', e.target.value)}
+                rows={2}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none"
+                placeholder="AI-generated summary of what this document is used for..."
+              />
+            </div>
+          )}
 
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Notes</label>

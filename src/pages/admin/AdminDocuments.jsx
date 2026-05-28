@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import {
   Plus, Search, FolderOpen, Download, Archive, Trash2, Send, RotateCcw,
   Activity, X, RefreshCw, Clock, Zap, Star, Shield, FileText,
-  Lock, BookOpen, Layers
+  Lock, BookOpen, Layers, Tag, Sparkles, Ban
 } from 'lucide-react';
 import DocumentUploadModal from '@/components/admin/documents/DocumentUploadModal';
 import DocumentActivityPanel from '@/components/admin/documents/DocumentActivityPanel';
@@ -75,6 +75,8 @@ export default function AdminDocuments() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [signatureFilter, setSignatureFilter] = useState('');
+  const [labelFilter, setLabelFilter] = useState('');
+  const [templateStatusFilter, setTemplateStatusFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showQuickSend, setShowQuickSend] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -152,6 +154,12 @@ export default function AdminDocuments() {
     updateDoc.mutate({ id: doc.id, data: { is_favourite: !doc.is_favourite } });
   };
 
+  const handleRevokeAccess = (doc) => {
+    if (!confirm(`Revoke access to "${doc.template_label || doc.file_name}"? The recipient will no longer be able to open this link.`)) return;
+    updateDoc.mutate({ id: doc.id, data: { access_revoked: true, access_revoked_at: new Date().toISOString(), status: 'Archived' } });
+    toast.success('Document access revoked.');
+  };
+
   const getTabDocs = (docs) => {
     switch (activeTab) {
       case 'templates': return docs.filter(d => d.is_template);
@@ -170,7 +178,9 @@ export default function AdminDocuments() {
     const matchCat = !categoryFilter || d.category === categoryFilter;
     const matchStatus = !statusFilter || d.status === statusFilter;
     const matchSig = !signatureFilter || (signatureFilter === 'yes' ? d.requires_signature : !d.requires_signature);
-    return matchSearch && matchCat && matchStatus && matchSig;
+    const matchLabel = !labelFilter || (d.labels || []).includes(labelFilter);
+    const matchTplStatus = !templateStatusFilter || d.template_status === templateStatusFilter;
+    return matchSearch && matchCat && matchStatus && matchSig && matchLabel && matchTplStatus;
   });
 
   const templates = documents.filter(d => d.is_template);
@@ -306,8 +316,18 @@ export default function AdminDocuments() {
             <option value="yes">Requires Signature</option>
             <option value="no">No Signature Required</option>
           </select>
-          {(search || categoryFilter || statusFilter || signatureFilter) && (
-            <button onClick={() => { setSearch(''); setCategoryFilter(''); setStatusFilter(''); setSignatureFilter(''); }} className="px-3 py-2 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
+          {activeTab === 'templates' && (
+            <select value={templateStatusFilter} onChange={e => setTemplateStatusFilter(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+              <option value="">All Statuses</option>
+              {['Draft Template', 'Pending Approval', 'Active', 'Archived Template'].map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          )}
+          <select value={labelFilter} onChange={e => setLabelFilter(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+            <option value="">All Labels</option>
+            {['Legal', 'Finance', 'Client-Facing', 'Internal', 'Supplier', 'Urgent', 'Confidential', 'Requires Action'].map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
+          {(search || categoryFilter || statusFilter || signatureFilter || labelFilter || templateStatusFilter) && (
+            <button onClick={() => { setSearch(''); setCategoryFilter(''); setStatusFilter(''); setSignatureFilter(''); setLabelFilter(''); setTemplateStatusFilter(''); }} className="px-3 py-2 text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1">
               <X className="w-3.5 h-3.5" /> Clear
             </button>
           )}
@@ -370,6 +390,22 @@ export default function AdminDocuments() {
                               <p className="font-medium text-gray-900 truncate max-w-[200px]">{doc.template_label || doc.file_name}</p>
                               {doc.book_title && <p className="text-xs text-gray-400 truncate">{doc.book_title}</p>}
                               {!doc.is_latest_version && <span className="text-[10px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded mt-0.5 inline-block">Old version</span>}
+                              {doc.is_template && doc.template_status && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded mt-0.5 inline-block font-medium ${
+                                  doc.template_status === 'Active' ? 'bg-green-100 text-green-700' :
+                                  doc.template_status === 'Pending Approval' ? 'bg-yellow-100 text-yellow-700' :
+                                  doc.template_status === 'Archived Template' ? 'bg-gray-200 text-gray-500' :
+                                  'bg-gray-100 text-gray-600'
+                                }`}>{doc.template_status}</span>
+                              )}
+                              {(doc.labels || []).length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {doc.labels.slice(0, 2).map(l => (
+                                    <span key={l} className="text-[10px] bg-orange-50 text-[#B87333] border border-orange-100 px-1.5 py-0.5 rounded-full">{l}</span>
+                                  ))}
+                                  {doc.labels.length > 2 && <span className="text-[10px] text-gray-400">+{doc.labels.length - 2}</span>}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -439,6 +475,11 @@ export default function AdminDocuments() {
                             <Button variant="ghost" size="sm" title="Activity log" onClick={() => setSelectedDoc(doc.id === selectedDoc?.id ? null : doc)}>
                               <Activity className="w-4 h-4 text-purple-500" />
                             </Button>
+                            {!isVaultDoc && !doc.access_revoked && !doc.is_template && ['Sent to Client', 'Opened', 'Viewed'].includes(doc.status) && (
+                              <Button variant="ghost" size="sm" title="Revoke access" onClick={() => handleRevokeAccess(doc)}>
+                                <Ban className="w-4 h-4 text-red-400" />
+                              </Button>
+                            )}
                             {!isVaultDoc && (
                               <>
                                 <Button variant="ghost" size="sm" title="Archive" onClick={() => archiveDoc.mutate(doc.id)}>
@@ -519,6 +560,28 @@ export default function AdminDocuments() {
                 <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-100 rounded-lg mb-4">
                   <Shield className="w-4 h-4 text-purple-500" />
                   <span className="text-xs font-medium text-purple-700">Signature required on this document</span>
+                </div>
+              )}
+              {selectedDoc.access_revoked && (
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg mb-4">
+                  <Ban className="w-4 h-4 text-red-500" />
+                  <span className="text-xs font-medium text-red-700">Access revoked — recipient can no longer open this link</span>
+                </div>
+              )}
+              {selectedDoc.ai_summary && (
+                <div className="mb-4 p-3 bg-purple-50 border border-purple-100 rounded-lg">
+                  <p className="text-xs font-semibold text-purple-700 mb-1 flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Summary</p>
+                  <p className="text-xs text-purple-800 leading-relaxed">{selectedDoc.ai_summary}</p>
+                </div>
+              )}
+              {(selectedDoc.labels || []).length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1"><Tag className="w-3 h-3" /> Labels</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedDoc.labels.map(l => (
+                      <span key={l} className="text-[11px] bg-orange-50 text-[#B87333] border border-orange-100 px-2 py-0.5 rounded-full font-medium">{l}</span>
+                    ))}
+                  </div>
                 </div>
               )}
               {selectedDoc.client_message && (

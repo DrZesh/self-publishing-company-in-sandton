@@ -32,6 +32,17 @@
       "type": "string",
       "description": "Display label for template (e.g. NDA, Publishing Agreement)"
     },
+    "template_status": {
+      "type": "string",
+      "enum": [
+        "Draft Template",
+        "Pending Approval",
+        "Active",
+        "Archived Template"
+      ],
+      "default": "Draft Template",
+      "description": "Approval status for reusable templates"
+    },
     "requires_signature": {
       "type": "boolean",
       "default": false,
@@ -40,6 +51,27 @@
     "default_expiry_days": {
       "type": "number",
       "description": "Default days until link expires"
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Document labels e.g. Legal, Finance, Urgent"
+    },
+    "ai_summary": {
+      "type": "string",
+      "description": "AI-generated summary of what this document is and its purpose"
+    },
+    "access_revoked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether document access has been revoked"
+    },
+    "access_revoked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When access was revoked"
     },
     "category": {
       "type": "string",
