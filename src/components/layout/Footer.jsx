@@ -164,6 +164,7 @@ export default function Footer() {
           <p className="text-white/40">&copy; {new Date().getFullYear()} Creative Books SA. All rights reserved. Johannesburg, South Africa.</p>
           <div className="flex items-center gap-6">
              {[
+               { label: 'Book Consultation', to: '/book' },
                { label: 'About', to: '/aboutus' },
                { label: 'Portfolio', to: '/portfolio' },
                { label: 'Contact', to: '/contact' },

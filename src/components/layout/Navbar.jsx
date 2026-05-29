@@ -212,6 +212,18 @@ export default function Navbar() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.45 }}
+            >
+              <Link
+                to="/book"
+                className="px-5 py-2 text-sm font-medium text-copper border border-copper/40 rounded-full hover:bg-copper/10 transition-all"
+              >
+                Book a Consultation
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
               <Link
@@ -340,6 +352,12 @@ export default function Navbar() {
                 transition={{ delay: 0.4 }}
                 className="pt-4"
               >
+                <Link
+                  to="/book"
+                  className="block w-full text-center px-5 py-3 text-sm font-medium text-copper border border-copper/40 rounded-full mb-2"
+                >
+                  Book a Consultation
+                </Link>
                 <Link
                   to="/getquote"
                   className="block w-full text-center px-5 py-3 text-sm font-medium text-white bg-gradient-to-r from-copper to-[#9a6030] rounded-full"
