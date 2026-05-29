@@ -103,3 +103,105 @@ export async function mergePdfFields(originalPdfUrl, fieldDefs, fieldValues) {
   const uploaded = await base44.integrations.Core.UploadFile({ file });
   return uploaded.file_url;
 }
+
+/**
+ * Takes the original contract PDF and embeds both admin and client
+ * signature blocks directly onto the last page of the document.
+ * Returns the URL of the final signed PDF.
+ */
+export async function generateSignedPdf(
+  pdfUrl, clientSigUrl, signerName, signerEmail, signedAt,
+  adminSigUrl, adminSignerName
+) {
+  const originalBytes = await fetch(pdfUrl).then(r => r.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(originalBytes, { ignoreEncryption: true });
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  const pages = pdfDoc.getPages();
+  const lastPage = pages[pages.length - 1];
+  const { width } = lastPage.getSize();
+  const blockH = 120;
+  const startY = 18;
+
+  // Signature area background
+  lastPage.drawRectangle({
+    x: 20, y: startY, width: width - 40, height: blockH,
+    color: rgb(0.97, 0.97, 0.97),
+    borderColor: rgb(0.82, 0.82, 0.82), borderWidth: 0.5,
+  });
+  // Copper top border
+  lastPage.drawLine({
+    start: { x: 20, y: startY + blockH },
+    end: { x: width - 20, y: startY + blockH },
+    thickness: 1.5, color: rgb(0.72, 0.44, 0.20),
+  });
+  lastPage.drawText('SIGNATURES — ELECTRONICALLY SIGNED', {
+    x: 25, y: startY + blockH - 14,
+    font: bold, size: 8, color: rgb(0.72, 0.44, 0.20),
+  });
+
+  const signedDateStr = signedAt
+    ? new Date(signedAt).toLocaleString('en-ZA')
+    : new Date().toLocaleString('en-ZA');
+
+  const embedImg = async (url) => {
+    const bytes = await fetch(url).then(r => r.arrayBuffer());
+    try { return await pdfDoc.embedPng(bytes); }
+    catch { return await pdfDoc.embedJpg(bytes); }
+  };
+
+  if (adminSigUrl) {
+    // Two-column layout: admin left, client right
+    const colW = (width - 60) / 2;
+    const col2x = 30 + colW + 10;
+
+    // Admin column
+    lastPage.drawText('Creative Books SA (Company Representative):', {
+      x: 25, y: startY + blockH - 28, font: bold, size: 7, color: rgb(0.4, 0.4, 0.4),
+    });
+    try {
+      const adminImg = await embedImg(adminSigUrl);
+      lastPage.drawImage(adminImg, { x: 25, y: startY + 42, width: colW - 10, height: 38 });
+    } catch { /* skip if image unavailable */ }
+    if (adminSignerName) {
+      lastPage.drawText(adminSignerName, { x: 25, y: startY + 32, font: bold, size: 7.5, color: rgb(0.15, 0.15, 0.15) });
+    }
+    lastPage.drawText('Signed on behalf of Creative Books SA', { x: 25, y: startY + 22, font: regular, size: 6.5, color: rgb(0.5, 0.5, 0.5) });
+
+    // Divider
+    lastPage.drawLine({
+      start: { x: 30 + colW, y: startY + 8 },
+      end: { x: 30 + colW, y: startY + blockH - 18 },
+      thickness: 0.5, color: rgb(0.8, 0.8, 0.8),
+    });
+
+    // Client column
+    lastPage.drawText('Client / Signatory:', {
+      x: col2x, y: startY + blockH - 28, font: bold, size: 7, color: rgb(0.4, 0.4, 0.4),
+    });
+    try {
+      const clientImg = await embedImg(clientSigUrl);
+      lastPage.drawImage(clientImg, { x: col2x, y: startY + 42, width: colW - 10, height: 38 });
+    } catch { /* skip if image unavailable */ }
+    lastPage.drawText(signerName, { x: col2x, y: startY + 32, font: bold, size: 7.5, color: rgb(0.15, 0.15, 0.15) });
+    lastPage.drawText(signerEmail, { x: col2x, y: startY + 22, font: regular, size: 6.5, color: rgb(0.5, 0.5, 0.5) });
+    lastPage.drawText('Signed: ' + signedDateStr, { x: col2x, y: startY + 12, font: regular, size: 6.5, color: rgb(0.5, 0.5, 0.5) });
+  } else {
+    // Single column — client only
+    lastPage.drawText('Signed by:', { x: 25, y: startY + blockH - 28, font: bold, size: 7, color: rgb(0.4, 0.4, 0.4) });
+    try {
+      const clientImg = await embedImg(clientSigUrl);
+      lastPage.drawImage(clientImg, { x: 25, y: startY + 38, width: 200, height: 50 });
+    } catch { /* skip */ }
+    lastPage.drawText(signerName, { x: 25, y: startY + 28, font: bold, size: 7.5, color: rgb(0.15, 0.15, 0.15) });
+    lastPage.drawText(signerEmail, { x: 25, y: startY + 18, font: regular, size: 6.5, color: rgb(0.5, 0.5, 0.5) });
+    lastPage.drawText('Signed: ' + signedDateStr, { x: 25, y: startY + 8, font: regular, size: 6.5, color: rgb(0.5, 0.5, 0.5) });
+  }
+
+  const signedBytes = await pdfDoc.save();
+  const blob = new Blob([signedBytes], { type: 'application/pdf' });
+  const file = new File([blob], 'contract_signed.pdf', { type: 'application/pdf' });
+  const uploaded = await base44.integrations.Core.UploadFile({ file });
+  return uploaded.file_url;
+}

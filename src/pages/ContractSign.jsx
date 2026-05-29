@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, AlertTriangle, FileText, PenLine, Type, RotateCcw, Loader2, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
+import { generateSignedPdf } from '@/utils/pdfMerge';
 
 export default function ContractSign() {
   const { token } = useParams();
@@ -167,9 +168,24 @@ export default function ContractSign() {
       const res = await Promise.race([invokePromise, timeoutPromise]);
 
       if (res.data?.success) {
+        // Generate final signed PDF with signatures embedded on the last page
+        let finalPdfUrl = res.data.contract_file_url || contract?.contract_file_url;
+        try {
+          finalPdfUrl = await generateSignedPdf(
+            contract.contract_file_url,
+            signatureUrl,
+            signerName,
+            signerEmail,
+            res.data.signed_at || new Date().toISOString(),
+            contract.admin_signature_url,
+            contract.admin_signer_name
+          );
+        } catch (pdfErr) {
+          console.warn('Signed PDF generation skipped:', pdfErr.message);
+        }
         setSignedData({
           signature_data_url: dataUrl,
-          contract_file_url: res.data.contract_file_url || contract?.contract_file_url,
+          contract_file_url: finalPdfUrl,
           contract_id: res.data.contract_id || '',
           sent_at: res.data.sent_at || '',
           opened_at: res.data.opened_at || '',
@@ -384,9 +400,14 @@ export default function ContractSign() {
           </p>
 
           <div className="space-y-3 mb-6">
-            <button onClick={downloadSignedContract} className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors">
+            <a
+              href={signedData?.contract_file_url}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors"
+            >
               <Download className="w-4 h-4" /> Download Signed Contract (PDF)
-            </button>
+            </a>
             <button onClick={downloadCertificate} className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#16537e] hover:bg-[#0e3f61] text-white font-semibold rounded-xl transition-colors">
               <FileText className="w-4 h-4" /> Download Signature Certificate (PDF)
             </button>
