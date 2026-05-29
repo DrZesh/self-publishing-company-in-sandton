@@ -56,7 +56,7 @@ const NAV_GROUPS = [
     label: 'Message Centre',
     items: [
       { label: 'Message Centre', path: '/admin/message-centre', icon: MessageSquare },
-      { label: 'Automations', path: '/admin/automations', icon: Zap },
+      { label: 'Automation Centre', path: '/admin/automation-centre', icon: Zap },
       { label: 'Email Settings', path: '/admin/email-settings', icon: Mail },
       { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
     ],
