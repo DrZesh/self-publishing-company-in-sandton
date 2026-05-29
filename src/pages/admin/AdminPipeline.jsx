@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2 } from 'lucide-react';
+import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
@@ -222,8 +222,104 @@ function DealCard({ contact, isTop, showAI, onMove }) {
   );
 }
 
+// ── Convert to Project modal ─────────────────────────────────────────────────
+function ConvertToProjectModal({ contact, onClose, onConverted }) {
+  const [form, setForm] = useState({
+    book_title: contact.book_title || '',
+    author_name: contact.full_name || '',
+    service_type: 'Full Publishing Package',
+    project_value: contact.pipeline_value || 0,
+    notes: '',
+  });
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    await base44.entities.Project.create({
+      contact_id: contact.id,
+      book_title: form.book_title,
+      author_name: form.author_name,
+      service_type: form.service_type,
+      project_value: Number(form.project_value) || 0,
+      stage: 'Quote Accepted',
+      notes: form.notes,
+    });
+    setSaving(false);
+    setDone(true);
+    setTimeout(() => { onConverted(); onClose(); }, 1400);
+  };
+
+  const SERVICE_TYPES = ['Full Publishing Package','Printing Only','Editing Only','Cover Design Only','Typesetting Only','Ebook','Ghostwriting',"Children's Book",'Academic Editing','Custom'];
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={onClose}>
+      <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 24px 64px rgba(0,0,0,0.25)', maxWidth: 480, width: '100%', padding: 28 }} onClick={e => e.stopPropagation()}>
+        {done ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <CheckCircle style={{ width: 48, height: 48, color: '#16a34a', margin: '0 auto 12px' }} />
+            <p style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e' }}>Project Created!</p>
+            <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>You can manage it in Admin → Projects.</p>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div>
+                <h2 style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e', margin: 0 }}>Convert Deal to Project</h2>
+                <p style={{ fontSize: 12, color: '#94a3b8', margin: '3px 0 0' }}>{contact.full_name}</p>
+              </div>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8', lineHeight: 1 }}>✕</button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Book Title</label>
+                <input value={form.book_title} onChange={e => setForm(f => ({ ...f, book_title: e.target.value }))} placeholder="e.g. My Memoir"
+                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
+              </div>
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Author Name</label>
+                <input value={form.author_name} onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
+                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Service Type</label>
+                  <select value={form.service_type} onChange={e => setForm(f => ({ ...f, service_type: e.target.value }))}
+                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 10px', fontSize: 12, color: '#374151', outline: 'none' }}>
+                    {SERVICE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Project Value (R)</label>
+                  <input type="number" value={form.project_value} onChange={e => setForm(f => ({ ...f, project_value: e.target.value }))}
+                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Notes (optional)</label>
+                <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} placeholder="Any handover notes…"
+                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'none' }} />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              <button onClick={onClose} style={{ flex: 1, padding: '10px 0', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, background: '#fff', cursor: 'pointer', color: '#374151' }}>Cancel</button>
+              <button onClick={save} disabled={saving || !form.book_title.trim()}
+                style={{ flex: 2, padding: '10px 0', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, opacity: (!form.book_title.trim() || saving) ? 0.6 : 1 }}>
+                <ArrowRight style={{ width: 15, height: 15 }} />
+                {saving ? 'Creating…' : 'Create Project'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Resolved row ──────────────────────────────────────────────────────────────
-function ResolvedRow({ contact, onMove }) {
+function ResolvedRow({ contact, onMove, onConvert }) {
   const stage = mapStage(contact);
   const stageConf = STAGES.find(s => s.id === stage);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -231,8 +327,8 @@ function ResolvedRow({ contact, onMove }) {
     ? new Date(contact.pipeline_stage_changed_at).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short' })
     : '—';
   let sub = '';
-  if (stage === 'Won')    sub = `Closed ${date}`;
-  if (stage === 'Lost')   sub = `${contact.lost_reason || 'No reason'} · ${date}`;
+  if (stage === 'Won')     sub = `Closed ${date}`;
+  if (stage === 'Lost')    sub = `${contact.lost_reason || 'No reason'} · ${date}`;
   if (stage === 'Ghosted') sub = `Last reply ${date}`;
 
   return (
@@ -243,6 +339,15 @@ function ResolvedRow({ contact, onMove }) {
         <div style={{ fontSize: 11, color: '#94a3b8' }}>{sub}</div>
       </div>
       <div style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 600, color: stageConf.color, flexShrink: 0 }}>{fmtRand(contact.pipeline_value)}</div>
+      {stage === 'Won' && (
+        <button
+          onClick={() => onConvert(contact)}
+          title="Convert to Project"
+          style={{ background: '#16a34a', color: '#fff', border: 'none', borderRadius: 6, padding: '3px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}
+        >
+          <ArrowRight style={{ width: 10, height: 10 }} /> Project
+        </button>
+      )}
       <div style={{ position: 'relative', flexShrink: 0 }}>
         <button onClick={() => setMenuOpen(o => !o)} style={{ padding: '2px 4px', fontSize: 14, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
         {menuOpen && (
@@ -266,7 +371,6 @@ function ResolvedRow({ contact, onMove }) {
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
 export default function AdminPipeline() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -278,6 +382,7 @@ export default function AdminPipeline() {
   const [accentColor, setAccentColor] = useState('#4f46e5');
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkEdits, setBulkEdits] = useState({});
+  const [convertContact, setConvertContact] = useState(null);
 
   const load = useCallback(async () => {
     const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
@@ -503,7 +608,7 @@ export default function AdminPipeline() {
                           stage.active ? (
                             <DealCard key={c.id} contact={c} isTop={i === 0} showAI={showAI} onMove={handleMove} />
                           ) : (
-                            <ResolvedRow key={c.id} contact={c} onMove={handleMove} />
+                            <ResolvedRow key={c.id} contact={c} onMove={handleMove} onConvert={setConvertContact} />
                           )
                         )}
                       </div>
@@ -514,6 +619,15 @@ export default function AdminPipeline() {
             </div>
           )}
         </div>
+
+        {/* Convert to Project modal */}
+        {convertContact && (
+          <ConvertToProjectModal
+            contact={convertContact}
+            onClose={() => setConvertContact(null)}
+            onConverted={() => { toast.success('Project created!'); load(); }}
+          />
+        )}
 
         {/* Bulk edit modal */}
         {bulkOpen && (
