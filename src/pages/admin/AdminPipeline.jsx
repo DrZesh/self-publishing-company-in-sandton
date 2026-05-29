@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle } from 'lucide-react';
+import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ function Avatar({ name, size = 28 }) {
 }
 
 // ── Deal card ─────────────────────────────────────────────────────────────────
-function DealCard({ contact, isTop, showAI, onMove }) {
+function DealCard({ contact, isTop, showAI, onMove, onSelect }) {
   const stage = mapStage(contact);
   const days = getDaysInStage(contact);
   const stalled = days > 7;
@@ -115,6 +115,7 @@ function DealCard({ contact, isTop, showAI, onMove }) {
   return (
     <div
       className="deal-card"
+      onClick={() => onSelect(contact)}
       style={{
         background: stalled ? 'rgba(251,191,36,0.06)' : 'rgba(255,255,255,0.93)',
         borderRadius: 12,
@@ -219,6 +220,136 @@ function DealCard({ contact, isTop, showAI, onMove }) {
         )}
       </div>
     </div>
+  );
+}
+
+// ── Deal detail panel ─────────────────────────────────────────────────────
+function DealDetailPanel({ contact, onClose, onMove, onConvert, stages }) {
+  const stage = mapStage(contact);
+  const days = getDaysInStage(contact);
+  const pri = getPriority(contact);
+  const prob = contact.probability != null
+    ? contact.probability
+    : Math.round((stages.find(s => s.id === stage)?.prob ?? 0.2) * 100);
+  const stageConf = stages.find(s => s.id === stage);
+  const closeDate = contact.expected_close_date
+    ? new Date(contact.expected_close_date).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' })
+    : null;
+
+  return (
+    <>
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 100 }} onClick={onClose} />
+      <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 380, background: '#fff', zIndex: 101, boxShadow: '-8px 0 40px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        {/* Header */}
+        <div style={{ background: `linear-gradient(135deg, ${stageConf?.color || '#6366f1'} 0%, ${stageConf?.color || '#6366f1'}aa 100%)`, padding: '24px 20px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+            <Avatar name={contact.full_name} size={48} />
+            <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: 30, height: 30, cursor: 'pointer', color: '#fff', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+          </div>
+          <h2 style={{ color: '#fff', fontWeight: 700, fontSize: 18, margin: '0 0 3px', fontFamily: 'var(--font-heading)' }}>{contact.full_name}</h2>
+          {contact.company && <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, margin: '0 0 12px' }}>{contact.company}</p>}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+            <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20 }}>{stage}</span>
+            <span style={{ background: pri.color, color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20 }}>{pri.label} priority</span>
+          </div>
+        </div>
+
+        <div style={{ padding: 20, flex: 1 }}>
+          {/* Value & weighted */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+            <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
+              <p style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px' }}>Deal Value</p>
+              <p style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 800, color: '#1e1e2e', margin: 0 }}>{fmtRandFull(contact.pipeline_value)}</p>
+            </div>
+            <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
+              <p style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px' }}>Weighted</p>
+              <p style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 800, color: '#16a34a', margin: 0 }}>{fmtRandFull((contact.pipeline_value || 0) * (prob / 100))}</p>
+            </div>
+          </div>
+
+          {/* Probability bar */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Win probability</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48' }}>{prob}%</span>
+            </div>
+            <div style={{ height: 6, background: '#f1f5f9', borderRadius: 6, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${prob}%`, background: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48', borderRadius: 6 }} />
+            </div>
+          </div>
+
+          {/* Info rows */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
+            {contact.email && (
+              <a href={`mailto:${contact.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9, textDecoration: 'none', color: '#374151' }}>
+                <Mail style={{ width: 14, height: 14, color: '#6366f1', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.email}</span>
+              </a>
+            )}
+            {contact.phone && (
+              <a href={`tel:${contact.phone}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9, textDecoration: 'none', color: '#374151' }}>
+                <Phone style={{ width: 14, height: 14, color: '#0ea5e9', flexShrink: 0 }} />
+                <span style={{ fontSize: 13 }}>{contact.phone}</span>
+              </a>
+            )}
+            {contact.book_title && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
+                <BookOpen style={{ width: 14, height: 14, color: '#f59e0b', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#374151' }}>{contact.book_title}</span>
+              </div>
+            )}
+            {contact.package_type && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
+                <TrendingUp style={{ width: 14, height: 14, color: '#8b5cf6', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#374151' }}>{contact.package_type}</span>
+              </div>
+            )}
+            {closeDate && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
+                <Calendar style={{ width: 14, height: 14, color: '#e11d48', flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#374151' }}>Close by {closeDate}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
+              <User style={{ width: 14, height: 14, color: '#94a3b8', flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: '#94a3b8' }}>{days}d in {stage} stage</span>
+            </div>
+          </div>
+
+          {/* Move stage */}
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Move to stage</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 18 }}>
+            {stages.filter(s => s.id !== stage).map(s => (
+              <button key={s.id} onClick={() => { onMove(contact.id, s.id); onClose(); }}
+                style={{ padding: '6px 12px', fontSize: 12, fontWeight: 600, border: `1.5px solid ${s.color}`, borderRadius: 20, background: '#fff', color: s.color, cursor: 'pointer' }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, display: 'inline-block', marginRight: 5 }} />
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            <a href={`/admin/contacts/detail?id=${contact.id}`}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#1e1e2e', color: '#fff', borderRadius: 9, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
+              <ExternalLink style={{ width: 14, height: 14 }} /> Open Full Contact
+            </a>
+            {stage === 'Won' && (
+              <button onClick={() => { onConvert(contact); onClose(); }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                <ArrowRight style={{ width: 14, height: 14 }} /> Convert to Project
+              </button>
+            )}
+            {contact.email && (
+              <a href={`mailto:${contact.email}?subject=Regarding your publishing enquiry`}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#f8fafc', color: '#374151', border: '1px solid #e7e8f0', borderRadius: 9, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
+                <Mail style={{ width: 14, height: 14 }} /> Send Email
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -383,6 +514,7 @@ export default function AdminPipeline() {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkEdits, setBulkEdits] = useState({});
   const [convertContact, setConvertContact] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const load = useCallback(async () => {
     const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
@@ -606,7 +738,7 @@ export default function AdminPipeline() {
                         )}
                         {cards.map((c, i) =>
                           stage.active ? (
-                            <DealCard key={c.id} contact={c} isTop={i === 0} showAI={showAI} onMove={handleMove} />
+                            <DealCard key={c.id} contact={c} isTop={i === 0} showAI={showAI} onMove={handleMove} onSelect={setSelectedContact} />
                           ) : (
                             <ResolvedRow key={c.id} contact={c} onMove={handleMove} onConvert={setConvertContact} />
                           )
@@ -619,6 +751,17 @@ export default function AdminPipeline() {
             </div>
           )}
         </div>
+
+        {/* Deal detail panel */}
+        {selectedContact && (
+          <DealDetailPanel
+            contact={selectedContact}
+            onClose={() => setSelectedContact(null)}
+            onMove={(id, stage) => { handleMove(id, stage); setSelectedContact(null); }}
+            onConvert={setConvertContact}
+            stages={STAGES}
+          />
+        )}
 
         {/* Convert to Project modal */}
         {convertContact && (
