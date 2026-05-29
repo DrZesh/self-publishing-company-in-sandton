@@ -53,10 +53,9 @@ const NAV_GROUPS = [
   },
   {
     key: 'communication',
-    label: 'Communication',
+    label: 'Message Centre',
     items: [
-      { label: 'Communication', path: '/admin/communication', icon: MessageSquare },
-      { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
+      { label: 'Message Centre', path: '/admin/message-centre', icon: MessageSquare },
       { label: 'Automations', path: '/admin/automations', icon: Zap },
       { label: 'Email Settings', path: '/admin/email-settings', icon: Mail },
       { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },

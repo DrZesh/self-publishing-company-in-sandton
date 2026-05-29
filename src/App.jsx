@@ -194,6 +194,7 @@ const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes'));
 const AdminQuoteBuilder = lazy(() => import('./pages/admin/AdminQuoteBuilder.jsx'));
 const AdminEmailTemplates = lazy(() => import('./pages/admin/AdminEmailTemplates'));
 const AdminEmailSettingsPage = lazy(() => import('./pages/admin/AdminEmailSettings'));
+const AdminMessageCentre = lazy(() => import('./pages/admin/AdminMessageCentre'));
 const AdminContactDetail = lazy(() => import('./pages/admin/AdminContactDetail'));
 const AdminSignatures = lazy(() => import('./pages/admin/AdminSignatures'));
 const AdminSigningWorkflow = lazy(() => import('./pages/admin/AdminSigningWorkflow'));
@@ -670,6 +671,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/contracts/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepareContract /></ProtectedAdminRoute>} />
       <Route path="/admin/analytics" element={<ProtectedAdminRoute><AnalyticsDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/email-settings" element={<ProtectedAdminRoute><AdminEmailSettingsPage /></ProtectedAdminRoute>} />
+      <Route path="/admin/message-centre" element={<ProtectedAdminRoute><AdminMessageCentre /></ProtectedAdminRoute>} />
       <Route path="/sign/esig/:requestId/:token" element={<ESignatureSigning />} />
     </Routes>
     </Suspense>
