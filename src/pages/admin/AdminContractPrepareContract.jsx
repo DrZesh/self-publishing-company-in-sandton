@@ -12,6 +12,7 @@ import {
   FileText, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { mergePdfFields } from '@/utils/pdfMerge';
 
 // ── Default field templates ──────────────────────────────────────────────────
 const DEFAULT_FIELDS = [
@@ -153,6 +154,7 @@ export default function AdminContractPrepareContract() {
   const [adminName, setAdminName] = useState('');
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
+  const [merging, setMerging] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -253,10 +255,24 @@ export default function AdminContractPrepareContract() {
       });
       if (!res.data?.success) throw new Error(res.data?.error || 'Failed');
 
+      // Merge field values into PDF
+      if (contract?.contract_file_url) {
+        setMerging(true);
+        try {
+          const filledUrl = await mergePdfFields(contract.contract_file_url, fields, adminValues);
+          await base44.entities.Contract.update(id, { contract_file_url: filledUrl });
+        } catch (mergeErr) {
+          console.warn('PDF merge skipped:', mergeErr.message);
+          toast.warning('PDF field merge skipped — contract sent as-is');
+        } finally {
+          setMerging(false);
+        }
+      }
+
       const updated = await base44.entities.Contract.filter({ id });
       setContract(updated[0]);
       setStep(2);
-      toast.success('Admin signature saved');
+      toast.success('Admin signature saved & PDF generated');
     } catch (err) {
       toast.error('Failed: ' + err.message);
     } finally {
@@ -505,11 +521,11 @@ export default function AdminContractPrepareContract() {
                 <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
                 <Button
                   onClick={handleSaveAdminSign}
-                  disabled={saving || !adminSignature || !adminName.trim()}
+                  disabled={saving || merging || !adminSignature || !adminName.trim()}
                   className="flex-1 bg-[#1A1208] hover:bg-[#2C1E0F] text-white gap-2"
                 >
-                  {saving
-                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+                  {saving || merging
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> {merging ? 'Generating PDF...' : 'Saving...'}</>
                     : <><PenTool className="w-4 h-4" /> Save &amp; Continue</>}
                 </Button>
               </div>
