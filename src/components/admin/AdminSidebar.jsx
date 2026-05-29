@@ -39,17 +39,7 @@ const NAV_GROUPS = [
       { label: 'Payments', path: '/admin/payments', icon: CreditCard },
     ],
   },
-  {
-    key: 'projects',
-    label: 'Projects',
-    items: [
-      { label: 'Projects', path: '/admin/projects', icon: FolderKanban },
-      { label: 'Production', path: '/admin/production-board', icon: Factory },
-      { label: 'Collections', path: '/admin/collections', icon: Package },
-      { label: 'Book Library', path: '/admin/books', icon: BookMarked },
-      { label: 'Authors', path: '/admin/authors', icon: UserSquare2 },
-    ],
-  },
+
   {
     key: 'documents',
     label: 'Document Centre',
@@ -68,6 +58,7 @@ const NAV_GROUPS = [
       { label: 'Communication', path: '/admin/communication', icon: MessageSquare },
       { label: 'Email Templates', path: '/admin/email-templates', icon: Mail },
       { label: 'Automations', path: '/admin/automations', icon: Zap },
+      { label: 'Email Settings', path: '/admin/email-settings', icon: Mail },
       { label: 'Calendar', path: '/admin/calendar', icon: CalendarDays },
     ],
   },

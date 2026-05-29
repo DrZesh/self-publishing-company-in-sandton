@@ -1,0 +1,41 @@
+{
+  "name": "AppSettings",
+  "type": "object",
+  "properties": {
+    "setting_key": {
+      "type": "string",
+      "description": "Unique key e.g. email_settings"
+    },
+    "email_provider": {
+      "type": "string",
+      "enum": [
+        "resend",
+        "builtin"
+      ],
+      "default": "resend"
+    },
+    "sender_name": {
+      "type": "string",
+      "default": "Creative Books SA"
+    },
+    "sender_email": {
+      "type": "string",
+      "default": "info@creativebooks.co.za"
+    },
+    "reply_to": {
+      "type": "string",
+      "default": "info@creativebooks.co.za"
+    },
+    "is_configured": {
+      "type": "boolean",
+      "default": false
+    },
+    "value": {
+      "type": "object",
+      "description": "Generic JSON value for other settings"
+    }
+  },
+  "required": [
+    "setting_key"
+  ]
+}
