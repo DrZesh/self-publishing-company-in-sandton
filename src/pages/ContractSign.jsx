@@ -450,11 +450,7 @@ export default function ContractSign() {
               {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
               {sendingEmail ? 'Sending...' : 'Send Signed Copy to My Email'}
             </button>
-            {signedData?.contract_file_url && (
-              <a href={signedData.contract_file_url} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium rounded-xl transition-colors">
-                <FileText className="w-4 h-4" /> View Original Contract
-              </a>
-            )}
+
           </div>
 
           <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-5">
