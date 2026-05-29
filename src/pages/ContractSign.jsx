@@ -6,17 +6,15 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, AlertTriangle, FileText, PenLine, Type, RotateCcw, Loader2, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
-const STEPS = ['view', 'sign', 'confirm', 'done'];
-
 export default function ContractSign() {
   const { token } = useParams();
-  const [step, setStep] = useState('loading'); // loading, error, view, sign, confirm, done
+  const [step, setStep] = useState('loading');
   const [contract, setContract] = useState(null);
   const [contact, setContact] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [signerName, setSignerName] = useState('');
   const [signerEmail, setSignerEmail] = useState('');
-  const [signMode, setSignMode] = useState('draw'); // draw | type
+  const [signMode, setSignMode] = useState('draw');
   const [typedSig, setTypedSig] = useState('');
   const [consent1, setConsent1] = useState(false);
   const [consent2, setConsent2] = useState(false);
@@ -28,15 +26,20 @@ export default function ContractSign() {
   const [declineReason, setDeclineReason] = useState('');
   const [showDeclineForm, setShowDeclineForm] = useState(false);
   const [viewedDoc, setViewedDoc] = useState(false);
+  const [clientFieldValues, setClientFieldValues] = useState({});
 
-  // Admin-signed context (computed from loaded contract)
-  const adminSignedFirst = !!(contract?.admin_signed_at && contract?.admin_signer_name);
-  const contractFieldValues = contract?.contract_field_values || {};
-  const hasAdminFields = Object.keys(contractFieldValues).filter(k => contractFieldValues[k]).length > 0;
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
 
-  // Load contract by token
+  // Derived from contract
+  const adminSignedFirst = !!(contract?.admin_signed_at && contract?.admin_signer_name);
+  const savedFieldData = contract?.contract_field_values || {};
+  const fieldDefs = savedFieldData._defs || [];
+  const adminFieldDefs = fieldDefs.filter(f => f.assigned_to === 'admin');
+  const clientFieldDefs = fieldDefs.filter(f => f.assigned_to === 'client');
+
+  const setClientVal = (key, val) => setClientFieldValues(prev => ({ ...prev, [key]: val }));
+
   useEffect(() => {
     if (!token) { setStep('error'); setErrorMsg('Invalid link.'); return; }
     base44.functions.invoke('contractSignature', { action: 'get_by_token', token, event: 'opened', user_agent: navigator.userAgent })
@@ -51,7 +54,6 @@ export default function ContractSign() {
       .catch(() => { setStep('error'); setErrorMsg('Could not load contract. Please try again.'); });
   }, [token]);
 
-  // Mark viewed when document loads
   const handleDocViewed = () => {
     if (!viewedDoc) {
       setViewedDoc(true);
@@ -59,7 +61,6 @@ export default function ContractSign() {
     }
   };
 
-  // Canvas drawing
   const getPos = (e, canvas) => {
     const rect = canvas.getBoundingClientRect();
     const src = e.touches ? e.touches[0] : e;
@@ -100,21 +101,21 @@ export default function ContractSign() {
 
   const isCanvasEmpty = () => {
     if (!canvasRef.current) return true;
-    const ctx = canvasRef.current.getContext('2d');
-    const data = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height).data;
+    const data = canvasRef.current.getContext('2d').getImageData(0, 0, canvasRef.current.width, canvasRef.current.height).data;
     return !data.some(v => v !== 0);
   };
 
   const isFormValid = () => {
     if (!signerName.trim() || !signerEmail.trim() || !consent1 || !consent2) return false;
-    if (signMode === 'draw') return !isCanvasEmpty();
-    if (signMode === 'type') return typedSig.trim().length > 2;
-    return false;
+    if (signMode === 'draw' && isCanvasEmpty()) return false;
+    if (signMode === 'type' && typedSig.trim().length <= 2) return false;
+    const missingRequired = clientFieldDefs.filter(f => f.required && !clientFieldValues[f.id]?.toString().trim());
+    if (missingRequired.length) return false;
+    return true;
   };
 
   const getSignatureImageData = () => {
     if (signMode === 'type') {
-      // Render typed signature to canvas offscreen
       const offCanvas = document.createElement('canvas');
       offCanvas.width = 400; offCanvas.height = 120;
       const ctx = offCanvas.getContext('2d');
@@ -138,7 +139,6 @@ export default function ContractSign() {
     setSubmitting(true);
     setErrorMsg('');
     try {
-      // Step 1: Upload signature image from frontend (avoids backend UploadFile issues)
       const dataUrl = getSignatureImageData();
       let signatureUrl = dataUrl;
       try {
@@ -150,7 +150,6 @@ export default function ContractSign() {
         console.warn('Signature upload failed, using dataUrl fallback:', uploadErr);
       }
 
-      // Step 2: Submit with 30-second timeout
       const invokePromise = base44.functions.invoke('contractSignature', {
         action: 'sign',
         token,
@@ -160,6 +159,7 @@ export default function ContractSign() {
         legal_consent: consent1 && consent2,
         sign_mode: signMode,
         user_agent: navigator.userAgent,
+        client_field_values: clientFieldValues,
       });
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Request timed out. Please try again.')), 30000)
@@ -182,7 +182,6 @@ export default function ContractSign() {
         setErrorMsg(res.data?.error || 'Signing failed. Please try again or contact Creative Books SA.');
       }
     } catch (err) {
-      console.error('Contract submit error:', err);
       setErrorMsg(err.message || 'Something went wrong. Please try again or contact Creative Books SA.');
     } finally {
       setSubmitting(false);
@@ -193,44 +192,15 @@ export default function ContractSign() {
     if (!signerName || !signerEmail) { setErrorMsg('Please enter your name and email before declining.'); return; }
     setDeclining(true);
     await base44.functions.invoke('contractSignature', {
-      action: 'sign',
-      token,
-      signer_name: signerName,
-      signer_email: signerEmail,
-      declined: true,
-      declined_reason: declineReason,
+      action: 'sign', token,
+      signer_name: signerName, signer_email: signerEmail,
+      declined: true, declined_reason: declineReason,
       user_agent: navigator.userAgent,
     });
     setDeclining(false);
     setStep('error');
     setErrorMsg('You have declined this contract. Our team will be in touch shortly.');
   };
-
-  // ── LOADING ─────────────────────────────────────────────────────────────────
-  if (step === 'loading') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1208] to-[#2C1810] flex items-center justify-center">
-        <div className="text-center text-white">
-          <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-[#B87333]" />
-          <p className="text-white/70">Loading your contract...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // ── ERROR ───────────────────────────────────────────────────────────────────
-  if (step === 'error') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1208] to-[#2C1810] flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
-          <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Unable to Open Contract</h2>
-          <p className="text-gray-500 text-sm leading-relaxed">{errorMsg || 'This link is invalid or has expired.'}</p>
-          <p className="text-gray-400 text-xs mt-6">Please contact us at <a href="mailto:info@creativebooks.co.za" className="text-[#B87333] hover:underline">info@creativebooks.co.za</a> or call <strong>084 230 5393</strong></p>
-        </div>
-      </div>
-    );
-  }
 
   const parseBrowser = (ua) => {
     if (!ua) return 'Unknown';
@@ -252,40 +222,35 @@ export default function ContractSign() {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const w = 210;
     const refNum = `CBSA-${(contract?.id || Date.now().toString(36)).slice(-8).toUpperCase()}`;
-    // Header
     doc.setFillColor(184, 115, 51); doc.rect(0, 0, w, 14, 'F');
     doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
     doc.text('CREATIVE BOOKS SA', 14, 6);
     doc.setFont('helvetica', 'normal');
     doc.text('Prism Office Park, Fourways  ·  info@creativebooks.co.za  ·  084 230 5393', 14, 11);
     doc.text(refNum, w - 14, 9, { align: 'right' });
-    // Title
     doc.setTextColor(30, 30, 30); doc.setFontSize(17); doc.setFont('helvetica', 'bold');
     doc.text('ELECTRONICALLY SIGNED CONTRACT', w / 2, 28, { align: 'center' });
     doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100, 100, 100);
     doc.text('Official signed copy — retain for your records', w / 2, 35, { align: 'center' });
     doc.setDrawColor(184, 115, 51); doc.setLineWidth(0.5); doc.line(14, 40, w - 14, 40);
-    // Contract details
     let y = 50;
-    [['Contract Title', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document Reference', refNum], ['Status', 'SIGNED \u2713']].forEach(([label, value]) => {
+    [['Contract Title', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document Reference', refNum], ['Status', 'SIGNED ✓']].forEach(([label, value]) => {
       doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 70, 20);
       doc.text(label + ':', 14, y);
       doc.setFont('helvetica', 'normal'); doc.setTextColor(40, 40, 40);
       doc.text(String(value), 70, y); y += 9;
     });
     y += 4;
-    // Signer confirmation box
     doc.setFillColor(240, 253, 244); doc.setDrawColor(167, 243, 208); doc.roundedRect(14, y, w - 28, 58, 3, 3, 'FD');
     y += 8;
     doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 101, 52);
     doc.text('SIGNATURE CONFIRMATION', 20, y); y += 9;
-    [['Full Name', signerName], ['Email Address', signerEmail], ['Signed At', signedAt || new Date().toLocaleString('en-ZA')], ['Method', signMode === 'type' ? 'Typed Signature' : 'Hand-Drawn Signature'], ['Legal Consent', 'Confirmed \u2014 ECT Act 25 of 2002 (South Africa)']].forEach(([label, value]) => {
+    [['Full Name', signerName], ['Email Address', signerEmail], ['Signed At', signedAt || new Date().toLocaleString('en-ZA')], ['Method', signMode === 'type' ? 'Typed Signature' : 'Hand-Drawn Signature'], ['Legal Consent', 'Confirmed — ECT Act 25 of 2002 (South Africa)']].forEach(([label, value]) => {
       doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(80, 80, 80);
       doc.text(label + ':', 20, y);
       doc.setFont('helvetica', 'normal'); doc.setTextColor(30, 30, 30);
       doc.text(String(value), 70, y); y += 7;
     });
-    // Signature image
     y += 8;
     doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(80, 60, 30);
     doc.text('Electronic Signature:', 14, y); y += 4;
@@ -293,17 +258,15 @@ export default function ContractSign() {
     doc.roundedRect(14, y, 140, 38, 2, 2, 'FD');
     if (signedData?.signature_data_url) doc.addImage(signedData.signature_data_url, 'PNG', 16, y + 2, 136, 34);
     y += 44;
-    // Legal notice
     doc.setFontSize(8); doc.setFont('helvetica', 'italic'); doc.setTextColor(120, 120, 120);
-    doc.text(doc.splitTextToSize('This signed copy confirms your electronic acceptance. The original contract is available via your confirmation email. This is legally binding under the Electronic Communications and Transactions Act 25 of 2002.', w - 28), 14, y);
+    doc.text(doc.splitTextToSize('This signed copy confirms your electronic acceptance. This is legally binding under the Electronic Communications and Transactions Act 25 of 2002.', w - 28), 14, y);
     y += 14;
     doc.setFillColor(255, 250, 235); doc.setDrawColor(220, 180, 100); doc.roundedRect(14, y, w - 28, 14, 2, 2, 'FD');
     doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(100, 70, 20);
-    doc.text(`\u2713 Consent confirmed  \u00b7  \u2713 Document read  \u00b7  \u2713 Signature applied  \u00b7  Ref: ${refNum}`, w / 2, y + 9, { align: 'center' });
-    // Footer
+    doc.text(`✓ Consent confirmed  ·  ✓ Document read  ·  ✓ Signature applied  ·  Ref: ${refNum}`, w / 2, y + 9, { align: 'center' });
     doc.setFillColor(184, 115, 51); doc.rect(0, 285, w, 12, 'F');
     doc.setFontSize(8); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal');
-    doc.text(`Ref: ${refNum}  \u00b7  ${new Date().toLocaleString('en-ZA')}  \u00b7  Creative Books SA`, w / 2, 292, { align: 'center' });
+    doc.text(`Ref: ${refNum}  ·  ${new Date().toLocaleString('en-ZA')}  ·  Creative Books SA`, w / 2, 292, { align: 'center' });
     doc.save(`${contract?.title || 'Contract'} - Signed Copy.pdf`);
   };
 
@@ -312,12 +275,9 @@ export default function ContractSign() {
     const w = 210;
     const ua = navigator.userAgent;
     const refNum = `CERT-${(contract?.id || Date.now().toString(36)).slice(-8).toUpperCase()}`;
-    const browser = parseBrowser(ua);
-    const device = parseDevice(ua);
-    // Header
     doc.setFillColor(22, 78, 99); doc.rect(0, 0, w, 14, 'F');
     doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
-    doc.text('CREATIVE BOOKS SA \u2014 OFFICIAL ELECTRONIC SIGNATURE RECORD', 14, 6);
+    doc.text('CREATIVE BOOKS SA — OFFICIAL ELECTRONIC SIGNATURE RECORD', 14, 6);
     doc.setFont('helvetica', 'normal');
     doc.text('Legally binding under ECT Act 25 of 2002 (South Africa)', 14, 11);
     doc.text(refNum, w - 14, 9, { align: 'right' });
@@ -327,11 +287,11 @@ export default function ContractSign() {
     doc.text(`Certificate Reference: ${refNum}`, w / 2, 35, { align: 'center' });
     doc.setDrawColor(22, 78, 99); doc.setLineWidth(0.5); doc.line(14, 40, w - 14, 40);
     const sections = [
-      { title: 'DOCUMENT INFORMATION', color: [22, 78, 99], rows: [['Document Name', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document ID', contract?.id || 'N/A'], ['Certificate Ref', refNum], ['Final Status', 'SIGNED \u2014 Legally Binding']] },
+      { title: 'DOCUMENT INFORMATION', color: [22, 78, 99], rows: [['Document Name', contract?.title || ''], ['Book Title', contract?.book_title || 'N/A'], ['Document ID', contract?.id || 'N/A'], ['Certificate Ref', refNum], ['Final Status', 'SIGNED — Legally Binding']] },
       { title: 'SIGNER DETAILS', color: [22, 101, 52], rows: [['Full Name', signerName], ['Email Address', signerEmail], ['Signature Method', signMode === 'type' ? 'Typed Signature' : 'Hand-Drawn Signature']] },
       { title: 'TIMELINE', color: [120, 60, 10], rows: [['Contract Sent', signedData?.sent_at ? new Date(signedData.sent_at).toLocaleString('en-ZA') : 'N/A'], ['Contract Opened', signedData?.opened_at ? new Date(signedData.opened_at).toLocaleString('en-ZA') : 'N/A'], ['Contract Signed', signedAt || new Date().toLocaleString('en-ZA')]] },
-      { title: 'TECHNICAL DETAILS', color: [60, 60, 60], rows: [['Browser', browser], ['Device Type', device], ['User Agent', ua ? ua.substring(0, 70) + '...' : 'N/A']] },
-      { title: 'CONSENT RECORD', color: [100, 20, 20], rows: [['Read & Understood Contract', '\u2713 Confirmed'], ['Electronic Signature Consent', '\u2713 Confirmed (ECT Act 2002)'], ['Authorised to Sign', '\u2713 Confirmed'], ['Identity Confirmed', '\u2713 Confirmed']] },
+      { title: 'TECHNICAL DETAILS', color: [60, 60, 60], rows: [['Browser', parseBrowser(ua)], ['Device Type', parseDevice(ua)], ['User Agent', ua ? ua.substring(0, 70) + '...' : 'N/A']] },
+      { title: 'CONSENT RECORD', color: [100, 20, 20], rows: [['Read & Understood Contract', '✓ Confirmed'], ['Electronic Signature Consent', '✓ Confirmed (ECT Act 2002)'], ['Authorised to Sign', '✓ Confirmed'], ['Identity Confirmed', '✓ Confirmed']] },
     ];
     let y = 48;
     sections.forEach(section => {
@@ -359,7 +319,7 @@ export default function ContractSign() {
     }
     doc.setFillColor(22, 78, 99); doc.rect(0, 285, w, 12, 'F');
     doc.setFontSize(8); doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'normal');
-    doc.text(`${refNum}  \u00b7  Issued: ${new Date().toLocaleString('en-ZA')}  \u00b7  Creative Books SA`, w / 2, 292, { align: 'center' });
+    doc.text(`${refNum}  ·  Issued: ${new Date().toLocaleString('en-ZA')}  ·  Creative Books SA`, w / 2, 292, { align: 'center' });
     doc.save(`${contract?.title || 'Contract'} - Signature Certificate.pdf`);
   };
 
@@ -379,7 +339,33 @@ export default function ContractSign() {
     }
   };
 
-  // \u2500\u2500 SUCCESS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  // ── LOADING ──────────────────────────────────────────────────────────────────
+  if (step === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1208] to-[#2C1810] flex items-center justify-center">
+        <div className="text-center text-white">
+          <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-[#B87333]" />
+          <p className="text-white/70">Loading your contract...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── ERROR ────────────────────────────────────────────────────────────────────
+  if (step === 'error') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1208] to-[#2C1810] flex items-center justify-center p-6">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+          <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Unable to Open Contract</h2>
+          <p className="text-gray-500 text-sm leading-relaxed">{errorMsg || 'This link is invalid or has expired.'}</p>
+          <p className="text-gray-400 text-xs mt-6">Please contact us at <a href="mailto:info@creativebooks.co.za" className="text-[#B87333] hover:underline">info@creativebooks.co.za</a> or call <strong>084 230 5393</strong></p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── DONE ─────────────────────────────────────────────────────────────────────
   if (step === 'done') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a2e1a] to-[#1a4a2a] flex items-center justify-center p-6">
@@ -391,10 +377,10 @@ export default function ContractSign() {
             {adminSignedFirst ? 'Contract Fully Signed!' : 'Contract Signed Successfully!'}
           </h2>
           <p className="text-gray-500 mb-6 text-sm">
-            Thank you, <strong>{signerName}</strong>.
+            Thank you, <strong>{signerName}</strong>.{' '}
             {adminSignedFirst
-              ? ' Both Creative Books SA and you have signed this contract. A copy has been emailed to you.'
-              : <> Your signature has been recorded and a confirmation has been emailed to <strong>{signerEmail}</strong>.</>}
+              ? 'Both Creative Books SA and you have signed this contract. A copy has been emailed to you.'
+              : `Your signature has been recorded and a confirmation has been emailed to ${signerEmail}.`}
           </p>
 
           <div className="space-y-3 mb-6">
@@ -420,20 +406,20 @@ export default function ContractSign() {
           </div>
 
           <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left text-sm text-green-800 mb-5">
-            <p className="font-semibold mb-1">\u2705 What happens next</p>
+            <p className="font-semibold mb-1">✅ What happens next</p>
             <ul className="space-y-1 text-green-700">
-              <li>\u2022 Your project is now moving to the next stage</li>
-              <li>\u2022 Our team will contact you within 24 hours</li>
-              <li>\u2022 Your signed documents have been saved securely</li>
+              <li>• Your project is now moving to the next stage</li>
+              <li>• Our team will contact you within 24 hours</li>
+              <li>• Your signed documents have been saved securely</li>
             </ul>
           </div>
-          <p className="text-xs text-gray-400">Questions? <a href="mailto:info@creativebooks.co.za" className="text-[#B87333]">info@creativebooks.co.za</a> \u00b7 084 230 5393</p>
+          <p className="text-xs text-gray-400">Questions? <a href="mailto:info@creativebooks.co.za" className="text-[#B87333]">info@creativebooks.co.za</a> · 084 230 5393</p>
         </div>
       </div>
     );
   }
 
-  // ── MAIN LAYOUT ─────────────────────────────────────────────────────────────
+  // ── MAIN LAYOUT ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a1208] to-[#2C1810]">
       {/* Header */}
@@ -496,12 +482,12 @@ export default function ContractSign() {
                     <img src={contract.admin_signature_url} alt="Admin signature" className="max-h-10" />
                   </div>
                 )}
-                {hasAdminFields && (
+                {adminFieldDefs.filter(f => savedFieldData[f.id]).length > 0 && (
                   <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(contractFieldValues).filter(([, v]) => v).map(([key, val]) => (
-                      <div key={key} className="bg-blue-100/50 rounded-lg p-2">
-                        <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide">{key.replace(/_/g, ' ')}</p>
-                        <p className="text-xs text-blue-900 font-medium">{val}</p>
+                    {adminFieldDefs.filter(f => savedFieldData[f.id]).map(f => (
+                      <div key={f.id} className="bg-blue-100/50 rounded-lg p-2">
+                        <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide">🔒 {f.label}</p>
+                        <p className="text-xs text-blue-900 font-medium">{savedFieldData[f.id]}</p>
                       </div>
                     ))}
                   </div>
@@ -534,17 +520,10 @@ export default function ContractSign() {
             </div>
 
             <div className="flex gap-3">
-              <Button
-                onClick={handleProceedToSign}
-                className="flex-1 h-12 bg-[#B87333] hover:bg-[#A06828] text-white font-bold text-base"
-              >
+              <Button onClick={handleProceedToSign} className="flex-1 h-12 bg-[#B87333] hover:bg-[#A06828] text-white font-bold text-base">
                 ✍️ Proceed to Sign
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowDeclineForm(v => !v)}
-                className="border-red-400 text-red-400 hover:bg-red-50 h-12"
-              >
+              <Button variant="outline" onClick={() => setShowDeclineForm(v => !v)} className="border-red-400 text-red-400 hover:bg-red-50 h-12">
                 Decline
               </Button>
             </div>
@@ -571,7 +550,41 @@ export default function ContractSign() {
                 <PenLine className="w-5 h-5 text-[#B87333]" /> Your Signature
               </h2>
 
-              {/* Signer Details */}
+              {/* Client-assigned fields to fill */}
+              {clientFieldDefs.length > 0 && (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-4">
+                  <p className="text-sm font-semibold text-blue-900">
+                    ✍️ Your Details to Fill
+                    <span className="ml-2 text-xs font-normal text-blue-600">({clientFieldDefs.filter(f => f.required).length} required)</span>
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {clientFieldDefs.map(field => (
+                      <div key={field.id} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
+                        <label className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1 block">
+                          {field.label} {field.required && <span className="text-red-500">*</span>}
+                        </label>
+                        {field.type === 'textarea' ? (
+                          <textarea
+                            value={clientFieldValues[field.id] || ''}
+                            onChange={e => setClientVal(field.id, e.target.value)}
+                            rows={2}
+                            className="w-full border border-blue-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white"
+                          />
+                        ) : (
+                          <input
+                            type={field.type}
+                            value={clientFieldValues[field.id] || ''}
+                            onChange={e => setClientVal(field.id, e.target.value)}
+                            className="w-full border border-blue-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Signer Identity */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Full Legal Name *</label>
@@ -583,7 +596,7 @@ export default function ContractSign() {
                 </div>
               </div>
 
-              {/* Signature Mode Toggle */}
+              {/* Signature Method Toggle */}
               <div>
                 <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 block">Signature Method</label>
                 <div className="flex gap-2">
@@ -648,7 +661,7 @@ export default function ContractSign() {
                 </div>
               )}
 
-              {/* Consent */}
+              {/* Legal Consent */}
               <div className="space-y-3 bg-amber-50 rounded-xl p-4">
                 <p className="text-sm font-semibold text-amber-900">Legal Consent</p>
                 <label className="flex items-start gap-3 cursor-pointer">

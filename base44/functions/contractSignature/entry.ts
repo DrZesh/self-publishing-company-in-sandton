@@ -295,6 +295,7 @@ Deno.serve(async (req) => {
       }
 
       const signature_image_url = body.signature_image_url || signature_image_data || '';
+      const client_field_values = body.client_field_values || {};
 
       const signedAt = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
       const adminAlreadySigned = !!contract.admin_signed_at;
@@ -303,6 +304,12 @@ Deno.serve(async (req) => {
       const auditTrail = addAuditEvent(contract.audit_trail, 'signed', {
         ip, user_agent, signer_name, signer_email, signed_at: now, legal_consent,
       });
+
+      // Merge client field values into contract_field_values
+      const updatedFieldValues = {
+        ...(contract.contract_field_values || {}),
+        _client: client_field_values,
+      };
 
       await base44.asServiceRole.entities.Contract.update(contract.id, {
         status: finalStatus,
@@ -314,7 +321,8 @@ Deno.serve(async (req) => {
         signature_image_url,
         legal_consent_checked: legal_consent || false,
         audit_trail: auditTrail,
-        sign_token: null, // invalidate token after use
+        sign_token: null,
+        contract_field_values: updatedFieldValues,
       });
 
       // Create Document record (signed copy)
