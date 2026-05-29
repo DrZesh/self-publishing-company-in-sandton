@@ -230,6 +230,7 @@ const AdminDocumentBuilder = lazy(() => import('./pages/admin/AdminDocumentBuild
 const AdminFinance = lazy(() => import('./pages/admin/AdminFinance'));
 const AdminCommunication = lazy(() => import('./pages/admin/AdminCommunication'));
 const AdminESignatures = lazy(() => import('./pages/admin/AdminESignatures'));
+const EmailPreview = lazy(() => import('./pages/admin/EmailPreview'));
 const AdminContractPrepare = lazy(() => import('./pages/admin/AdminContractPrepare'));
 const AdminContractPrepareContract = lazy(() => import('./pages/admin/AdminContractPrepareContract'));
 const AnalyticsDashboard = lazy(() => import('./pages/admin/AnalyticsDashboard'));
@@ -681,6 +682,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/contracts/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepareContract /></ProtectedAdminRoute>} />
       <Route path="/admin/analytics" element={<ProtectedAdminRoute><AnalyticsDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/email-settings" element={<ProtectedAdminRoute><AdminEmailSettingsPage /></ProtectedAdminRoute>} />
+      <Route path="/admin/email-preview" element={<EmailPreview />} />
       <Route path="/admin/message-centre" element={<ProtectedAdminRoute><AdminMessageCentre /></ProtectedAdminRoute>} />
       <Route path="/admin/automation-centre" element={<ProtectedAdminRoute><AdminAutomationCentre /></ProtectedAdminRoute>} />
       <Route path="/sign/esig/:requestId/:token" element={<ESignatureSigning />} />
