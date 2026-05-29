@@ -27,16 +27,17 @@ Deno.serve(async (req) => {
       if (leads.length > 0) {
         linked_lead_id = leads[0].id;
       } else {
-        // Create new Lead
-        const newLead = await base44.asServiceRole.entities.Lead.create({
+        // Create new Contact
+        const newContact = await base44.asServiceRole.entities.Contact.create({
           full_name: client_name,
           email: client_email,
           phone: client_phone || '',
-          source: 'Booking',
-          status: 'new',
-          notes: `Booked via website: ${service_name} on ${date} at ${start_time}`,
+          how_heard: 'other',
+          lifecycle_stage: 'lead',
+          pipeline_stage: 'New Enquiry',
+          description: `Booked via website: ${service_name} on ${date} at ${start_time}`,
         });
-        linked_lead_id = newLead.id;
+        linked_client_id = newContact.id;
       }
     }
 
