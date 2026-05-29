@@ -2,9 +2,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
-// ── Google Calendar helpers ───────────────────────────────────────────────────
+// ── Google Calendar helpers ──────────────────────────────────────────────────
 function toRFC3339(dateStr, timeStr) {
-  // dateStr: YYYY-MM-DD, timeStr: HH:MM (SAST = UTC+2)
   const [h, m] = timeStr.split(':').map(Number);
   const d = new Date(`${dateStr}T00:00:00Z`);
   d.setUTCHours(h - 2, m, 0, 0);
@@ -43,6 +42,7 @@ async function deleteCalendarEvent(eventId, accessToken) {
     headers: { 'Authorization': `Bearer ${accessToken}` },
   });
 }
+
 const CALLMEBOT_KEY  = Deno.env.get('CALLMEBOT_API_KEY');
 const CALLMEBOT_NUM  = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
 
@@ -82,48 +82,30 @@ async function notifyAdmin(message) {
   await fetch(url).catch(() => {});
 }
 
+// ── Branded email shell — matches sendFormEmailResend design ─────────────────
 function baseEmail(innerContent) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Email</title>
-</head>
-<body style="margin:0;padding:0;background:#f5f3ef;font-family:Arial,Helvetica,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3ef;padding:32px 16px;">
-  <tr><td align="center">
-    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-      <tr>
-        <td style="background:#B87333;padding:24px 32px;border-radius:12px 12px 0 0;">
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-              <td><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" style="height:44px;display:block;" /></td>
-              <td align="right" style="color:rgba(255,255,255,0.75);font-size:12px;">Creative Books SA</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td style="background:#ffffff;padding:36px 32px;font-size:15px;line-height:1.7;color:#2d2d2d;">
-          ${innerContent}
-        </td>
-      </tr>
-      <tr>
-        <td style="background:#1a1208;padding:24px 32px;border-radius:0 0 12px 12px;">
-          <p style="margin:0 0 6px;color:rgba(255,255,255,0.9);font-size:13px;font-weight:bold;">Creative Books SA</p>
-          <p style="margin:0 0 4px;color:rgba(255,255,255,0.5);font-size:12px;">Prism Office Park, Fourways, Johannesburg</p>
-          <p style="margin:0 0 10px;color:rgba(255,255,255,0.5);font-size:12px;">
-            <a href="mailto:info@creativebooks.co.za" style="color:#B87333;text-decoration:none;">info@creativebooks.co.za</a> &middot; 084 230 5393
-          </p>
-          <p style="margin:0;color:rgba(255,255,255,0.25);font-size:11px;">You received this email because you booked an appointment with Creative Books SA.</p>
-        </td>
-      </tr>
-    </table>
-  </td></tr>
-</table>
-</body>
-</html>`;
+  return '<!DOCTYPE html>' +
+    '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Email</title></head>' +
+    '<body style="margin:0;padding:0;background:#F5F5F5;font-family:Helvetica,Arial,sans-serif;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">' +
+    '<tr><td align="center" style="padding:24px 16px;">' +
+    '<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">' +
+    '<tr><td height="8" style="background:linear-gradient(90deg,#8B5E3C,#B87333,#D4A574,#B87333,#8B5E3C);font-size:0;line-height:0;">&nbsp;</td></tr>' +
+    '<tr><td align="center" style="padding:32px 0 24px;">' +
+    '<img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="160" style="max-width:160px;height:auto;display:block;" />' +
+    '</td></tr>' +
+    '<tr><td style="padding:0 32px 32px;font-size:15px;line-height:1.7;color:#2C2C2C;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '<div style="padding:24px 0;">' + innerContent + '</div>' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '</td></tr>' +
+    '<tr><td align="center" style="padding:20px 32px 8px;font-size:13px;color:#6B6B6B;line-height:1.8;">' +
+    '<strong style="color:#2C2C2C;">Creative Books SA</strong><br />' +
+    'Prism Office Park, Fourways, Johannesburg<br />' +
+    '<a href="mailto:info@creativebooks.co.za" style="color:#B87333;text-decoration:none;">info@creativebooks.co.za</a> &middot; 084 230 5393' +
+    '</td></tr>' +
+    '<tr><td align="center" style="padding:12px 32px 28px;font-size:11px;color:#AAAAAA;">You received this email because you booked an appointment with Creative Books SA.</td></tr>' +
+    '</table></td></tr></table></body></html>';
 }
 
 Deno.serve(async (req) => {
@@ -140,13 +122,57 @@ Deno.serve(async (req) => {
       }
     }
 
+    if (action === 'get_by_cancel_token') {
+      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
+      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
+      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const a = appts[0];
+      return Response.json({ success: true, appointment: { client_name: a.client_name, service_name: a.service_name, date: a.date, start_time: a.start_time, end_time: a.end_time, mode: a.mode, status: a.status } });
+    }
+
+    if (action === 'cancel_by_client') {
+      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
+      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
+      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const a = appts[0];
+      if (['cancelled', 'completed', 'no_show'].includes(a.status)) {
+        return Response.json({ error: 'Already ' + a.status }, { status: 400 });
+      }
+      if (a.google_event_id) {
+        try {
+          const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
+          await deleteCalendarEvent(a.google_event_id, accessToken);
+        } catch (e) { console.error('GCal delete failed:', e.message); }
+      }
+      await base44.asServiceRole.entities.Appointment.update(a.id, {
+        status: 'cancelled',
+        cancelled_at: new Date().toISOString(),
+      });
+      const endTime = a.end_time || addMinutes(a.start_time, a.service_duration_minutes || 30);
+      const cancelHtml = baseEmail(
+        '<h1 style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:28px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 8px 0;">Appointment Cancelled</h1>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 28px 0;">Hi ' + a.client_name + ', your appointment has been successfully cancelled.</p>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#B87333;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 8px 0;">Appointment Details</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E0D5;margin-bottom:24px;">' +
+        '<tr><td style="background:#FAF5EE;padding:0;">' +
+        '<table width="100%" cellpadding="0" cellspacing="0">' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;width:38%;border-bottom:1px solid #E5E0D5;">Service</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + a.service_name + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Date</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatDate(a.date) + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;">Time</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;">' + formatTime(a.start_time) + ' – ' + formatTime(endTime) + ' SAST</td></tr>' +
+        '</table></td></tr></table>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#2C2C2C;margin:0;">We\'d love to reschedule — <a href="https://creativebooks.co.za/book" style="color:#B87333;">book a new time here</a> or call us on <strong>084 230 5393</strong>.</p>'
+      );
+      await sendEmail(a.client_email, `Appointment Cancelled — ${a.service_name}`, cancelHtml);
+      await notifyAdmin(`🚫 Appointment CANCELLED by client\n${a.client_name}\n${a.service_name}\n${formatDate(a.date)} at ${formatTime(a.start_time)}`);
+      return Response.json({ success: true });
+    }
+
     const appt = await base44.asServiceRole.entities.Appointment.get(appointmentId);
     if (!appt) return Response.json({ error: 'Appointment not found' }, { status: 404 });
 
     if (action === 'approve') {
       const endTime = appt.end_time || addMinutes(appt.start_time, appt.service_duration_minutes || 30);
 
-      // Create Google Calendar event
       let googleEventId = null;
       try {
         const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
@@ -160,25 +186,25 @@ Deno.serve(async (req) => {
       });
 
       const modeLabel = appt.mode === 'zoom' ? 'Zoom (link will be emailed separately)' : 'On-site — Creative Books SA, Johannesburg';
-      const html = baseEmail(`
-        <h2 style="color:#0a0806;font-size:22px;margin-bottom:4px;">Your appointment is confirmed! 🎉</h2>
-        <p style="color:#666;margin-bottom:24px;">Hi ${appt.client_name}, we're looking forward to seeing you.</p>
-        <div style="background:#f8f5f0;border-left:4px solid #B87333;padding:16px 20px;border-radius:4px;margin-bottom:24px;">
-          <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${appt.service_name}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ${formatDate(appt.date)}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ${formatTime(appt.start_time)} – ${formatTime(endTime)} SAST</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Format:</strong> ${modeLabel}</p>
-        </div>
-        ${appt.service_name?.toLowerCase().includes('prep') || appt.prep_tips ? `
-        <p style="font-size:14px;color:#333;"><strong>Preparation tip:</strong> ${appt.prep_tips || 'Please bring any relevant manuscript notes or questions you\'d like to discuss.'}</p>` : ''}
-        <p style="font-size:13px;color:#999;margin-top:24px;">Need to cancel? <a href="https://creativebooks.co.za/appointment/cancel/${appt.cancel_token}" style="color:#B87333;">Click here to cancel your appointment</a> or call us on 084 230 5393.</p>
-      `);
-      await sendEmail(appt.client_email, `✅ Appointment Confirmed — ${appt.service_name}`, html);
+      const approveHtml = baseEmail(
+        '<h1 style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:28px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 8px 0;">Appointment Confirmed! 🎉</h1>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 28px 0;">Hi ' + appt.client_name + ', we\'re looking forward to seeing you.</p>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#B87333;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 8px 0;">Appointment Details</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E0D5;margin-bottom:24px;">' +
+        '<tr><td style="background:#FAF5EE;padding:0;">' +
+        '<table width="100%" cellpadding="0" cellspacing="0">' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;width:38%;border-bottom:1px solid #E5E0D5;">Service</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + appt.service_name + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Date</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatDate(appt.date) + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Time</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatTime(appt.start_time) + ' – ' + formatTime(endTime) + ' SAST</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;">Format</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;">' + modeLabel + '</td></tr>' +
+        '</table></td></tr></table>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:13px;color:#6B6B6B;margin:0;">Need to cancel? <a href="https://creativebooks.co.za/appointment/cancel/' + appt.cancel_token + '" style="color:#B87333;">Click here to cancel</a> or call us on 084 230 5393.</p>'
+      );
+      await sendEmail(appt.client_email, `✅ Appointment Confirmed — ${appt.service_name}`, approveHtml);
       await notifyAdmin(`📅 Appointment APPROVED\n${appt.client_name}\n${appt.service_name}\n${formatDate(appt.date)} at ${formatTime(appt.start_time)}`);
     }
 
     else if (action === 'decline') {
-      // Delete Google Calendar event if it exists
       if (appt.google_event_id) {
         try {
           const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
@@ -189,13 +215,13 @@ Deno.serve(async (req) => {
         status: 'declined',
         decline_reason: declineReason || '',
       });
-      const html = baseEmail(`
-        <h2 style="color:#0a0806;font-size:22px;margin-bottom:4px;">Appointment Request Update</h2>
-        <p style="color:#666;margin-bottom:16px;">Hi ${appt.client_name}, unfortunately we were unable to accommodate your requested time slot.</p>
-        ${declineReason ? `<div style="background:#fff8f8;border-left:4px solid #e11d48;padding:12px 16px;border-radius:4px;margin-bottom:16px;font-size:14px;color:#555;">${declineReason}</div>` : ''}
-        <p style="font-size:14px;color:#333;">We'd love to find a time that works — please visit <a href="https://creativebooks.co.za/book" style="color:#B87333;">creativebooks.co.za/book</a> to choose a new slot, or call us on <strong>084 230 5393</strong>.</p>
-      `);
-      await sendEmail(appt.client_email, `Re: Your ${appt.service_name} appointment request`, html);
+      const declineHtml = baseEmail(
+        '<h1 style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:28px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 8px 0;">Appointment Request Update</h1>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 24px 0;">Hi ' + appt.client_name + ', unfortunately we were unable to accommodate your requested time slot.</p>' +
+        (declineReason ? '<div style="background:#fff8f8;border-left:4px solid #e11d48;padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:14px;color:#555;">' + declineReason + '</div>' : '') +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#2C2C2C;margin:0;">We\'d love to find a time that works — <a href="https://creativebooks.co.za/book" style="color:#B87333;">book a new slot here</a> or call us on <strong>084 230 5393</strong>.</p>'
+      );
+      await sendEmail(appt.client_email, `Re: Your ${appt.service_name} appointment request`, declineHtml);
       await notifyAdmin(`❌ Appointment DECLINED\n${appt.client_name} — ${appt.service_name}`);
     }
 
@@ -206,61 +232,21 @@ Deno.serve(async (req) => {
         proposed_start_time: proposeTime,
         proposed_end_time: endTime,
       });
-      const html = baseEmail(`
-        <h2 style="color:#0a0806;font-size:22px;margin-bottom:4px;">We'd like to suggest a new time</h2>
-        <p style="color:#666;margin-bottom:16px;">Hi ${appt.client_name}, your original slot wasn't available, but we've found an alternative:</p>
-        <div style="background:#f8f5f0;border-left:4px solid #B87333;padding:16px 20px;border-radius:4px;margin-bottom:24px;">
-          <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${appt.service_name}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Proposed Date:</strong> ${formatDate(proposeDate)}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Proposed Time:</strong> ${formatTime(proposeTime)} SAST</p>
-        </div>
-        <p style="font-size:14px;color:#333;">If this works for you, simply reply <strong>"Confirmed"</strong> or call us on <strong>084 230 5393</strong>. If not, you can also <a href="https://creativebooks.co.za/book" style="color:#B87333;">book a different time online</a>.</p>
-      `);
-      await sendEmail(appt.client_email, `New time proposed for your ${appt.service_name} appointment`, html);
+      const proposeHtml = baseEmail(
+        '<h1 style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:28px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 8px 0;">New Time Suggested</h1>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 28px 0;">Hi ' + appt.client_name + ', your original slot wasn\'t available, but we\'ve found an alternative.</p>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#B87333;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 8px 0;">Proposed Time</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E0D5;margin-bottom:24px;">' +
+        '<tr><td style="background:#FAF5EE;padding:0;">' +
+        '<table width="100%" cellpadding="0" cellspacing="0">' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;width:38%;border-bottom:1px solid #E5E0D5;">Service</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + appt.service_name + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Date</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatDate(proposeDate) + '</td></tr>' +
+        '<tr><td style="padding:10px 12px;font-size:14px;font-weight:600;color:#2C2C2C;">Time</td><td style="padding:10px 12px;font-size:14px;color:#2C2C2C;">' + formatTime(proposeTime) + ' SAST</td></tr>' +
+        '</table></td></tr></table>' +
+        '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#2C2C2C;margin:0;">If this works, reply <strong>"Confirmed"</strong> or call <strong>084 230 5393</strong>. Otherwise, <a href="https://creativebooks.co.za/book" style="color:#B87333;">book a different time online</a>.</p>'
+      );
+      await sendEmail(appt.client_email, `New time proposed for your ${appt.service_name} appointment`, proposeHtml);
       await notifyAdmin(`🔄 Appointment PROPOSED new time\n${appt.client_name}\n${formatDate(proposeDate)} at ${formatTime(proposeTime)}`);
-    }
-
-    else if (action === 'get_by_cancel_token') {
-      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
-      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
-      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
-      const a = appts[0];
-      return Response.json({ success: true, appointment: { client_name: a.client_name, service_name: a.service_name, date: a.date, start_time: a.start_time, end_time: a.end_time, mode: a.mode, status: a.status } });
-    }
-
-    else if (action === 'cancel_by_client') {
-      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
-      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
-      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
-      const a = appts[0];
-      if (['cancelled', 'completed', 'no_show'].includes(a.status)) {
-        return Response.json({ error: 'Already ' + a.status }, { status: 400 });
-      }
-      // Remove from Google Calendar
-      if (a.google_event_id) {
-        try {
-          const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
-          await deleteCalendarEvent(a.google_event_id, accessToken);
-        } catch (e) { console.error('GCal delete failed:', e.message); }
-      }
-      await base44.asServiceRole.entities.Appointment.update(a.id, {
-        status: 'cancelled',
-        cancelled_at: new Date().toISOString(),
-      });
-      const endTime = a.end_time || addMinutes(a.start_time, a.service_duration_minutes || 30);
-      const html = baseEmail(`
-        <h2 style="color:#0a0806;font-size:22px;margin-bottom:4px;">Appointment Cancelled</h2>
-        <p style="color:#666;margin-bottom:16px;">Hi ${a.client_name}, your appointment has been successfully cancelled.</p>
-        <div style="background:#f8f5f0;border-left:4px solid #B87333;padding:16px 20px;border-radius:4px;margin-bottom:24px;">
-          <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${a.service_name}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ${formatDate(a.date)}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ${formatTime(a.start_time)} – ${formatTime(endTime)} SAST</p>
-        </div>
-        <p style="font-size:14px;color:#333;">We'd love to reschedule — visit <a href="https://creativebooks.co.za/book" style="color:#B87333;">creativebooks.co.za/book</a> to choose a new time.</p>
-      `);
-      await sendEmail(a.client_email, `Appointment Cancelled — ${a.service_name}`, html);
-      await notifyAdmin(`🚫 Appointment CANCELLED by client\n${a.client_name}\n${a.service_name}\n${formatDate(a.date)} at ${formatTime(a.start_time)}`);
-      return Response.json({ success: true });
     }
 
     else {

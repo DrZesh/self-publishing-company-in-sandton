@@ -11,53 +11,29 @@ const BRAND = {
 };
 
 function buildBrandedHtml(innerContent, senderName) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Email</title>
-</head>
-<body style="margin:0;padding:0;background:#f5f3ef;font-family:Arial,Helvetica,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3ef;padding:32px 16px;">
-  <tr><td align="center">
-    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-      <!-- Header -->
-      <tr>
-        <td style="background:${BRAND.color};padding:24px 32px;border-radius:12px 12px 0 0;">
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-              <td><img src="${BRAND.logo}" alt="${BRAND.name}" style="height:44px;display:block;" /></td>
-              <td align="right" style="color:rgba(255,255,255,0.75);font-size:12px;">${senderName || BRAND.name}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <!-- Body -->
-      <tr>
-        <td style="background:#ffffff;padding:36px 32px;font-size:15px;line-height:1.7;color:#2d2d2d;">
-          ${innerContent}
-        </td>
-      </tr>
-      <!-- Footer -->
-      <tr>
-        <td style="background:#1a1208;padding:24px 32px;border-radius:0 0 12px 12px;">
-          <p style="margin:0 0 6px;color:rgba(255,255,255,0.9);font-size:13px;font-weight:bold;">${BRAND.name}</p>
-          <p style="margin:0 0 4px;color:rgba(255,255,255,0.5);font-size:12px;">${BRAND.address}</p>
-          <p style="margin:0 0 10px;color:rgba(255,255,255,0.5);font-size:12px;">
-            <a href="mailto:${BRAND.email}" style="color:${BRAND.color};text-decoration:none;">${BRAND.email}</a> &middot; ${BRAND.phone}
-          </p>
-          <p style="margin:0;color:rgba(255,255,255,0.25);font-size:11px;">
-            You received this email because you are a client of Creative Books SA.
-            <br/>To unsubscribe, <a href="{{unsubscribe_link}}" style="color:rgba(255,255,255,0.4);">click here</a>.
-          </p>
-        </td>
-      </tr>
-    </table>
-  </td></tr>
-</table>
-</body>
-</html>`;
+  var name = senderName || BRAND.name;
+  return '<!DOCTYPE html>' +
+    '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Email</title></head>' +
+    '<body style="margin:0;padding:0;background:#F5F5F5;font-family:Helvetica,Arial,sans-serif;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">' +
+    '<tr><td align="center" style="padding:24px 16px;">' +
+    '<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">' +
+    '<tr><td height="8" style="background:linear-gradient(90deg,#8B5E3C,#B87333,#D4A574,#B87333,#8B5E3C);font-size:0;line-height:0;">&nbsp;</td></tr>' +
+    '<tr><td align="center" style="padding:32px 0 24px;">' +
+    '<img src="' + BRAND.logo + '" alt="' + BRAND.name + '" width="160" style="max-width:160px;height:auto;display:block;" />' +
+    '</td></tr>' +
+    '<tr><td style="padding:0 32px 32px;font-size:15px;line-height:1.7;color:#2C2C2C;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '<div style="padding:24px 0;">' + innerContent + '</div>' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '</td></tr>' +
+    '<tr><td align="center" style="padding:20px 32px 8px;font-size:13px;color:#6B6B6B;line-height:1.8;">' +
+    '<strong style="color:#2C2C2C;">' + name + '</strong><br />' +
+    BRAND.address + '<br />' +
+    '<a href="mailto:' + BRAND.email + '" style="color:#B87333;text-decoration:none;">' + BRAND.email + '</a> &middot; ' + BRAND.phone +
+    '</td></tr>' +
+    '<tr><td align="center" style="padding:12px 32px 28px;font-size:11px;color:#AAAAAA;">You received this email because you are in contact with Creative Books SA.</td></tr>' +
+    '</table></td></tr></table></body></html>';
 }
 
 Deno.serve(async (req) => {
@@ -101,7 +77,6 @@ Deno.serve(async (req) => {
       if (!res.ok) return Response.json({ error: data.message || 'Resend error', details: data }, { status: 500 });
       return Response.json({ success: true, provider: 'resend', id: data.id });
     } else {
-      // Built-in fallback
       await base44.asServiceRole.integrations.Core.SendEmail({
         to,
         subject,
