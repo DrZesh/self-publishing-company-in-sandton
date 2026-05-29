@@ -8,11 +8,11 @@
     },
     "contact_id": {
       "type": "string",
-      "description": "Linked Contact ID (optional)"
+      "description": "Linked Contact ID"
     },
     "project_id": {
       "type": "string",
-      "description": "Linked Project ID (optional)"
+      "description": "Linked Project ID"
     },
     "title": {
       "type": "string",
@@ -26,26 +26,67 @@
       "type": "string"
     },
     "document_category": {
+      "type": "string"
+    },
+    "signing_order": {
       "type": "string",
-      "description": "NDA, Contract, Publishing Agreement, etc."
+      "enum": [
+        "admin_first",
+        "client_first",
+        "any_order"
+      ],
+      "default": "admin_first",
+      "description": "Who signs first"
     },
     "status": {
       "type": "string",
       "enum": [
         "Draft",
         "Prepared",
+        "Admin Fields Completed",
+        "Admin Signed",
         "Sent",
         "Delivered",
         "Opened",
         "Viewed",
         "Signing Started",
-        "Signed",
+        "Client Signed",
+        "Fully Signed",
         "Declined",
         "Expired",
         "Cancelled",
         "Archived"
       ],
       "default": "Draft"
+    },
+    "contract_fields": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Field definitions: {id, label, type, assigned_to, required, value}"
+    },
+    "admin_field_values": {
+      "type": "object",
+      "description": "Admin-filled field values keyed by field id"
+    },
+    "client_field_values": {
+      "type": "object",
+      "description": "Client-filled field values keyed by field id"
+    },
+    "admin_signature_url": {
+      "type": "string",
+      "description": "Admin signature image URL"
+    },
+    "admin_signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "admin_signer_name": {
+      "type": "string"
+    },
+    "admin_signer_email": {
+      "type": "string"
     },
     "recipient_name": {
       "type": "string"
@@ -60,8 +101,7 @@
       "type": "string"
     },
     "sign_token": {
-      "type": "string",
-      "description": "Secure unique token for signing link"
+      "type": "string"
     },
     "expires_at": {
       "type": "string",
@@ -89,8 +129,7 @@
       "type": "array",
       "items": {
         "type": "number"
-      },
-      "description": "Days after sending to auto-remind"
+      }
     },
     "reminder_sent_count": {
       "type": "number",
@@ -118,7 +157,8 @@
     },
     "signed_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "Client signed at"
     },
     "declined_at": {
       "type": "string",
@@ -129,15 +169,14 @@
     },
     "signature_image_url": {
       "type": "string",
-      "description": "URL of captured signature image"
+      "description": "Client signature image URL"
     },
     "signature_method": {
       "type": "string",
       "enum": [
         "drawn",
         "typed"
-      ],
-      "description": "How the signature was created"
+      ]
     },
     "signer_confirmed_name": {
       "type": "string"
@@ -178,19 +217,19 @@
       "default": false
     },
     "signed_document_url": {
-      "type": "string",
-      "description": "URL to the final signed PDF/certificate"
+      "type": "string"
+    },
+    "pdf_generation_status": {
+      "type": "string"
     },
     "audit_trail": {
       "type": "array",
       "items": {
         "type": "object"
-      },
-      "description": "Full chronological audit trail"
+      }
     },
     "sent_by": {
-      "type": "string",
-      "description": "Admin email who sent this"
+      "type": "string"
     },
     "notes": {
       "type": "string"

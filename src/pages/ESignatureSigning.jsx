@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import SignatureCanvas from '@/components/signature/SignatureCanvas';
 import {
   Shield, CheckCircle, AlertTriangle, Clock, FileText,
-  ChevronRight, Download, Eye, PenTool, Loader2, XCircle
+  ChevronRight, Download, Eye, PenTool, Loader2, XCircle, Lock
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const STEPS = ['View Document', 'Sign', 'Legal Consent', 'Complete'];
+const STEPS = ['Review Document', 'Your Signature', 'Legal Consent', 'Complete'];
 
 export default function ESignatureSigning() {
   const { requestId, token } = useParams();
@@ -31,7 +31,13 @@ export default function ESignatureSigning() {
       if (res.data?.expired) { setError('This signing link has expired. Please contact the sender.'); }
       else if (res.data?.error) { setError(res.data.error); }
       else if (res.data?.already_signed) { setRequest(res.data.doc); setSubmitted(true); }
-      else { setRequest(res.data?.doc || {}); }
+      else {
+        const doc = res.data?.doc || {};
+        setRequest(doc);
+        // Pre-fill name/email from admin fields if available
+        if (doc.admin_field_values?.client_name) setForm(f => ({ ...f, confirmed_name: doc.admin_field_values.client_name }));
+        if (doc.admin_field_values?.client_email) setForm(f => ({ ...f, confirmed_email: doc.admin_field_values.client_email }));
+      }
       setLoading(false);
     }).catch(() => { setError('Failed to load signing request. Please try again.'); setLoading(false); });
   }, [requestId, token]);
@@ -42,7 +48,6 @@ export default function ESignatureSigning() {
   };
 
   const handleSubmit = async () => {
-    // Validation
     if (!signature) { toast.error('Please provide your signature before submitting.'); return; }
     if (!form.confirmed_name.trim()) { toast.error('Please enter your full name.'); return; }
     if (!form.confirmed_email.trim()) { toast.error('Please enter your email address.'); return; }
@@ -52,18 +57,14 @@ export default function ESignatureSigning() {
 
     setSubmitting(true);
     try {
-      // Step 1: Upload signature image to get a proper URL (avoids base64 size limits)
       let signatureUrl = signature.dataUrl;
       try {
         const sigBlob = await fetch(signature.dataUrl).then(r => r.blob());
         const sigFile = new File([sigBlob], 'signature.png', { type: 'image/png' });
         const uploaded = await base44.integrations.Core.UploadFile({ file: sigFile });
         signatureUrl = uploaded.file_url;
-      } catch (uploadErr) {
-        console.warn('Signature upload failed, using dataUrl fallback:', uploadErr);
-      }
+      } catch { /* use dataUrl fallback */ }
 
-      // Step 2: Submit to backend with 30-second timeout
       const invokePromise = base44.functions.invoke('eSignatureActions', {
         action: 'submit_signature',
         request_id: requestId,
@@ -87,12 +88,9 @@ export default function ESignatureSigning() {
         setSubmitted(true);
         setRequest(r => ({ ...r, signed_document_url: res.data?.signed_document_url || null }));
       } else {
-        const errMsg = res.data?.error || 'Submission failed. Please try again or contact Creative Books SA.';
-        toast.error(errMsg);
-        console.error('E-signature submission error:', res.data);
+        toast.error(res.data?.error || 'Submission failed. Please try again or contact Creative Books SA.');
       }
     } catch (err) {
-      console.error('Submit exception:', err);
       toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setSubmitting(false);
@@ -108,6 +106,12 @@ export default function ESignatureSigning() {
     setError('You have declined to sign this document. The sender has been notified.');
   };
 
+  // Admin-signed context
+  const adminSignedFirst = !!(request?.admin_signed_at && request?.admin_signer_name);
+  const adminFieldValues = request?.admin_field_values || {};
+  const hasAdminFields = Object.keys(adminFieldValues).filter(k => adminFieldValues[k]).length > 0;
+
+  // ── LOADING ───────────────────────────────────────────────────────────────
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
@@ -123,32 +127,40 @@ export default function ESignatureSigning() {
         <AlertTriangle className="w-14 h-14 text-orange-400 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-gray-900 mb-2">Signing Unavailable</h2>
         <p className="text-gray-500 text-sm leading-relaxed">{error}</p>
-        <p className="text-xs text-gray-400 mt-4">Questions? Contact Creative Books SA — 010 500 3331</p>
+        <p className="text-xs text-gray-400 mt-4">Questions? Contact Creative Books SA — 084 230 5393</p>
       </div>
     </div>
   );
 
+  // ── SUCCESS ────────────────────────────────────────────────────────────────
   if (submitted) return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-white p-4">
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-emerald-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Document Signed!</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {adminSignedFirst ? 'Contract Fully Signed!' : 'Document Signed!'}
+        </h2>
         <p className="text-gray-500 text-sm mb-2"><strong>{request?.title}</strong></p>
-        <p className="text-gray-500 text-sm mb-6">Your signature has been captured and the document has been sent to Creative Books SA. You will receive a confirmation email shortly.</p>
+        <p className="text-gray-500 text-sm mb-6">
+          {adminSignedFirst
+            ? 'Both Creative Books SA and you have signed this contract. A confirmation email with a download link for the fully signed contract has been sent to you.'
+            : 'Your signature has been captured. You will receive a confirmation email shortly.'}
+        </p>
         {request?.allow_download_after_sign !== false && request?.signed_document_url && (
           <a href={request.signed_document_url} download={`signed_${request.title || 'document'}.pdf`}>
             <Button className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white w-full mb-3">
-              <Download className="w-4 h-4" /> Download Signature Certificate
+              <Download className="w-4 h-4" /> Download Signed Contract & Certificate
             </Button>
           </a>
         )}
-        <p className="text-xs text-gray-400 mt-4">Creative Books SA · info@creativebooks.co.za · 010 500 3331</p>
+        <p className="text-xs text-gray-400 mt-4">Creative Books SA · info@creativebooks.co.za · 084 230 5393</p>
       </div>
     </div>
   );
 
+  // ── DECLINE ────────────────────────────────────────────────────────────────
   if (declineMode) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
@@ -165,6 +177,7 @@ export default function ESignatureSigning() {
     </div>
   );
 
+  // ── MAIN ───────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top bar */}
@@ -216,71 +229,112 @@ export default function ESignatureSigning() {
           </div>
         </div>
 
-        {/* Step 0: View document */}
+        {/* ── STEP 0: Review document ─────────────────────────────────────── */}
         {step === 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-900">Step 1 — Review Document</h3>
-            <p className="text-sm text-gray-500">Please read the document carefully before signing. You can view or download it using the link below.</p>
-            {request?.file_url && (
-              <div className="space-y-3">
-                <a href={request.file_url} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl hover:bg-orange-100 transition-colors">
-                  <Eye className="w-5 h-5 text-[#B87333]" />
+          <div className="space-y-5">
+            {/* Admin signed banner */}
+            {adminSignedFirst && (
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Shield className="w-5 h-5 text-blue-600 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">View Document</p>
-                    <p className="text-xs text-gray-500">Opens in a new tab — read all pages before signing</p>
+                    <p className="font-bold text-blue-900 text-sm">Creative Books SA has already signed this contract</p>
+                    <p className="text-xs text-blue-600">{request.admin_signer_name} · {new Date(request.admin_signed_at).toLocaleDateString('en-ZA')}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
-                </a>
-                {request?.allow_download_before_sign !== false && (
-                  <a href={request.file_url} download className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl hover:bg-gray-100 transition-colors text-sm text-gray-600">
-                    <Download className="w-4 h-4" /> Download document
-                  </a>
+                </div>
+                {hasAdminFields && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(adminFieldValues).filter(([, v]) => v).map(([key, val]) => (
+                      <div key={key} className="bg-blue-100/60 rounded-lg p-2 flex items-start gap-1">
+                        <Lock className="w-3 h-3 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide">{key.replace(/_/g, ' ')}</p>
+                          <p className="text-xs text-blue-900 font-medium">{val}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             )}
-            <div className="border-t pt-4 flex gap-3">
-              <Button onClick={() => setDeclineMode(true)} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50">
-                <XCircle className="w-4 h-4 mr-2" /> Decline
-              </Button>
-              <Button onClick={handleStartSigning} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white gap-2">
-                <PenTool className="w-4 h-4" /> I Have Read the Document — Start Signing
-              </Button>
+
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
+              <h3 className="font-bold text-gray-900">Review Document</h3>
+              <p className="text-sm text-gray-500">Please read the document carefully before signing.</p>
+              {request?.file_url && (
+                <div className="space-y-3">
+                  <a href={request.file_url} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl hover:bg-orange-100 transition-colors">
+                    <Eye className="w-5 h-5 text-[#B87333]" />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">View Document</p>
+                      <p className="text-xs text-gray-500">Opens in a new tab — read all pages before signing</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
+                  </a>
+                  {request?.allow_download_before_sign !== false && (
+                    <a href={request.file_url} download className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl hover:bg-gray-100 transition-colors text-sm text-gray-600">
+                      <Download className="w-4 h-4" /> Download document
+                    </a>
+                  )}
+                </div>
+              )}
+              <div className="border-t pt-4 flex gap-3">
+                <Button onClick={() => setDeclineMode(true)} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50">
+                  <XCircle className="w-4 h-4 mr-2" /> Decline
+                </Button>
+                <Button onClick={handleStartSigning} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white gap-2">
+                  <PenTool className="w-4 h-4" /> I Have Read the Document — Start Signing
+                </Button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Step 1: Signature */}
+        {/* ── STEP 1: Signature ──────────────────────────────────────────── */}
         {step === 1 && (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">
-            <h3 className="font-bold text-gray-900">Step 2 — Add Your Signature</h3>
-            <SignatureCanvas label="Your Signature" onChange={setSignature} />
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div>
-                <label className="text-xs font-semibold text-gray-600 uppercase mb-1 block">Your Full Name *</label>
-                <input value={form.confirmed_name} onChange={e => setForm(f => ({ ...f, confirmed_name: e.target.value }))} placeholder="Type your full legal name" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+          <div className="space-y-5">
+            {/* Show admin signature for reference */}
+            {adminSignedFirst && request?.admin_signature_url && (
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-1">
+                  <Shield className="w-3 h-3" /> Creative Books SA — Already Signed
+                </p>
+                <img src={request.admin_signature_url} alt="Admin signature" className="max-h-14" />
+                <p className="text-xs text-gray-400 mt-1">{request.admin_signer_name} · {new Date(request.admin_signed_at).toLocaleString('en-ZA')}</p>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-gray-600 uppercase mb-1 block">Your Email *</label>
-                <input type="email" value={form.confirmed_email} onChange={e => setForm(f => ({ ...f, confirmed_email: e.target.value }))} placeholder="your@email.com" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+            )}
+
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">
+              <h3 className="font-bold text-gray-900">Your Signature</h3>
+              <SignatureCanvas label="Your Signature" onChange={setSignature} />
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 uppercase mb-1 block">Your Full Name *</label>
+                  <input value={form.confirmed_name} onChange={e => setForm(f => ({ ...f, confirmed_name: e.target.value }))} placeholder="Type your full legal name" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-600 uppercase mb-1 block">Your Email *</label>
+                  <input type="email" value={form.confirmed_email} onChange={e => setForm(f => ({ ...f, confirmed_email: e.target.value }))} placeholder="your@email.com" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
-              <Button onClick={() => {
-                if (!signature) { toast.error('Please provide your signature'); return; }
-                if (!form.confirmed_name || !form.confirmed_email) { toast.error('Please confirm your name and email'); return; }
-                setStep(2);
-              }} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
-                Continue to Legal Consent
-              </Button>
+              <div className="flex gap-3 pt-2">
+                <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
+                <Button onClick={() => {
+                  if (!signature) { toast.error('Please provide your signature'); return; }
+                  if (!form.confirmed_name || !form.confirmed_email) { toast.error('Please confirm your name and email'); return; }
+                  setStep(2);
+                }} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
+                  Continue to Legal Consent
+                </Button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Step 2: Legal consent */}
+        {/* ── STEP 2: Legal consent ──────────────────────────────────────── */}
         {step === 2 && (
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">
-            <h3 className="font-bold text-gray-900">Step 3 — Legal Consent</h3>
+            <h3 className="font-bold text-gray-900">Legal Consent</h3>
             <p className="text-sm text-gray-500">Please read and accept all statements below to complete your signature.</p>
             <div className="space-y-3">
               {[
@@ -322,7 +376,7 @@ export default function ESignatureSigning() {
       </div>
 
       <div className="text-center py-8 text-xs text-gray-400">
-        Creative Books SA · Secure E-Signature System · 010 500 3331
+        Creative Books SA · Secure E-Signature System · 084 230 5393
       </div>
     </div>
   );

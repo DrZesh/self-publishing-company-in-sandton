@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 import {
   PenTool, Plus, Send, RotateCcw, Eye, Clock, CheckCircle,
   XCircle, AlertTriangle, Search, ChevronRight, FileText, Download,
@@ -14,11 +15,15 @@ import { toast } from 'sonner';
 const STATUS_COLORS = {
   'Draft': 'bg-gray-100 text-gray-600',
   'Prepared': 'bg-blue-100 text-blue-700',
+  'Admin Fields Completed': 'bg-indigo-100 text-indigo-700',
+  'Admin Signed': 'bg-violet-100 text-violet-700',
   'Sent': 'bg-blue-100 text-blue-700',
   'Delivered': 'bg-sky-100 text-sky-700',
   'Opened': 'bg-purple-100 text-purple-700',
   'Viewed': 'bg-violet-100 text-violet-700',
   'Signing Started': 'bg-amber-100 text-amber-700',
+  'Client Signed': 'bg-teal-100 text-teal-700',
+  'Fully Signed': 'bg-green-100 text-green-700',
   'Signed': 'bg-green-100 text-green-700',
   'Declined': 'bg-red-100 text-red-700',
   'Expired': 'bg-gray-200 text-gray-500',
@@ -353,11 +358,13 @@ export default function AdminESignatures() {
 
   const stats = {
     sent: requests.filter(r => ['Sent','Delivered','Opened','Viewed','Signing Started'].includes(r.status)).length,
-    signed: requests.filter(r => r.status === 'Signed').length,
+    signed: requests.filter(r => ['Signed','Client Signed','Fully Signed'].includes(r.status)).length,
     awaiting: requests.filter(r => ['Sent','Opened','Viewed'].includes(r.status)).length,
     expired: requests.filter(r => r.status === 'Expired').length,
     declined: requests.filter(r => r.status === 'Declined').length,
-    signedToday: requests.filter(r => r.status === 'Signed' && r.signed_at && new Date(r.signed_at).toDateString() === new Date().toDateString()).length,
+    adminSigned: requests.filter(r => r.status === 'Admin Signed').length,
+    fullySigned: requests.filter(r => r.status === 'Fully Signed').length,
+    signedToday: requests.filter(r => ['Signed','Fully Signed','Client Signed'].includes(r.status) && r.signed_at && new Date(r.signed_at).toDateString() === new Date().toDateString()).length,
   };
 
   return (
@@ -430,14 +437,16 @@ export default function AdminESignatures() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {filtered.map(req => {
-                    const isSigned = req.status === 'Signed';
+                    const isSigned = ['Signed','Fully Signed','Client Signed'].includes(req.status);
                     const isExpired = req.status === 'Expired';
-                    const canSend = req.status === 'Draft';
+                    const canSend = ['Draft','Admin Signed'].includes(req.status);
+                    const needsAdminSign = req.status === 'Draft' && req.signing_order !== 'client_first';
                     const canResend = ['Sent','Opened','Viewed','Expired'].includes(req.status);
                     return (
                       <tr key={req.id} className={`hover:bg-gray-50 transition-colors ${isSigned ? 'bg-green-50/20' : ''}`}>
                         <td className="px-4 py-3">
                           <p className="font-medium text-gray-900 truncate max-w-[200px]">{req.title}</p>
+                          {req.admin_signed_at && <p className="text-[10px] text-violet-600 flex items-center gap-0.5 mt-0.5"><PenTool className="w-2.5 h-2.5" /> Admin signed</p>}
                           {req.company_name && <p className="text-xs text-gray-400">{req.company_name}</p>}
                         </td>
                         <td className="px-4 py-3">
@@ -453,7 +462,21 @@ export default function AdminESignatures() {
                         <td className="px-4 py-3 text-xs">{req.signed_at ? <span className="text-green-700 font-medium">{new Date(req.signed_at).toLocaleDateString('en-ZA')}</span> : '—'}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
-                            {canSend && (
+                            {needsAdminSign && (
+                              <Link to={`/admin/esignatures/prepare/${req.id}`}>
+                                <Button variant="ghost" size="sm" title="Prepare &amp; sign first" className="text-violet-600">
+                                  <PenTool className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            )}
+                            {req.status === 'Admin Signed' && (
+                              <Link to={`/admin/esignatures/prepare/${req.id}`}>
+                                <Button variant="ghost" size="sm" title="Review &amp; send to client" className="text-violet-600">
+                                  <Send className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            )}
+                            {canSend && req.status === 'Draft' && req.signing_order === 'client_first' && (
                               <Button variant="ghost" size="sm" title="Send for signature" disabled={sendingId === req.id} onClick={() => handleSend(req)}>
                                 {sendingId === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 text-emerald-600" />}
                               </Button>

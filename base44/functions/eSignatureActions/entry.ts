@@ -76,25 +76,62 @@ async function generateCertificatePDF(req) {
   pdf.setFontSize(9);
   pdf.text('This certificate confirms that the following document was electronically signed.', 15, 36);
 
+  const isFullySigned = req.admin_signed_at && req.signed_at;
+
   const fields = [
     { label: 'Document Title', value: req.title },
     { label: 'Document Type', value: req.document_category || 'Document' },
-    { label: 'Signer Name', value: req.signer_confirmed_name || req.recipient_name },
-    { label: 'Signer Email', value: req.signer_confirmed_email || req.recipient_email },
-    { label: 'Signature Method', value: req.signature_method === 'drawn' ? 'Drawn (mouse/touch)' : 'Typed' },
-    { label: 'Date Signed', value: req.signed_at ? new Date(req.signed_at).toLocaleString('en-ZA') : new Date().toLocaleString('en-ZA') },
-    { label: 'IP Address', value: req.signer_ip || 'Not recorded' },
-    { label: 'Device', value: req.signer_device || 'Not recorded' },
-    { label: 'Browser', value: req.signer_browser || 'Not recorded' },
-    { label: 'Consent: Read Document', value: req.consent_read ? 'Yes ✓' : 'No' },
-    { label: 'Consent: Identity Confirmed', value: req.consent_identity ? 'Yes ✓' : 'No' },
-    { label: 'Consent: Authorised to Sign', value: req.consent_authorised ? 'Yes ✓' : 'No' },
-    { label: 'Consent: Electronic Signature', value: req.consent_electronic ? 'Yes ✓' : 'No' },
-    { label: 'Sent By (Admin)', value: req.sent_by || 'System' },
+    { label: 'Contract Status', value: isFullySigned ? 'FULLY SIGNED — Both Parties' : 'SIGNED' },
+    { label: 'Reference', value: req.id?.slice(-8).toUpperCase() || '—' },
   ];
 
-  let y = 60;
-  fields.forEach(({ label, value }) => {
+  let y = 56;
+
+  // Admin signature block
+  if (req.admin_signed_at) {
+    pdf.setFillColor(240, 248, 255);
+    pdf.roundedRect(15, y - 2, 180, 6, 1, 1, 'F');
+    pdf.setTextColor(30, 80, 140);
+    pdf.setFontSize(8);
+    pdf.text('CREATIVE BOOKS SA — ADMIN SIGNATURE', 18, y + 2);
+    y += 9;
+    [
+      { label: 'Admin Signer Name', value: req.admin_signer_name || '—' },
+      { label: 'Admin Signer Email', value: req.admin_signer_email || '—' },
+      { label: 'Admin Signed At', value: req.admin_signed_at ? new Date(req.admin_signed_at).toLocaleString('en-ZA') : '—' },
+    ].forEach(({ label, value }) => {
+      pdf.setFillColor(245, 250, 255);
+      pdf.roundedRect(15, y - 4, 180, 11, 1, 1, 'F');
+      pdf.setTextColor(100, 130, 180);
+      pdf.setFontSize(7.5);
+      pdf.text(label.toUpperCase(), 18, y + 2);
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(9);
+      pdf.text(String(value || '—').substring(0, 70), 85, y + 2);
+      y += 13;
+    });
+    y += 3;
+  }
+
+  // Client signature block
+  pdf.setFillColor(240, 255, 245);
+  pdf.roundedRect(15, y - 2, 180, 6, 1, 1, 'F');
+  pdf.setTextColor(20, 110, 60);
+  pdf.setFontSize(8);
+  pdf.text('CLIENT SIGNATURE', 18, y + 2);
+  y += 9;
+
+  [
+    { label: 'Client Signer Name', value: req.signer_confirmed_name || req.recipient_name },
+    { label: 'Client Signer Email', value: req.signer_confirmed_email || req.recipient_email },
+    { label: 'Signature Method', value: req.signature_method === 'drawn' ? 'Drawn (mouse/touch)' : 'Typed' },
+    { label: 'Client Signed At', value: req.signed_at ? new Date(req.signed_at).toLocaleString('en-ZA') : new Date().toLocaleString('en-ZA') },
+    { label: 'IP Address', value: req.signer_ip || 'Not recorded' },
+    { label: 'Device', value: req.signer_device || 'Not recorded' },
+    { label: 'Consent: Read Document', value: req.consent_read ? 'Yes ✓' : 'No' },
+    { label: 'Consent: Authorised to Sign', value: req.consent_authorised ? 'Yes ✓' : 'No' },
+    { label: 'Sent By (Admin)', value: req.sent_by || 'System' },
+  ].forEach(({ label, value }) => {
     pdf.setFillColor(250, 248, 244);
     pdf.roundedRect(15, y - 4, 180, 11, 1, 1, 'F');
     pdf.setTextColor(140, 100, 60);
@@ -102,25 +139,53 @@ async function generateCertificatePDF(req) {
     pdf.text(label.toUpperCase(), 18, y + 2);
     pdf.setTextColor(26, 18, 8);
     pdf.setFontSize(9);
-    pdf.text(String(value || '—').substring(0, 70), 80, y + 2);
-    y += 14;
+    pdf.text(String(value || '—').substring(0, 70), 85, y + 2);
+    y += 13;
   });
 
+  // Contract fields summary
+  if (req.admin_field_values && Object.keys(req.admin_field_values).length > 0) {
+    y += 4;
+    if (y > 240) { pdf.addPage(); y = 20; }
+    pdf.setFillColor(255, 248, 230);
+    pdf.roundedRect(15, y - 2, 180, 6, 1, 1, 'F');
+    pdf.setTextColor(140, 80, 20);
+    pdf.setFontSize(8);
+    pdf.text('CONTRACT FIELDS', 18, y + 2);
+    y += 9;
+    Object.entries(req.admin_field_values).forEach(([key, val]) => {
+      if (!val) return;
+      if (y > 270) { pdf.addPage(); y = 20; }
+      pdf.setFillColor(255, 252, 242);
+      pdf.roundedRect(15, y - 4, 180, 11, 1, 1, 'F');
+      pdf.setTextColor(160, 110, 50);
+      pdf.setFontSize(7.5);
+      pdf.text(key.replace(/_/g, ' ').toUpperCase(), 18, y + 2);
+      pdf.setTextColor(26, 18, 8);
+      pdf.setFontSize(9);
+      pdf.text(String(val).substring(0, 70), 85, y + 2);
+      y += 12;
+    });
+  }
+
   y += 5;
-  pdf.setFillColor(26, 18, 8);
-  pdf.roundedRect(15, y, 180, 20, 2, 2, 'F');
-  pdf.setTextColor(255, 255, 255);
-  pdf.setFontSize(9);
-  const stmt = 'The above named individual has electronically signed this document. This certificate constitutes a legally binding record of that signature.';
-  const lines = pdf.splitTextToSize(stmt, 170);
-  pdf.text(lines, 20, y + 7);
+  if (y < 260) {
+    pdf.setFillColor(26, 18, 8);
+    pdf.roundedRect(15, y, 180, 16, 2, 2, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(9);
+    const stmt = isFullySigned
+      ? 'This document has been signed by both Creative Books SA and the client. This certificate is legally binding.'
+      : 'The above named individual has electronically signed this document.';
+    const lines = pdf.splitTextToSize(stmt, 170);
+    pdf.text(lines, 20, y + 6);
+  }
 
   pdf.setTextColor(150, 150, 150);
   pdf.setFontSize(8);
   pdf.text('Creative Books SA · info@creativebooks.co.za · www.creativebooks.co.za · 010 500 3331', 105, 287, { align: 'center' });
   pdf.text('This certificate was generated automatically by the Creative Books SA CRM.', 105, 292, { align: 'center' });
 
-  // Return as Uint8Array — avoid spread which can crash on large arrays
   const pdfBytes = pdf.output('arraybuffer');
   return new Uint8Array(pdfBytes);
 }
@@ -150,25 +215,34 @@ Deno.serve(async (req) => {
       const expiresAt = esigReq.expires_at || new Date(Date.now() + 14 * 24 * 3600000).toISOString();
       const now = new Date().toISOString();
 
+      // Build status: if admin already signed, label as 'Sent' (awaiting client)
+      const newStatus = 'Sent';
+
       await base44.asServiceRole.entities.ESignatureRequest.update(request_id, {
         sign_token: token,
         expires_at: expiresAt,
-        status: 'Sent',
+        status: newStatus,
         sent_at: now,
         sent_by: user.email,
         audit_trail: appendAudit(esigReq.audit_trail, { event: 'sent', actor: user.email, signing_url: signingUrl }),
       });
 
+      // Build email subject/message based on whether admin signed first
+      const adminSignedFirst = !!esigReq.admin_signed_at;
+      const emailSubject = esigReq.email_subject || `Please countersign: ${esigReq.title}`;
+      const emailIntro = adminSignedFirst
+        ? `Creative Books SA has already signed this contract. Please review our signature and complete yours.`
+        : (esigReq.email_message || 'Please review and sign the document below.');
+
       const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
       await resend.emails.send({
         from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [esigReq.recipient_email],
-        subject: esigReq.email_subject || `Please sign: ${esigReq.title}`,
-        html: getSigningEmailHtml(esigReq, signingUrl),
+        subject: emailSubject,
+        html: getSigningEmailHtml({ ...esigReq, email_message: emailIntro }, signingUrl),
       });
 
-      // Optional WhatsApp
-      if (esigReq.send_whatsapp && (esigReq.recipient_phone)) {
+      if (esigReq.send_whatsapp && esigReq.recipient_phone) {
         const waMsg = `Hi ${esigReq.recipient_name}, you have a document to sign from Creative Books SA: "${esigReq.title}". Open your signing link: ${signingUrl}`;
         const callmebot = Deno.env.get('CALLMEBOT_API_KEY');
         const waNumber = esigReq.recipient_phone.replace(/\D/g, '');
@@ -266,14 +340,15 @@ Deno.serve(async (req) => {
         }),
       };
 
-      // IMPORTANT: Save signature FIRST, return success immediately.
-      // PDF generation is handled separately via the 'generate_pdf' action
-      // to avoid blocking the client on long-running PDF/upload operations.
+      // Determine final status
+      const adminAlreadySigned = !!esigReq.admin_signed_at;
+      const finalStatus = adminAlreadySigned ? 'Fully Signed' : 'Client Signed';
+
+      updates.status = finalStatus;
       updates.pdf_generation_status = 'pending';
 
       await base44.asServiceRole.entities.ESignatureRequest.update(request_id, updates);
 
-      // Update linked Document if present
       if (esigReq.document_id) {
         await base44.asServiceRole.entities.Document.update(esigReq.document_id, {
           status: 'Signed',
@@ -282,28 +357,26 @@ Deno.serve(async (req) => {
         }).catch(() => {});
       }
 
-      // Notify admin by email
       const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
       const adminEmail = 'info@creativebooks.co.za';
+      const statusLabel = finalStatus === 'Fully Signed' ? '✅ Fully Signed (Both Parties)' : '✅ Document Signed';
       await resend.emails.send({
         from: 'Creative Books SA <info@creativebooks.co.za>',
         to: [adminEmail],
-        subject: `✅ Document Signed: ${esigReq.title}`,
-        html: `<table width="100%" style="background:#F5F5F5;padding:24px;"><tr><td align="center"><table width="600" style="max-width:600px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;">&nbsp;</td></tr><tr><td align="center" style="padding:24px 0 12px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" width="130" style="max-width:130px;height:auto;" /></td></tr><tr><td style="padding:8px 32px 32px;"><h2 style="font-family:sans-serif;font-size:20px;color:#1a1a1a;margin:0 0 10px;">&#9989; Document Signed</h2><p style="font-family:sans-serif;font-size:15px;color:#555;margin:0 0 14px;"><strong>${confirmed_name}</strong> (${confirmed_email}) has signed <strong>${esigReq.title}</strong>.</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0 0 20px;">Signed: ${new Date(now).toLocaleString('en-ZA')}</p><a href="https://creativebooks.co.za/admin/esignatures" style="display:inline-block;background:#B87333;color:#fff;padding:11px 22px;border-radius:8px;text-decoration:none;font-family:sans-serif;font-weight:700;font-size:14px;">View in CRM &#8594;</a></td></tr><tr><td style="padding:14px 32px;border-top:1px solid #e5e5e5;text-align:center;font-family:sans-serif;font-size:11px;color:#aaa;">Creative Books SA &middot; info@creativebooks.co.za</td></tr></table></td></tr></table>`,
-
+        subject: `${statusLabel}: ${esigReq.title}`,
+        html: `<p style="font-family:sans-serif"><strong>${confirmed_name}</strong> (${confirmed_email}) has signed <strong>${esigReq.title}</strong>.<br>Status: <strong>${finalStatus}</strong><br>Signed: ${new Date(now).toLocaleString('en-ZA')}</p>`,
       }).catch(() => {});
 
-      // Send signed copy to recipient
       if (esigReq.allow_download_after_sign) {
         await resend.emails.send({
           from: 'Creative Books SA <info@creativebooks.co.za>',
           to: [confirmed_email],
           subject: `Your signed document: ${esigReq.title}`,
-          html: `<table width="100%" style="background:#F5F5F5;padding:24px;"><tr><td align="center"><table width="600" style="max-width:600px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;">&nbsp;</td></tr><tr><td align="center" style="padding:24px 0 12px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" width="130" style="max-width:130px;height:auto;" /></td></tr><tr><td style="padding:8px 32px 32px;text-align:center;"><h2 style="font-family:sans-serif;font-size:20px;color:#1a1a1a;margin:0 0 10px;">Document Signed &#9989;</h2><p style="font-family:sans-serif;font-size:15px;color:#555;margin:0 0 14px;">Hi ${confirmed_name}, thank you for signing <strong>${esigReq.title}</strong>. Your signature has been recorded and saved securely.</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0 0 16px;">Signed: ${new Date(now).toLocaleString('en-ZA')}</p><p style="font-family:sans-serif;font-size:13px;color:#888;margin:0;">Questions? <a href="mailto:info@creativebooks.co.za" style="color:#B87333;">info@creativebooks.co.za</a> &middot; 084 230 5393</p></td></tr><tr><td style="padding:14px 32px;border-top:1px solid #e5e5e5;text-align:center;font-family:sans-serif;font-size:11px;color:#aaa;">Creative Books SA &middot; info@creativebooks.co.za</td></tr></table></td></tr></table>`,
+          html: `<p style="font-family:sans-serif">Hi ${confirmed_name}, thank you for signing <strong>${esigReq.title}</strong>. Your signature has been recorded. Signed: ${new Date(now).toLocaleString('en-ZA')}</p>`,
         }).catch(() => {});
       }
 
-      return Response.json({ success: true, signed_document_url: null });
+      return Response.json({ success: true, signed_document_url: null, final_status: finalStatus });
     }
 
     // ── GENERATE PDF (separate action, called by admin after signing) ─────────────
@@ -413,6 +486,35 @@ Deno.serve(async (req) => {
       const esigReq = reqs[0];
       if (esigReq.sign_token !== token) return Response.json({ error: 'Invalid link' }, { status: 403 });
       return Response.json({ success: true, request: esigReq });
+    }
+
+    // ── ADMIN SIGN ──────────────────────────────────────────────────────────────
+    if (action === 'admin_sign') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { request_id, admin_signature_url, admin_field_values, admin_signer_name } = body;
+      const reqs = await base44.asServiceRole.entities.ESignatureRequest.filter({ id: request_id });
+      if (!reqs.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const esigReq = reqs[0];
+
+      const now = new Date().toISOString();
+      await base44.asServiceRole.entities.ESignatureRequest.update(request_id, {
+        status: 'Admin Signed',
+        admin_signed_at: now,
+        admin_signature_url,
+        admin_field_values: admin_field_values || {},
+        admin_signer_name: admin_signer_name || user.full_name || user.email,
+        admin_signer_email: user.email,
+        signing_order: 'admin_first',
+        audit_trail: appendAudit(esigReq.audit_trail, {
+          event: 'admin_signed',
+          actor: user.email,
+          admin_name: admin_signer_name,
+        }),
+      });
+
+      return Response.json({ success: true });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
