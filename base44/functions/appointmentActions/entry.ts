@@ -1,6 +1,48 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+
+// ── Google Calendar helpers ───────────────────────────────────────────────────
+function toRFC3339(dateStr, timeStr) {
+  // dateStr: YYYY-MM-DD, timeStr: HH:MM (SAST = UTC+2)
+  const [h, m] = timeStr.split(':').map(Number);
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  d.setUTCHours(h - 2, m, 0, 0);
+  return d.toISOString();
+}
+
+async function createCalendarEvent(appt, accessToken) {
+  const startRFC = toRFC3339(appt.date, appt.start_time);
+  const endRFC   = toRFC3339(appt.date, appt.end_time || addMinutes(appt.start_time, appt.service_duration_minutes || 30));
+  const event = {
+    summary: `📅 ${appt.service_name} — ${appt.client_name}`,
+    description: [
+      appt.client_note ? `Client note: ${appt.client_note}` : '',
+      `Email: ${appt.client_email}`,
+      appt.client_phone ? `Phone: ${appt.client_phone}` : '',
+      `Mode: ${appt.mode === 'zoom' ? 'Zoom' : 'On-site'}`,
+    ].filter(Boolean).join('\n'),
+    location: appt.mode === 'zoom' ? 'Zoom (link to be sent)' : 'Creative Books SA, Sandton, Johannesburg',
+    start: { dateTime: startRFC, timeZone: 'Africa/Johannesburg' },
+    end:   { dateTime: endRFC,   timeZone: 'Africa/Johannesburg' },
+    attendees: [{ email: appt.client_email, displayName: appt.client_name }],
+    reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 60 }] },
+  };
+  const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?sendUpdates=none', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(event),
+  });
+  const data = await res.json();
+  return data.id || null;
+}
+
+async function deleteCalendarEvent(eventId, accessToken) {
+  await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?sendUpdates=none`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${accessToken}` },
+  });
+}
 const CALLMEBOT_KEY  = Deno.env.get('CALLMEBOT_API_KEY');
 const CALLMEBOT_NUM  = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
 
@@ -68,9 +110,18 @@ Deno.serve(async (req) => {
 
     if (action === 'approve') {
       const endTime = appt.end_time || addMinutes(appt.start_time, appt.service_duration_minutes || 30);
+
+      // Create Google Calendar event
+      let googleEventId = null;
+      try {
+        const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
+        googleEventId = await createCalendarEvent({ ...appt, end_time: endTime }, accessToken);
+      } catch (e) { console.error('GCal create failed:', e.message); }
+
       await base44.asServiceRole.entities.Appointment.update(appointmentId, {
         status: 'approved',
         approved_at: new Date().toISOString(),
+        ...(googleEventId ? { google_event_id: googleEventId } : {}),
       });
 
       const modeLabel = appt.mode === 'zoom' ? 'Zoom (link will be emailed separately)' : 'On-site — Creative Books SA, Johannesburg';
@@ -92,6 +143,13 @@ Deno.serve(async (req) => {
     }
 
     else if (action === 'decline') {
+      // Delete Google Calendar event if it exists
+      if (appt.google_event_id) {
+        try {
+          const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
+          await deleteCalendarEvent(appt.google_event_id, accessToken);
+        } catch (e) { console.error('GCal delete failed:', e.message); }
+      }
       await base44.asServiceRole.entities.Appointment.update(appointmentId, {
         status: 'declined',
         decline_reason: declineReason || '',
