@@ -9,6 +9,9 @@ import {
   Clock, FileText, History, Settings, TestTube, Copy, CheckCheck, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Inbox, Zap } from 'lucide-react';
+import EmailQueueTab from '@/components/admin/communication/EmailQueueTab';
+import AutomationRulesTab from '@/components/admin/communication/AutomationRulesTab';
 
 // ─── WhatsApp Templates ───────────────────────────────────────────────────────
 const WA_TEMPLATES = [
@@ -37,10 +40,12 @@ function resolveVars(text, contact, extras = {}) {
 }
 
 const TABS = [
-  { key: 'whatsapp', label: 'WhatsApp', icon: MessageSquare },
-  { key: 'email', label: 'Email', icon: Mail },
-  { key: 'history', label: 'Message History', icon: History },
-  { key: 'settings', label: 'Settings', icon: Settings },
+  { key: 'whatsapp',   label: 'WhatsApp',      icon: MessageSquare },
+  { key: 'email',      label: 'Email',          icon: Mail },
+  { key: 'queue',      label: 'Email Queue',    icon: Inbox },
+  { key: 'automation', label: 'Automation',     icon: Zap },
+  { key: 'history',    label: 'History',        icon: History },
+  { key: 'settings',   label: 'Settings',       icon: Settings },
 ];
 
 export default function AdminCommunication() {
@@ -269,6 +274,12 @@ export default function AdminCommunication() {
             </div>
           </div>
         )}
+
+        {/* ── EMAIL QUEUE TAB ── */}
+        {activeTab === 'queue' && <EmailQueueTab />}
+
+        {/* ── AUTOMATION TAB ── */}
+        {activeTab === 'automation' && <AutomationRulesTab />}
 
         {/* ── HISTORY TAB ── */}
         {activeTab === 'history' && (
