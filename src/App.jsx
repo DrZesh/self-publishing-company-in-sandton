@@ -230,6 +230,7 @@ const AdminContractPrepare = lazy(() => import('./pages/admin/AdminContractPrepa
 const AdminContractPrepareContract = lazy(() => import('./pages/admin/AdminContractPrepareContract'));
 const AnalyticsDashboard = lazy(() => import('./pages/admin/AnalyticsDashboard'));
 const ESignatureSigning = lazy(() => import('./pages/ESignatureSigning'));
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -675,6 +676,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/message-centre" element={<ProtectedAdminRoute><AdminMessageCentre /></ProtectedAdminRoute>} />
       <Route path="/admin/automation-centre" element={<ProtectedAdminRoute><AdminAutomationCentre /></ProtectedAdminRoute>} />
       <Route path="/sign/esig/:requestId/:token" element={<ESignatureSigning />} />
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
     </Routes>
     </Suspense>
   );
