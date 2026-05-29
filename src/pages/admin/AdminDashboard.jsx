@@ -12,6 +12,7 @@ import QuoteConversionFunnel from '@/components/admin/dashboard/QuoteConversionF
 import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
 import AICopilot from '@/components/admin/dashboard/AICopilot';
 import FollowUpReminders from '@/components/admin/dashboard/FollowUpReminders';
+import TodaysAppointmentsWidget from '@/components/appointments/TodaysAppointmentsWidget';
 import {
   Plus, FileText, Receipt, Upload, Send, MessageSquare,
   Mail, CheckSquare, FolderKanban, RefreshCw, Zap, Clock,
@@ -213,6 +214,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Activity Feed */}
+        {/* Today's Appointments */}
+        <TodaysAppointmentsWidget />
+
         <ActivityFeed activity={activity} loading={loading} />
 
         <div className="text-center pb-4">

@@ -76,7 +76,8 @@ const NAV_GROUPS = [
     key: 'appointments',
     label: 'Appointments',
     items: [
-      { label: 'Booking Settings', path: '/admin/booking-settings', icon: CalendarDays },
+      { label: 'Appointments', path: '/admin/appointments', icon: CalendarDays },
+      { label: 'Booking Settings', path: '/admin/booking-settings', icon: Settings },
     ],
   },
   {

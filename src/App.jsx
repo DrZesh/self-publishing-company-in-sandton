@@ -218,6 +218,7 @@ const RevenueForecast = lazy(() => import('./pages/admin/RevenueForecast'));
 const WalkInCheckin = lazy(() => import('./pages/WalkInCheckin'));
 const AdminBookLibrary = lazy(() => import('./pages/admin/AdminBookLibrary'));
 const AdminBookingSettings = lazy(() => import('./pages/admin/AdminBookingSettings'));
+const AdminAppointments = lazy(() => import('./pages/admin/AdminAppointments'));
 const BookAppointment = lazy(() => import('./pages/BookAppointment'));
 const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
 const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
@@ -663,6 +664,7 @@ const AuthenticatedApp = () => {
       <Route path="/walk-in" element={<WalkInCheckin />} />
       <Route path="/admin/books" element={<ProtectedAdminRoute><AdminBookLibrary /></ProtectedAdminRoute>} />
       <Route path="/admin/booking-settings" element={<ProtectedAdminRoute><AdminBookingSettings /></ProtectedAdminRoute>} />
+      <Route path="/admin/appointments" element={<ProtectedAdminRoute><AdminAppointments /></ProtectedAdminRoute>} />
       <Route path="/admin/authors" element={<ProtectedAdminRoute><AdminAuthors /></ProtectedAdminRoute>} />
       <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
       <Route path="/portal/:token" element={<ClientPortal />} />
