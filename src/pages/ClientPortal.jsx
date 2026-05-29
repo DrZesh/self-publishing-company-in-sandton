@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { BookOpen, FileText, CreditCard, FolderOpen, ChevronRight, Download, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { BookOpen, FileText, CreditCard, FolderOpen, ChevronRight, Download, CheckCircle, Clock, AlertTriangle, PenLine } from 'lucide-react';
+import ContractProgressTracker from '@/components/portal/ContractProgressTracker';
 
 const STATUS_COLORS = {
   'Draft': 'bg-gray-100 text-gray-600',
@@ -27,6 +28,7 @@ export default function ClientPortal() {
   const [invoices, setInvoices] = useState([]);
   const [projects, setProjects] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -52,12 +54,13 @@ export default function ClientPortal() {
     const cid = acc.contact_id;
     const allowed = acc.allowed_sections || [];
 
-    const [contactData, quotesData, invoicesData, projectsData, docsData] = await Promise.all([
+    const [contactData, quotesData, invoicesData, projectsData, docsData, contractsData] = await Promise.all([
       base44.entities.Contact.filter({ id: cid }).then(r => r[0]),
       allowed.includes('quotes') ? base44.entities.Quote.filter({ contact_id: cid }) : Promise.resolve([]),
       allowed.includes('invoices') ? base44.entities.Invoice.filter({ contact_id: cid }) : Promise.resolve([]),
       allowed.includes('projects') ? base44.entities.Project.filter({ contact_id: cid }) : Promise.resolve([]),
       allowed.includes('documents') ? base44.entities.Document.filter({ contact_id: cid }) : Promise.resolve([]),
+      base44.entities.Contract.filter({ contact_id: cid }),
     ]);
 
     setContact(contactData);
@@ -65,6 +68,7 @@ export default function ClientPortal() {
     setInvoices(invoicesData);
     setProjects(projectsData);
     setDocuments(docsData.filter(d => !['Internal Admin', 'Printing Spec'].includes(d.category)));
+    setContracts(contractsData.filter(c => !['Draft', 'Cancelled', 'Archived'].includes(c.status)));
     setLoading(false);
   };
 
@@ -109,6 +113,7 @@ export default function ClientPortal() {
     allowed.includes('invoices') && { key: 'invoices', label: `Invoices (${invoices.length})`, icon: CreditCard },
     allowed.includes('projects') && { key: 'projects', label: `Projects (${projects.length})`, icon: CheckCircle },
     allowed.includes('documents') && { key: 'documents', label: `Documents (${documents.length})`, icon: FolderOpen },
+    contracts.length > 0 && { key: 'contracts', label: `Contracts (${contracts.length})`, icon: PenLine, urgent: contracts.some(c => ['Sent for Signature','Opened','Viewed','Signing Started','Resent'].includes(c.status)) },
   ].filter(Boolean);
 
   return (
@@ -351,6 +356,17 @@ export default function ClientPortal() {
                   </div>
                 );
               })}
+          </div>
+        )}
+
+        {/* Contracts */}
+        {activeTab === 'contracts' && (
+          <div className="space-y-4">
+            {contracts.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-400">No contracts yet</div>
+            ) : contracts.map(c => (
+              <ContractProgressTracker key={c.id} contract={c} />
+            ))}
           </div>
         )}
 
