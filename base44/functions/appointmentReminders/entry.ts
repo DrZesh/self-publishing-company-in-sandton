@@ -44,26 +44,34 @@ function reminderEmail(appt, label) {
   const modeLabel = appt.mode === 'zoom'
     ? 'Zoom (link was emailed to you at confirmation)'
     : 'On-site — Creative Books SA, Johannesburg';
-  return `
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
-      <div style="background:#0a0806;padding:24px 32px;text-align:center;">
-        <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" style="height:40px;" />
-      </div>
-      <div style="padding:32px;">
-        <h2 style="color:#0a0806;font-size:20px;margin-bottom:4px;">Reminder: Your appointment is ${label}! ⏰</h2>
-        <p style="color:#666;margin-bottom:20px;">Hi ${appt.client_name}, just a quick reminder about your upcoming consultation.</p>
-        <div style="background:#f8f5f0;border-left:4px solid #B87333;padding:16px 20px;border-radius:4px;margin-bottom:20px;">
-          <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${appt.service_name}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ${formatDate(appt.date)}</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ${formatTime(appt.start_time)} SAST</p>
-          <p style="margin:4px 0;font-size:14px;"><strong>Format:</strong> ${modeLabel}</p>
-        </div>
-        <p style="font-size:13px;color:#999;">Need to cancel? Call us on 084 230 5393 or reply to this email.</p>
-      </div>
-      <div style="background:#f8f5f0;padding:16px 32px;text-align:center;font-size:12px;color:#999;">
-        Creative Books SA · Johannesburg · 084 230 5393
-      </div>
-    </div>`;
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head>' +
+    '<body style="margin:0;padding:0;background:#F5F5F5;font-family:Helvetica,Arial,sans-serif;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">' +
+    '<tr><td align="center" style="padding:24px 16px;">' +
+    '<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">' +
+    '<tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>' +
+    '<tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>' +
+    '<tr><td style="padding:0 32px 32px;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '<div style="padding:24px 0;">' +
+    '<h1 style="font-family:Helvetica,Arial,sans-serif;font-size:24px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 6px 0;">Appointment Reminder ⏰</h1>' +
+    '<p style="font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 24px 0;">Your appointment is <strong>' + label + '</strong></p>' +
+    '<p style="font-family:Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;color:#B87333;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 10px 0;">Appointment Details</p>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E0D5;">' +
+    '<tr><td style="background:#FAF5EE;padding:0;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0">' +
+    '<tr><td style="padding:10px 14px;font-size:14px;font-weight:600;color:#2C2C2C;width:38%;border-bottom:1px solid #E5E0D5;">Name</td><td style="padding:10px 14px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + appt.client_name + '</td></tr>' +
+    '<tr><td style="padding:10px 14px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Service</td><td style="padding:10px 14px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + appt.service_name + '</td></tr>' +
+    '<tr><td style="padding:10px 14px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Date</td><td style="padding:10px 14px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatDate(appt.date) + '</td></tr>' +
+    '<tr><td style="padding:10px 14px;font-size:14px;font-weight:600;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">Time</td><td style="padding:10px 14px;font-size:14px;color:#2C2C2C;border-bottom:1px solid #E5E0D5;">' + formatTime(appt.start_time) + ' SAST</td></tr>' +
+    '<tr><td style="padding:10px 14px;font-size:14px;font-weight:600;color:#2C2C2C;">Format</td><td style="padding:10px 14px;font-size:14px;color:#2C2C2C;">' + modeLabel + '</td></tr>' +
+    '</table></td></tr></table>' +
+    '<p style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#6B6B6B;margin:20px 0 0 0;text-align:center;">Need to cancel? Call us on <a href="tel:0842305393" style="color:#B87333;">084 230 5393</a> or reply to this email.</p>' +
+    '</div>' +
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr><td height="1" style="background:#E5E0D5;font-size:0;">&nbsp;</td></tr></table>' +
+    '</td></tr>' +
+    '<tr><td align="center" style="padding:16px 32px 24px;font-size:12px;color:#AAAAAA;">Creative Books SA · Prism Office Park, Fourways · 084 230 5393</td></tr>' +
+    '</table></td></tr></table></body></html>';
 }
 
 Deno.serve(async (req) => {

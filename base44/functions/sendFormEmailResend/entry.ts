@@ -15,7 +15,7 @@ const DIVIDER_COLOR = '#E5E0D5';
 const LOGO_URL = 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png';
 
 function gradientBar() {
-  return `<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td height="8" style="background:linear-gradient(90deg,#8B5E3C,#B87333,#D4A574,#B87333,#8B5E3C);font-size:0;line-height:0;">&nbsp;</td></tr></table>`;
+  return `<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr></table>`;
 }
 
 function logoRow() {

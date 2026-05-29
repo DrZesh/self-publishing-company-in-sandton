@@ -90,7 +90,7 @@ function baseEmail(innerContent) {
     '<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F5;">' +
     '<tr><td align="center" style="padding:24px 16px;">' +
     '<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">' +
-    '<tr><td height="8" style="background:linear-gradient(90deg,#8B5E3C,#B87333,#D4A574,#B87333,#8B5E3C);font-size:0;line-height:0;">&nbsp;</td></tr>' +
+    '<tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>' +
     '<tr><td align="center" style="padding:32px 0 24px;">' +
     '<img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="160" style="max-width:160px;height:auto;display:block;" />' +
     '</td></tr>' +

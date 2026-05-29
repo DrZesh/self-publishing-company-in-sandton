@@ -295,13 +295,8 @@ Deno.serve(async (req) => {
     <tr>
       <td align="center">
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 640px; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
-          <!-- Hero Header -->
-          <tr>
-            <td style="background: linear-gradient(135deg, #1A1208 0%, #2C1E0F 100%); padding: 48px 40px; text-align: center;">
-              <h1 style="margin: 0; color: #B87333; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Creative Books SA</h1>
-              <p style="margin: 12px 0 0; color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 400;">Professional Publishing Services</p>
-            </td>
-          </tr>
+          <tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
           
           <!-- Content -->
           <tr>
@@ -437,10 +432,8 @@ Deno.serve(async (req) => {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 20px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-        <tr><td style="background:linear-gradient(135deg,#1A1208 0%,#2C1E0F 100%);padding:48px 40px;text-align:center;">
-          <h1 style="margin:0;color:#B87333;font-size:28px;font-weight:700;">Creative Books SA</h1>
-          <p style="margin:12px 0 0;color:rgba(255,255,255,0.5);font-size:14px;">Professional Publishing Services</p>
-        </td></tr>
+        <tr><td height="10" style="background:linear-gradient(90deg,#e74c3c,#e67e22,#f1c40f,#2ecc71,#3498db,#9b59b6);font-size:0;line-height:0;">&nbsp;</td></tr>
+        <tr><td align="center" style="padding:28px 0 16px;"><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" width="150" style="max-width:150px;height:auto;display:block;" /></td></tr>
         <tr><td style="padding:48px 40px;">
           <div style="text-align:center;margin-bottom:32px;">
             <div style="width:64px;height:64px;background:#10b981;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
