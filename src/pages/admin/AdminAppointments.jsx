@@ -230,20 +230,26 @@ export default function AdminAppointments() {
   const upcoming = appointments.filter(a => a.status === 'approved' && a.date >= today);
   const allAppts = appointments;
 
-  function handleApprove(appt) {
-    updateAppt.mutate({ id: appt.id, data: { status: 'approved', approved_at: new Date().toISOString() } });
-    toast.success(`Approved — ${appt.client_name}`);
+  async function handleApprove(appt) {
+    try {
+      await base44.functions.invoke('appointmentActions', { action: 'approve', appointmentId: appt.id });
+      qc.invalidateQueries({ queryKey: ['appointments'] });
+      toast.success(`✅ Approved & confirmation email sent to ${appt.client_email}`);
+    } catch { toast.error('Failed to approve'); }
   }
-  function handleDecline(appt, reason) {
-    updateAppt.mutate({ id: appt.id, data: { status: 'declined', decline_reason: reason || '' } });
-    toast.success('Appointment declined');
+  async function handleDecline(appt, reason) {
+    try {
+      await base44.functions.invoke('appointmentActions', { action: 'decline', appointmentId: appt.id, declineReason: reason });
+      qc.invalidateQueries({ queryKey: ['appointments'] });
+      toast.success('Declined — client notified by email');
+    } catch { toast.error('Failed to decline'); }
   }
-  function handlePropose(appt, date, time) {
-    const [h, m] = time.split(':').map(Number);
-    const endMins = h * 60 + m + (appt.service_duration_minutes || 30);
-    const endTime = `${String(Math.floor(endMins / 60)).padStart(2, '0')}:${String(endMins % 60).padStart(2, '0')}`;
-    updateAppt.mutate({ id: appt.id, data: { proposed_date: date, proposed_start_time: time, proposed_end_time: endTime } });
-    toast.success('New time proposed — email will notify client (Phase 4)');
+  async function handlePropose(appt, date, time) {
+    try {
+      await base44.functions.invoke('appointmentActions', { action: 'propose', appointmentId: appt.id, proposeDate: date, proposeTime: time });
+      qc.invalidateQueries({ queryKey: ['appointments'] });
+      toast.success('Proposal sent — client notified by email');
+    } catch { toast.error('Failed to send proposal'); }
   }
   function handleComplete(appt) {
     updateAppt.mutate({ id: appt.id, data: { status: 'completed' } });
