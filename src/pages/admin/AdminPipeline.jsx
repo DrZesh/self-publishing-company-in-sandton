@@ -4,6 +4,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
 import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import NewDealModal from '@/components/pipeline/NewDealModal';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
 const STAGES = [
@@ -515,6 +516,7 @@ export default function AdminPipeline() {
   const [bulkEdits, setBulkEdits] = useState({});
   const [convertContact, setConvertContact] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [newDealOpen, setNewDealOpen] = useState(false);
 
   const load = useCallback(async () => {
     const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
@@ -665,11 +667,10 @@ export default function AdminPipeline() {
               </button>
 
               {/* New deal */}
-              <Link to="/admin/contacts">
-                <button style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Plus style={{ width: 14, height: 14 }} /> New deal
-                </button>
-              </Link>
+              <button onClick={() => setNewDealOpen(true)}
+                style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Plus style={{ width: 14, height: 14 }} /> New deal
+              </button>
             </div>
           </div>
 
@@ -751,6 +752,14 @@ export default function AdminPipeline() {
             </div>
           )}
         </div>
+
+        {/* New deal modal */}
+        {newDealOpen && (
+          <NewDealModal
+            onClose={() => setNewDealOpen(false)}
+            onCreated={() => { load(); }}
+          />
+        )}
 
         {/* Deal detail panel */}
         {selectedContact && (
