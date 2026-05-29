@@ -183,6 +183,37 @@ export default function ContractSign() {
         } catch (pdfErr) {
           console.warn('Signed PDF generation skipped:', pdfErr.message);
         }
+
+        // Email the signed PDF to the client
+        if (finalPdfUrl && finalPdfUrl.startsWith('http')) {
+          try {
+            await base44.integrations.Core.SendEmail({
+              to: signerEmail,
+              from_name: 'Creative Books SA',
+              subject: `Your Signed Contract — ${contract?.title || 'Contract'}`,
+              body: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+  <div style="background:#B87333;padding:20px 30px;">
+    <h2 style="color:#fff;margin:0;font-size:20px;">Creative Books SA</h2>
+    <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">Your Signed Contract is Ready</p>
+  </div>
+  <div style="padding:30px;background:#fff;">
+    <p style="color:#333;">Dear <strong>${signerName}</strong>,</p>
+    <p style="color:#555;">Thank you for signing your contract. Your fully executed document is now ready to download.</p>
+    <div style="text-align:center;margin:30px 0;">
+      <a href="${finalPdfUrl}" style="background:#B87333;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;display:inline-block;">⬇ Download Signed Contract (PDF)</a>
+    </div>
+    <p style="color:#555;">Contract: <strong>${contract?.title || ''}</strong></p>
+    <p style="color:#888;font-size:12px;">This document has been electronically signed and is legally binding under the Electronic Communications and Transactions Act, 2002 (South Africa).</p>
+    <hr style="border:none;border-top:1px solid #eee;margin:20px 0;" />
+    <p style="color:#aaa;font-size:11px;">Creative Books SA &middot; Prism Office Park, Fourways &middot; info@creativebooks.co.za &middot; 084 230 5393</p>
+  </div>
+</div>`,
+            });
+          } catch (emailErr) {
+            console.warn('Follow-up email skipped:', emailErr.message);
+          }
+        }
+
         setSignedData({
           signature_data_url: dataUrl,
           contract_file_url: finalPdfUrl,
