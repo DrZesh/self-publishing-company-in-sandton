@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { X, Edit2, AlertTriangle, Lock, Users, Clock, Plus } from 'lucide-react';
+import { X, Edit2, AlertTriangle, Lock, Users, Clock, Plus, Zap, Send, CheckCircle, XCircle, Pause } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 import PrintChecklist from './PrintChecklist';
 import ProjectQRCode from '@/components/admin/ProjectQRCode';
@@ -46,6 +46,11 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
     enabled: showEdit,
   });
 
+  const { data: msgLogs = [] } = useQuery({
+    queryKey: ['msg-logs-project', project.id],
+    queryFn: () => base44.entities.MessageLog.filter({ project_id: project.id }),
+  });
+
   const { data: delays = [] } = useQuery({
     queryKey: ['client-delays', project.id],
     queryFn: () => base44.entities.ClientDelay.filter({ project_id: project.id }),
@@ -65,6 +70,11 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
     setUpdatingStage(true);
     await base44.entities.Project.update(project.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
     setUpdatingStage(false);
+    onUpdated();
+  };
+
+  const handleAutomationToggle = async (field, val) => {
+    await base44.entities.Project.update(project.id, { [field]: val });
     onUpdated();
   };
 
@@ -313,6 +323,66 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
                 </div>
               )}
             </div>
+
+            {/* Automation Updates */}
+            <div className="border border-gray-100 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-[#B87333]" /> Automated Updates
+                </h3>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <div
+                    onClick={() => handleAutomationToggle('automation_enabled', !project.automation_enabled)}
+                    className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${project.automation_enabled ? 'bg-[#B87333]' : 'bg-gray-200'}`}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${project.automation_enabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                  </div>
+                  <span className="text-xs text-gray-600">{project.automation_enabled ? 'Enabled' : 'Disabled'}</span>
+                </label>
+              </div>
+              {project.automation_enabled && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500 flex items-center gap-1"><Pause className="w-3 h-3" /> Pause updates</span>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <div
+                        onClick={() => handleAutomationToggle('updates_paused', !project.updates_paused)}
+                        className={`w-8 h-4 rounded-full transition-colors relative cursor-pointer ${project.updates_paused ? 'bg-amber-400' : 'bg-gray-200'}`}
+                      >
+                        <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-transform ${project.updates_paused ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                      </div>
+                      <span className="text-xs text-gray-500">{project.updates_paused ? 'Paused' : 'Running'}</span>
+                    </label>
+                  </div>
+                  {project.last_update_sent_at && (
+                    <p className="text-xs text-gray-400">Last sent: {new Date(project.last_update_sent_at).toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Message History */}
+            {msgLogs.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
+                  <Send className="w-4 h-4 text-gray-400" /> Message History
+                  <span className="text-xs font-normal text-gray-400">({msgLogs.length})</span>
+                </h3>
+                <div className="space-y-1.5">
+                  {msgLogs.slice(0, 8).map(log => (
+                    <div key={log.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                      {log.success
+                        ? <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                        : <XCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />}
+                      <span className="text-xs text-gray-700 flex-1 truncate">{log.template_used || log.subject}</span>
+                      <span className="text-[10px] text-gray-400 flex-shrink-0">
+                        {log.sent_at ? new Date(log.sent_at).toLocaleDateString('en-ZA') : ''}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Notes */}
             {project.notes && (
