@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User } from 'lucide-react';
+import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User, MessageSquare, History } from 'lucide-react';
 import NewDealModal from '@/components/pipeline/NewDealModal';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
@@ -214,6 +214,13 @@ const STAGE_OPTS = [
   { label: 'Lost',      pipeline_stage: 'Lost' },
 ];
 
+const EMAIL_TEMPLATES = [
+  { id: 'intro', subject: 'Welcome to Creative Books SA', body: 'Dear {{client_name}},\n\nThank you for your interest in publishing your book, {{book_title}}. We would be delighted to help you bring your manuscript to life.\n\nOur team specializes in full-service publishing including editing, cover design, typesetting, and printing. Would you be available for a quick call this week to discuss your project?\n\nWarm regards,\nCreative Books SA\n084 230 5393' },
+  { id: 'quote_followup', subject: 'Following up on your quote', body: 'Dear {{client_name}},\n\nI hope this email finds you well. I wanted to follow up on the quote we sent for {{book_title}}.\n\nDo you have any questions about the package or our services? We are here to help and can adjust the package to better fit your needs if required.\n\nLooking forward to hearing from you.\n\nKind regards,\nCreative Books SA' },
+  { id: 'quote_reminder', subject: 'Quote reminder - {{book_title}}', body: 'Dear {{client_name}},\n\nThis is a friendly reminder that your quote ({{quote_number}}) for {{book_title}} is still available.\n\nThe quote is valid for 30 days from the date of issue. If you have any questions or would like to discuss the package further, please do not hesitate to contact us.\n\nBest regards,\nCreative Books SA' },
+  { id: 'high_value', subject: 'Premium publishing package for {{book_title}}', body: 'Dear {{client_name}},\n\nThank you for considering Creative Books SA for your publishing project, {{book_title}}.\n\nGiven the scope of your project, I believe our premium package would be the perfect fit. It includes:\n- Professional editing\n- Custom cover design\n- Typesetting and layout\n- Print-ready files\n- ISBN registration\n- Marketing support\n\nWould you be available for a discovery call this week?\n\nWarm regards,\nCreative Books SA' },
+];
+
 function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages }) {
   const stage = mapStage(contact);
   const days = getDaysInStage(contact);
@@ -228,6 +235,13 @@ function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages
 
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [emailTab, setEmailTab] = useState('compose');
+  const [emailForm, setEmailForm] = useState({ to: contact.email || '', subject: '', body: '' });
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [sendingWA, setSendingWA] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
+  const [activityLogs, setActivityLogs] = useState([]);
   const [ef, setEfState] = useState({
     pipeline_value: contact.pipeline_value || '',
     probability: contact.probability ?? '',
@@ -237,6 +251,89 @@ function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages
     pipeline_owner: contact.pipeline_owner || '',
   });
   const setEF = (k, v) => setEfState(f => ({ ...f, [k]: v }));
+
+  const resolveTemplateVars = (text) => {
+    if (!text) return '';
+    return text
+      .replace(/{{client_name}}/g, contact.full_name || '')
+      .replace(/{{book_title}}/g, contact.book_title || '[Book Title]')
+      .replace(/{{quote_number}}/g, 'Quote #' + (contact.id || '123').slice(-4));
+  };
+
+  const handleSelectTemplate = (template) => {
+    setSelectedTemplate(template.id);
+    setEmailForm({
+      to: contact.email || '',
+      subject: resolveTemplateVars(template.subject),
+      body: resolveTemplateVars(template.body),
+    });
+  };
+
+  const handleSendEmail = async () => {
+    if (!emailForm.to || !emailForm.subject || !emailForm.body) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    setSendingEmail(true);
+    try {
+      const res = await base44.functions.invoke('sendContactEmail', {
+        action: 'send',
+        to: emailForm.to,
+        subject: emailForm.subject,
+        body_html: `<p>${emailForm.body.replace(/\n/g, '<br/>')}</p>`,
+      });
+      if (res.data?.success) {
+        toast.success('Email sent successfully!');
+        setEmailForm({ to: '', subject: '', body: '' });
+        setSelectedTemplate(null);
+        setEmailTab('compose');
+      } else {
+        toast.error(res.data?.error || 'Failed to send email');
+      }
+    } catch (e) {
+      toast.error('Failed to send: ' + (e?.message || 'Unknown error'));
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const handleSendWhatsApp = async () => {
+    const number = contact.whatsapp_number || contact.phone;
+    if (!number) {
+      toast.error('No WhatsApp number found');
+      return;
+    }
+    const message = `Hi ${contact.full_name || 'there'}, this is Creative Books SA. Regarding your publishing project, "${contact.book_title || 'your book'}" - how are you doing? Would you like to chat about next steps?`;
+    setSendingWA(true);
+    try {
+      const res = await base44.functions.invoke('sendWhatsAppNotification', {
+        to_number: number,
+        message: message,
+        contact_id: contact.id,
+        type: 'Pipeline Follow-up',
+      });
+      if (res.data?.success) {
+        toast.success('WhatsApp sent!');
+      } else {
+        toast.error(res.data?.error || 'Failed to send');
+      }
+    } catch (e) {
+      toast.error('Failed to send: ' + (e?.message || 'Unknown error'));
+    } finally {
+      setSendingWA(false);
+    }
+  };
+
+  const loadActivity = async () => {
+    try {
+      const res = await base44.functions.invoke('getSubmissionDetail', { submission_id: contact.id });
+      if (res.data?.activities) {
+        setActivityLogs(res.data.activities);
+      }
+    } catch (e) {
+      console.error('Failed to load activity:', e);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -414,7 +511,96 @@ function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages
             </>
           )}
 
+          {/* Email Composer */}
+          <div style={{ marginTop: 16, borderTop: '1px solid #e7e8f0', paddingTop: 16 }}>
+            <div style={{ display: 'flex', gap: 1, marginBottom: 12 }}>
+              <button onClick={() => setEmailTab('compose')}
+                style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, borderBottom: emailTab === 'compose' ? '2px solid #4f46e5' : '2px solid transparent', background: 'none', border: 'none', cursor: 'pointer', color: emailTab === 'compose' ? '#4f46e5' : '#64748b' }}>
+                Compose
+              </button>
+              <button onClick={() => setEmailTab('templates')}
+                style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, borderBottom: emailTab === 'templates' ? '2px solid #4f46e5' : '2px solid transparent', background: 'none', border: 'none', cursor: 'pointer', color: emailTab === 'templates' ? '#4f46e5' : '#64748b' }}>
+                Templates
+              </button>
+            </div>
+
+            {emailTab === 'templates' && (
+              <div style={{ marginBottom: 12 }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Quick Templates</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {EMAIL_TEMPLATES.map(t => (
+                    <button key={t.id} onClick={() => handleSelectTemplate(t)}
+                      style={{ padding: '8px 10px', background: selectedTemplate === t.id ? '#ede9fe' : '#f8fafc', border: selectedTemplate === t.id ? '1px solid #4f46e5' : '1px solid #e7e8f0', borderRadius: 8, textAlign: 'left', cursor: 'pointer' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, color: '#374151', margin: '0 0 2px' }}>{t.subject.split(' — ')[0]}</p>
+                      <p style={{ fontSize: 9, color: '#64748b', margin: 0 }}>{t.body.slice(0, 60)}...</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {emailTab === 'compose' && (
+              <div style={{ background: '#f8fafc', borderRadius: 12, padding: 12 }}>
+                <div style={{ marginBottom: 8 }}>
+                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>To</label>
+                  <input value={emailForm.to} onChange={e => setEmailForm(f => ({ ...f, to: e.target.value }))}
+                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '7px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
+                    placeholder="recipient@email.com" />
+                </div>
+                <div style={{ marginBottom: 8 }}>
+                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Subject</label>
+                  <input value={emailForm.subject} onChange={e => setEmailForm(f => ({ ...f, subject: e.target.value }))}
+                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '7px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
+                    placeholder="Email subject..." />
+                </div>
+                <div style={{ marginBottom: 10 }}>
+                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Message</label>
+                  <textarea value={emailForm.body} onChange={e => setEmailForm(f => ({ ...f, body: e.target.value }))}
+                    rows={6} style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '8px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'none', fontFamily: 'inherit' }}
+                    placeholder="Type your message..." />
+                </div>
+                <button onClick={handleSendEmail} disabled={sendingEmail || !emailForm.to || !emailForm.subject || !emailForm.body}
+                  style={{ width: '100%', padding: '10px 0', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: (sendingEmail || !emailForm.to || !emailForm.subject || !emailForm.body) ? 0.6 : 1 }}>
+                  <Mail style={{ width: 14, height: 14 }} />
+                  {sendingEmail ? 'Sending...' : 'Send Email'}
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* Actions */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <button onClick={handleSendWhatsApp} disabled={sendingWA || !(contact.whatsapp_number || contact.phone)}
+              style={{ padding: '10px 0', background: '#25D366', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: (sendingWA || !(contact.whatsapp_number || contact.phone)) ? 0.6 : 1 }}>
+              <MessageSquare style={{ width: 14, height: 14 }} />
+              {sendingWA ? 'Sending...' : 'WhatsApp'}
+            </button>
+            <button onClick={() => { setShowActivity(!showActivity); if (!showActivity) loadActivity(); }}
+              style={{ padding: '10px 0', background: '#f8fafc', color: '#374151', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <History style={{ width: 14, height: 14 }} />
+              Activity
+            </button>
+          </div>
+
+          {showActivity && (
+            <div style={{ background: '#f8fafc', borderRadius: 12, padding: 12, maxHeight: 200, overflowY: 'auto' }}>
+              <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Recent Activity</p>
+              {activityLogs.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {activityLogs.slice(0, 5).map((log, i) => (
+                    <div key={i} style={{ fontSize: 11, color: '#64748b', padding: '6px 8px', background: '#fff', borderRadius: 6 }}>
+                      <span style={{ fontWeight: 600, color: '#374151' }}>{log.type || 'Activity'}</span>
+                      <span style={{ marginLeft: 6 }}>{log.description || ''}</span>
+                      <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>{log.created_date ? new Date(log.created_date).toLocaleString('en-ZA') : ''}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', padding: '12px 0' }}>No recent activity</p>
+              )}
+            </div>
+          )}
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
             <a href={`/admin/contacts/detail?id=${contact.id}`}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#1e1e2e', color: '#fff', borderRadius: 9, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
@@ -425,12 +611,6 @@ function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 <ArrowRight style={{ width: 14, height: 14 }} /> Convert to Project
               </button>
-            )}
-            {contact.email && (
-              <a href={`mailto:${contact.email}?subject=Regarding your publishing enquiry`}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#f8fafc', color: '#374151', border: '1px solid #e7e8f0', borderRadius: 9, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
-                <Mail style={{ width: 14, height: 14 }} /> Send Email
-              </a>
             )}
           </div>
         </div>
