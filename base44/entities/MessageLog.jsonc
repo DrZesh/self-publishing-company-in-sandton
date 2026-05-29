@@ -1,0 +1,97 @@
+{
+  "name": "MessageLog",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Reference to Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Reference to Project ID"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "whatsapp"
+      ],
+      "default": "email"
+    },
+    "template_used": {
+      "type": "string",
+      "description": "Template name used"
+    },
+    "template_id": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Email address or WhatsApp number"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string",
+      "description": "Full rendered HTML body as sent"
+    },
+    "trigger": {
+      "type": "string",
+      "description": "Automation trigger that caused this send e.g. stage_changed"
+    },
+    "action_taken": {
+      "type": "string",
+      "description": "The action e.g. send_email"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "success": {
+      "type": "boolean",
+      "default": true
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "triggered_by": {
+      "type": "string",
+      "enum": [
+        "automation",
+        "admin"
+      ],
+      "default": "automation"
+    },
+    "dedup_key": {
+      "type": "string",
+      "description": "Unique key \u2014 checked before every send to prevent duplicates"
+    },
+    "automation_rule_id": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string",
+      "description": "resend or builtin"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Denormalized for display and filtering"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Denormalized for display and filtering"
+    },
+    "stage_at_send": {
+      "type": "string",
+      "description": "Project stage at time of send"
+    }
+  },
+  "required": [
+    "client_id",
+    "channel",
+    "recipient",
+    "sent_at",
+    "dedup_key"
+  ]
+}

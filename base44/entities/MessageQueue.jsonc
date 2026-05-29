@@ -1,0 +1,113 @@
+{
+  "name": "MessageQueue",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Reference to Contact ID"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Reference to Project ID"
+    },
+    "automation_rule_id": {
+      "type": "string",
+      "description": "Reference to AutomationRule that created this item"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "whatsapp"
+      ],
+      "default": "email"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "Reference to MessageTemplate ID"
+    },
+    "template_name": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Email address or WhatsApp number"
+    },
+    "rendered_subject": {
+      "type": "string",
+      "description": "Fully rendered subject \u2014 frozen at queue time"
+    },
+    "rendered_body": {
+      "type": "string",
+      "description": "Fully rendered HTML body including branded shell \u2014 frozen at queue time so preview = what sends"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "scheduled",
+        "sending",
+        "sent",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending_approval"
+    },
+    "scheduled_for": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to send (null = send immediately on approval)"
+    },
+    "dedup_key": {
+      "type": "string",
+      "description": "projectId+stage+automationType+date \u2014 prevents duplicate sends"
+    },
+    "triggered_by": {
+      "type": "string",
+      "enum": [
+        "automation",
+        "admin"
+      ],
+      "default": "automation"
+    },
+    "trigger_event": {
+      "type": "string",
+      "description": "The automation trigger that created this item"
+    },
+    "retry_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_error": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Email of admin who approved"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Denormalized for display"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Denormalized for display"
+    }
+  },
+  "required": [
+    "client_id",
+    "channel",
+    "recipient",
+    "rendered_subject",
+    "rendered_body",
+    "dedup_key"
+  ]
+}

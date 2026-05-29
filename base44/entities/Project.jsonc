@@ -264,6 +264,29 @@
     "completed_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "automation_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable Automated Project Updates for this project"
+    },
+    "updates_paused": {
+      "type": "boolean",
+      "default": false,
+      "description": "Temporarily pause automated updates without disabling"
+    },
+    "last_update_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the last automated update was sent \u2014 used by the 2-day check"
+    },
+    "current_stage": {
+      "type": "string",
+      "description": "Mirrors stage field \u2014 used by automation engine for stage-change detection"
+    },
+    "automation_stop_reason": {
+      "type": "string",
+      "description": "Why automation was stopped e.g. completed, do_not_contact, manual"
     }
   },
   "required": [

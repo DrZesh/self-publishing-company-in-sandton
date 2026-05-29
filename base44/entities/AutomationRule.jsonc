@@ -1,0 +1,112 @@
+{
+  "name": "AutomationRule",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable rule name e.g. Send Welcome on Project Created"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "project_created",
+        "project_approved",
+        "stage_changed",
+        "no_update_2_days",
+        "payment_confirmed",
+        "proof_sent",
+        "proof_approved",
+        "client_no_response",
+        "project_completed",
+        "files_received",
+        "files_required"
+      ],
+      "description": "WHEN this event occurs"
+    },
+    "trigger_stage": {
+      "type": "string",
+      "description": "Optional \u2014 only fire when stage_changed to this specific stage"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Filter conditions e.g. {only_if_active: true, skip_if_do_not_contact: true, only_if_automation_enabled: true, require_email_exists: true, skip_if_already_sent: true}",
+      "properties": {
+        "only_if_active": {
+          "type": "boolean"
+        },
+        "skip_if_do_not_contact": {
+          "type": "boolean"
+        },
+        "only_if_automation_enabled": {
+          "type": "boolean"
+        },
+        "require_email_exists": {
+          "type": "boolean"
+        },
+        "skip_if_already_sent": {
+          "type": "boolean"
+        },
+        "skip_if_unsubscribed": {
+          "type": "boolean"
+        },
+        "not_stage": {
+          "type": "string"
+        }
+      }
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "send_email",
+        "send_whatsapp",
+        "notify_admin",
+        "create_task",
+        "update_status",
+        "add_note",
+        "send_reminder",
+        "stop_automation"
+      ],
+      "description": "THEN do this"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "Reference to MessageTemplate ID"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Denormalized template name for display"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, creates a pending_approval queue item instead of sending immediately"
+    },
+    "delay_minutes": {
+      "type": "number",
+      "default": 0,
+      "description": "Minutes to wait after trigger before sending (0 = immediate)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "run_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this rule has fired"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sort_order": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "trigger",
+    "action"
+  ]
+}

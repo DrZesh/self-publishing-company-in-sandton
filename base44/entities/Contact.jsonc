@@ -41,37 +41,29 @@
       "description": "Contact role"
     },
     "street_address": {
-      "type": "string",
-      "description": "Street address"
+      "type": "string"
     },
     "city": {
-      "type": "string",
-      "description": "City"
+      "type": "string"
     },
     "province": {
-      "type": "string",
-      "description": "Province"
+      "type": "string"
     },
     "postal_code": {
-      "type": "string",
-      "description": "Postal code"
+      "type": "string"
     },
     "country": {
       "type": "string",
-      "default": "South Africa",
-      "description": "Country"
+      "default": "South Africa"
     },
     "author_bio": {
-      "type": "string",
-      "description": "Author biography"
+      "type": "string"
     },
     "website_url": {
-      "type": "string",
-      "description": "Website URL"
+      "type": "string"
     },
     "social_links": {
-      "type": "object",
-      "description": "Social media links"
+      "type": "object"
     },
     "how_heard": {
       "type": "string",
@@ -81,15 +73,13 @@
         "social",
         "event",
         "other"
-      ],
-      "description": "How they found us"
+      ]
     },
     "tags": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Contact tags"
+      }
     },
     "lifecycle_stage": {
       "type": "string",
@@ -100,31 +90,25 @@
         "repeat_customer",
         "past_customer"
       ],
-      "default": "lead",
-      "description": "Lifecycle stage"
+      "default": "lead"
     },
     "profile_photo_url": {
-      "type": "string",
-      "description": "Profile photo URL"
+      "type": "string"
     },
     "first_contact_date": {
       "type": "string",
-      "format": "date-time",
-      "description": "First contact date"
+      "format": "date-time"
     },
     "last_contact_date": {
       "type": "string",
-      "format": "date-time",
-      "description": "Last contact date"
+      "format": "date-time"
     },
     "custom_fields": {
-      "type": "object",
-      "description": "Custom fields"
+      "type": "object"
     },
     "description": {
       "type": "string",
-      "maxLength": 1000,
-      "description": "Optional description or notes about this contact"
+      "maxLength": 1000
     },
     "book_title": {
       "type": "string",
@@ -149,25 +133,35 @@
         "Delivered",
         "Lost"
       ],
-      "default": "New Enquiry",
-      "description": "Pipeline stage"
+      "default": "New Enquiry"
     },
     "pipeline_stage_changed_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When pipeline stage last changed"
+      "format": "date-time"
     },
     "pipeline_value": {
-      "type": "number",
-      "description": "Estimated deal value in ZAR"
+      "type": "number"
     },
     "pipeline_owner": {
-      "type": "string",
-      "description": "Owner user email"
+      "type": "string"
     },
     "lost_reason": {
+      "type": "string"
+    },
+    "do_not_contact": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, skip all automated and manual outreach \u2014 legal / admin flag"
+    },
+    "unsubscribed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Client opted out via unsubscribe link \u2014 required for POPIA compliance"
+    },
+    "unsubscribed_at": {
       "type": "string",
-      "description": "Reason for losing the deal (only when stage = Lost)"
+      "format": "date-time",
+      "description": "When the client unsubscribed"
     }
   },
   "required": [
