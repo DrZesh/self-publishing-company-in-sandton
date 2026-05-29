@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
-import { Plus, Search, AlertTriangle, BookOpen, ChevronRight } from 'lucide-react';
+import { Plus, Search, AlertTriangle, BookOpen, ChevronRight, LayoutGrid, List } from 'lucide-react';
+import ProductionBoardView from '@/components/admin/projects/ProductionBoardView';
 import ProjectModal from '@/components/admin/projects/ProjectModal';
 import ProjectDetailPanel from '@/components/admin/projects/ProjectDetailPanel';
 
@@ -56,6 +57,7 @@ export default function AdminProjects() {
   const [stageFilter, setStageFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [viewMode, setViewMode] = useState('list');
 
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ['projects'],
@@ -94,9 +96,19 @@ export default function AdminProjects() {
             <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
             <p className="text-sm text-gray-500 mt-0.5">Full production pipeline for every book project</p>
           </div>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
-            <Plus className="w-4 h-4" /> New Project
-          </Button>
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+              <button onClick={() => setViewMode('list')} className={`px-3 py-1.5 text-sm font-medium flex items-center gap-1.5 transition-colors ${viewMode === 'list' ? 'bg-gray-900 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}>
+                <List className="w-3.5 h-3.5" /> List
+              </button>
+              <button onClick={() => setViewMode('board')} className={`px-3 py-1.5 text-sm font-medium flex items-center gap-1.5 transition-colors ${viewMode === 'board' ? 'bg-gray-900 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}>
+                <LayoutGrid className="w-3.5 h-3.5" /> Board
+              </button>
+            </div>
+            <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
+              <Plus className="w-4 h-4" /> New Project
+            </Button>
+          </div>
         </div>
 
         {/* KPI Cards */}
@@ -126,7 +138,15 @@ export default function AdminProjects() {
           </select>
         </div>
 
-        {/* Projects Table */}
+        {/* Board or List view */}
+        {viewMode === 'board' ? (
+          <ProductionBoardView
+            projects={filtered}
+            contacts={contacts}
+            onSelect={setSelected}
+            onRefresh={() => queryClient.invalidateQueries({ queryKey: ['projects'] })}
+          />
+        ) : (
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-gray-400">Loading projects…</div>
@@ -192,6 +212,7 @@ export default function AdminProjects() {
             </table>
           )}
         </div>
+        )}
       </div>
 
       {showModal && (
