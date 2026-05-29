@@ -220,6 +220,7 @@ const AdminBookLibrary = lazy(() => import('./pages/admin/AdminBookLibrary'));
 const AdminBookingSettings = lazy(() => import('./pages/admin/AdminBookingSettings'));
 const AdminAppointments = lazy(() => import('./pages/admin/AdminAppointments'));
 const BookAppointment = lazy(() => import('./pages/BookAppointment'));
+const AppointmentCancel = lazy(() => import('./pages/AppointmentCancel'));
 const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
 const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
 const ContractSign = lazy(() => import('./pages/ContractSign'));
@@ -478,6 +479,7 @@ const AuthenticatedApp = () => {
         <Route path="/editingguide" element={<ResourcePage resourceKey="editingguide" />} />
         <Route path="/bookmarketingguide" element={<ResourcePage resourceKey="bookmarketingguide" />} />
         <Route path="/book" element={<BookAppointment />} />
+        <Route path="/appointment/cancel/:token" element={<AppointmentCancel />} />
         <Route path="/nda" element={<NDA />} />
         <Route path="/covercalculator" element={<CoverSizeCalculator />} />
         <Route path="/resources/CoverSizeCalculator" element={<CoverSizeCalculator />} />

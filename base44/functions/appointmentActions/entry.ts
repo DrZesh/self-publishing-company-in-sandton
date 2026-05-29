@@ -98,12 +98,16 @@ function baseEmail(body) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    const body = await req.json();
+    const { action, appointmentId, declineReason, proposeDate, proposeTime, cancel_token } = body;
 
-    const { action, appointmentId, declineReason, proposeDate, proposeTime } = await req.json();
+    // Public actions — skip admin auth
+    if (action !== 'cancel_by_client' && action !== 'get_by_cancel_token') {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
 
     const appt = await base44.asServiceRole.entities.Appointment.get(appointmentId);
     if (!appt) return Response.json({ error: 'Appointment not found' }, { status: 404 });
@@ -136,7 +140,7 @@ Deno.serve(async (req) => {
         </div>
         ${appt.service_name?.toLowerCase().includes('prep') || appt.prep_tips ? `
         <p style="font-size:14px;color:#333;"><strong>Preparation tip:</strong> ${appt.prep_tips || 'Please bring any relevant manuscript notes or questions you\'d like to discuss.'}</p>` : ''}
-        <p style="font-size:13px;color:#999;margin-top:24px;">Need to cancel or reschedule? Reply to this email or call us on 084 230 5393.</p>
+        <p style="font-size:13px;color:#999;margin-top:24px;">Need to cancel? <a href="https://creativebooks.co.za/appointment/cancel/${appt.cancel_token}" style="color:#B87333;">Click here to cancel your appointment</a> or call us on 084 230 5393.</p>
       `);
       await sendEmail(appt.client_email, `✅ Appointment Confirmed — ${appt.service_name}`, html);
       await notifyAdmin(`📅 Appointment APPROVED\n${appt.client_name}\n${appt.service_name}\n${formatDate(appt.date)} at ${formatTime(appt.start_time)}`);
@@ -183,6 +187,49 @@ Deno.serve(async (req) => {
       `);
       await sendEmail(appt.client_email, `New time proposed for your ${appt.service_name} appointment`, html);
       await notifyAdmin(`🔄 Appointment PROPOSED new time\n${appt.client_name}\n${formatDate(proposeDate)} at ${formatTime(proposeTime)}`);
+    }
+
+    else if (action === 'get_by_cancel_token') {
+      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
+      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
+      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const a = appts[0];
+      return Response.json({ success: true, appointment: { client_name: a.client_name, service_name: a.service_name, date: a.date, start_time: a.start_time, end_time: a.end_time, mode: a.mode, status: a.status } });
+    }
+
+    else if (action === 'cancel_by_client') {
+      if (!cancel_token) return Response.json({ error: 'Missing token' }, { status: 400 });
+      const appts = await base44.asServiceRole.entities.Appointment.filter({ cancel_token });
+      if (!appts.length) return Response.json({ error: 'Not found' }, { status: 404 });
+      const a = appts[0];
+      if (['cancelled', 'completed', 'no_show'].includes(a.status)) {
+        return Response.json({ error: 'Already ' + a.status }, { status: 400 });
+      }
+      // Remove from Google Calendar
+      if (a.google_event_id) {
+        try {
+          const { accessToken } = await base44.asServiceRole.connectors.getConnection('googlecalendar');
+          await deleteCalendarEvent(a.google_event_id, accessToken);
+        } catch (e) { console.error('GCal delete failed:', e.message); }
+      }
+      await base44.asServiceRole.entities.Appointment.update(a.id, {
+        status: 'cancelled',
+        cancelled_at: new Date().toISOString(),
+      });
+      const endTime = a.end_time || addMinutes(a.start_time, a.service_duration_minutes || 30);
+      const html = baseEmail(`
+        <h2 style="color:#0a0806;font-size:22px;margin-bottom:4px;">Appointment Cancelled</h2>
+        <p style="color:#666;margin-bottom:16px;">Hi ${a.client_name}, your appointment has been successfully cancelled.</p>
+        <div style="background:#f8f5f0;border-left:4px solid #B87333;padding:16px 20px;border-radius:4px;margin-bottom:24px;">
+          <p style="margin:4px 0;font-size:14px;"><strong>Service:</strong> ${a.service_name}</p>
+          <p style="margin:4px 0;font-size:14px;"><strong>Date:</strong> ${formatDate(a.date)}</p>
+          <p style="margin:4px 0;font-size:14px;"><strong>Time:</strong> ${formatTime(a.start_time)} – ${formatTime(endTime)} SAST</p>
+        </div>
+        <p style="font-size:14px;color:#333;">We'd love to reschedule — visit <a href="https://creativebooks.co.za/book" style="color:#B87333;">creativebooks.co.za/book</a> to choose a new time.</p>
+      `);
+      await sendEmail(a.client_email, `Appointment Cancelled — ${a.service_name}`, html);
+      await notifyAdmin(`🚫 Appointment CANCELLED by client\n${a.client_name}\n${a.service_name}\n${formatDate(a.date)} at ${formatTime(a.start_time)}`);
+      return Response.json({ success: true });
     }
 
     else {
