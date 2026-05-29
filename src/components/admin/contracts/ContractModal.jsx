@@ -8,6 +8,7 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
   const [form, setForm] = useState({
     contact_id: contract?.contact_id || '',
     title: contract?.title || '',
+    document_type: contract?.document_type || 'Contract',
     book_title: contract?.book_title || '',
     status: contract?.status || 'Draft',
     expiry_date: contract?.expiry_date || '',
@@ -54,7 +55,7 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-lg font-bold text-gray-900">{contract ? 'Edit Contract' : 'New Contract'}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{contract ? 'Edit Document' : 'New Document'}</h2>
           <button onClick={onClose}><X className="w-5 h-5 text-gray-400" /></button>
         </div>
         <div className="p-6 space-y-4">
@@ -66,13 +67,19 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
             </select>
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Contract Title *</label>
-            <Input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Publishing Agreement — My Book Title" />
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Document Title *</label>
+            <Input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Publishing Agreement — Jane Smith" />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Document Type *</label>
+            <select value={form.document_type} onChange={e => set('document_type', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+              {['Contract','NDA','Publishing Agreement','Book Cover Agreement','Editing Agreement','Printing Agreement','Supplier Agreement','Freelancer Agreement','Payment Agreement','Approval Form','Author Agreement','Internal Document','Legal Document','Other'].map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Book Title</label>
-              <Input value={form.book_title} onChange={e => set('book_title', e.target.value)} placeholder="Book title" />
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client Name</label>
+              <Input value={form.book_title} onChange={e => set('book_title', e.target.value)} placeholder="Client or company name" />
             </div>
             <div>
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Expiry Date</label>
@@ -86,19 +93,17 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
             </select>
           </div>
 
-          {/* Contract File Upload */}
           <div>
-            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Contract File (unsigned)</label>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Document (Unsigned)</label>
             <label className={`flex items-center gap-3 w-full px-4 py-3 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${contractFile ? 'border-blue-400 bg-blue-50/30' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={e => setContractFile(e.target.files[0])} />
               <Upload className="w-5 h-5 text-gray-400" />
-              <span className="text-sm text-gray-500">{contractFile ? contractFile.name : contract?.contract_file_url ? 'Replace contract file' : 'Upload contract PDF'}</span>
+              <span className="text-sm text-gray-500">{contractFile ? contractFile.name : contract?.contract_file_url ? 'Replace document file' : 'Upload document (PDF or Word)'}</span>
             </label>
           </div>
 
-          {/* Signed File Upload */}
           <div>
-            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Signed Contract (optional)</label>
+            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Signed Document (Optional)</label>
             <label className={`flex items-center gap-3 w-full px-4 py-3 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${signedFile ? 'border-green-400 bg-green-50/30' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.png" onChange={e => setSignedFile(e.target.files[0])} />
               <Upload className="w-5 h-5 text-gray-400" />
@@ -115,7 +120,7 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
         <div className="flex gap-3 p-6 border-t">
           <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
           <Button onClick={handleSave} disabled={saving || uploading || !form.contact_id || !form.title} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
-            {(saving || uploading) ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{uploading ? 'Uploading...' : 'Saving...'}</> : contract ? 'Update Contract' : 'Save Contract'}
+            {(saving || uploading) ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{uploading ? 'Uploading...' : 'Saving...'}</> : contract ? 'Update Document' : 'Save Document'}
           </Button>
         </div>
       </div>

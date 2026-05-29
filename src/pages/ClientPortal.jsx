@@ -113,7 +113,7 @@ export default function ClientPortal() {
     allowed.includes('invoices') && { key: 'invoices', label: `Invoices (${invoices.length})`, icon: CreditCard },
     allowed.includes('projects') && { key: 'projects', label: `Projects (${projects.length})`, icon: CheckCircle },
     allowed.includes('documents') && { key: 'documents', label: `Documents (${documents.length})`, icon: FolderOpen },
-    contracts.length > 0 && { key: 'contracts', label: `Contracts (${contracts.length})`, icon: PenLine, urgent: contracts.some(c => ['Sent for Signature','Opened','Viewed','Signing Started','Resent'].includes(c.status)) },
+    contracts.length > 0 && { key: 'contracts', label: `Documents (${contracts.length})`, icon: PenLine, urgent: contracts.some(c => ['Sent for Signature','Opened','Viewed','Signing Started','Resent'].includes(c.status)) },
   ].filter(Boolean);
 
   return (

@@ -38,6 +38,7 @@ function getStepState(step, status) {
 
 export default function ContractProgressTracker({ contract }) {
   const status = contract.status || 'Draft';
+  const docType = contract.document_type || 'Contract';
   const isDeclined = status === 'Declined';
   const isExpired = status === 'Expired';
   const isCancelled = status === 'Cancelled';
@@ -106,7 +107,7 @@ export default function ContractProgressTracker({ contract }) {
                     state === 'done' ? 'text-emerald-600' :
                     state === 'active' ? 'text-[#B87333]' :
                     'text-gray-400'
-                  }`}>{step.label}</p>
+                  }`}>{i === 0 ? `${docType} Prepared` : step.label}</p>
                 </div>
               );
             })}
@@ -119,7 +120,7 @@ export default function ContractProgressTracker({ contract }) {
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 flex items-center gap-2">
           <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
           <div>
-            <p className="text-xs font-semibold text-emerald-800">Contract Fully Executed</p>
+            <p className="text-xs font-semibold text-emerald-800">{docType} Fully Executed</p>
             {contract.signed_at && (
               <p className="text-xs text-emerald-600">
                 Signed on {new Date(contract.signed_at).toLocaleString('en-ZA')}
@@ -137,7 +138,7 @@ export default function ContractProgressTracker({ contract }) {
             href={`/sign/contract/${contract.sign_token}`}
             className="flex items-center gap-1.5 px-4 py-2 bg-[#B87333] hover:bg-[#A06828] text-white rounded-xl text-sm font-semibold transition-colors"
           >
-            <PenLine className="w-3.5 h-3.5" /> Sign Contract Now
+            <PenLine className="w-3.5 h-3.5" /> Sign {docType} Now
           </a>
         )}
 

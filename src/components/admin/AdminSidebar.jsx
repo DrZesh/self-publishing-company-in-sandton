@@ -52,11 +52,11 @@ const NAV_GROUPS = [
   },
   {
     key: 'documents',
-    label: 'Documents',
+    label: 'Document Centre',
     items: [
-      { label: 'Documents', path: '/admin/documents', icon: FolderOpen },
+      { label: 'Doc Library', path: '/admin/documents', icon: FolderOpen },
       { label: 'E-Signatures', path: '/admin/esignatures', icon: FileSignature },
-      { label: 'Contracts', path: '/admin/contracts', icon: FileText },
+      { label: 'Documents', path: '/admin/contracts', icon: FileText },
       { label: 'Document Builder', path: '/admin/document-builder', icon: PenTool },
       { label: 'Clause Library', path: '/admin/clause-library', icon: BookMarked },
     ],

@@ -13,8 +13,30 @@
     "title": {
       "type": "string"
     },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "Contract",
+        "NDA",
+        "Publishing Agreement",
+        "Book Cover Agreement",
+        "Editing Agreement",
+        "Printing Agreement",
+        "Supplier Agreement",
+        "Freelancer Agreement",
+        "Payment Agreement",
+        "Approval Form",
+        "Author Agreement",
+        "Internal Document",
+        "Legal Document",
+        "Other"
+      ],
+      "default": "Contract",
+      "description": "Type of document"
+    },
     "book_title": {
-      "type": "string"
+      "type": "string",
+      "description": "Client or company name / book title"
     },
     "status": {
       "type": "string",
@@ -38,11 +60,11 @@
     },
     "contract_file_url": {
       "type": "string",
-      "description": "Unsigned contract file URL"
+      "description": "Unsigned document file URL"
     },
     "signed_file_url": {
       "type": "string",
-      "description": "Signed contract file URL"
+      "description": "Signed document file URL"
     },
     "sign_token": {
       "type": "string"

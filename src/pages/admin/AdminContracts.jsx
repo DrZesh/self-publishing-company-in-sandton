@@ -108,18 +108,18 @@ export default function AdminContracts() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Contracts</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Track and manage all client contracts</p>
+            <h1 className="text-2xl font-bold text-gray-900">Documents</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Track and manage all client documents and agreements</p>
           </div>
           <Button onClick={() => { setEditingContract(null); setShowModal(true); }} className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
-            <Plus className="w-4 h-4" /> New Contract
+            <Plus className="w-4 h-4" /> New Document
           </Button>
         </div>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl border border-gray-100 p-4">
-            <p className="text-xs text-gray-500">Total Contracts</p>
+            <p className="text-xs text-gray-500">Total Documents</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{contracts.length}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 p-4">
@@ -155,17 +155,17 @@ export default function AdminContracts() {
         {/* Search */}
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input placeholder="Search contracts..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+          <Input placeholder="Search documents..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
 
         {/* Contracts List */}
         <div className="space-y-3">
           {isLoading ? (
-            <div className="p-12 text-center text-gray-400">Loading contracts...</div>
+            <div className="p-12 text-center text-gray-400">Loading documents...</div>
           ) : filtered.length === 0 ? (
             <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
               <FileSignature className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No contracts found</p>
+              <p className="text-gray-500">No documents found</p>
             </div>
           ) : (
             filtered.map(contract => {
@@ -181,7 +181,7 @@ export default function AdminContracts() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="font-semibold text-gray-900">{contract.title}</p>
-                        <p className="text-sm text-gray-500">{contact?.full_name} {contract.book_title && `· ${contract.book_title}`}</p>
+                        <p className="text-sm text-gray-500">{contact?.full_name}{contract.document_type && contract.document_type !== 'Contract' ? ` · ${contract.document_type}` : ''}{contract.book_title ? ` · ${contract.book_title}` : ''}</p>
                       </div>
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ${STATUS_COLORS[contract.status] || 'bg-gray-100 text-gray-600'}`}>
                         {contract.status}
