@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, ChevronDown, Settings2, Eye, EyeOff, Plus, Search, X, ChevronRight } from 'lucide-react';
+import { Sparkles, AlertTriangle, ChevronDown, Settings2, Eye, EyeOff, Plus, Search, X, ChevronRight, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
@@ -27,12 +27,18 @@ function mapStage(contact) {
   return 'Inquiry';
 }
 
-// Compute priority from pipeline_value
-function getPriority(value) {
-  if (value >= 50000) return { label: 'Critical', color: '#e11d48', rank: 4 };
-  if (value >= 20000) return { label: 'High',     color: '#f59e0b', rank: 3 };
-  if (value >= 5000)  return { label: 'Medium',   color: '#0ea5e9', rank: 2 };
-  return                     { label: 'Low',      color: '#94a3b8', rank: 1 };
+// Compute priority — stored deal_priority takes precedence over value-based
+const PRIORITY_MAP = {
+  High:   { label: 'High',     color: '#e11d48', rank: 3 },
+  Medium: { label: 'Medium',   color: '#f59e0b', rank: 2 },
+  Low:    { label: 'Low',      color: '#94a3b8', rank: 1 },
+};
+function getPriority(contact) {
+  if (contact.deal_priority && PRIORITY_MAP[contact.deal_priority]) return PRIORITY_MAP[contact.deal_priority];
+  const value = contact.pipeline_value || 0;
+  if (value >= 50000) return { label: 'High',   color: '#e11d48', rank: 3 };
+  if (value >= 10000) return { label: 'Medium',  color: '#f59e0b', rank: 2 };
+  return                     { label: 'Low',     color: '#94a3b8', rank: 1 };
 }
 
 function getDaysInStage(contact) {
@@ -104,7 +110,7 @@ function DealCard({ contact, isTop, showAI, onMove }) {
   const stage = mapStage(contact);
   const days = getDaysInStage(contact);
   const stalled = days > 7;
-  const pri = getPriority(contact.pipeline_value || 0);
+  const pri = getPriority(contact);
   const ai = showAI ? aiSuggestion(contact, stage) : null;
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -244,6 +250,8 @@ export default function AdminPipeline() {
   const [showTotals, setShowTotals] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accentColor, setAccentColor] = useState('#4f46e5');
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkEdits, setBulkEdits] = useState({});
 
   const load = useCallback(async () => {
     const [me, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
@@ -293,24 +301,38 @@ export default function AdminPipeline() {
   // Sort active stages: priority desc, then value desc
   STAGES.filter(s => s.active).forEach(s => {
     byStage[s.id].sort((a, b) => {
-      const pa = getPriority(a.pipeline_value || 0).rank;
-      const pb = getPriority(b.pipeline_value || 0).rank;
+      const pa = getPriority(a).rank;
+      const pb = getPriority(b).rank;
       if (pb !== pa) return pb - pa;
       return (b.pipeline_value || 0) - (a.pipeline_value || 0);
     });
   });
 
-  // KPIs
+  // KPIs — probability: use stored value (0–100) or stage default
+  function effectiveProb(contact) {
+    const stage = getEffectiveStage(contact);
+    if (contact.probability != null) return contact.probability / 100;
+    return STAGES.find(s => s.id === stage)?.prob ?? 0.20;
+  }
+
   const openContacts = [...byStage['Inquiry'], ...byStage['Quotation']];
   const openPipeline = openContacts.reduce((s, c) => s + (c.pipeline_value || 0), 0);
-  const weightedForecast = openContacts.reduce((s, c) => {
-    const prob = getEffectiveStage(c) === 'Quotation' ? 0.55 : 0.20;
-    return s + (c.pipeline_value || 0) * prob;
-  }, 0);
+  const weightedForecast = openContacts.reduce((s, c) => s + (c.pipeline_value || 0) * effectiveProb(c), 0);
   const wonCount = byStage['Won'].length;
   const lostCount = byStage['Lost'].length + byStage['Ghosted'].length;
   const winRate = (wonCount + lostCount) > 0 ? Math.round((wonCount / (wonCount + lostCount)) * 100) : 0;
-  const stalledCount = openContacts.filter(c => getDaysInStage(c) > 7).length;
+  const stalledDeals = openContacts.filter(c => getDaysInStage(c) > 7);
+  const stalledCount = stalledDeals.length;
+  const stalledValue = stalledDeals.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+
+  const handleBulkSave = async () => {
+    const updates = Object.entries(bulkEdits);
+    await Promise.all(updates.map(([id, vals]) => base44.entities.Contact.update(id, vals)));
+    setBulkEdits({});
+    setBulkOpen(false);
+    load();
+    toast.success(`Updated ${updates.length} deal${updates.length !== 1 ? 's' : ''}`);
+  };
 
   const totalDeals = filtered.length;
 
@@ -374,6 +396,12 @@ export default function AdminPipeline() {
               )}
             </div>
 
+            {/* Bulk edit values */}
+            <button onClick={() => { setBulkEdits({}); setBulkOpen(true); }}
+              style={{ height: 36, padding: '0 14px', border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Edit2 style={{ width: 13, height: 13 }} /> Bulk edit values
+            </button>
+
             {/* New deal */}
             <Link to="/admin/contacts">
               <button style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -395,7 +423,7 @@ export default function AdminPipeline() {
               <KpiTile label="Open Pipeline" value={fmtRand(openPipeline)} sub={`${openContacts.length} active deals`} accent={accentColor} tinted />
               <KpiTile label="Weighted Forecast" value={fmtRand(weightedForecast)} sub="by stage probability" />
               <KpiTile label="Win Rate" value={`${winRate}%`} sub={`${wonCount} won, ${lostCount} lost/ghosted`} />
-              <KpiTile label="Needs Attention" value={stalledCount} sub="deals stalled >7 days" warn={stalledCount > 0} />
+              <KpiTile label="Needs Attention" value={stalledCount > 0 ? fmtRand(stalledValue) : '0'} sub={stalledCount > 0 ? `${stalledCount} deals stalled >7d` : 'No stalled deals'} warn={stalledCount > 0} />
               <FunnelCard inquiry={byStage['Inquiry'].length} quotation={byStage['Quotation'].length} won={byStage['Won'].length} accent={accentColor} />
             </div>
 
@@ -438,6 +466,72 @@ export default function AdminPipeline() {
           </div>
         )}
       </div>
+
+      {/* Bulk edit modal */}
+      {bulkOpen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={() => setBulkOpen(false)}>
+          <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 24px 64px rgba(0,0,0,0.2)', maxWidth: 680, width: '100%', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid #e7e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h2 style={{ fontWeight: 700, fontSize: 18, color: '#1e1e2e', margin: 0 }}>Bulk Edit Deal Values</h2>
+                <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>Set value and probability for open deals — changes save on confirm</p>
+              </div>
+              <button onClick={() => setBulkOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8' }}>✕</button>
+            </div>
+            <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #e7e8f0' }}>
+                    <th style={{ textAlign: 'left', padding: '8px 0', color: '#64748b', fontWeight: 600 }}>Contact</th>
+                    <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Stage</th>
+                    <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Value (R)</th>
+                    <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Prob %</th>
+                    <th style={{ textAlign: 'left', padding: '8px 0', color: '#64748b', fontWeight: 600 }}>Package</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {openContacts.map(c => (
+                    <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '8px 0' }}>
+                        <div style={{ fontWeight: 600, color: '#1e1e2e' }}>{c.full_name}</div>
+                        {c.book_title && <div style={{ fontSize: 11, color: '#94a3b8' }}>{c.book_title}</div>}
+                      </td>
+                      <td style={{ padding: '8px 8px', color: '#64748b' }}>{getEffectiveStage(c)}</td>
+                      <td style={{ padding: '8px 8px' }}>
+                        <input type="number" defaultValue={c.pipeline_value || ''}
+                          onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], pipeline_value: Number(e.target.value) } }))}
+                          placeholder="0" style={{ width: 90, border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 8px', fontSize: 13 }} />
+                      </td>
+                      <td style={{ padding: '8px 8px' }}>
+                        <input type="number" min="0" max="100" defaultValue={c.probability ?? ''}
+                          onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], probability: Number(e.target.value) } }))}
+                          placeholder={String(Math.round((STAGES.find(s => s.id === getEffectiveStage(c))?.prob ?? 0.2) * 100))}
+                          style={{ width: 60, border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 8px', fontSize: 13 }} />
+                      </td>
+                      <td style={{ padding: '8px 0' }}>
+                        <select defaultValue={c.package_type || ''}
+                          onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], package_type: e.target.value } }))}
+                          style={{ border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 6px', fontSize: 12, color: '#374151' }}>
+                          <option value="">—</option>
+                          {['Full publishing','Editing only','Cover + layout','Typesetting','Print run','Other'].map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {openContacts.length === 0 && <p style={{ color: '#94a3b8', textAlign: 'center', padding: 32 }}>No open deals to edit.</p>}
+            </div>
+            <div style={{ padding: '16px 24px', borderTop: '1px solid #e7e8f0', display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+              <button onClick={() => setBulkOpen(false)} style={{ padding: '8px 20px', border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, background: '#fff', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleBulkSave} disabled={Object.keys(bulkEdits).length === 0}
+                style={{ padding: '8px 24px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: Object.keys(bulkEdits).length === 0 ? 0.5 : 1 }}>
+                Save {Object.keys(bulkEdits).length > 0 ? `(${Object.keys(bulkEdits).length})` : ''} changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </AdminLayout>

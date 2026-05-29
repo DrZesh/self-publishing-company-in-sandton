@@ -162,6 +162,53 @@
       "type": "string",
       "format": "date-time",
       "description": "When the client unsubscribed"
+    },
+    "probability": {
+      "type": "number",
+      "description": "Win probability 0\u2013100 \u2014 overrides stage default when set"
+    },
+    "package_type": {
+      "type": "string",
+      "enum": [
+        "Full publishing",
+        "Editing only",
+        "Cover + layout",
+        "Typesetting",
+        "Print run",
+        "Other"
+      ],
+      "description": "Type of publishing package"
+    },
+    "deal_source": {
+      "type": "string",
+      "enum": [
+        "Website form",
+        "Referral",
+        "Social",
+        "Submission",
+        "Lead",
+        "Other"
+      ],
+      "description": "How this deal originated"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected close / decision date"
+    },
+    "deal_priority": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "description": "Deal priority \u2014 overrides the computed priority from value"
+    },
+    "last_activity_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the last activity occurred on this deal"
     }
   },
   "required": [
