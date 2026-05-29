@@ -28,6 +28,11 @@ export default function ContractSign() {
   const [declineReason, setDeclineReason] = useState('');
   const [showDeclineForm, setShowDeclineForm] = useState(false);
   const [viewedDoc, setViewedDoc] = useState(false);
+
+  // Admin-signed context (computed from loaded contract)
+  const adminSignedFirst = !!(contract?.admin_signed_at && contract?.admin_signer_name);
+  const contractFieldValues = contract?.contract_field_values || {};
+  const hasAdminFields = Object.keys(contractFieldValues).filter(k => contractFieldValues[k]).length > 0;
   const canvasRef = useRef(null);
   const isDrawingRef = useRef(false);
 
@@ -382,8 +387,15 @@ export default function ContractSign() {
           <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Contract Signed Successfully!</h2>
-          <p className="text-gray-500 mb-6 text-sm">Thank you, <strong>{signerName}</strong>. Your signature has been recorded and a confirmation has been emailed to <strong>{signerEmail}</strong>.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {adminSignedFirst ? 'Contract Fully Signed!' : 'Contract Signed Successfully!'}
+          </h2>
+          <p className="text-gray-500 mb-6 text-sm">
+            Thank you, <strong>{signerName}</strong>.
+            {adminSignedFirst
+              ? ' Both Creative Books SA and you have signed this contract. A copy has been emailed to you.'
+              : <> Your signature has been recorded and a confirmation has been emailed to <strong>{signerEmail}</strong>.</>}
+          </p>
 
           <div className="space-y-3 mb-6">
             <button onClick={downloadSignedContract} className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B87333] hover:bg-[#A06828] text-white font-semibold rounded-xl transition-colors">
@@ -468,12 +480,41 @@ export default function ContractSign() {
               </div>
             </div>
 
+            {/* Admin-signed banner */}
+            {adminSignedFirst && (
+              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                  <div>
+                    <p className="font-bold text-blue-900 text-sm">Creative Books SA has already signed this contract</p>
+                    <p className="text-xs text-blue-600">{contract.admin_signer_name} · {new Date(contract.admin_signed_at).toLocaleDateString('en-ZA')}</p>
+                  </div>
+                </div>
+                {contract.admin_signature_url && (
+                  <div className="bg-white rounded-lg p-3 mb-3 border border-blue-100">
+                    <p className="text-xs font-semibold text-blue-500 uppercase mb-1">Creative Books SA Signature</p>
+                    <img src={contract.admin_signature_url} alt="Admin signature" className="max-h-10" />
+                  </div>
+                )}
+                {hasAdminFields && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(contractFieldValues).filter(([, v]) => v).map(([key, val]) => (
+                      <div key={key} className="bg-blue-100/50 rounded-lg p-2">
+                        <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide">{key.replace(/_/g, ' ')}</p>
+                        <p className="text-xs text-blue-900 font-medium">{val}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Contract Viewer */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
               {contract?.contract_file_url ? (
                 <div className="relative">
                   <iframe
-                    src={`${contract.contract_file_url}#toolbar=1&navpanes=0`}
+                    src={contract.contract_file_url + '#toolbar=1&navpanes=0'}
                     className="w-full border-0"
                     style={{ height: '65vh' }}
                     title="Contract Document"

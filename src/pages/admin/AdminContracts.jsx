@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, FileSignature, Upload, Send, CheckCircle, Clock, AlertTriangle, RefreshCw, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Search, FileSignature, Upload, Send, CheckCircle, Clock, AlertTriangle, RefreshCw, Eye, PenTool } from 'lucide-react';
 import ContractModal from '@/components/admin/contracts/ContractModal';
 import ContractAuditPanel from '@/components/admin/contracts/ContractAuditPanel';
 import AdobeSignModal from '@/components/admin/contracts/AdobeSignModal';
@@ -12,11 +13,14 @@ import { toast } from 'sonner';
 
 const STATUS_COLORS = {
   'Draft': 'bg-gray-100 text-gray-600',
+  'Admin Fields Completed': 'bg-indigo-100 text-indigo-700',
+  'Admin Signed': 'bg-violet-100 text-violet-700',
   'Sent for Signature': 'bg-blue-100 text-blue-700',
   'Opened': 'bg-yellow-100 text-yellow-700',
   'Viewed': 'bg-yellow-100 text-yellow-800',
   'Signing Started': 'bg-purple-100 text-purple-700',
   'Signed': 'bg-green-100 text-green-700',
+  'Fully Signed': 'bg-emerald-100 text-emerald-700',
   'Declined': 'bg-red-100 text-red-700',
   'Expired': 'bg-red-100 text-red-700',
   'Resent': 'bg-blue-100 text-blue-600',
@@ -191,6 +195,14 @@ export default function AdminContracts() {
                     {contract.notes && <p className="text-xs text-gray-400 mt-1 truncate">{contract.notes}</p>}
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    {['Draft', 'Admin Signed'].includes(contract.status) && (
+                      <Link to={`/admin/contracts/prepare/${contract.id}`}>
+                        <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white gap-1">
+                          <PenTool className="w-3 h-3" />
+                          {contract.status === 'Admin Signed' ? 'Review & Send' : 'Prepare & Sign'}
+                        </Button>
+                      </Link>
+                    )}
                     {contract.contract_file_url && (
                       <a href={contract.contract_file_url} target="_blank" rel="noreferrer">
                         <Button variant="outline" size="sm">View</Button>

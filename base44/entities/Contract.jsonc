@@ -20,11 +20,14 @@
       "type": "string",
       "enum": [
         "Draft",
+        "Admin Fields Completed",
+        "Admin Signed",
         "Sent for Signature",
         "Opened",
         "Viewed",
         "Signing Started",
         "Signed",
+        "Fully Signed",
         "Declined",
         "Expired",
         "Resent",
@@ -42,13 +45,29 @@
       "description": "Signed contract file URL"
     },
     "sign_token": {
-      "type": "string",
-      "description": "Secure token for signing link"
+      "type": "string"
     },
     "sign_token_expires": {
       "type": "string",
-      "format": "date-time",
-      "description": "When signing link expires"
+      "format": "date-time"
+    },
+    "admin_signature_url": {
+      "type": "string",
+      "description": "Admin signature image URL"
+    },
+    "admin_signed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "admin_signer_name": {
+      "type": "string"
+    },
+    "admin_signer_email": {
+      "type": "string"
+    },
+    "contract_field_values": {
+      "type": "object",
+      "description": "Admin pre-filled field values"
     },
     "signer_name": {
       "type": "string"
@@ -63,15 +82,13 @@
       "type": "string"
     },
     "signature_image_url": {
-      "type": "string",
-      "description": "URL to the captured signature image"
+      "type": "string"
     },
     "audit_trail": {
       "type": "array",
       "items": {
         "type": "object"
-      },
-      "description": "Full audit trail events"
+      }
     },
     "sent_at": {
       "type": "string",

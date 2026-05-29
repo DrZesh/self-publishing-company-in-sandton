@@ -212,7 +212,7 @@ Deno.serve(async (req) => {
       return Response.json({ success: true });
     }
 
-    // ── GET CONTRACT BY TOKEN (public) ──────────────────────────────────────
+    // ── GET CONTRACT BY TOKEN (public) ────────────────────────────────────
     if (action === 'get_by_token') {
       const { token, event: trackEvent, ip, user_agent } = body;
       if (!token) return Response.json({ error: 'Token required' }, { status: 400 });
@@ -221,33 +221,26 @@ Deno.serve(async (req) => {
       const contract = all.find(c => c.sign_token === token);
       if (!contract) return Response.json({ error: 'Invalid or expired link' }, { status: 404 });
 
-      // Check expiry
       if (contract.sign_token_expires && new Date(contract.sign_token_expires) < new Date()) {
         await base44.asServiceRole.entities.Contract.update(contract.id, { status: 'Expired' });
         return Response.json({ error: 'This signing link has expired. Please contact Creative Books SA.' }, { status: 410 });
       }
 
-      if (['Signed', 'Declined'].includes(contract.status)) {
+      if (['Signed', 'Fully Signed', 'Declined'].includes(contract.status)) {
         return Response.json({ error: 'This contract has already been ' + contract.status.toLowerCase() + '.' }, { status: 409 });
       }
 
-      // Log open/view events
       if (trackEvent) {
         const updates = { audit_trail: addAuditEvent(contract.audit_trail, trackEvent, { ip, user_agent }) };
         if (trackEvent === 'opened' && !contract.opened_at) updates.opened_at = new Date().toISOString();
         if (trackEvent === 'viewed' && !contract.viewed_at) {
           updates.viewed_at = new Date().toISOString();
-          if (contract.status === 'Sent for Signature' || contract.status === 'Resent' || contract.status === 'Opened') {
-            updates.status = 'Viewed';
-          }
+          if (['Sent for Signature', 'Resent', 'Opened'].includes(contract.status)) updates.status = 'Viewed';
         }
-        if (trackEvent === 'opened' && (contract.status === 'Sent for Signature' || contract.status === 'Resent')) {
-          updates.status = 'Opened';
-        }
+        if (trackEvent === 'opened' && ['Sent for Signature', 'Resent'].includes(contract.status)) updates.status = 'Opened';
         await base44.asServiceRole.entities.Contract.update(contract.id, updates);
       }
 
-      // Get contact info
       const contacts = await base44.asServiceRole.entities.Contact.filter({ id: contract.contact_id });
       const contact = contacts[0];
 
@@ -258,6 +251,10 @@ Deno.serve(async (req) => {
           book_title: contract.book_title,
           contract_file_url: contract.contract_file_url,
           status: contract.status,
+          admin_signature_url: contract.admin_signature_url || null,
+          admin_signed_at: contract.admin_signed_at || null,
+          admin_signer_name: contract.admin_signer_name || null,
+          contract_field_values: contract.contract_field_values || {},
         },
         contact: contact ? { full_name: contact.full_name, email: contact.email } : null,
       });
@@ -297,21 +294,18 @@ Deno.serve(async (req) => {
         return Response.json({ success: true, status: 'declined' });
       }
 
-      // Accept pre-uploaded URL from frontend (signature_image_url) or fall back to raw dataUrl
       const signature_image_url = body.signature_image_url || signature_image_data || '';
 
       const signedAt = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+      const adminAlreadySigned = !!contract.admin_signed_at;
+      const finalStatus = adminAlreadySigned ? 'Fully Signed' : 'Signed';
 
       const auditTrail = addAuditEvent(contract.audit_trail, 'signed', {
-        ip, user_agent,
-        signer_name, signer_email,
-        signed_at: now,
-        legal_consent,
+        ip, user_agent, signer_name, signer_email, signed_at: now, legal_consent,
       });
 
-      // Update contract
       await base44.asServiceRole.entities.Contract.update(contract.id, {
-        status: 'Signed',
+        status: finalStatus,
         signed_at: now,
         signer_name,
         signer_email,
@@ -405,7 +399,34 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, signed_at: now, contract_file_url: contract.contract_file_url || '', contract_id: contract.id, sent_at: contract.sent_at || '', opened_at: contract.opened_at || '' });
     }
 
-    // ── LOG SIGNING STARTED ─────────────────────────────────────────────────
+    // ── ADMIN SIGN (authenticated) ───────────────────────────────────────────────
+    if (action === 'admin_sign') {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+      const { contract_id, admin_signature_url, contract_field_values, admin_signer_name } = body;
+      const contracts = await base44.asServiceRole.entities.Contract.filter({ id: contract_id });
+      const contract = contracts[0];
+      if (!contract) return Response.json({ error: 'Contract not found' }, { status: 404 });
+
+      const now = new Date().toISOString();
+      await base44.asServiceRole.entities.Contract.update(contract_id, {
+        status: 'Admin Signed',
+        admin_signed_at: now,
+        admin_signature_url,
+        contract_field_values: contract_field_values || {},
+        admin_signer_name: admin_signer_name || user.full_name || user.email,
+        admin_signer_email: user.email,
+        audit_trail: addAuditEvent(contract.audit_trail, 'admin_signed', {
+          actor: user.email,
+          admin_name: admin_signer_name,
+        }),
+      });
+
+      return Response.json({ success: true });
+    }
+
+    // ── LOG SIGNING STARTED ───────────────────────────────────────────────
     if (action === 'signing_started') {
       const { token } = body;
       const all = await base44.asServiceRole.entities.Contract.list('-created_date', 500);
@@ -418,14 +439,14 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true });
     }
 
-    // ── RESEND SIGNED COPY (public — validated by signer email) ──────────────
+    // ── RESEND SIGNED COPY (public) ───────────────────────────────────────────────
     if (action === 'resend_signed_copy') {
       const { contract_id, signer_email } = body;
       if (!contract_id || !signer_email) return Response.json({ error: 'Missing fields' }, { status: 400 });
       const contracts = await base44.asServiceRole.entities.Contract.filter({ id: contract_id });
       const contract = contracts[0];
       if (!contract || contract.signer_email !== signer_email) return Response.json({ error: 'Not authorized' }, { status: 403 });
-      if (contract.status !== 'Signed') return Response.json({ error: 'Contract not yet signed' }, { status: 400 });
+      if (!['Signed','Fully Signed'].includes(contract.status)) return Response.json({ error: 'Contract not yet signed' }, { status: 400 });
       const signedAt = new Date(contract.signed_at).toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
       await sendEmail(signer_email, `Your Signed Copy: ${contract.title} — Creative Books SA`,
         signedConfirmHtml({ signerName: contract.signer_name, contractTitle: contract.title, signedAt, contractFileUrl: contract.contract_file_url || '' })
