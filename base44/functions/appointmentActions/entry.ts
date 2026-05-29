@@ -82,17 +82,48 @@ async function notifyAdmin(message) {
   await fetch(url).catch(() => {});
 }
 
-function baseEmail(body) {
-  return `
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
-      <div style="background:#0a0806;padding:24px 32px;text-align:center;">
-        <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" style="height:40px;" />
-      </div>
-      <div style="padding:32px;">${body}</div>
-      <div style="background:#f8f5f0;padding:16px 32px;text-align:center;font-size:12px;color:#999;">
-        Creative Books SA · Johannesburg · 084 230 5393 · info@creativebooks.co.za
-      </div>
-    </div>`;
+function baseEmail(innerContent) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f3ef;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f3ef;padding:32px 16px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+      <tr>
+        <td style="background:#B87333;padding:24px 32px;border-radius:12px 12px 0 0;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td><img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" style="height:44px;display:block;" /></td>
+              <td align="right" style="color:rgba(255,255,255,0.75);font-size:12px;">Creative Books SA</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="background:#ffffff;padding:36px 32px;font-size:15px;line-height:1.7;color:#2d2d2d;">
+          ${innerContent}
+        </td>
+      </tr>
+      <tr>
+        <td style="background:#1a1208;padding:24px 32px;border-radius:0 0 12px 12px;">
+          <p style="margin:0 0 6px;color:rgba(255,255,255,0.9);font-size:13px;font-weight:bold;">Creative Books SA</p>
+          <p style="margin:0 0 4px;color:rgba(255,255,255,0.5);font-size:12px;">Prism Office Park, Fourways, Johannesburg</p>
+          <p style="margin:0 0 10px;color:rgba(255,255,255,0.5);font-size:12px;">
+            <a href="mailto:info@creativebooks.co.za" style="color:#B87333;text-decoration:none;">info@creativebooks.co.za</a> &middot; 084 230 5393
+          </p>
+          <p style="margin:0;color:rgba(255,255,255,0.25);font-size:11px;">You received this email because you booked an appointment with Creative Books SA.</p>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
 }
 
 Deno.serve(async (req) => {
