@@ -1,0 +1,39 @@
+{
+  "name": "AvailabilityRule",
+  "type": "object",
+  "properties": {
+    "weekday": {
+      "type": "string",
+      "enum": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "description": "Day of the week"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "HH:MM in SAST e.g. 09:00"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "HH:MM in SAST e.g. 17:00"
+    },
+    "is_open": {
+      "type": "boolean",
+      "default": true
+    },
+    "min_notice_hours": {
+      "type": "number",
+      "default": 24,
+      "description": "Minimum hours notice required before a booking (global \u2014 stored on Monday rule)"
+    }
+  },
+  "required": [
+    "weekday"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_phone": {
+      "type": "string"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "Linked BookingService ID"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Denormalized service name"
+    },
+    "service_duration_minutes": {
+      "type": "number"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "on_site",
+        "zoom"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "YYYY-MM-DD in SAST"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "HH:MM in SAST"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "HH:MM in SAST"
+    },
+    "client_note": {
+      "type": "string",
+      "description": "What the client wants to discuss"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "declined",
+        "cancelled",
+        "completed",
+        "no_show"
+      ],
+      "default": "pending"
+    },
+    "zoom_link": {
+      "type": "string"
+    },
+    "zoom_meeting_id": {
+      "type": "string"
+    },
+    "decline_reason": {
+      "type": "string"
+    },
+    "proposed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Admin-proposed alternative date"
+    },
+    "proposed_start_time": {
+      "type": "string",
+      "description": "Admin-proposed alternative time HH:MM"
+    },
+    "proposed_end_time": {
+      "type": "string"
+    },
+    "linked_lead_id": {
+      "type": "string"
+    },
+    "linked_client_id": {
+      "type": "string"
+    },
+    "google_event_id": {
+      "type": "string",
+      "description": "Google Calendar event ID for sync"
+    },
+    "reminder_24h_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "reminder_1h_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancel_token": {
+      "type": "string",
+      "description": "Secure token for client self-cancel"
+    },
+    "reschedule_token": {
+      "type": "string",
+      "description": "Secure token for client reschedule"
+    }
+  },
+  "required": [
+    "client_name",
+    "client_email",
+    "service_id",
+    "date",
+    "start_time"
+  ]
+}
