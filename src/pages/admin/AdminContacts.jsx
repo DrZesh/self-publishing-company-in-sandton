@@ -230,7 +230,7 @@ export default function AdminContacts() {
 
   const IMPORT_FIELDS = [
     { key: 'full_name', label: 'Full Name', required: true },
-    { key: 'email', label: 'Email', required: true },
+    { key: 'email', label: 'Email', required: true, type: 'email' },
     { key: 'phone', label: 'Phone' },
     { key: 'company', label: 'Company' },
     { key: 'role', label: 'Role' },
@@ -239,32 +239,61 @@ export default function AdminContacts() {
     { key: 'province', label: 'Province' },
     { key: 'book_title', label: 'Book Title' },
     { key: 'pipeline_stage', label: 'Pipeline Stage' },
-    { key: 'pipeline_value', label: 'Pipeline Value' },
+    { key: 'pipeline_value', label: 'Pipeline Value', type: 'number' },
+    { key: 'description', label: 'Notes / Description' },
   ];
 
-  const handleImportContacts = async (rows) => {
-    let created = 0, failed = 0;
-    for (const row of rows) {
-      if (!row['Full Name'] || !row['Email']) { failed++; continue; }
+  const VALID_PIPELINE_STAGES = [
+    'New Enquiry','Information Requested','Quote in Progress','Quote Sent',
+    'Payment Pending','Project Started','Editing','Cover Design','Typesetting',
+    'Sample Queued','Sample Approved','Mass Production','Completed','Delivered','Lost',
+  ];
+
+  const handleImportContacts = async (mappedRows, { dedupeMode } = {}) => {
+    let created = 0, updated = 0, failed = 0;
+    const errors = [];
+    // Load existing contacts once for deduplication
+    const existing = await base44.entities.Contact.list('-created_date', 1000);
+    const byEmail = {};
+    existing.forEach(c => { if (c.email) byEmail[c.email.toLowerCase()] = c; });
+
+    for (const row of mappedRows) {
       try {
-        const contact = await base44.entities.Contact.create({
-          full_name: row['Full Name'],
-          email: row['Email'],
-          phone: row['Phone'] || '',
-          company: row['Company'] || '',
-          role: row['Role'] || 'author',
-          lifecycle_stage: row['Lifecycle Stage'] || 'lead',
-          city: row['City'] || '',
-          province: row['Province'] || '',
-          book_title: row['Book Title'] || '',
-          pipeline_stage: row['Pipeline Stage'] || 'New Enquiry',
-          pipeline_value: row['Pipeline Value'] ? Number(row['Pipeline Value']) : undefined,
-        });
-        setContacts(prev => [contact, ...prev]);
-        created++;
-      } catch { failed++; }
+        const email = (row.email || '').trim().toLowerCase();
+        const pipelineStage = VALID_PIPELINE_STAGES.includes(row.pipeline_stage) ? row.pipeline_stage : 'New Enquiry';
+        const payload = {
+          full_name: (row.full_name || '').trim(),
+          email: email,
+          phone: row.phone || '',
+          company: row.company || '',
+          role: ['author','publisher','agent','other'].includes(row.role) ? row.role : 'author',
+          lifecycle_stage: ['subscriber','lead','customer','repeat_customer','past_customer'].includes(row.lifecycle_stage) ? row.lifecycle_stage : 'lead',
+          city: row.city || '',
+          province: row.province || '',
+          book_title: row.book_title || '',
+          pipeline_stage: pipelineStage,
+          pipeline_value: row.pipeline_value ? Number(row.pipeline_value) : undefined,
+          description: row.description || '',
+        };
+        const duplicate = email ? byEmail[email] : null;
+        if (duplicate && dedupeMode === 'update') {
+          await base44.entities.Contact.update(duplicate.id, payload);
+          setContacts(prev => prev.map(c => c.id === duplicate.id ? { ...c, ...payload } : c));
+          updated++;
+        } else if (duplicate && dedupeMode === 'skip') {
+          // skip
+        } else {
+          const contact = await base44.entities.Contact.create(payload);
+          setContacts(prev => [contact, ...prev]);
+          byEmail[email] = contact;
+          created++;
+        }
+      } catch (err) {
+        failed++;
+        errors.push({ row: row._idx || '?', reason: err.message || 'Unknown error' });
+      }
     }
-    return { created, failed };
+    return { created, updated, failed, errors };
   };
 
   return (
