@@ -858,20 +858,15 @@ export default function AdminPipeline() {
 
   return (
     <AdminLayout>
-      <div style={{ minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px', background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 40%, #24243e 70%, #1a1a2e 100%)', position: 'relative' }}>
-        {/* Mesh blobs */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-          <div style={{ position: 'absolute', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%)', top: -100, left: -100 }} />
-          <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(184,115,51,0.15) 0%, transparent 70%)', top: 200, right: -50 }} />
-          <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%)', bottom: 0, left: '40%' }} />
-        </div>
+      <div style={{ minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px', background: '#F4F5F7', position: 'relative' }}>
+
 
         <div style={{ position: 'relative', zIndex: 1 }}>
           {/* Header */}
-          <div style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#fff', margin: 0, fontFamily: 'var(--font-heading)' }}>Deals Pipeline</h1>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '2px 0 0' }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1e1e2e', margin: 0, fontFamily: 'var(--font-heading)' }}>Deals Pipeline</h1>
+              <p style={{ fontSize: 13, color: '#6b7280', margin: '2px 0 0' }}>
                 {new Date().toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })} · {ownerFilter || 'All owners'} · {filtered.length} deals
               </p>
             </div>
@@ -879,13 +874,13 @@ export default function AdminPipeline() {
               <div style={{ position: 'relative' }}>
                 <Search style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, color: '#94a3b8' }} />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search deals…"
-                  style={{ paddingLeft: 32, paddingRight: 10, height: 36, border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, fontSize: 13, color: '#fff', background: 'rgba(255,255,255,0.1)', outline: 'none', width: 180 }} />
+                  style={{ paddingLeft: 32, paddingRight: 10, height: 36, border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', outline: 'none', width: 180 }} />
                 {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X style={{ width: 13, height: 13 }} /></button>}
               </div>
 
               {owners.length > 0 && (
                 <select value={ownerFilter} onChange={e => setOwnerFilter(e.target.value)}
-                  style={{ height: 36, border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, fontSize: 13, color: '#fff', background: 'rgba(255,255,255,0.1)', padding: '0 10px', outline: 'none' }}>
+                  style={{ height: 36, border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', padding: '0 10px', outline: 'none' }}>
                   <option value="">All owners</option>
                   {owners.map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
@@ -893,7 +888,7 @@ export default function AdminPipeline() {
 
               <div style={{ position: 'relative' }}>
                 <button onClick={() => setSettingsOpen(o => !o)}
-                  style={{ height: 36, padding: '0 14px', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, fontSize: 13, color: '#fff', background: 'rgba(255,255,255,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Settings2 style={{ width: 14, height: 14 }} /> Tweaks
                 </button>
                 {settingsOpen && (
@@ -921,7 +916,7 @@ export default function AdminPipeline() {
               </div>
 
               <button onClick={() => { setBulkEdits({}); setBulkOpen(true); }}
-                style={{ height: 36, padding: '0 14px', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, fontSize: 13, color: '#fff', background: 'rgba(255,255,255,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Edit2 style={{ width: 13, height: 13 }} /> Bulk edit values
               </button>
 
@@ -958,22 +953,22 @@ export default function AdminPipeline() {
                   const cards = byStage[stage.id];
                   const colTotal = cards.reduce((s, c) => s + (c.pipeline_value || 0), 0);
                   return (
-                    <div key={stage.id} style={{ minWidth: 260, flex: stage.active ? '0 0 280px' : '0 0 240px', display: 'flex', flexDirection: 'column', background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', borderRadius: 14, border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
+                    <div key={stage.id} style={{ minWidth: 260, flex: stage.active ? '0 0 280px' : '0 0 240px', display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: 14, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
                       <div style={{ borderBottom: `3px solid ${stage.color}`, padding: '12px 14px 10px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                             <span style={{ width: 9, height: 9, borderRadius: '50%', background: stage.color, display: 'inline-block', flexShrink: 0 }} />
-                            <span style={{ fontWeight: 700, fontSize: 13, color: '#fff' }}>{stage.label}</span>
-                            <span style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '1px 7px' }}>{cards.length}</span>
+                            <span style={{ fontWeight: 700, fontSize: 13, color: '#1e1e2e' }}>{stage.label}</span>
+                            <span style={{ background: '#f3f4f6', color: '#374151', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '1px 7px' }}>{cards.length}</span>
                           </div>
                           {showTotals && colTotal > 0 && (
-                            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>{fmtRand(colTotal)}</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#374151' }}>{fmtRand(colTotal)}</span>
                           )}
                         </div>
                       </div>
                       <div style={{ flex: 1, padding: '10px 10px 0' }}>
                         {cards.length === 0 && (
-                          <div style={{ border: '2px dashed rgba(255,255,255,0.15)', borderRadius: 10, padding: '20px 0', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>Empty</div>
+                          <div style={{ border: '2px dashed #e5e7eb', borderRadius: 10, padding: '20px 0', textAlign: 'center', color: '#9ca3af', fontSize: 12 }}>Empty</div>
                         )}
                         {cards.map((c, i) =>
                           stage.active ? (
@@ -1096,10 +1091,10 @@ export default function AdminPipeline() {
 
 function KpiTile({ label, value, sub, tinted, warn }) {
   return (
-    <div style={{ background: tinted ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: warn ? '1.5px solid rgba(245,158,11,0.7)' : `1px solid ${tinted ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.12)'}`, borderRadius: 12, padding: '14px 16px' }}>
-      <p style={{ fontSize: 11, color: warn ? '#fbbf24' : 'rgba(255,255,255,0.55)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{label}</p>
-      <p style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 700, color: warn ? '#fbbf24' : '#fff', margin: '0 0 2px' }}>{value}</p>
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{sub}</p>
+    <div style={{ background: tinted ? '#FDF8F2' : '#ffffff', border: warn ? '1.5px solid #f59e0b' : tinted ? '1px solid #e8d5b7' : '1px solid #e5e7eb', borderRadius: 12, padding: '14px 16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+      <p style={{ fontSize: 11, color: warn ? '#d97706' : '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{label}</p>
+      <p style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 700, color: warn ? '#d97706' : '#1e1e2e', margin: '0 0 2px' }}>{value}</p>
+      <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{sub}</p>
     </div>
   );
 }
@@ -1115,19 +1110,19 @@ function FunnelCard({ inquiry, quotation, won }) {
   const convW = quotation > 0 ? Math.round((won       / quotation) * 100) : 0;
 
   return (
-    <div style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: '14px 16px', minWidth: 160 }}>
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Funnel</p>
+    <div style={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '14px 16px', minWidth: 160, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+      <p style={{ fontSize: 11, color: '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Funnel</p>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10 }}>
         {bars.map((b, i) => (
           <div key={b.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1 }}>
-            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#fff' }}>{b.count}</span>
-            <div style={{ width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: 4, overflow: 'hidden', height: 40, display: 'flex', alignItems: 'flex-end' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#1e1e2e' }}>{b.count}</span>
+            <div style={{ width: '100%', background: '#f3f4f6', borderRadius: 4, overflow: 'hidden', height: 40, display: 'flex', alignItems: 'flex-end' }}>
               <div style={{ width: '100%', background: b.color, height: `${Math.max(8, Math.round((b.count / max) * 40))}px`, borderRadius: 4, transition: 'height 0.3s' }} />
             </div>
-            {i === 0 && <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{convQ}% →</span>}
-            {i === 1 && <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{convW}% →</span>}
-            {i === 2 && <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>&nbsp;</span>}
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>{b.label}</span>
+            {i === 0 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>{convQ}% →</span>}
+            {i === 1 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>{convW}% →</span>}
+            {i === 2 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>&nbsp;</span>}
+            <span style={{ fontSize: 10, color: '#6b7280', fontWeight: 500 }}>{b.label}</span>
           </div>
         ))}
       </div>
