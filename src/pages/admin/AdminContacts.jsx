@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Search, Plus, ChevronRight, X, Mail, Phone, ExternalLink } from 'lucide-react';
+import { Search, Plus, ChevronRight, X, Mail, Phone } from 'lucide-react';
+import CsvImportExport, { downloadCsv } from '@/components/admin/CsvImportExport';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
@@ -212,6 +213,60 @@ export default function AdminContacts() {
 
   const stages = ['subscriber', 'lead', 'customer', 'repeat_customer', 'past_customer'];
 
+  const EXPORT_COLS = [
+    { key: 'full_name', label: 'Full Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+    { key: 'company', label: 'Company' },
+    { key: 'role', label: 'Role' },
+    { key: 'lifecycle_stage', label: 'Lifecycle Stage' },
+    { key: 'city', label: 'City' },
+    { key: 'province', label: 'Province' },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'pipeline_stage', label: 'Pipeline Stage' },
+    { key: 'pipeline_value', label: 'Pipeline Value' },
+    { key: 'created_date', label: 'Created Date', render: r => r.created_date ? new Date(r.created_date).toLocaleDateString('en-ZA') : '' },
+  ];
+
+  const IMPORT_FIELDS = [
+    { key: 'full_name', label: 'Full Name', required: true },
+    { key: 'email', label: 'Email', required: true },
+    { key: 'phone', label: 'Phone' },
+    { key: 'company', label: 'Company' },
+    { key: 'role', label: 'Role' },
+    { key: 'lifecycle_stage', label: 'Lifecycle Stage' },
+    { key: 'city', label: 'City' },
+    { key: 'province', label: 'Province' },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'pipeline_stage', label: 'Pipeline Stage' },
+    { key: 'pipeline_value', label: 'Pipeline Value' },
+  ];
+
+  const handleImportContacts = async (rows) => {
+    let created = 0, failed = 0;
+    for (const row of rows) {
+      if (!row['Full Name'] || !row['Email']) { failed++; continue; }
+      try {
+        const contact = await base44.entities.Contact.create({
+          full_name: row['Full Name'],
+          email: row['Email'],
+          phone: row['Phone'] || '',
+          company: row['Company'] || '',
+          role: row['Role'] || 'author',
+          lifecycle_stage: row['Lifecycle Stage'] || 'lead',
+          city: row['City'] || '',
+          province: row['Province'] || '',
+          book_title: row['Book Title'] || '',
+          pipeline_stage: row['Pipeline Stage'] || 'New Enquiry',
+          pipeline_value: row['Pipeline Value'] ? Number(row['Pipeline Value']) : undefined,
+        });
+        setContacts(prev => [contact, ...prev]);
+        created++;
+      } catch { failed++; }
+    }
+    return { created, failed };
+  };
+
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto">
@@ -220,10 +275,20 @@ export default function AdminContacts() {
             <h1 className="text-3xl font-bold text-[#1A1208]">Contacts</h1>
             <p className="text-sm text-black/50 mt-1">{contacts.length} total contacts in CRM</p>
           </div>
-          <button onClick={() => { setModalContact(null); setShowModal(true); }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428] transition-colors">
-            <Plus className="w-4 h-4" /> New Contact
-          </button>
+          <div className="flex items-center gap-2">
+            <CsvImportExport
+              data={filtered}
+              exportColumns={EXPORT_COLS}
+              exportFilename="contacts.csv"
+              importFields={IMPORT_FIELDS}
+              onImport={handleImportContacts}
+              entityLabel="contacts"
+            />
+            <button onClick={() => { setModalContact(null); setShowModal(true); }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428] transition-colors">
+              <Plus className="w-4 h-4" /> New Contact
+            </button>
+          </div>
         </div>
 
         <div className="flex gap-2 flex-wrap mb-6">

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
 import { Plus, Search, FileText, Download } from 'lucide-react';
+import CsvImportExport from '@/components/admin/CsvImportExport';
 import InvoiceModal from '@/components/admin/invoices/InvoiceModal';
 import InvoiceDetailPanel from '@/components/admin/invoices/InvoiceDetailPanel';
 
@@ -51,6 +52,62 @@ export default function AdminInvoices() {
   const totalPaid = invoices.filter(i => i.status === 'Paid').reduce((sum, i) => sum + (i.total || 0), 0);
   const overdueCount = invoices.filter(i => i.status === 'Overdue').length;
 
+  const EXPORT_COLS = [
+    { key: 'invoice_number', label: 'Invoice Number' },
+    { key: '_client', label: 'Client Name', render: inv => contactMap[inv.contact_id]?.full_name || '' },
+    { key: '_email', label: 'Client Email', render: inv => contactMap[inv.contact_id]?.email || '' },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'status', label: 'Status' },
+    { key: 'total', label: 'Total (R)' },
+    { key: 'amount_paid', label: 'Amount Paid (R)' },
+    { key: 'balance_due', label: 'Balance Due (R)' },
+    { key: 'due_date', label: 'Due Date' },
+    { key: 'created_date', label: 'Created Date', render: inv => inv.created_date ? new Date(inv.created_date).toLocaleDateString('en-ZA') : '' },
+  ];
+
+  const IMPORT_FIELDS = [
+    { key: 'contact_email', label: 'Client Email', required: true },
+    { key: 'invoice_number', label: 'Invoice Number' },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'total', label: 'Total (R)' },
+    { key: 'due_date', label: 'Due Date (YYYY-MM-DD)' },
+    { key: 'notes', label: 'Notes' },
+  ];
+
+  const handleImportInvoices = async (rows) => {
+    let created = 0, failed = 0;
+    const allContacts = await base44.entities.Contact.list('-created_date', 500);
+    const byEmail = {};
+    allContacts.forEach(c => { byEmail[c.email?.toLowerCase()] = c; });
+    for (const row of rows) {
+      const email = row['Client Email']?.toLowerCase();
+      if (!email) { failed++; continue; }
+      try {
+        const contact = byEmail[email];
+        const total = row['Total (R)'] ? Number(row['Total (R)']) : 0;
+        const num = row['Invoice Number'] || ('INV-IMP-' + Date.now().toString().slice(-6));
+        await base44.entities.Invoice.create({
+          invoice_number: num,
+          contact_id: contact?.id || '',
+          book_title: row['Book Title'] || '',
+          status: 'Draft',
+          total,
+          subtotal: total,
+          vat_amount: 0,
+          amount_paid: 0,
+          balance_due: total,
+          due_date: row['Due Date (YYYY-MM-DD)'] || '',
+          notes: row['Notes'] || '',
+          line_items: [],
+          contact_snapshot: contact ? { full_name: contact.full_name, email: contact.email } : { email },
+        });
+        created++;
+      } catch { failed++; }
+    }
+    if (created > 0) queryClient.invalidateQueries({ queryKey: ['invoices'] });
+    return { created, failed };
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -59,9 +116,19 @@ export default function AdminInvoices() {
             <h1 className="text-2xl font-bold text-gray-900">Invoices</h1>
             <p className="text-sm text-gray-500 mt-0.5">Generate and track client invoices</p>
           </div>
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
-            <Plus className="w-4 h-4" /> New Invoice
-          </Button>
+          <div className="flex items-center gap-2">
+            <CsvImportExport
+              data={filtered}
+              exportColumns={EXPORT_COLS}
+              exportFilename="invoices.csv"
+              importFields={IMPORT_FIELDS}
+              onImport={handleImportInvoices}
+              entityLabel="invoices"
+            />
+            <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#B87333] hover:bg-[#A06828] text-white">
+              <Plus className="w-4 h-4" /> New Invoice
+            </Button>
+          </div>
         </div>
 
         {/* KPI Cards */}

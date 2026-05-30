@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Plus, Eye, Copy, Send, Search } from 'lucide-react';
+import CsvImportExport from '@/components/admin/CsvImportExport';
 import { toast } from 'sonner';
 
 const STATUS_COLORS = {
@@ -94,6 +95,58 @@ export default function AdminQuotes() {
 
   const statuses = ['Draft', 'Sent', 'Delivered', 'Opened', 'Viewed', 'Accepted', 'Declined', 'Expired'];
 
+  const EXPORT_COLS = [
+    { key: 'quote_number', label: 'Quote Number' },
+    { key: '_contact_name', label: 'Client Name', render: q => contacts[q.contact_id]?.full_name || q.contact_snapshot?.full_name || '' },
+    { key: '_contact_email', label: 'Client Email', render: q => contacts[q.contact_id]?.email || q.contact_snapshot?.email || '' },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'status', label: 'Status' },
+    { key: 'total', label: 'Total (R)' },
+    { key: 'valid_until', label: 'Valid Until' },
+    { key: 'created_date', label: 'Created Date', render: q => q.created_date ? new Date(q.created_date).toLocaleDateString('en-ZA') : '' },
+  ];
+
+  const IMPORT_FIELDS = [
+    { key: 'contact_email', label: 'Client Email', required: true },
+    { key: 'book_title', label: 'Book Title' },
+    { key: 'total', label: 'Total (R)' },
+    { key: 'valid_until', label: 'Valid Until (YYYY-MM-DD)' },
+    { key: 'notes', label: 'Notes' },
+  ];
+
+  const handleImportQuotes = async (rows) => {
+    let created = 0, failed = 0;
+    const allContacts = await base44.entities.Contact.list('-created_date', 500);
+    const byEmail = {};
+    allContacts.forEach(c => { byEmail[c.email?.toLowerCase()] = c; });
+    for (const row of rows) {
+      const email = row['Client Email']?.toLowerCase();
+      if (!email) { failed++; continue; }
+      try {
+        const contact = byEmail[email];
+        const num = 'Q-IMP-' + Date.now().toString().slice(-6);
+        await base44.entities.Quote.create({
+          quote_number: num,
+          contact_id: contact?.id || '',
+          contact_snapshot: contact ? { full_name: contact.full_name, email: contact.email } : { email },
+          book_title: row['Book Title'] || '',
+          total: row['Total (R)'] ? Number(row['Total (R)']) : 0,
+          subtotal: row['Total (R)'] ? Number(row['Total (R)']) : 0,
+          valid_until: row['Valid Until (YYYY-MM-DD)'] || '',
+          notes: row['Notes'] || '',
+          status: 'Draft',
+          line_items: [],
+        });
+        created++;
+      } catch { failed++; }
+    }
+    if (created > 0) {
+      const qs = await base44.entities.Quote.list('-created_date', 200);
+      setQuotes(qs);
+    }
+    return { created, failed };
+  };
+
   const filtered = quotes.filter(q => {
     if (statusFilter !== 'all' && q.status !== statusFilter) return false;
     if (search) {
@@ -119,10 +172,20 @@ export default function AdminQuotes() {
             <h1 className="text-3xl font-bold text-[#1A1208]">Quotes</h1>
             <p className="text-sm text-black/50 mt-1">{quotes.length} total quotes</p>
           </div>
-          <Link to="/admin/quotes/new"
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428] transition-colors">
-            <Plus className="w-4 h-4" /> New Quote
-          </Link>
+          <div className="flex items-center gap-2">
+            <CsvImportExport
+              data={filtered}
+              exportColumns={EXPORT_COLS}
+              exportFilename="quotes.csv"
+              importFields={IMPORT_FIELDS}
+              onImport={handleImportQuotes}
+              entityLabel="quotes"
+            />
+            <Link to="/admin/quotes/new"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428] transition-colors">
+              <Plus className="w-4 h-4" /> New Quote
+            </Link>
+          </div>
         </div>
 
         <div className="flex gap-2 flex-wrap mb-4">
