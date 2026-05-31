@@ -106,21 +106,25 @@ export default function AdminLayout({ children }) {
   });
 
   return (
-    <div className="flex h-screen" style={{ background: theme.bg, '--admin-accent': theme.accent }}>
+    <div className="flex h-screen" style={{ background: 'linear-gradient(135deg,#0a0a14 0%,#0d0d1e 25%,#0a0f1a 50%,#10080f 75%,#0a0a14 100%)', '--admin-accent': theme.accent }}>
+      {/* Ambient orbs */}
+      <div style={{ position:'fixed',top:0,left:'20%',width:600,height:600,borderRadius:'50%',opacity:0.06,filter:'blur(120px)',background:'radial-gradient(circle,#B87333,transparent)',pointerEvents:'none',zIndex:0 }} />
+      <div style={{ position:'fixed',top:'30%',right:0,width:500,height:500,borderRadius:'50%',opacity:0.05,filter:'blur(120px)',background:'radial-gradient(circle,#6366f1,transparent)',pointerEvents:'none',zIndex:0 }} />
+      <div style={{ position:'fixed',bottom:0,left:0,width:400,height:400,borderRadius:'50%',opacity:0.04,filter:'blur(100px)',background:'radial-gradient(circle,#10b981,transparent)',pointerEvents:'none',zIndex:0 }} />
       {/* Sidebar */}
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden" style={{ position:'relative', zIndex:1 }}>
         {/* Top Bar */}
         <div
           className="h-14 border-b flex items-center justify-between px-6"
-          style={{ background: '#ffffff', borderColor: '#e5e7eb' }}
+          style={{ background: 'rgba(10,10,20,0.85)', backdropFilter:'blur(20px)', borderColor: 'rgba(255,255,255,0.08)' }}
         >
           <div className="flex items-center gap-4 flex-1">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 hover:bg-[#f0f0f0] rounded-lg"
+              className="lg:hidden p-2 hover:bg-white/10 rounded-lg"
             >
               {sidebarOpen ? (
                 <X className="w-5 h-5" />
@@ -132,11 +136,12 @@ export default function AdminLayout({ children }) {
             {/* Search → opens Command Palette */}
             <button
               onClick={() => setCmdOpen(true)}
-              className="hidden sm:flex items-center gap-2 flex-1 max-w-md px-4 py-2 bg-[#f5f5f5] rounded-lg text-sm text-[#2B2B2B]/50 border border-[#ddd]/30 hover:border-[#B8955B]/50 hover:bg-[#f0f0f0] transition-colors"
+              className="hidden sm:flex items-center gap-2 flex-1 max-w-md px-4 py-2 rounded-lg text-sm border transition-colors"
+              style={{ background:'rgba(255,255,255,0.05)', borderColor:'rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.4)' }}
             >
               <Search className="w-4 h-4 flex-shrink-0" />
               <span className="flex-1 text-left">Search or jump to...</span>
-              <kbd className="hidden md:inline-flex items-center gap-1 text-xs font-mono text-[#2B2B2B]/40 bg-white border border-gray-200 rounded px-1.5 py-0.5">
+              <kbd className="hidden md:inline-flex items-center gap-1 text-xs font-mono rounded px-1.5 py-0.5" style={{ color:'rgba(255,255,255,0.25)', background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.1)' }}>
                 <span>⌘</span>K
               </kbd>
             </button>
@@ -144,15 +149,15 @@ export default function AdminLayout({ children }) {
 
           <div className="flex items-center gap-4">
             {/* Time */}
-            <span className="text-sm text-[#2B2B2B]/60 hidden sm:inline">{currentTime}</span>
+            <span className="text-sm hidden sm:inline" style={{ color:'rgba(255,255,255,0.35)', fontFamily:'monospace' }}>{currentTime}</span>
 
             {/* Notifications */}
             <button
               onClick={() => { setUnreadCount(0); navigate('/admin/submissions'); }}
-              className="relative p-2 hover:bg-[#f0f0f0] rounded-lg"
+              className="relative p-2 hover:bg-white/10 rounded-lg"
               title="View submissions"
             >
-              <Bell className="w-5 h-5 text-[#2B2B2B]" />
+              <Bell className="w-5 h-5" style={{ color:'rgba(255,255,255,0.5)' }} />
               {unreadCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center px-1">
                   {unreadCount > 99 ? '99+' : unreadCount}
@@ -163,16 +168,16 @@ export default function AdminLayout({ children }) {
             {/* Logout */}
             <button
               onClick={handleLogout}
-              className="p-2 hover:bg-[#f0f0f0] rounded-lg text-[#2B2B2B]"
+              className="p-2 hover:bg-white/10 rounded-lg"
               title="Logout"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-5 h-5" style={{ color:'rgba(255,255,255,0.5)' }} />
             </button>
           </div>
         </div>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto admin-dark">
           <div className="p-6 lg:p-7 h-full">
             {children}
           </div>

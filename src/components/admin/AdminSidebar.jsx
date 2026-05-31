@@ -123,7 +123,13 @@ export default function AdminSidebar({ open, onClose }) {
     group.items.some(item => location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
 
   const sidebarContent = (
-    <div className="flex flex-col h-full w-64" style={{ background: theme.sidebar, color: 'white', borderRight: theme.sidebarBorder || 'none' }}>
+    <div className="flex flex-col h-full w-64" style={{
+      background: 'rgba(8,8,18,0.92)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
+      borderRight: '1px solid rgba(255,255,255,0.07)',
+      color: 'white',
+    }}>
       {/* Logo */}
       <div className="px-5 py-4 border-b border-white/10">
         <Link to="/admin/dashboard" className="flex items-center gap-3" onClick={onClose}>
