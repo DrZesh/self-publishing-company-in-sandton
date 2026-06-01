@@ -1,0 +1,67 @@
+{
+  "name": "PipelineDeal",
+  "type": "object",
+  "properties": {
+    "pipeline_id": {
+      "type": "string"
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_phone": {
+      "type": "string"
+    },
+    "service_type": {
+      "type": "string"
+    },
+    "project_title": {
+      "type": "string"
+    },
+    "deal_value": {
+      "type": "number"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "assigned_team_member": {
+      "type": "string"
+    },
+    "linked_project_id": {
+      "type": "string",
+      "description": "ID of the ClientServiceProject created when deal reached Won"
+    },
+    "project_created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "project_created_by": {
+      "type": "string"
+    },
+    "project_creation_failed": {
+      "type": "boolean",
+      "default": false
+    },
+    "project_creation_error": {
+      "type": "string"
+    },
+    "won_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lost_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "pipeline_id",
+    "stage_key",
+    "client_name"
+  ]
+}

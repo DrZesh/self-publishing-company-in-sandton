@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import SalesPipelineTab from '@/components/admin/pipeline/SalesPipelineTab';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Search, Filter, RefreshCw, Settings, List, Send, Eye, Edit3,
-         ChevronDown, CheckCircle, Clock, XCircle, Mail } from 'lucide-react';
+import { Plus, Search, RefreshCw, Settings, List, Send, Edit3,
+         ChevronDown, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import StatCards from '@/components/admin/clientservice/StatCards';
 import ProjectModal from '@/components/admin/clientservice/ProjectModal';
@@ -12,7 +13,12 @@ import ProjectDetail from '@/components/admin/clientservice/ProjectDetail';
 import WorkflowSettings from '@/components/admin/clientservice/WorkflowSettings';
 import { STATUS_COLORS, SERVICE_COLORS, SERVICE_TYPES } from '@/components/admin/clientservice/WORKFLOWS';
 
-// ─── Glass panel ──────────────────────────────────────────────────────────────
+const TABS = [
+  { key: 'projects', label: 'Projects', emoji: null, Icon: List },
+  { key: 'pipeline', label: 'Sales Pipeline', emoji: '🚀', Icon: null },
+  { key: 'settings', label: 'Workflow Settings', emoji: null, Icon: Settings },
+];
+
 function Glass({ children, className = '' }) {
   return (
     <div className={`rounded-2xl border border-white/60 backdrop-blur-xl ${className}`}
@@ -22,7 +28,6 @@ function Glass({ children, className = '' }) {
   );
 }
 
-// ─── Stage badge ──────────────────────────────────────────────────────────────
 function StageBadge({ label }) {
   if (!label) return <span className="text-xs text-slate-400">—</span>;
   return (
@@ -32,7 +37,6 @@ function StageBadge({ label }) {
   );
 }
 
-// ─── Project row ──────────────────────────────────────────────────────────────
 function ProjectRow({ project, emailStats, onView, onEdit, onUpdateStage }) {
   const sc = STATUS_COLORS[project.status] || STATUS_COLORS.active;
   const svc = SERVICE_COLORS[project.service_type] || SERVICE_COLORS['Book Printing'];
@@ -96,7 +100,6 @@ function ProjectRow({ project, emailStats, onView, onEdit, onUpdateStage }) {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function AdminClientServiceUpdates() {
   const qc = useQueryClient();
   const [tab, setTab] = useState('projects');
@@ -120,7 +123,6 @@ export default function AdminClientServiceUpdates() {
     staleTime: 30000,
   });
 
-  // Pre-compute email stats per project O(n) once, O(1) lookup per row
   const emailStatsByProject = useMemo(() => {
     const map = {};
     for (const log of emailLogs) {
@@ -134,13 +136,9 @@ export default function AdminClientServiceUpdates() {
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ['client-service-projects'] });
     qc.invalidateQueries({ queryKey: ['service-email-logs'] });
-    if (viewProject) {
-      const updated = projects.find(p => p.id === viewProject.id);
-      if (updated) setViewProject(updated);
-    }
   };
 
-  const handleProjectSaved = (saved) => {
+  const handleProjectSaved = () => {
     qc.invalidateQueries({ queryKey: ['client-service-projects'] });
   };
 
@@ -161,7 +159,6 @@ export default function AdminClientServiceUpdates() {
     return true;
   }), [projects, filterService, filterStatus, search]);
 
-  // Update viewProject when projects data refreshes
   const currentViewProject = useMemo(
     () => viewProject ? (projects.find(p => p.id === viewProject.id) || viewProject) : null,
     [viewProject, projects]
@@ -172,7 +169,7 @@ export default function AdminClientServiceUpdates() {
       <div className="min-h-screen -m-6 lg:-m-7 p-6 lg:p-8" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #f8faff 40%, #eef3ff 100%)' }}>
         <div className="max-w-[1400px] mx-auto space-y-6">
 
-          {/* ── Header ── */}
+          {/* Header */}
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-2xl font-black text-slate-800 tracking-tight">Client Service Updates</h1>
@@ -190,28 +187,35 @@ export default function AdminClientServiceUpdates() {
             </div>
           </div>
 
-          {/* ── Tabs ── */}
+          {/* Tabs */}
           <div className="flex items-center gap-1 p-1 rounded-2xl border border-white/60 w-fit" style={{ background: 'rgba(255,255,255,0.72)' }}>
-            {[{ key: 'projects', label: 'Projects', icon: List }, { key: 'settings', label: 'Workflow Settings', icon: Settings }].map(t => {
-              const Icon = t.icon;
+            {TABS.map(t => {
+              const Icon = t.Icon;
+              const active = tab === t.key;
               return (
                 <button key={t.key} onClick={() => setTab(t.key)}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-                  style={tab === t.key ? { background: 'linear-gradient(135deg,#B87333,#d4944a)', color: 'white', boxShadow: '0 2px 10px rgba(184,115,51,0.3)' } : { color: '#64748b' }}>
-                  <Icon className="w-4 h-4" />{t.label}
+                  style={active
+                    ? { background: 'linear-gradient(135deg,#B87333,#d4944a)', color: 'white', boxShadow: '0 2px 10px rgba(184,115,51,0.3)' }
+                    : { color: '#64748b' }}>
+                  {t.emoji && <span>{t.emoji}</span>}
+                  {Icon && <Icon className="w-4 h-4" />}
+                  {t.label}
                 </button>
               );
             })}
           </div>
 
-          {tab === 'settings' ? (
+          {/* Tab content */}
+          {tab === 'pipeline' ? (
+            <SalesPipelineTab />
+          ) : tab === 'settings' ? (
             <WorkflowSettings />
           ) : (
             <>
-              {/* ── Stat Cards ── */}
               <StatCards projects={projects} emailLogs={emailLogs} />
 
-              {/* ── Filters ── */}
+              {/* Filters */}
               <Glass className="p-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="relative flex-1 min-w-[200px]">
@@ -243,7 +247,7 @@ export default function AdminClientServiceUpdates() {
                 </div>
               </Glass>
 
-              {/* ── Project Table ── */}
+              {/* Project Table */}
               <Glass className="overflow-hidden">
                 {loadingProjects ? (
                   <div className="space-y-3 p-5">
@@ -295,7 +299,7 @@ export default function AdminClientServiceUpdates() {
         </div>
       </div>
 
-      {/* ── Modals ── */}
+      {/* Modals */}
       {showProjectModal && (
         <ProjectModal
           project={editingProject}

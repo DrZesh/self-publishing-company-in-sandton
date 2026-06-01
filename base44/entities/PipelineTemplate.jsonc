@@ -1,0 +1,46 @@
+{
+  "name": "PipelineTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "isWon": {
+            "type": "boolean"
+          },
+          "isLost": {
+            "type": "boolean"
+          },
+          "order": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name",
+    "stages"
+  ]
+}
