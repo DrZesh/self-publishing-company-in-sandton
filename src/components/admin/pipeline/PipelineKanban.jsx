@@ -10,7 +10,7 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-export default function PipelineKanban({ pipeline, deals, onDragEnd, onDealClick, onAddDeal }) {
+export default function PipelineKanban({ pipeline, deals, onDragEnd, onDealClick, onAddDeal, onStageChange }) {
   const stages = [...(pipeline.stages || [])].sort((a, b) => a.order - b.order);
 
   const dealsByStage = {};
@@ -87,7 +87,7 @@ export default function PipelineKanban({ pipeline, deals, onDragEnd, onDealClick
                     {stageDeals.map((deal, i) => (
                       <DealCard key={deal.id} deal={deal} index={i} onClick={onDealClick}
                         isWonStage={stage.isWon} isLostStage={stage.isLost}
-                        stageColor={color} />
+                        stageColor={color} stages={stages} onStageChange={onStageChange} />
                     ))}
                     {provided.placeholder}
                     {stageDeals.length === 0 && !snapshot.isDraggingOver && (

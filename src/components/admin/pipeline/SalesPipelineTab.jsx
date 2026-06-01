@@ -207,6 +207,24 @@ export default function SalesPipelineTab() {
     }
   }, [qc]);
 
+  const handleStageChange = useCallback(async (deal, newStageKey) => {
+    if (deal.stage_key === newStageKey) return;
+    const wonStage = activePipeline?.stages?.find(s => s.isWon);
+    const lostStage = activePipeline?.stages?.find(s => s.isLost);
+    const updateData = { stage_key: newStageKey };
+    if (wonStage && newStageKey === wonStage.key) updateData.won_at = new Date().toISOString();
+    if (lostStage && newStageKey === lostStage.key) updateData.lost_at = new Date().toISOString();
+    qc.setQueryData(['pipeline-deals', activePipelineId], prev =>
+      (prev || []).map(d => d.id === deal.id ? { ...d, stage_key: newStageKey } : d)
+    );
+    await base44.entities.PipelineDeal.update(deal.id, updateData);
+    if (wonStage && newStageKey === wonStage.key && !deal.linked_project_id) {
+      const updatedDeal = { ...deal, stage_key: newStageKey };
+      if (!updatedDeal.service_type) setServicePrompt(updatedDeal);
+      else await createProjectFromDeal(updatedDeal, updatedDeal.service_type);
+    }
+  }, [activePipeline, activePipelineId, qc, createProjectFromDeal]);
+
   const handleDragEnd = useCallback(async (result) => {
     const { source, destination, draggableId } = result;
     if (!destination || source.droppableId === destination.droppableId) return;
@@ -361,6 +379,7 @@ export default function SalesPipelineTab() {
           onDragEnd={handleDragEnd}
           onDealClick={deal => setDealModal({ deal, defaultStageKey: deal.stage_key })}
           onAddDeal={stageKey => setDealModal({ deal: null, defaultStageKey: stageKey })}
+          onStageChange={handleStageChange}
         />
       )}
 

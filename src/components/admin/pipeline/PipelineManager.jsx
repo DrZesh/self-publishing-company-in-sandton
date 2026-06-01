@@ -57,7 +57,7 @@ function StageRow({ stage, idx, total, onChange, onRemove, onMove, onToggleWon, 
         <XCircle className="w-3.5 h-3.5" />
       </button>
 
-      <button onClick={() => { if (confirm('Remove this stage?')) onRemove(idx); }}
+      <button onClick={() => onRemove(idx)}
         className="p-1 text-slate-200 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
