@@ -87,6 +87,9 @@ export default function SalesPipelineTab() {
   const qc = useQueryClient();
   const [activePipelineId, setActivePipelineId] = useState(null);
   const [showManager, setShowManager] = useState(false);
+  const [managerInitialView, setManagerInitialView] = useState('list');
+
+  const openManager = (view = 'list') => { setManagerInitialView(view); setShowManager(true); };
   const [dealModal, setDealModal] = useState(null); // {deal, defaultStageKey}
   const [search, setSearch] = useState('');
   const [filterService, setFilterService] = useState('all');
@@ -289,10 +292,15 @@ export default function SalesPipelineTab() {
             </select>
             <ChevronDown className="absolute right-2.5 top-3 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           </div>
-          <button onClick={() => setShowManager(true)}
+          <button onClick={() => openManager('list')}
             className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-semibold text-slate-600 rounded-xl border border-slate-200 hover:bg-white/80 hover:border-slate-300 transition-all"
             style={{ background: 'rgba(255,255,255,0.72)' }}>
             <Settings className="w-4 h-4" /> Manage
+          </button>
+          <button onClick={() => openManager('new')}
+            className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-semibold text-slate-600 rounded-xl border border-slate-200 hover:bg-white/80 hover:border-slate-300 transition-all"
+            style={{ background: 'rgba(255,255,255,0.72)' }}>
+            <Plus className="w-4 h-4" /> New Pipeline
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -361,6 +369,7 @@ export default function SalesPipelineTab() {
           onClose={() => setShowManager(false)}
           onPipelinesChanged={refreshPipelines}
           onTemplatesChanged={refreshTemplates}
+          initialView={managerInitialView}
         />
       )}
 

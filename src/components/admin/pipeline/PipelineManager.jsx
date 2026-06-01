@@ -65,8 +65,8 @@ function StageRow({ stage, idx, total, onChange, onRemove, onMove, onToggleWon, 
   );
 }
 
-export default function PipelineManager({ pipelines, templates, onClose, onPipelinesChanged, onTemplatesChanged }) {
-  const [view, setView] = useState('list'); // 'list' | 'edit' | 'new' | 'templates'
+export default function PipelineManager({ pipelines, templates, onClose, onPipelinesChanged, onTemplatesChanged, initialView = 'list' }) {
+  const [view, setView] = useState(initialView); // 'list' | 'edit' | 'new' | 'templates'
   const [editingPipeline, setEditingPipeline] = useState(null);
   const [stages, setStages] = useState([]);
   const [saving, setSaving] = useState(false);
