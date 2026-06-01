@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -33,12 +33,11 @@ function StageBadge({ label }) {
 }
 
 // ─── Project row ──────────────────────────────────────────────────────────────
-function ProjectRow({ project, emailLogs, onView, onEdit, onUpdateStage }) {
+function ProjectRow({ project, emailStats, onView, onEdit, onUpdateStage }) {
   const sc = STATUS_COLORS[project.status] || STATUS_COLORS.active;
   const svc = SERVICE_COLORS[project.service_type] || SERVICE_COLORS['Book Printing'];
-  const projectLogs = emailLogs.filter(e => e.project_id === project.id);
-  const lastLog = projectLogs[0];
-  const failedCount = projectLogs.filter(e => e.status === 'failed').length;
+  const failedCount = emailStats?.failed || 0;
+  const sentCount = emailStats?.total || 0;
 
   return (
     <tr className="group hover:bg-blue-50/30 transition-colors cursor-pointer" onClick={() => onView(project)}>
@@ -71,9 +70,9 @@ function ProjectRow({ project, emailLogs, onView, onEdit, onUpdateStage }) {
             <span className="flex items-center gap-1 text-[10px] font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
               <XCircle className="w-3 h-3" />{failedCount} failed
             </span>
-          ) : lastLog ? (
+          ) : sentCount > 0 ? (
             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-              <CheckCircle className="w-3 h-3" /> {project.total_emails_sent || 0} sent
+              <CheckCircle className="w-3 h-3" /> {sentCount} sent
             </span>
           ) : (
             <span className="text-xs text-slate-300">No emails</span>
@@ -111,13 +110,26 @@ export default function AdminClientServiceUpdates() {
 
   const { data: projects = [], isLoading: loadingProjects } = useQuery({
     queryKey: ['client-service-projects'],
-    queryFn: () => base44.entities.ClientServiceProject.list('-updated_date', 200),
+    queryFn: () => base44.entities.ClientServiceProject.list('-updated_date', 100),
+    staleTime: 30000,
   });
 
   const { data: emailLogs = [] } = useQuery({
     queryKey: ['service-email-logs'],
-    queryFn: () => base44.entities.ServiceEmailLog.list('-sent_at', 500),
+    queryFn: () => base44.entities.ServiceEmailLog.list('-sent_at', 200),
+    staleTime: 30000,
   });
+
+  // Pre-compute email stats per project O(n) once, O(1) lookup per row
+  const emailStatsByProject = useMemo(() => {
+    const map = {};
+    for (const log of emailLogs) {
+      if (!map[log.project_id]) map[log.project_id] = { total: 0, failed: 0 };
+      const s = map[log.project_id];
+      if (log.status === 'failed') s.failed++; else s.total++;
+    }
+    return map;
+  }, [emailLogs]);
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ['client-service-projects'] });
@@ -137,7 +149,7 @@ export default function AdminClientServiceUpdates() {
     qc.invalidateQueries({ queryKey: ['service-email-logs'] });
   };
 
-  const filtered = projects.filter(p => {
+  const filtered = useMemo(() => projects.filter(p => {
     if (filterService !== 'all' && p.service_type !== filterService) return false;
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     if (search) {
@@ -147,10 +159,13 @@ export default function AdminClientServiceUpdates() {
         p.project_title?.toLowerCase().includes(q);
     }
     return true;
-  });
+  }), [projects, filterService, filterStatus, search]);
 
   // Update viewProject when projects data refreshes
-  const currentViewProject = viewProject ? projects.find(p => p.id === viewProject.id) || viewProject : null;
+  const currentViewProject = useMemo(
+    () => viewProject ? (projects.find(p => p.id === viewProject.id) || viewProject) : null,
+    [viewProject, projects]
+  );
 
   return (
     <AdminLayout>
@@ -264,7 +279,7 @@ export default function AdminClientServiceUpdates() {
                           <ProjectRow
                             key={p.id}
                             project={p}
-                            emailLogs={emailLogs}
+                            emailStats={emailStatsByProject[p.id]}
                             onView={proj => setViewProject(proj)}
                             onEdit={proj => { setEditingProject(proj); setShowProjectModal(true); }}
                             onUpdateStage={proj => setStageProject(proj)}
@@ -300,7 +315,7 @@ export default function AdminClientServiceUpdates() {
       {currentViewProject && (
         <ProjectDetail
           project={currentViewProject}
-          emailLogs={emailLogs}
+          emailLogs={emailLogs.filter(e => e.project_id === currentViewProject.id)}
           onClose={() => setViewProject(null)}
           onUpdated={handleStageUpdated}
           onOpenStageModal={() => { setStageProject(currentViewProject); }}

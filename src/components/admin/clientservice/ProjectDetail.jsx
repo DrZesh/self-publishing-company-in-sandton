@@ -7,7 +7,7 @@ import { STATUS_COLORS, SERVICE_COLORS } from './WORKFLOWS';
 
 export default function ProjectDetail({ project, emailLogs, onClose, onUpdated, onOpenStageModal }) {
   const [resending, setResending] = useState(null);
-  const projectLogs = emailLogs.filter(e => e.project_id === project.id).sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at));
+  const projectLogs = [...emailLogs].sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at));
 
   const handleResend = async (log) => {
     setResending(log.id);
