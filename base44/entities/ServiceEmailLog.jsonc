@@ -1,0 +1,69 @@
+{
+  "name": "ServiceEmailLog",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "project_title": {
+      "type": "string"
+    },
+    "service_type": {
+      "type": "string"
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "stage_label": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body_html": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed",
+        "resent"
+      ],
+      "default": "sent"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sent_by": {
+      "type": "string"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "attachments_included": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of attachment filenames included with this email"
+    },
+    "is_welcome_email": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "project_id",
+    "client_email",
+    "stage_key",
+    "subject"
+  ]
+}

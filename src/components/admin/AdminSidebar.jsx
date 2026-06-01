@@ -7,7 +7,7 @@ import {
   Columns, FileText, Mail, PenTool, FolderKanban, Receipt,
   CreditCard, CheckSquare, FolderOpen, FileSignature, CalendarDays,
   BarChart3, Globe, Zap, TrendingUp, BookMarked, UserSquare2,
-  Package, MessageSquare, Factory, ChevronDown, DollarSign
+  Package, MessageSquare, Factory, ChevronDown, DollarSign, RefreshCw
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -49,6 +49,13 @@ const NAV_GROUPS = [
       { label: 'Documents', path: '/admin/contracts', icon: FileText },
       { label: 'Document Builder', path: '/admin/document-builder', icon: PenTool },
       { label: 'Clause Library', path: '/admin/clause-library', icon: BookMarked },
+    ],
+  },
+  {
+    key: 'client_service',
+    label: 'Client Services',
+    items: [
+      { label: 'Service Updates', path: '/admin/client-service', icon: RefreshCw },
     ],
   },
   {
