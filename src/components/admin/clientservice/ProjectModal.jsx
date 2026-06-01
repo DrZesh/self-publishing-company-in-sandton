@@ -12,6 +12,44 @@ const EMPTY_FORM = {
   invoice_url: '', invoice_name: '',
 };
 
+const inputClass = "w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all";
+
+// ── Defined OUTSIDE component so React never unmounts/remounts them on re-render ──
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function FileUploadField({ label, url, name, uploading, onUpload, onClear }) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">{label}</label>
+      {url ? (
+        <div className="flex items-center gap-2 p-3 border border-emerald-200 bg-emerald-50 rounded-xl">
+          <FileText className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          <span className="text-xs font-medium text-emerald-700 truncate flex-1">{name || 'Uploaded'}</span>
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">View</a>
+          <button onClick={onClear} className="p-1 hover:bg-emerald-100 rounded-lg">
+            <Trash2 className="w-3.5 h-3.5 text-red-400" />
+          </button>
+        </div>
+      ) : (
+        <label className="flex items-center gap-2 p-3 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-all">
+          <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden"
+            onChange={e => e.target.files[0] && onUpload(e.target.files[0])} />
+          {uploading ? <Loader2 className="w-4 h-4 animate-spin text-slate-400" /> : <Upload className="w-4 h-4 text-slate-400" />}
+          <span className="text-xs text-slate-400">{uploading ? 'Uploading...' : 'Upload PDF, JPG or PNG'}</span>
+        </label>
+      )}
+    </div>
+  );
+}
+
 export default function ProjectModal({ project, onClose, onSaved }) {
   const [form, setForm] = useState(project ? { ...project } : { ...EMPTY_FORM });
   const [saving, setSaving] = useState(false);
@@ -37,11 +75,9 @@ export default function ProjectModal({ project, onClose, onSaved }) {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       if (type === 'receipt') {
-        set('payment_receipt_url', file_url);
-        set('payment_receipt_name', file.name);
+        setForm(f => ({ ...f, payment_receipt_url: file_url, payment_receipt_name: file.name }));
       } else {
-        set('invoice_url', file_url);
-        set('invoice_name', file.name);
+        setForm(f => ({ ...f, invoice_url: file_url, invoice_name: file.name }));
       }
       toast.success(`${type === 'receipt' ? 'Receipt' : 'Invoice'} uploaded`);
     } catch (err) {
@@ -58,13 +94,11 @@ export default function ProjectModal({ project, onClose, onSaved }) {
     }
     setSaving(true);
     try {
-      // Ensure stage is set
       const saveData = { ...form };
       if (!saveData.current_stage_key && stages.length) {
         saveData.current_stage_key = stages[0].key;
         saveData.current_stage_label = stages[0].label;
       }
-      // Init stage history on create
       if (!project) {
         saveData.stage_history = [{
           stage_key: saveData.current_stage_key,
@@ -92,38 +126,6 @@ export default function ProjectModal({ project, onClose, onSaved }) {
       setSaving(false);
     }
   };
-
-  const FileUploadField = ({ label, urlKey, nameKey, uploadingState, uploadType }) => (
-    <div>
-      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">{label}</label>
-      {form[urlKey] ? (
-        <div className="flex items-center gap-2 p-3 border border-emerald-200 bg-emerald-50 rounded-xl">
-          <FileText className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <span className="text-xs font-medium text-emerald-700 truncate flex-1">{form[nameKey] || 'Uploaded'}</span>
-          <a href={form[urlKey]} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">View</a>
-          <button onClick={() => { set(urlKey, ''); set(nameKey, ''); }} className="p-1 hover:bg-emerald-100 rounded-lg">
-            <Trash2 className="w-3.5 h-3.5 text-red-400" />
-          </button>
-        </div>
-      ) : (
-        <label className="flex items-center gap-2 p-3 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-all">
-          <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden"
-            onChange={e => e.target.files[0] && uploadFile(e.target.files[0], uploadType)} />
-          {uploadingState ? <Loader2 className="w-4 h-4 animate-spin text-slate-400" /> : <Upload className="w-4 h-4 text-slate-400" />}
-          <span className="text-xs text-slate-400">{uploadingState ? 'Uploading...' : 'Upload PDF, JPG or PNG'}</span>
-        </label>
-      )}
-    </div>
-  );
-
-  const Field = ({ label, children }) => (
-    <div>
-      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">{label}</label>
-      {children}
-    </div>
-  );
-
-  const inputClass = "w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -200,8 +202,7 @@ export default function ProjectModal({ project, onClose, onSaved }) {
                 <Field label="Current Stage">
                   <select value={form.current_stage_key} onChange={e => {
                     const s = stages.find(s => s.key === e.target.value);
-                    set('current_stage_key', e.target.value);
-                    set('current_stage_label', s?.label || '');
+                    setForm(f => ({ ...f, current_stage_key: e.target.value, current_stage_label: s?.label || '' }));
                   }} className={inputClass}>
                     {stages.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
                   </select>
@@ -221,10 +222,24 @@ export default function ProjectModal({ project, onClose, onSaved }) {
             <p className="text-xs font-bold text-slate-700 uppercase tracking-widest mb-1 flex items-center gap-2">
               <span className="w-4 h-0.5 bg-amber-400 inline-block" />Payment Documents
             </p>
-            <p className="text-xs text-slate-400 mb-3">Optional — attach receipt and invoice from your payments system. These are included in the welcome email only.</p>
+            <p className="text-xs text-slate-400 mb-3">Optional — attach receipt and invoice. These are included in the welcome email only.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FileUploadField label="Payment Receipt" urlKey="payment_receipt_url" nameKey="payment_receipt_name" uploadingState={uploadingReceipt} uploadType="receipt" />
-              <FileUploadField label="Invoice" urlKey="invoice_url" nameKey="invoice_name" uploadingState={uploadingInvoice} uploadType="invoice" />
+              <FileUploadField
+                label="Payment Receipt"
+                url={form.payment_receipt_url}
+                name={form.payment_receipt_name}
+                uploading={uploadingReceipt}
+                onUpload={f => uploadFile(f, 'receipt')}
+                onClear={() => setForm(f => ({ ...f, payment_receipt_url: '', payment_receipt_name: '' }))}
+              />
+              <FileUploadField
+                label="Invoice"
+                url={form.invoice_url}
+                name={form.invoice_name}
+                uploading={uploadingInvoice}
+                onUpload={f => uploadFile(f, 'invoice')}
+                onClear={() => setForm(f => ({ ...f, invoice_url: '', invoice_name: '' }))}
+              />
             </div>
           </div>
         </div>
