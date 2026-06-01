@@ -13,6 +13,7 @@ import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
 import AICopilot from '@/components/admin/dashboard/AICopilot';
 import FollowUpReminders from '@/components/admin/dashboard/FollowUpReminders';
 import TodaysAppointmentsWidget from '@/components/appointments/TodaysAppointmentsWidget';
+import DealPerformanceSummary from '@/components/admin/dashboard/DealPerformanceSummary';
 import {
   Plus, FileText, Receipt, Upload, Send, MessageSquare,
   Mail, CheckSquare, FolderKanban, RefreshCw, Zap, Clock,
@@ -346,6 +347,9 @@ export default function AdminDashboard() {
           <div className="[&>div]:!bg-[rgba(15,15,25,0.75)] [&>div]:!backdrop-blur-xl [&>div]:!border-white/10 [&>div]:!rounded-2xl [&>div]:!border [&_p]:!text-white/70 [&_h2]:!text-white [&_span]:!text-white/60">
             <TodaysAppointmentsWidget />
           </div>
+
+          {/* ── DEAL PERFORMANCE SUMMARY ── */}
+          <DealPerformanceSummary />
 
           {/* ── ACTIVITY FEED ── */}
           <div className="[&>div]:!bg-[rgba(15,15,25,0.75)] [&>div]:!backdrop-blur-xl [&>div]:!border-white/10 [&>div]:!rounded-2xl [&>div]:!border [&_p]:!text-white/70 [&_h2]:!text-white [&_span]:!text-white/60">
