@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User, MessageSquare, History } from 'lucide-react';
+import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User, MessageSquare, History, MoveRight, Loader2 } from 'lucide-react';
 import NewDealModal from '@/components/pipeline/NewDealModal';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
@@ -776,6 +776,34 @@ export default function AdminPipeline() {
   const [convertContact, setConvertContact] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
   const [newDealOpen, setNewDealOpen] = useState(false);
+  const [migrateOpen, setMigrateOpen] = useState(false);
+  const [migrating, setMigrating] = useState(false);
+  const [migrateResult, setMigrateResult] = useState(null);
+  const [pipelines, setPipelines] = useState([]);
+  const [targetPipelineId, setTargetPipelineId] = useState('');
+
+  useEffect(() => {
+    base44.entities.SalesPipeline.filter({ is_active: true }).then(ps => {
+      setPipelines(ps);
+      if (ps.length > 0) setTargetPipelineId(ps[0].id);
+    }).catch(() => {});
+  }, []);
+
+  const handleMigrate = async () => {
+    if (!targetPipelineId) { toast.error('Please select a target pipeline'); return; }
+    setMigrating(true);
+    setMigrateResult(null);
+    try {
+      const res = await base44.functions.invoke('migrateDealsToNewPipeline', { pipeline_id: targetPipelineId });
+      setMigrateResult(res.data);
+      if (res.data?.success) toast.success(res.data.message);
+      else toast.error(res.data?.error || 'Migration failed');
+    } catch (err) {
+      toast.error('Migration failed: ' + err.message);
+    } finally {
+      setMigrating(false);
+    }
+  };
 
   const load = useCallback(async () => {
     const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
@@ -920,6 +948,10 @@ export default function AdminPipeline() {
                 <Edit2 style={{ width: 13, height: 13 }} /> Bulk edit values
               </button>
 
+              <button onClick={() => { setMigrateOpen(true); setMigrateResult(null); }}
+                style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <MoveRight style={{ width: 13, height: 13 }} /> Move to Sales Pipeline
+              </button>
               <button onClick={() => setNewDealOpen(true)}
                 style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Plus style={{ width: 14, height: 14 }} /> New deal
@@ -1010,6 +1042,61 @@ export default function AdminPipeline() {
             onClose={() => setConvertContact(null)}
             onConverted={() => { toast.success('Project created!'); load(); }}
           />
+        )}
+
+        {/* Migrate to Sales Pipeline modal */}
+        {migrateOpen && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={() => setMigrateOpen(false)}>
+            <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 24px 64px rgba(0,0,0,0.3)', maxWidth: 460, width: '100%', padding: 28 }} onClick={e => e.stopPropagation()}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div>
+                  <h2 style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e', margin: 0 }}>Move Deals to Sales Pipeline</h2>
+                  <p style={{ fontSize: 12, color: '#94a3b8', margin: '4px 0 0' }}>Copies all contacts with pipeline stages into your new Sales Pipeline as deals. Duplicates are skipped automatically.</p>
+                </div>
+                <button onClick={() => setMigrateOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8' }}>✕</button>
+              </div>
+              {migrateResult ? (
+                <div style={{ background: migrateResult.success ? '#f0fdf4' : '#fef2f2', border: `1px solid ${migrateResult.success ? '#bbf7d0' : '#fecaca'}`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
+                  <p style={{ fontWeight: 700, fontSize: 15, color: migrateResult.success ? '#166534' : '#991b1b', margin: '0 0 6px' }}>
+                    {migrateResult.success ? '✅ Migration Complete' : '❌ Migration Failed'}
+                  </p>
+                  <p style={{ fontSize: 13, color: migrateResult.success ? '#166534' : '#991b1b', margin: 0 }}>{migrateResult.message || migrateResult.error}</p>
+                  {migrateResult.errors?.length > 0 && (
+                    <div style={{ marginTop: 8, fontSize: 11, color: '#6b7280' }}>
+                      {migrateResult.errors.map((e, i) => <div key={i}>⚠ {e.contact}: {e.error}</div>)}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>Target Pipeline</label>
+                    {pipelines.length === 0 ? (
+                      <p style={{ fontSize: 13, color: '#e11d48' }}>No active Sales Pipelines found. Please create one first.</p>
+                    ) : (
+                      <select value={targetPipelineId} onChange={e => setTargetPipelineId(e.target.value)}
+                        style={{ width: '100%', border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#374151', outline: 'none' }}>
+                        {pipelines.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 12, color: '#6b7280', background: '#f8fafc', borderRadius: 8, padding: '10px 12px', marginBottom: 16 }}>
+                    📋 {contacts.filter(c => c.pipeline_stage).length} contacts with pipeline stages will be migrated.
+                  </p>
+                </>
+              )}
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={() => setMigrateOpen(false)} style={{ flex: 1, padding: '10px 0', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, background: '#fff', cursor: 'pointer', color: '#374151' }}>Close</button>
+                {!migrateResult && (
+                  <button onClick={handleMigrate} disabled={migrating || !targetPipelineId || pipelines.length === 0}
+                    style={{ flex: 2, padding: '10px 0', background: '#B87333', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, opacity: (migrating || !targetPipelineId) ? 0.6 : 1 }}>
+                    {migrating ? <Loader2 style={{ width: 15, height: 15, animation: 'spin 0.8s linear infinite' }} /> : <MoveRight style={{ width: 15, height: 15 }} />}
+                    {migrating ? 'Migrating...' : 'Migrate All Deals'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Bulk edit modal */}
