@@ -17,7 +17,7 @@ import {
   Plus, FileText, Receipt, Upload, Send, MessageSquare,
   Mail, CheckSquare, FolderKanban, RefreshCw, Zap, Clock,
   AlertTriangle, TrendingUp, Users, Target, Package, ChevronRight,
-  Activity, Sparkles, BarChart3, Star
+  Activity, Sparkles, BarChart3, Star, Layers
 } from 'lucide-react';
 
 // ─── Glass card wrapper ───────────────────────────────────────────────────────
@@ -294,6 +294,7 @@ export default function AdminDashboard() {
               <QA label="WhatsApp" icon={MessageSquare} to="/admin/automations" gradient="linear-gradient(135deg,#22c55e,#4ade80)" />
               <QA label="Send Email" icon={Mail} to="/admin/email-templates" gradient="linear-gradient(135deg,#f59e0b,#fbbf24)" />
               <QA label="Add Task" icon={CheckSquare} to="/admin/tasks" gradient="linear-gradient(135deg,#ef4444,#f87171)" />
+              <QA label="Service Updates" icon={Layers} to="/admin/client-service" gradient="linear-gradient(135deg,#6366f1,#818cf8)" />
             </div>
           </Glass>
 
