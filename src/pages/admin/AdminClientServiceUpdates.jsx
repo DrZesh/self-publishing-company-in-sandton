@@ -208,7 +208,7 @@ export default function AdminClientServiceUpdates() {
 
           {/* Tab content */}
           {tab === 'pipeline' ? (
-            <SalesPipelineTab />
+            <SalesPipelineTab onProjectCreated={() => setTab('projects')} />
           ) : tab === 'settings' ? (
             <WorkflowSettings />
           ) : (

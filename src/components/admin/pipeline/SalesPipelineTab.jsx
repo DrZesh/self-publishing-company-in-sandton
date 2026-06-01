@@ -83,7 +83,7 @@ function ServiceTypePrompt({ deal, onConfirm, onCancel }) {
   );
 }
 
-export default function SalesPipelineTab() {
+export default function SalesPipelineTab({ onProjectCreated }) {
   const qc = useQueryClient();
   const [activePipelineId, setActivePipelineId] = useState(null);
   const [showManager, setShowManager] = useState(false);
@@ -152,13 +152,9 @@ export default function SalesPipelineTab() {
     // Prevent duplicate creation
     if (deal.linked_project_id) return;
 
-    const workflows = WORKFLOWS;
-    const workflow = workflows[serviceType];
-    if (!workflow || workflow.length === 0) {
-      toast.error('No workflow found for: ' + serviceType);
-      return;
-    }
-    const firstStage = workflow[0];
+    const workflow = WORKFLOWS[serviceType];
+    // Use workflow first stage if available, otherwise use a generic fallback
+    const firstStage = workflow?.[0] || { key: 'project_started', label: 'Project Started' };
 
     try {
       const user = await base44.auth.me();
@@ -196,7 +192,8 @@ export default function SalesPipelineTab() {
 
       qc.invalidateQueries({ queryKey: ['client-service-projects'] });
       refreshDeals();
-      toast.success(`✅ Project created for ${deal.client_name}. Send the intro email manually from Client Service Updates.`);
+      if (onProjectCreated) onProjectCreated();
+      toast.success(`✅ Project created for ${deal.client_name} — switching to Projects tab.`);
     } catch (err) {
       await base44.entities.PipelineDeal.update(deal.id, {
         project_creation_failed: true,
