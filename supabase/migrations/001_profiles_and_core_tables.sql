@@ -1,5 +1,5 @@
 -- Creative Books SA Supabase starter schema
--- Run this in the Supabase SQL editor, then add your admin user to public.profiles with role = 'admin'.
+-- Run this in the Supabase SQL editor, then set your admin user's profile role to 'admin'.
 
 create extension if not exists pgcrypto;
 
@@ -14,13 +14,15 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
-create policy if not exists "Users can read own profile"
+drop policy if exists "Users can read own profile" on public.profiles;
+create policy "Users can read own profile"
 on public.profiles
 for select
 to authenticated
 using (id = auth.uid());
 
-create policy if not exists "Admins can read all profiles"
+drop policy if exists "Admins can read all profiles" on public.profiles;
+create policy "Admins can read all profiles"
 on public.profiles
 for select
 to authenticated
@@ -32,7 +34,8 @@ using (
   )
 );
 
-create policy if not exists "Admins can manage profiles"
+drop policy if exists "Admins can manage profiles" on public.profiles;
+create policy "Admins can manage profiles"
 on public.profiles
 for all
 to authenticated
@@ -76,22 +79,7 @@ after insert on auth.users
 for each row execute function public.handle_new_user();
 
 -- Core tables used by the current compatibility layer.
--- These are intentionally broad JSON-friendly tables so the existing dashboard can be connected first,
--- then tightened with stricter columns after testing.
-
-create table if not exists public.lead (
-  id uuid primary key default gen_random_uuid(),
-  contact_id uuid,
-  stage text default 'new',
-  service_interest jsonb default '[]'::jsonb,
-  estimated_value numeric default 0,
-  weighted_value numeric default 0,
-  source text,
-  notes text,
-  metadata jsonb default '{}'::jsonb,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
+-- These tables are intentionally broad and JSON-friendly so the current dashboard can connect first.
 
 create table if not exists public.contact (
   id uuid primary key default gen_random_uuid(),
@@ -107,6 +95,20 @@ create table if not exists public.contact (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.lead (
+  id uuid primary key default gen_random_uuid(),
+  contact_id uuid,
+  stage text default 'new',
+  service_interest jsonb default '[]'::jsonb,
+  estimated_value numeric default 0,
+  weighted_value numeric default 0,
+  source text,
+  notes text,
+  metadata jsonb default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.submission (
   id uuid primary key default gen_random_uuid(),
   form_type text,
@@ -117,6 +119,7 @@ create table if not exists public.submission (
   service_interest jsonb default '[]'::jsonb,
   status text default 'new',
   additional_fields jsonb default '{}'::jsonb,
+  metadata jsonb default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -204,6 +207,19 @@ create table if not exists public.service (
   updated_at timestamptz not null default now()
 );
 
+-- Additional generic tables mapped by src/api/base44Client.js. Add stricter columns later after confirming each module's exact data model.
+do $$
+declare
+  t text;
+begin
+  foreach t in array array[
+    'activity_log','appointment','appointment_slot','author','automation','automation_rule','client','client_portal_user',
+    'client_service','collection','communication','contract','deal','email_queue','pipeline','pipeline_stage','project'
+  ] loop
+    execute format('create table if not exists public.%I (id uuid primary key default gen_random_uuid(), name text, title text, status text, metadata jsonb default ''{}''::jsonb, created_at timestamptz not null default now(), updated_at timestamptz not null default now())', t);
+  end loop;
+end $$;
+
 create or replace function public.is_admin()
 returns boolean
 language sql
@@ -218,20 +234,25 @@ as $$
   );
 $$;
 
--- Enable RLS and allow admins to manage core dashboard tables.
+-- Enable RLS and allow admins to manage dashboard tables.
 do $$
 declare
-  table_name text;
+  t text;
 begin
-  foreach table_name in array array['lead','contact','submission','quote','invoice','payment','task','document','email_template','service'] loop
-    execute format('alter table public.%I enable row level security', table_name);
-    execute format('drop policy if exists "Admins can manage %I" on public.%I', table_name, table_name);
-    execute format('create policy "Admins can manage %I" on public.%I for all to authenticated using (public.is_admin()) with check (public.is_admin())', table_name, table_name);
+  foreach t in array array[
+    'activity_log','appointment','appointment_slot','author','automation','automation_rule','client','client_portal_user',
+    'client_service','collection','communication','contact','contract','deal','document','email_queue','email_template',
+    'invoice','lead','payment','pipeline','pipeline_stage','project','quote','service','submission','task'
+  ] loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('drop policy if exists "Admins can manage records" on public.%I', t);
+    execute format('create policy "Admins can manage records" on public.%I for all to authenticated using (public.is_admin()) with check (public.is_admin())', t);
   end loop;
 end $$;
 
--- Public quote forms may create submissions, but cannot read them.
-create policy if not exists "Anyone can submit website forms"
+-- Public website forms may create submissions, but cannot read them.
+drop policy if exists "Anyone can submit website forms" on public.submission;
+create policy "Anyone can submit website forms"
 on public.submission
 for insert
 to anon, authenticated
