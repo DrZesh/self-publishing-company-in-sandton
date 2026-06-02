@@ -17,7 +17,6 @@ export default function AdminLogin() {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
 
-  // Check if user is already authenticated as admin
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -39,6 +38,17 @@ export default function AdminLogin() {
     checkAuth();
   }, [navigate]);
 
+  const registerFailedAttempt = () => {
+    setLoginAttempts(prev => {
+      const newAttempts = prev + 1;
+      if (newAttempts >= 5) {
+        setLocked(true);
+        setTimeout(() => setLocked(false), 15 * 60 * 1000);
+      }
+      return newAttempts;
+    });
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -56,17 +66,9 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // Use Base44's redirectToLogin for OAuth/SSO authentication
-      // For now, we check if user exists and has admin role after they log in
-      // Base44 handles the actual authentication
-      
-      // Redirect to Base44's login page
-      // The user will be redirected back here after login via redirectToLogin callback
-      await base44.auth.redirectToLogin('/admin/login');
-      
-      // After redirect back, check role
+      await base44.auth.login(email, password);
       const user = await base44.auth.me();
-      
+
       if (user?.role === 'admin') {
         if (rememberMe) {
           localStorage.setItem('adminRememberMe', 'true');
@@ -74,27 +76,14 @@ export default function AdminLogin() {
         }
         navigate('/admin/dashboard');
       } else {
-        setLoginAttempts(prev => {
-          const newAttempts = prev + 1;
-          if (newAttempts >= 5) {
-            setLocked(true);
-            setTimeout(() => setLocked(false), 15 * 60 * 1000);
-          }
-          return newAttempts;
-        });
+        await base44.auth.logout(false);
+        registerFailedAttempt();
         setError('You do not have admin access. Contact your administrator.');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setLoginAttempts(prev => {
-        const newAttempts = prev + 1;
-        if (newAttempts >= 5) {
-          setLocked(true);
-          setTimeout(() => setLocked(false), 15 * 60 * 1000);
-        }
-        return newAttempts;
-      });
-      setError('Login failed. Please try again.');
+      registerFailedAttempt();
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -120,14 +109,12 @@ export default function AdminLogin() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        {/* Logo */}
         <div className="text-center mb-12">
           <div className="inline-block w-12 h-12 rounded-lg bg-[#B8955B] mb-4" />
           <h1 className="text-2xl font-bold text-[#0B1220]">Creative Books SA</h1>
           <p className="text-sm text-[#2B2B2B]/60 mt-2">Admin Portal</p>
         </div>
 
-        {/* Login Card */}
         <div
           className="rounded-2xl p-8 mb-6"
           style={{
@@ -146,7 +133,6 @@ export default function AdminLogin() {
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-[#0B1220] mb-2">
                 Email Address
@@ -164,7 +150,6 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Password Field */}
             <div>
               <label className="block text-sm font-medium text-[#0B1220] mb-2">
                 Password
@@ -193,7 +178,6 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Remember Me */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -208,7 +192,6 @@ export default function AdminLogin() {
               </label>
             </div>
 
-            {/* Login Button */}
             <button
               type="submit"
               disabled={loading || locked}
@@ -218,15 +201,13 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* Forgotten Password */}
           <div className="mt-4 text-center">
-            <button className="text-sm text-[#B8955B] hover:text-[#a07d4a]">
+            <button type="button" className="text-sm text-[#B8955B] hover:text-[#a07d4a]">
               Forgotten password?
             </button>
           </div>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs text-[#2B2B2B]/50 border-t border-[#ddd]/30 pt-6">
           Creative Books SA — Admin Portal
         </p>
