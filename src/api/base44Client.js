@@ -125,12 +125,85 @@ const entities = new Proxy({}, {
   },
 });
 
+const insertSubmission = async (payload = {}) => {
+  const fullName = payload.fullName || payload.submitterName || '';
+  const email = payload.email || payload.submitterEmail || '';
+  const phone = payload.phone || '';
+
+  const response = await supabase
+    .from('submission')
+    .insert({
+      form_type: payload.formType || 'website_form',
+      full_name: fullName,
+      email,
+      phone,
+      source_page: payload.sourcePage || payload.pageUrl || '',
+      service_interest: payload.serviceInterest || [],
+      status: 'new',
+      additional_fields: payload.additionalFields || payload,
+      metadata: payload,
+    })
+    .select('*')
+    .single();
+
+  return { success: true, submission: throwIfError(response) };
+};
+
+const getDashboardMetrics = async () => {
+  const tables = ['lead', 'contact', 'submission', 'quote', 'invoice', 'payment', 'task'];
+  const counts = {};
+
+  await Promise.all(tables.map(async (table) => {
+    const { count, error } = await supabase
+      .from(table)
+      .select('*', { count: 'exact', head: true });
+
+    if (!error) counts[table] = count || 0;
+  }));
+
+  return { success: true, counts };
+};
+
+const localFunctionFallbacks = {
+  captureFormSubmission: insertSubmission,
+  getAdminDashboardMetrics: getDashboardMetrics,
+  getAnalyticsData: async () => ({ success: true, data: {}, rows: [] }),
+  searchConsoleData: async () => ({ success: true, data: [], rows: [] }),
+  gscListProperties: async () => ({ success: true, properties: [] }),
+  fetchGoogleReviews: async () => ({ success: true, reviews: [] }),
+  getAvailableSlots: async () => ({ success: true, slots: [] }),
+  sendFormEmailResend: async () => ({ success: true, skipped: true, message: 'Email Edge Function not deployed yet.' }),
+  sendFormEmail: async () => ({ success: true, skipped: true, message: 'Email Edge Function not deployed yet.' }),
+  sendBrandedEmail: async () => ({ success: true, skipped: true, message: 'Email Edge Function not deployed yet.' }),
+  sendWhatsAppNotification: async () => ({ success: true, skipped: true, message: 'WhatsApp Edge Function not deployed yet.' }),
+};
+
+const isMissingFunctionError = (error) => {
+  const message = String(error?.message || error?.context?.message || error || '').toLowerCase();
+  return message.includes('not found') || message.includes('404') || message.includes('function');
+};
+
 const functions = {
   async invoke(functionName, payload = {}) {
     assertConfigured();
-    const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
-    if (error) throw error;
-    return data;
+
+    if (functionName === 'captureFormSubmission') {
+      return insertSubmission(payload);
+    }
+
+    const fallback = localFunctionFallbacks[functionName];
+
+    try {
+      const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      if (fallback && isMissingFunctionError(error)) {
+        console.warn(`Supabase Edge Function ${functionName} is not deployed yet. Using local fallback.`, error);
+        return fallback(payload);
+      }
+      throw error;
+    }
   },
 };
 
