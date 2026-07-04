@@ -10,7 +10,7 @@ export default defineConfig({
     alias: [
       {
         find: '@/api/base44Client',
-        replacement: resolve(process.cwd(), 'src/api/clientServiceSupabaseBridge.js'),
+        replacement: resolve(process.cwd(), 'src/api/finalSupabaseBridge.js'),
       },
     ],
   },
