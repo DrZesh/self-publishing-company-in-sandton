@@ -30,7 +30,6 @@ const SIGNING_STEPS = [
 
 function getStepState(step, status) {
   if (step.doneStatuses.includes(status)) return 'done';
-  // Active = previous step done but this one not
   const prevIdx = SIGNING_STEPS.indexOf(step) - 1;
   if (prevIdx < 0) return status !== 'Draft' ? 'active' : 'pending';
   return SIGNING_STEPS[prevIdx].doneStatuses.includes(status) ? 'active' : 'pending';
@@ -45,10 +44,10 @@ export default function ContractProgressTracker({ contract }) {
   const isTerminated = isDeclined || isExpired || isCancelled;
   const isFullySigned = status === 'Fully Signed';
   const needsSignature = ['Sent for Signature', 'Opened', 'Viewed', 'Signing Started', 'Resent'].includes(status);
+  const signingUrl = contract.signing_url || (contract.sign_token ? `/sign/contract/${contract.sign_token}` : null);
 
   return (
     <div className={`bg-white rounded-2xl border p-5 ${isFullySigned ? 'border-emerald-200' : isTerminated ? 'border-red-200' : 'border-gray-100'}`}>
-      {/* Header */}
       <div className="flex items-start justify-between mb-4 gap-3">
         <div>
           <h3 className="font-semibold text-gray-900">{contract.title}</h3>
@@ -68,7 +67,6 @@ export default function ContractProgressTracker({ contract }) {
         </span>
       </div>
 
-      {/* Terminated notice */}
       {isTerminated && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 flex items-start gap-2">
           <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
@@ -80,17 +78,14 @@ export default function ContractProgressTracker({ contract }) {
         </div>
       )}
 
-      {/* Progress Steps */}
       {!isTerminated && (
         <div className="relative mb-5">
-          {/* Connecting line */}
           <div className="absolute top-4 left-4 right-4 h-0.5 bg-gray-200" style={{ left: 16, right: 16 }} />
           <div className="flex justify-between relative">
             {SIGNING_STEPS.map((step, i) => {
               const state = getStepState(step, status);
               return (
                 <div key={i} className="flex flex-col items-center text-center flex-1 px-1">
-                  {/* Circle */}
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 mb-2 border-2 transition-all ${
                     state === 'done' ? 'bg-emerald-500 border-emerald-500' :
                     state === 'active' ? 'bg-[#B87333] border-[#B87333] animate-pulse' :
@@ -115,7 +110,6 @@ export default function ContractProgressTracker({ contract }) {
         </div>
       )}
 
-      {/* Fully signed banner */}
       {isFullySigned && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 flex items-center gap-2">
           <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
@@ -130,19 +124,16 @@ export default function ContractProgressTracker({ contract }) {
         </div>
       )}
 
-      {/* Action buttons */}
       <div className="flex flex-wrap gap-2">
-        {/* Sign now button */}
-        {needsSignature && contract.sign_token && (
+        {needsSignature && signingUrl && (
           <a
-            href={`/sign/contract/${contract.sign_token}`}
+            href={signingUrl}
             className="flex items-center gap-1.5 px-4 py-2 bg-[#B87333] hover:bg-[#A06828] text-white rounded-xl text-sm font-semibold transition-colors"
           >
             <PenLine className="w-3.5 h-3.5" /> Sign {docType} Now
           </a>
         )}
 
-        {/* Download signed copy */}
         {contract.signed_file_url && (
           <a
             href={contract.signed_file_url}
@@ -154,7 +145,6 @@ export default function ContractProgressTracker({ contract }) {
           </a>
         )}
 
-        {/* View original */}
         {contract.contract_file_url && (
           <a
             href={contract.contract_file_url}
@@ -167,7 +157,6 @@ export default function ContractProgressTracker({ contract }) {
         )}
       </div>
 
-      {/* Dates footer */}
       <div className="flex flex-wrap gap-4 mt-3 pt-3 border-t border-gray-100">
         {contract.sent_at && (
           <span className="text-xs text-gray-400">Sent: {new Date(contract.sent_at).toLocaleDateString('en-ZA')}</span>
