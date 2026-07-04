@@ -13,6 +13,14 @@ function isFinanceHubPath() {
   return currentPath().startsWith('/admin/finance');
 }
 
+function isSettingsPath() {
+  return currentPath().startsWith('/admin/settings');
+}
+
+function isCalendarPath() {
+  return currentPath().startsWith('/admin/calendar');
+}
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -97,10 +105,27 @@ const financeEntities = {
   Contact: makeReadEntity('contacts'),
 };
 
+const settingsEntities = {
+  Contact: makeReadEntity('contacts'),
+  Lead: makeReadEntity('leads'),
+  Quote: makeReadEntity('quotes'),
+  Submission: makeReadEntity('submissions'),
+};
+
+const calendarEntities = {
+  Project: makeReadEntity('projects'),
+  Invoice: makeReadEntity('invoices'),
+  Task: makeReadEntity('tasks'),
+  Contract: makeReadEntity('contracts'),
+  Contact: makeReadEntity('contacts'),
+};
+
 const entitiesBridge = new Proxy(transitionalBase44.entities, {
   get(target, property, receiver) {
     if (isEmailTemplatePath() && property === 'EmailTemplate') return emailTemplateEntity;
     if (isFinanceHubPath() && financeEntities[property]) return financeEntities[property];
+    if (isSettingsPath() && settingsEntities[property]) return settingsEntities[property];
+    if (isCalendarPath() && calendarEntities[property]) return calendarEntities[property];
     return Reflect.get(target, property, receiver);
   },
 });
