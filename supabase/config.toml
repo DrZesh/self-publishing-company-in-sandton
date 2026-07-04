@@ -41,3 +41,15 @@ verify_jwt = true
 
 [functions.analytics-data]
 verify_jwt = true
+
+[functions.contract-actions]
+verify_jwt = false
+
+[functions.contract-file-actions]
+verify_jwt = false
+
+[functions.adobe-sign-actions]
+verify_jwt = true
+
+[functions.adobe-sign-webhook]
+verify_jwt = false
