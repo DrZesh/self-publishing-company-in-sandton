@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export default function SignatureCapture({ onSignatureComplete, signerEmail, signerName }) {
-  const [method, setMethod] = useState(null); // 'drawn' or 'typed'
+  const [method, setMethod] = useState(null);
   const [signatureData, setSignatureData] = useState(null);
   const [typedName, setTypedName] = useState('');
   const [legalChecked, setLegalChecked] = useState(false);
@@ -23,30 +23,33 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
     ctx.lineJoin = 'round';
   }, [method]);
 
-  const startDrawing = (e) => {
+  const startDrawing = (event) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
-    const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top;
+    const x = (event.clientX || event.touches?.[0]?.clientX) - rect.left;
+    const y = (event.clientY || event.touches?.[0]?.clientY) - rect.top;
     ctx.beginPath();
     ctx.moveTo(x, y);
     setIsDrawing(true);
   };
 
-  const draw = (e) => {
+  const draw = (event) => {
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
-    const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top;
+    const x = (event.clientX || event.touches?.[0]?.clientX) - rect.left;
+    const y = (event.clientY || event.touches?.[0]?.clientY) - rect.top;
     ctx.lineTo(x, y);
     ctx.stroke();
-    e.preventDefault();
+    event.preventDefault();
   };
 
   const stopDrawing = () => {
+    if (isDrawing && canvasRef.current) {
+      setSignatureData(canvasRef.current.toDataURL('image/png'));
+    }
     setIsDrawing(false);
   };
 
@@ -59,8 +62,7 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
 
   const saveDrawnSignature = () => {
     const canvas = canvasRef.current;
-    const dataUrl = canvas.toDataURL('image/png');
-    setSignatureData(dataUrl);
+    setSignatureData(canvas.toDataURL('image/png'));
   };
 
   const saveTypedSignature = () => {
@@ -88,17 +90,11 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
           <p className="text-sm text-gray-500">Choose how you'd like to sign</p>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => setMethod('drawn')}
-            className="p-6 border-2 border-gray-200 rounded-xl hover:border-[#B87333] transition-colors flex flex-col items-center gap-3"
-          >
+          <button onClick={() => setMethod('drawn')} className="p-6 border-2 border-gray-200 rounded-xl hover:border-[#B87333] transition-colors flex flex-col items-center gap-3">
             <Signature className="w-8 h-8 text-[#B87333]" />
             <span className="font-medium">Draw Signature</span>
           </button>
-          <button
-            onClick={() => setMethod('typed')}
-            className="p-6 border-2 border-gray-200 rounded-xl hover:border-[#B87333] transition-colors flex flex-col items-center gap-3"
-          >
+          <button onClick={() => setMethod('typed')} className="p-6 border-2 border-gray-200 rounded-xl hover:border-[#B87333] transition-colors flex flex-col items-center gap-3">
             <Type className="w-8 h-8 text-[#B87333]" />
             <span className="font-medium">Type Name</span>
           </button>
@@ -113,7 +109,7 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
         <h3 className="text-lg font-semibold text-[#1A1208]">
           {method === 'drawn' ? 'Draw Your Signature' : 'Type Your Name'}
         </h3>
-        <Button variant="ghost" size="sm" onClick={() => setMethod(null)}>
+        <Button variant="ghost" size="sm" onClick={() => { setMethod(null); setSignatureData(null); }}>
           Change Method
         </Button>
       </div>
@@ -150,7 +146,7 @@ export default function SignatureCapture({ onSignatureComplete, signerEmail, sig
             <Label>Type your full name</Label>
             <Input
               value={typedName}
-              onChange={(e) => setTypedName(e.target.value)}
+              onChange={(event) => setTypedName(event.target.value)}
               placeholder="Enter your name as you want it to appear"
               className="mt-1"
             />
