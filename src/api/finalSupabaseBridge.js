@@ -21,6 +21,10 @@ function isCalendarPath() {
   return currentPath().startsWith('/admin/calendar');
 }
 
+function isSignatureArchivePath() {
+  return currentPath().startsWith('/admin/signatures');
+}
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -120,12 +124,18 @@ const calendarEntities = {
   Contact: makeReadEntity('contacts'),
 };
 
+const signatureArchiveEntities = {
+  QuoteSignature: makeReadEntity('quote_signatures'),
+  Quote: makeReadEntity('quotes'),
+};
+
 const entitiesBridge = new Proxy(transitionalBase44.entities, {
   get(target, property, receiver) {
     if (isEmailTemplatePath() && property === 'EmailTemplate') return emailTemplateEntity;
     if (isFinanceHubPath() && financeEntities[property]) return financeEntities[property];
     if (isSettingsPath() && settingsEntities[property]) return settingsEntities[property];
     if (isCalendarPath() && calendarEntities[property]) return calendarEntities[property];
+    if (isSignatureArchivePath() && signatureArchiveEntities[property]) return signatureArchiveEntities[property];
     return Reflect.get(target, property, receiver);
   },
 });
