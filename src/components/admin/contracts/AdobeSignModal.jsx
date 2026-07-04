@@ -16,9 +16,8 @@ export default function AdobeSignModal({ contract, contact, onClose, onSent }) {
   const [showWebhookInfo, setShowWebhookInfo] = useState(false);
   const [webhookRegistering, setWebhookRegistering] = useState(false);
 
-  // Derive webhook URL from the current location
-  const appDomain = window.location.origin;
-  const webhookUrl = `${appDomain}/api/functions/adobeSignWebhook`;
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const webhookUrl = `${supabaseUrl}/functions/v1/adobe-sign-webhook`;
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
