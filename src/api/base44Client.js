@@ -28,6 +28,8 @@ let portalCache = {
   data: null,
 };
 
+let unsubscribeCache = null;
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -198,6 +200,36 @@ function cleanEntityPayload(table, payload) {
     if (cleaned.proposed_date === '') cleaned.proposed_date = null;
   }
 
+  if (table === 'message_templates') {
+    if ('variables_used' in cleaned && !Array.isArray(cleaned.variables_used)) cleaned.variables_used = [];
+    if ('sort_order' in cleaned) cleaned.sort_order = Number(cleaned.sort_order) || 0;
+  }
+
+  if (table === 'automation_rules') {
+    if (cleaned.template_id === '') cleaned.template_id = null;
+    if ('conditions' in cleaned && (!cleaned.conditions || Array.isArray(cleaned.conditions))) cleaned.conditions = {};
+    if ('delay_minutes' in cleaned) cleaned.delay_minutes = Number(cleaned.delay_minutes) || 0;
+    if ('run_count' in cleaned) cleaned.run_count = Number(cleaned.run_count) || 0;
+    if ('sort_order' in cleaned) cleaned.sort_order = Number(cleaned.sort_order) || 0;
+  }
+
+  if (table === 'message_queue') {
+    ['project_id', 'automation_rule_id', 'template_id'].forEach(field => {
+      if (cleaned[field] === '') cleaned[field] = null;
+    });
+    if ('retry_count' in cleaned) cleaned.retry_count = Number(cleaned.retry_count) || 0;
+  }
+
+  if (table === 'message_logs') {
+    ['project_id', 'template_id', 'automation_rule_id'].forEach(field => {
+      if (cleaned[field] === '') cleaned[field] = null;
+    });
+  }
+
+  if (table === 'app_settings' && 'value' in cleaned && (!cleaned.value || Array.isArray(cleaned.value))) {
+    cleaned.value = {};
+  }
+
   return cleaned;
 }
 
@@ -277,6 +309,11 @@ const supabaseEntities = {
   BookingService: makeSupabaseEntity('booking_services'),
   AvailabilityRule: makeSupabaseEntity('availability_rules'),
   Appointment: makeSupabaseEntity('appointments'),
+  MessageTemplate: makeSupabaseEntity('message_templates'),
+  AutomationRule: makeSupabaseEntity('automation_rules'),
+  MessageQueue: makeSupabaseEntity('message_queue'),
+  MessageLog: makeSupabaseEntity('message_logs'),
+  AppSettings: makeSupabaseEntity('app_settings'),
 };
 
 function currentPath() {
@@ -286,6 +323,11 @@ function currentPath() {
 function currentPortalToken() {
   const match = currentPath().match(/^\/portal\/([^/]+)/);
   return match?.[1] || null;
+}
+
+function currentUnsubscribeToken() {
+  if (typeof window === 'undefined') return null;
+  return new URLSearchParams(window.location.search).get('token');
 }
 
 function isDocumentAdminPath(path = currentPath()) {
@@ -306,6 +348,15 @@ function isBookingAdminPath(path = currentPath()) {
   return ['/admin/appointments', '/admin/booking-settings'].some(route => path.startsWith(route));
 }
 
+function isCommunicationAdminPath(path = currentPath()) {
+  return [
+    '/admin/message-centre',
+    '/admin/automation-centre',
+    '/admin/communication',
+    '/admin/email-settings',
+  ].some(route => path.startsWith(route));
+}
+
 function isDocumentPublicPath(path = currentPath()) {
   return path.startsWith('/doc/view/');
 }
@@ -316,6 +367,10 @@ function isESignaturePublicPath(path = currentPath()) {
 
 function isClientPortalPublicPath(path = currentPath()) {
   return path.startsWith('/portal/');
+}
+
+function isSupabaseUnsubscribePath(path = currentPath()) {
+  return path === '/unsubscribe' && Boolean(currentUnsubscribeToken());
 }
 
 function usesMigratedEntity(entityName) {
@@ -338,12 +393,17 @@ function usesMigratedEntity(entityName) {
 
   if (
     isProjectAdminPath(path) &&
-    ['Contact', 'Project', 'ClientDelay', 'Quote', 'Invoice', 'Document'].includes(entityName)
+    ['Contact', 'Project', 'ClientDelay', 'Quote', 'Invoice', 'Document', 'MessageLog'].includes(entityName)
   ) return true;
 
   if (
     isBookingAdminPath(path) &&
     ['Appointment', 'BookingService', 'AvailabilityRule'].includes(entityName)
+  ) return true;
+
+  if (
+    isCommunicationAdminPath(path) &&
+    ['MessageTemplate', 'AutomationRule', 'MessageQueue', 'MessageLog', 'AppSettings', 'Project', 'Contact', 'Task'].includes(entityName)
   ) return true;
 
   if (path.startsWith('/admin/dashboard') && entityName === 'Appointment') return true;
@@ -417,6 +477,32 @@ const portalEntities = {
   Contract: makePortalReadEntity('contracts'),
 };
 
+const unsubscribeContactBridge = {
+  async filter() {
+    const tokenValue = currentUnsubscribeToken();
+    if (!tokenValue) return [];
+    if (unsubscribeCache?.token === tokenValue && unsubscribeCache.contact) return [unsubscribeCache.contact];
+    const { data, error } = await supabase.functions.invoke('communications-actions', {
+      body: { action: 'unsubscribe_lookup', token: tokenValue },
+    });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    unsubscribeCache = { token: tokenValue, contact: data.contact };
+    return data.contact ? [data.contact] : [];
+  },
+  async update() {
+    const tokenValue = currentUnsubscribeToken();
+    if (!tokenValue) throw new Error('Invalid unsubscribe link');
+    const { data, error } = await supabase.functions.invoke('communications-actions', {
+      body: { action: 'unsubscribe', token: tokenValue },
+    });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    unsubscribeCache = { token: tokenValue, contact: data.contact };
+    return data.contact;
+  },
+};
+
 function publicQuoteToken() {
   const match = currentPath().match(/^\/quote\/view\/[^/]+\/([^/]+)/);
   return match?.[1] || null;
@@ -436,6 +522,7 @@ const quoteSignatureBridge = {
 const entitiesBridge = new Proxy(base44Sdk.entities, {
   get(target, property, receiver) {
     if (isClientPortalPublicPath() && portalEntities[property]) return portalEntities[property];
+    if (property === 'Contact' && isSupabaseUnsubscribePath()) return unsubscribeContactBridge;
     if (usesMigratedEntity(property)) return supabaseEntities[property];
     if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) return quoteSignatureBridge;
     return Reflect.get(target, property, receiver);
@@ -554,6 +641,32 @@ const functionsBridge = new Proxy(base44Sdk.functions, {
         return invokeSupabaseFunction('appointment-reminders', payload || {});
       }
 
+      if (functionName === 'renderTemplate' && isCommunicationAdminPath()) {
+        return invokeSupabaseFunction('communications-actions', {
+          action: 'render_template',
+          template_id: payload?.templateId || payload?.template_id,
+          variables: payload?.variables,
+          test_send_to: payload?.testSendTo || payload?.test_send_to,
+        });
+      }
+
+      if (functionName === 'sendBrandedEmail' && isCommunicationAdminPath()) {
+        return invokeSupabaseFunction('communications-actions', {
+          action: 'send_branded_email',
+          to: payload?.to,
+          subject: payload?.subject,
+          html_body: payload?.htmlBody || payload?.html_body,
+          skip_branding: payload?.skipBranding ?? payload?.skip_branding,
+        });
+      }
+
+      if (functionName === 'automationEngine' && isCommunicationAdminPath()) {
+        return invokeSupabaseFunction('automation-engine', {
+          action: payload?.action === 'daily_run' ? 'daily_run' : payload?.action || 'process_events',
+          ...payload,
+        });
+      }
+
       return target.invoke(functionName, payload);
     };
   },
@@ -643,8 +756,8 @@ const integrationsBridge = new Proxy(base44Sdk.integrations, {
 });
 
 // Transitional client: authentication plus selected CRM, finance, document,
-// e-signature, project, production, appointment and public client portal workflows
-// use Supabase. Unmigrated modules continue on Base44 until their dependencies move.
+// e-signature, project, production, appointment, client portal and communication
+// workflows use Supabase. Unmigrated modules remain on Base44 until migrated.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
