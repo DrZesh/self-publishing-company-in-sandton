@@ -1,4 +1,4 @@
-import { X, Clock, Send, Eye, PenLine, CheckCircle, AlertTriangle, RefreshCw, RotateCcw } from 'lucide-react';
+import { X, Clock, Send, Eye, PenLine, CheckCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -13,6 +13,10 @@ const EVENT_CONFIG = {
   signed:          { icon: CheckCircle,  color: 'bg-green-100 text-green-600',  label: 'Signed' },
   declined:        { icon: AlertTriangle,color: 'bg-red-100 text-red-600',      label: 'Declined' },
 };
+
+function fingerprint(value) {
+  return value ? `${value.slice(0, 16)}...` : 'Not recorded';
+}
 
 export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
   const [sending, setSending] = useState(false);
@@ -39,7 +43,6 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div className="relative w-full max-w-md bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
-        {/* Header */}
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="font-bold text-gray-900 text-sm">Signature Audit Trail</h2>
@@ -51,21 +54,19 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
         </div>
 
         <div className="p-5 space-y-5 flex-1">
-          {/* Status */}
-          <div className={`rounded-xl p-4 ${contract.status === 'Signed' ? 'bg-green-50 border border-green-200' : contract.status === 'Declined' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'}`}>
+          <div className={`rounded-xl p-4 ${contract.status === 'Signed' || contract.status === 'Fully Signed' ? 'bg-green-50 border border-green-200' : contract.status === 'Declined' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'}`}>
             <p className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-500">Current Status</p>
-            <p className={`text-lg font-bold ${contract.status === 'Signed' ? 'text-green-700' : contract.status === 'Declined' ? 'text-red-700' : 'text-blue-700'}`}>{contract.status}</p>
+            <p className={`text-lg font-bold ${contract.status === 'Signed' || contract.status === 'Fully Signed' ? 'text-green-700' : contract.status === 'Declined' ? 'text-red-700' : 'text-blue-700'}`}>{contract.status}</p>
           </div>
 
-          {/* Signer Info (if signed) */}
-          {contract.status === 'Signed' && contract.signer_name && (
+          {['Signed', 'Fully Signed'].includes(contract.status) && contract.signer_name && (
             <div className="bg-gray-50 rounded-xl p-4 space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Signature Details</p>
               {[
                 ['Signed by', contract.signer_name],
                 ['Email', contract.signer_email],
-                ['Signed at', contract.signed_at ? new Date(contract.signed_at).toLocaleString('en-ZA') : '—'],
-                ['IP Address', contract.signer_ip || '—'],
+                ['Signed at', contract.signed_at ? new Date(contract.signed_at).toLocaleString('en-ZA') : 'Not recorded'],
+                ['Audit fingerprint', fingerprint(contract.signer_ip_hash)],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between text-sm">
                   <span className="text-gray-500">{label}</span>
@@ -81,8 +82,7 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
             </div>
           )}
 
-          {/* Actions (if not yet signed) */}
-          {!['Signed', 'Declined', 'Archived', 'Cancelled'].includes(contract.status) && (
+          {!['Signed', 'Fully Signed', 'Declined', 'Archived', 'Cancelled'].includes(contract.status) && (
             <div className="space-y-2">
               {signingUrl && (
                 <div>
@@ -108,14 +108,12 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
             </div>
           )}
 
-          {/* Signed doc link */}
-          {contract.status === 'Signed' && contract.contract_file_url && (
-            <a href={contract.contract_file_url} target="_blank" rel="noreferrer">
+          {['Signed', 'Fully Signed'].includes(contract.status) && (contract.signed_file_url || contract.contract_file_url) && (
+            <a href={contract.signed_file_url || contract.contract_file_url} target="_blank" rel="noreferrer">
               <Button variant="outline" size="sm" className="w-full">📄 View Signed Contract</Button>
             </a>
           )}
 
-          {/* Audit Trail */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3">Activity Timeline</p>
             {trail.length === 0 ? (
@@ -137,9 +135,9 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
                           <p className="text-xs text-gray-400">
                             {item.timestamp ? new Date(item.timestamp).toLocaleString('en-ZA') : ''}
                           </p>
-                          {item.actor && <p className="text-xs text-gray-400">By: {item.actor}</p>}
+                          {(item.actor || item.by) && <p className="text-xs text-gray-400">By: {item.actor || item.by}</p>}
                           {item.signer_name && <p className="text-xs text-gray-400">Signer: {item.signer_name}</p>}
-                          {item.ip && <p className="text-xs text-gray-300">IP: {item.ip}</p>}
+                          {item.ip_hash && <p className="text-xs text-gray-300">Audit fingerprint: {fingerprint(item.ip_hash)}</p>}
                           {item.reason && <p className="text-xs text-red-400">Reason: {item.reason}</p>}
                         </div>
                       </div>
