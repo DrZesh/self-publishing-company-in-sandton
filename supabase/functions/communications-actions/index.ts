@@ -152,7 +152,7 @@ Deno.serve(async request => {
 
     const settings = await getSettings();
     let providerMessageId: string | null = null;
-    let provider = claimed.channel === 'whatsapp' ? 'callmebot' : String(settings.email_provider || 'resend');
+    const provider = claimed.channel === 'whatsapp' ? 'callmebot' : String(settings.email_provider || 'resend');
 
     try {
       if (claimed.channel === 'whatsapp') {
@@ -185,7 +185,10 @@ Deno.serve(async request => {
         provider_message_id: providerMessageId,
       });
       if (claimed.automation_rule_id) {
-        await admin.rpc('increment_automation_rule_run', { p_rule_id: claimed.automation_rule_id }).catch(() => null);
+        const { error: ruleUpdateError } = await admin.rpc('increment_automation_rule_run', {
+          p_rule_id: claimed.automation_rule_id,
+        });
+        if (ruleUpdateError) console.warn('Unable to increment automation rule counter:', ruleUpdateError.message);
       }
       if (claimed.project_id) {
         await admin.from('projects').update({ last_update_sent_at: now }).eq('id', claimed.project_id);
