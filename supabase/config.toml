@@ -1,0 +1,4 @@
+project_id = "creative-books-sa"
+
+[functions.capture-form-submission]
+verify_jwt = false
