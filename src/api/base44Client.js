@@ -660,6 +660,28 @@ const functionsBridge = new Proxy(base44Sdk.functions, {
         });
       }
 
+      if (functionName === 'sendWhatsAppNotification' && currentPath().startsWith('/admin/communication')) {
+        return invokeSupabaseFunction('manual-communication', {
+          action: 'send_whatsapp',
+          to_number: payload?.to_number,
+          message: payload?.message,
+          contact_id: payload?.contact_id,
+          project_id: payload?.project_id,
+          type: payload?.type,
+        });
+      }
+
+      if (functionName === 'sendContactEmail' && currentPath().startsWith('/admin/communication')) {
+        return invokeSupabaseFunction('manual-communication', {
+          action: 'send_email',
+          to: payload?.to,
+          subject: payload?.subject,
+          body_html: payload?.body_html,
+          contact_id: payload?.contact_id,
+          project_id: payload?.project_id,
+        });
+      }
+
       if (functionName === 'automationEngine' && isCommunicationAdminPath()) {
         return invokeSupabaseFunction('automation-engine', {
           action: payload?.action === 'daily_run' ? 'daily_run' : payload?.action || 'process_events',
