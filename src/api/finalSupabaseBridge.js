@@ -25,6 +25,10 @@ function isSignatureArchivePath() {
   return currentPath().startsWith('/admin/signatures');
 }
 
+function isPipelineBuilderPath() {
+  return currentPath().startsWith('/admin/pipeline-builder');
+}
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -66,41 +70,49 @@ function makeReadEntity(table) {
   };
 }
 
-const emailTemplateEntity = {
-  ...makeReadEntity('email_templates'),
+function makeCrudEntity(table, clean = value => value) {
+  return {
+    ...makeReadEntity(table),
 
-  async create(payload) {
-    const { data, error } = await supabase
-      .from('email_templates')
-      .insert(payload)
-      .select('*')
-      .single();
-    if (error) throw error;
-    return data;
-  },
+    async create(payload) {
+      const { data, error } = await supabase
+        .from(table)
+        .insert(clean(payload))
+        .select('*')
+        .single();
+      if (error) throw error;
+      return data;
+    },
 
-  async update(id, payload) {
-    const { data, error } = await supabase
-      .from('email_templates')
-      .update(payload)
-      .eq('id', id)
-      .select('*')
-      .single();
-    if (error) throw error;
-    return data;
-  },
+    async update(id, payload) {
+      const { data, error } = await supabase
+        .from(table)
+        .update(clean(payload))
+        .eq('id', id)
+        .select('*')
+        .single();
+      if (error) throw error;
+      return data;
+    },
 
-  async delete(id) {
-    const { data, error } = await supabase
-      .from('email_templates')
-      .delete()
-      .eq('id', id)
-      .select('id')
-      .single();
-    if (error) throw error;
-    return data;
-  },
-};
+    async delete(id) {
+      const { data, error } = await supabase
+        .from(table)
+        .delete()
+        .eq('id', id)
+        .select('id')
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  };
+}
+
+const emailTemplateEntity = makeCrudEntity('email_templates');
+const workflowPipelineEntity = makeCrudEntity('workflow_pipelines', payload => ({
+  ...payload,
+  stages: Array.isArray(payload?.stages) ? payload.stages : [],
+}));
 
 const financeEntities = {
   Quote: makeReadEntity('quotes'),
@@ -136,6 +148,7 @@ const entitiesBridge = new Proxy(transitionalBase44.entities, {
     if (isSettingsPath() && settingsEntities[property]) return settingsEntities[property];
     if (isCalendarPath() && calendarEntities[property]) return calendarEntities[property];
     if (isSignatureArchivePath() && signatureArchiveEntities[property]) return signatureArchiveEntities[property];
+    if (isPipelineBuilderPath() && property === 'Pipeline') return workflowPipelineEntity;
     return Reflect.get(target, property, receiver);
   },
 });
