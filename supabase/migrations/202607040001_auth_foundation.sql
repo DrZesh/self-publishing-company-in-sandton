@@ -10,6 +10,16 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default now()
 );
 
+-- Backfill profiles for any auth users that existed before this migration.
+insert into public.profiles (id, email, full_name, role)
+select
+  id,
+  email,
+  coalesce(raw_user_meta_data ->> 'full_name', raw_user_meta_data ->> 'name'),
+  'client'
+from auth.users
+on conflict (id) do nothing;
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
