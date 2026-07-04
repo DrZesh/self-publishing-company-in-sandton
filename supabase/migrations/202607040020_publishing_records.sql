@@ -132,7 +132,11 @@ as $$
 declare
   v_author_id uuid;
 begin
-  v_author_id := coalesce(new.author_id, old.author_id);
+  if tg_op = 'DELETE' then
+    v_author_id := old.author_id;
+  else
+    v_author_id := new.author_id;
+  end if;
 
   if v_author_id is not null then
     update public.authors
@@ -156,7 +160,10 @@ begin
     where id = old.author_id;
   end if;
 
-  return coalesce(new, old);
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
 end;
 $$;
 
@@ -164,7 +171,7 @@ revoke all on function public.sync_author_book_titles() from public;
 
 drop trigger if exists book_records_sync_author_titles on public.book_records;
 create trigger book_records_sync_author_titles
-after insert or update of author_id, book_title or delete on public.book_records
+after insert or delete or update of author_id, book_title on public.book_records
 for each row execute procedure public.sync_author_book_titles();
 
 create or replace function public.complete_project_on_collection()
