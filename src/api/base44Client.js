@@ -357,6 +357,10 @@ function isCommunicationAdminPath(path = currentPath()) {
   ].some(route => path.startsWith(route));
 }
 
+function isAnalyticsAdminPath(path = currentPath()) {
+  return ['/admin/reports', '/admin/revenue-forecast'].some(route => path.startsWith(route));
+}
+
 function isDocumentPublicPath(path = currentPath()) {
   return path.startsWith('/doc/view/');
 }
@@ -406,7 +410,15 @@ function usesMigratedEntity(entityName) {
     ['MessageTemplate', 'AutomationRule', 'MessageQueue', 'MessageLog', 'AppSettings', 'Project', 'Contact', 'Task'].includes(entityName)
   ) return true;
 
-  if (path.startsWith('/admin/dashboard') && entityName === 'Appointment') return true;
+  if (
+    isAnalyticsAdminPath(path) &&
+    ['Invoice', 'Payment', 'Project', 'Contact', 'Quote', 'Task'].includes(entityName)
+  ) return true;
+
+  if (
+    path.startsWith('/admin/dashboard') &&
+    ['Appointment', 'Quote'].includes(entityName)
+  ) return true;
 
   if (
     path === '/book' &&
@@ -477,6 +489,55 @@ const portalEntities = {
   Contract: makePortalReadEntity('contracts'),
 };
 
+const DASHBOARD_PIPELINE_ID = 'supabase-crm-pipeline';
+
+const dashboardSalesPipelineBridge = {
+  async list() {
+    return [{
+      id: DASHBOARD_PIPELINE_ID,
+      name: 'CRM Pipeline',
+      is_active: true,
+      created_date: new Date(0).toISOString(),
+      stages: [
+        { key: 'new', label: 'New', color: '#B87333', order: 1 },
+        { key: 'contacted', label: 'Contacted', color: '#6366f1', order: 2 },
+        { key: 'qualified', label: 'Qualified', color: '#0ea5e9', order: 3 },
+        { key: 'quoted', label: 'Quoted', color: '#f59e0b', order: 4 },
+        { key: 'negotiating', label: 'Negotiating', color: '#8b5cf6', order: 5 },
+        { key: 'won', label: 'Won', color: '#10b981', isWon: true, order: 6 },
+        { key: 'lost', label: 'Lost', color: '#ef4444', isLost: true, order: 7 },
+      ],
+    }];
+  },
+};
+
+const dashboardPipelineDealBridge = {
+  async filter(filters = {}) {
+    if (filters.pipeline_id && filters.pipeline_id !== DASHBOARD_PIPELINE_ID) return [];
+    const { data, error } = await supabase
+      .from('leads')
+      .select('id, stage, estimated_value, created_date, updated_date, stage_changed_at, contacts(full_name,email,phone,book_title)')
+      .order('updated_date', { ascending: false })
+      .limit(500);
+    if (error) throw error;
+
+    return (data || []).map(lead => ({
+      id: lead.id,
+      pipeline_id: DASHBOARD_PIPELINE_ID,
+      stage_key: lead.stage,
+      client_name: lead.contacts?.full_name || 'Lead',
+      client_email: lead.contacts?.email || null,
+      client_phone: lead.contacts?.phone || null,
+      project_title: lead.contacts?.book_title || null,
+      deal_value: Number(lead.estimated_value || 0),
+      created_date: lead.created_date,
+      updated_date: lead.updated_date,
+      won_at: lead.stage === 'won' ? lead.stage_changed_at : null,
+      lost_at: lead.stage === 'lost' ? lead.stage_changed_at : null,
+    }));
+  },
+};
+
 const unsubscribeContactBridge = {
   async filter() {
     const tokenValue = currentUnsubscribeToken();
@@ -523,6 +584,8 @@ const entitiesBridge = new Proxy(base44Sdk.entities, {
   get(target, property, receiver) {
     if (isClientPortalPublicPath() && portalEntities[property]) return portalEntities[property];
     if (property === 'Contact' && isSupabaseUnsubscribePath()) return unsubscribeContactBridge;
+    if (currentPath().startsWith('/admin/dashboard') && property === 'SalesPipeline') return dashboardSalesPipelineBridge;
+    if (currentPath().startsWith('/admin/dashboard') && property === 'PipelineDeal') return dashboardPipelineDealBridge;
     if (usesMigratedEntity(property)) return supabaseEntities[property];
     if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) return quoteSignatureBridge;
     return Reflect.get(target, property, receiver);
@@ -600,6 +663,10 @@ const functionsBridge = new Proxy(base44Sdk.functions, {
         });
         if (error) throw error;
         return { data: { activities: data || [] } };
+      }
+
+      if (functionName === 'getAdminDashboardMetrics' && currentPath().startsWith('/admin/dashboard')) {
+        return invokeSupabaseFunction('dashboard-metrics', payload || {});
       }
 
       if (functionName === 'quoteActions') return invokeSupabaseFunction('quote-actions', payload);
@@ -778,8 +845,9 @@ const integrationsBridge = new Proxy(base44Sdk.integrations, {
 });
 
 // Transitional client: authentication plus selected CRM, finance, document,
-// e-signature, project, production, appointment, client portal and communication
-// workflows use Supabase. Unmigrated modules remain on Base44 until migrated.
+// e-signature, project, production, appointment, client portal, communication,
+// dashboard and analytics workflows use Supabase. Unmigrated modules remain on
+// Base44 until their dependencies are migrated.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
