@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { crmService } from '@/services/crmService';
 import AdminLayout from '@/components/admin/AdminLayout';
 import SubmissionDetail from '@/components/admin/SubmissionDetail';
-import { Search, Mail, Eye, CheckCircle, AlertCircle, Archive, Tag, Clock, RefreshCw } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STATUS_CONFIG = {
@@ -33,6 +33,7 @@ function timeAgo(dateStr) {
 function SubmissionRow({ submission, selected, onClick }) {
   const cfg = STATUS_CONFIG[submission.status] || STATUS_CONFIG.read;
   const isNew = submission.status === 'new';
+
   return (
     <button
       onClick={onClick}
@@ -71,10 +72,12 @@ export default function AdminInbox() {
   const load = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
     else setLoading(true);
+
     try {
-      const data = await base44.entities.Submission.list('-created_date', 200);
+      const data = await crmService.listSubmissions(200);
       setSubmissions(data || []);
     } catch (err) {
+      console.error('Failed to load submissions:', err);
       toast.error('Failed to load submissions');
     } finally {
       setLoading(false);
@@ -82,50 +85,71 @@ export default function AdminInbox() {
     }
   };
 
-  useEffect(() => { load(); }, []);
-
-  // Real-time updates
   useEffect(() => {
-    const unsub = base44.entities.Submission.subscribe((event) => {
+    load();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = crmService.subscribeSubmissions((event) => {
       if (event.type === 'create') {
-        setSubmissions(prev => [event.data, ...prev]);
+        setSubmissions(prev => [event.data, ...prev.filter(s => s.id !== event.data.id)]);
         toast.success(`New submission from ${event.data.full_name}`);
       } else if (event.type === 'update') {
         setSubmissions(prev => prev.map(s => s.id === event.id ? event.data : s));
+        setSelected(prev => prev?.id === event.id ? event.data : prev);
       } else if (event.type === 'delete') {
         setSubmissions(prev => prev.filter(s => s.id !== event.id));
+        setSelected(prev => prev?.id === event.id ? null : prev);
       }
     });
-    return unsub;
+
+    return unsubscribe;
   }, []);
 
   const filtered = submissions.filter(s => {
     if (statusFilter !== 'all' && s.status !== statusFilter) return false;
+
     if (search.trim()) {
       const q = search.toLowerCase();
-      return s.full_name?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q) || s.phone?.toLowerCase().includes(q) || s.message?.toLowerCase().includes(q);
+      return s.full_name?.toLowerCase().includes(q) ||
+        s.email?.toLowerCase().includes(q) ||
+        s.phone?.toLowerCase().includes(q) ||
+        s.message?.toLowerCase().includes(q);
     }
+
     return true;
   });
 
   const handleStatusChange = async (id, status) => {
-    await base44.entities.Submission.update(id, { status });
-    setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
-    if (selected?.id === id) setSelected(s => ({ ...s, status }));
-    toast.success(`Marked as ${status.replace(/_/g, ' ')}`);
+    try {
+      const updated = await crmService.updateSubmission(id, { status });
+      setSubmissions(prev => prev.map(s => s.id === id ? updated : s));
+      if (selected?.id === id) setSelected(updated);
+      toast.success(`Marked as ${status.replace(/_/g, ' ')}`);
+    } catch (err) {
+      console.error('Failed to update submission status:', err);
+      toast.error('Failed to update submission status');
+      throw err;
+    }
   };
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this submission? This cannot be undone.')) return;
-    await base44.entities.Submission.delete(id);
-    setSubmissions(prev => prev.filter(s => s.id !== id));
-    if (selected?.id === id) setSelected(null);
-    toast.success('Submission deleted');
+
+    try {
+      await crmService.deleteSubmission(id);
+      setSubmissions(prev => prev.filter(s => s.id !== id));
+      if (selected?.id === id) setSelected(null);
+      toast.success('Submission deleted');
+    } catch (err) {
+      console.error('Failed to delete submission:', err);
+      toast.error('Failed to delete submission');
+    }
   };
 
-  const openSubmission = (sub) => {
-    setSelected(sub);
-    if (sub.status === 'new') handleStatusChange(sub.id, 'read');
+  const openSubmission = (submission) => {
+    setSelected(submission);
+    if (submission.status === 'new') handleStatusChange(submission.id, 'read');
   };
 
   const counts = {
@@ -149,9 +173,7 @@ export default function AdminInbox() {
   return (
     <AdminLayout>
       <div className="flex h-full -m-6 lg:-m-8">
-        {/* Left panel — list */}
         <div className={`flex flex-col ${selected ? 'hidden lg:flex' : 'flex'} w-full lg:w-96 xl:w-[420px] border-r border-black/8 bg-white shrink-0`}>
-          {/* Header */}
           <div className="px-5 pt-5 pb-3 border-b border-black/8">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-xl font-bold text-[#1A1208]">Inbox</h1>
@@ -164,16 +186,17 @@ export default function AdminInbox() {
                 </button>
               </div>
             </div>
-            {/* Search */}
+
             <div className="relative mb-3">
               <Search className="absolute left-3 top-2.5 w-4 h-4 text-black/30" />
               <input
-                value={search} onChange={e => setSearch(e.target.value)}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
                 placeholder="Search name, email, message…"
                 className="w-full pl-9 pr-3 py-2 bg-[#f5f5f5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#B87333]/30"
               />
             </div>
-            {/* Status filter pills */}
+
             <div className="flex gap-1 flex-wrap">
               {FILTER_TABS.map(t => (
                 <button
@@ -189,7 +212,6 @@ export default function AdminInbox() {
             </div>
           </div>
 
-          {/* List */}
           <div className="flex-1 overflow-y-auto">
             {loading ? (
               <div className="p-4 space-y-3">
@@ -216,11 +238,9 @@ export default function AdminInbox() {
           </div>
         </div>
 
-        {/* Right panel — detail */}
         <div className={`flex-1 overflow-y-auto bg-[#f8f9fc] ${selected ? 'block' : 'hidden lg:block'}`}>
           {selected ? (
             <div className="p-6 lg:p-8 max-w-3xl">
-              {/* Mobile back button */}
               <button
                 onClick={() => setSelected(null)}
                 className="lg:hidden flex items-center gap-1.5 text-sm text-[#B87333] mb-4 hover:underline"
