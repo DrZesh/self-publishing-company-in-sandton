@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.dashboard-metrics]
 verify_jwt = true
+
+[functions.search-console-data]
+verify_jwt = true
