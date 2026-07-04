@@ -108,6 +108,13 @@ function makeCrudEntity(table, clean = value => value) {
   };
 }
 
+async function invokeSupabaseFunction(functionName, payload = {}) {
+  const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return { data };
+}
+
 const emailTemplateEntity = makeCrudEntity('email_templates');
 const workflowPipelineEntity = makeCrudEntity('workflow_pipelines', payload => ({
   ...payload,
@@ -153,9 +160,22 @@ const entitiesBridge = new Proxy(transitionalBase44.entities, {
   },
 });
 
+const functionsBridge = new Proxy(transitionalBase44.functions, {
+  get(target, property, receiver) {
+    if (property !== 'invoke') return Reflect.get(target, property, receiver);
+    return async (functionName, payload = {}) => {
+      if (functionName === 'fetchGoogleReviews') {
+        return invokeSupabaseFunction('google-reviews', payload);
+      }
+      return target.invoke(functionName, payload);
+    };
+  },
+});
+
 export const base44 = new Proxy(transitionalBase44, {
   get(target, property, receiver) {
     if (property === 'entities') return entitiesBridge;
+    if (property === 'functions') return functionsBridge;
     return Reflect.get(target, property, receiver);
   },
 });
