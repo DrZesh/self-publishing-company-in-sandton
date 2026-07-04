@@ -151,6 +151,30 @@ function cleanEntityPayload(table, payload) {
     if (!Array.isArray(cleaned.audit_trail)) cleaned.audit_trail = [];
   }
 
+  if (table === 'projects') {
+    ['quote_id', 'invoice_id'].forEach(field => {
+      if (cleaned[field] === '') cleaned[field] = null;
+    });
+    if (cleaned.deadline === '') cleaned.deadline = null;
+    cleaned.project_value = Number(cleaned.project_value) || 0;
+    if (cleaned.queue_number === '') cleaned.queue_number = null;
+    else if (cleaned.queue_number !== undefined && cleaned.queue_number !== null) {
+      cleaned.queue_number = Number(cleaned.queue_number) || null;
+    }
+    if (!cleaned.revision_counts || Array.isArray(cleaned.revision_counts)) {
+      cleaned.revision_counts = { cover_design: 0, editing: 0, layout: 0, proofreading: 0 };
+    }
+    if (!cleaned.revision_limits || Array.isArray(cleaned.revision_limits)) {
+      cleaned.revision_limits = { cover_design: 2, editing: 1, layout: 2, proofreading: 1 };
+    }
+    if (!cleaned.book_spec || Array.isArray(cleaned.book_spec)) cleaned.book_spec = {};
+  }
+
+  if (table === 'client_delays') {
+    cleaned.days_delayed = Number(cleaned.days_delayed) || 0;
+    if (cleaned.contact_id === '') cleaned.contact_id = null;
+  }
+
   return cleaned;
 }
 
@@ -244,6 +268,8 @@ const supabaseEntities = {
   DocumentActivity: makeSupabaseEntity('document_activities'),
   Clause: makeSupabaseEntity('clauses'),
   ESignatureRequest: makeSupabaseEntity('e_signature_requests'),
+  Project: makeSupabaseEntity('projects'),
+  ClientDelay: makeSupabaseEntity('client_delays'),
 };
 
 function currentPath() {
@@ -257,6 +283,13 @@ function isDocumentAdminPath(path = currentPath()) {
     '/admin/document-builder',
     '/admin/clause-library',
     '/admin/esignatures',
+  ].some(route => path.startsWith(route));
+}
+
+function isProjectAdminPath(path = currentPath()) {
+  return [
+    '/admin/projects',
+    '/admin/production-board',
   ].some(route => path.startsWith(route));
 }
 
@@ -290,6 +323,13 @@ function usesMigratedEntity(entityName) {
   if (
     isDocumentAdminPath(path) &&
     ['Contact', 'Document', 'DocumentActivity', 'Clause', 'ESignatureRequest'].includes(entityName)
+  ) {
+    return true;
+  }
+
+  if (
+    isProjectAdminPath(path) &&
+    ['Contact', 'Project', 'ClientDelay', 'Quote', 'Invoice', 'Document'].includes(entityName)
   ) {
     return true;
   }
@@ -533,8 +573,9 @@ const integrationsBridge = new Proxy(base44Sdk.integrations, {
   },
 });
 
-// Transitional client: authentication and selected CRM, finance, document and
-// e-signature workflows use Supabase. Unmigrated modules continue on Base44.
+// Transitional client: authentication plus selected CRM, finance, document,
+// e-signature, project and production workflows use Supabase. Unmigrated modules
+// continue on Base44 until their dependencies are migrated.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
