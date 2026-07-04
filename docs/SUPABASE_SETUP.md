@@ -17,6 +17,8 @@ supabase/migrations/202607040003_contacts_pipeline_tasks_followups.sql
 supabase/migrations/202607040004_quotes_invoices_payments.sql
 supabase/migrations/202607040005_finance_rpc_hardening.sql
 supabase/migrations/202607040006_documents_esignatures.sql
+supabase/migrations/202607040007_projects_production.sql
+supabase/migrations/202607040008_project_workflow_hardening.sql
 ```
 
 The migrations currently provide:
@@ -69,6 +71,22 @@ The migrations currently provide:
 - signer consent capture
 - hashed network audit data rather than raw IP-address storage
 - signed-document bundle and electronic-signature certificate support
+
+### Projects and Production Board
+
+- `public.projects`
+- `public.project_stage_history`
+- `public.client_delays`
+- production stages, stage-age timestamps and immutable stage history
+- waiting-on ownership, print queue metadata and project deadlines
+- revision counters, revision limits and book specification JSON
+- VIP, risk, automation and completion metadata
+- automatic project and invoice creation when a quote is accepted
+- automatic project payment-status synchronization from invoices
+- automatic `Payment Received` progression after full payment without moving later-stage projects backwards
+- automatic contract and final-approval synchronization from project-linked documents
+- CRM pipeline protection so legacy actions cannot move an active project contact backwards from `Project Started` to `Payment Pending`
+- indexes for transitional project links in invoices, payments, documents and e-signatures
 
 ## 3. Deploy the Edge Functions
 
@@ -143,10 +161,10 @@ Test these flows before merging the migration branch.
 1. Open `/admin/quotes` and create, edit and duplicate a quote.
 2. Send a quote and open the public quote link.
 3. Sign or decline a quote and confirm the status updates.
-4. Convert an accepted quote to an invoice.
+4. Accept a quote and confirm a project and invoice are created automatically without duplicates.
 5. Open `/admin/invoices` and send an invoice.
-6. Record a partial payment and confirm `amount_paid`, `balance_due` and invoice status reconcile automatically.
-7. Record the remaining payment and confirm the invoice becomes `Paid`.
+6. Record a partial payment and confirm `amount_paid`, `balance_due`, invoice status and project payment status reconcile automatically.
+7. Record the remaining payment and confirm the invoice becomes `Paid` and an early-stage project advances to `Payment Received`.
 8. Confirm overdue invoices appear in Follow-up Reminders.
 
 ### Documents
@@ -161,6 +179,8 @@ Test these flows before merging the migration branch.
 8. Confirm verified payment proof creates a `payments` record and invoice reconciliation runs through the finance trigger.
 9. Extend a document link expiry and confirm a new activity entry is recorded.
 10. Create a new document version and confirm the previous version is no longer marked latest.
+11. Link an unsigned contract to a project, sign it and confirm the project contract state synchronizes without moving a later-stage project backwards.
+12. Link a Proof Approval document to a project, approve it and confirm the project advances to `Final Approval Received` only when it was at an earlier stage.
 
 ### Clause Library and Document Builder
 
@@ -182,6 +202,21 @@ Test these flows before merging the migration branch.
 9. Test decline, resend and expired-link handling.
 10. Retry PDF generation from the admin screen and confirm `Client Signed` and `Fully Signed` statuses are accepted.
 
+### Projects and Production Board
+
+1. Open `/admin/projects` and create a project for an existing contact.
+2. Edit the project service, deadline, value, payment status and internal notes.
+3. Move the project through stages and confirm `stage_changed_at`, `current_stage` and `project_stage_history` update.
+4. Confirm moving a project to `Completed` sets `completed_at` and stops project automation flags.
+5. Change `waiting_on` and queue number from the Project Detail panel and confirm partial updates do not reset book specs, revision counters or other fields.
+6. Log a client delay and confirm it appears only on the linked project.
+7. Open `/admin/production-board` and confirm production-stage cards load from Supabase and retain the 30-second refresh behavior.
+8. Confirm stale stage age, at-risk projects, payment status and deadlines display correctly on the board.
+9. Accept a quote through the public quote flow and confirm one project and one invoice are created and linked.
+10. Approve a quotation through the document flow and confirm the contact remains in `Project Started`, rather than being moved backwards to `Payment Pending`.
+11. Confirm the Project Detail pre-production checklist reads Supabase quotes, invoices and documents for the same contact.
+12. Confirm Message History continues to use the transitional communication backend until the communication module is migrated.
+
 ## 7. Transitional compatibility bridge
 
 Large existing screens still call the Base44-style client API. The compatibility bridge translates selected calls to Supabase only on migrated routes.
@@ -200,6 +235,8 @@ Current migrated route scope:
 /admin/document-builder
 /admin/clause-library
 /admin/esignatures
+/admin/projects
+/admin/production-board
 /doc/view/:id/:token
 /sign/esig/:requestId/:token
 ```
@@ -217,6 +254,8 @@ Document
 DocumentActivity
 Clause
 ESignatureRequest
+Project
+ClientDelay
 ```
 
 It also bridges public and admin actions to these Edge Functions:
@@ -231,6 +270,8 @@ capture-form-submission
 
 Private file uploads on migrated document routes use Supabase Storage. Public document and signing pages request a short-lived signed upload grant from the relevant Edge Function before uploading an allowed proof or signature artifact.
 
+Project routes intentionally keep `MessageLog` on the existing communication backend until the communication phase is migrated, while Project, ClientDelay, Contact, Quote, Invoice and Document data on those routes use Supabase.
+
 Modules outside the migrated route scope continue to use the existing backend until their dependent tables and ID relationships are migrated or mapped. Do not globally redirect every Base44 entity yet.
 
 ## 8. Deployment environment
@@ -241,11 +282,10 @@ Add the public Supabase environment variables to the deployment platform. Previe
 
 The recommended order for the remaining Creative Books SA app is:
 
-1. Projects and Production Board
-2. Appointments and Booking Settings
-3. Client Portal
-4. Automations, Email, WhatsApp and Notifications
-5. Dashboard metrics, Reports, Revenue Forecast and Analytics
-6. SEO and Search Console integrations
+1. Appointments and Booking Settings
+2. Client Portal
+3. Automations, Email, WhatsApp and Notifications
+4. Dashboard metrics, Reports, Revenue Forecast and Analytics
+5. SEO and Search Console integrations
 
 Each module should receive its own database migration, Row Level Security policies, data-access layer and test pass before Base44 dependencies are removed from that module.
