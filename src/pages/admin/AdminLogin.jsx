@@ -1,34 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageMeta from '../../components/shared/PageMeta';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
+
+const ADMIN_ROLES = ['super_admin', 'admin'];
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [locked, setLocked] = useState(false);
 
-  // Check if user is already authenticated as admin
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
-        if (isAuthenticated) {
-          const user = await base44.auth.me();
-          if (user?.role === 'admin') {
-            navigate('/admin/dashboard');
-          } else {
-            setError('You do not have admin access. Contact your administrator.');
-          }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) return;
+
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (profileError) {
+          throw profileError;
+        }
+
+        if (ADMIN_ROLES.includes(profile?.role)) {
+          navigate('/admin/dashboard', { replace: true });
+        } else {
+          await supabase.auth.signOut();
+          setError('You do not have admin access. Contact your administrator.');
         }
       } catch (err) {
         console.error('Auth check failed:', err);
@@ -36,19 +47,15 @@ export default function AdminLogin() {
         setCheckingAuth(false);
       }
     };
+
     checkAuth();
   }, [navigate]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault();
     setError('');
 
-    if (locked) {
-      setError('Too many login attempts. Please try again in 15 minutes.');
-      return;
-    }
-
-    if (!email || !password) {
+    if (!email.trim() || !password) {
       setError('Please enter both email and password.');
       return;
     }
@@ -56,45 +63,39 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // Use Base44's redirectToLogin for OAuth/SSO authentication
-      // For now, we check if user exists and has admin role after they log in
-      // Base44 handles the actual authentication
-      
-      // Redirect to Base44's login page
-      // The user will be redirected back here after login via redirectToLogin callback
-      await base44.auth.redirectToLogin('/admin/login');
-      
-      // After redirect back, check role
-      const user = await base44.auth.me();
-      
-      if (user?.role === 'admin') {
-        if (rememberMe) {
-          localStorage.setItem('adminRememberMe', 'true');
-          localStorage.setItem('adminEmail', user.email);
-        }
-        navigate('/admin/dashboard');
-      } else {
-        setLoginAttempts(prev => {
-          const newAttempts = prev + 1;
-          if (newAttempts >= 5) {
-            setLocked(true);
-            setTimeout(() => setLocked(false), 15 * 60 * 1000);
-          }
-          return newAttempts;
-        });
-        setError('You do not have admin access. Contact your administrator.');
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (signInError) {
+        throw signInError;
       }
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError) {
+        throw profileError;
+      }
+
+      if (!ADMIN_ROLES.includes(profile?.role)) {
+        await supabase.auth.signOut();
+        setError('You do not have admin access. Contact your administrator.');
+        return;
+      }
+
+      navigate('/admin/dashboard', { replace: true });
     } catch (err) {
       console.error('Login error:', err);
-      setLoginAttempts(prev => {
-        const newAttempts = prev + 1;
-        if (newAttempts >= 5) {
-          setLocked(true);
-          setTimeout(() => setLocked(false), 15 * 60 * 1000);
-        }
-        return newAttempts;
-      });
-      setError('Login failed. Please try again.');
+      setError(
+        err?.message === 'Invalid login credentials'
+          ? 'Incorrect email address or password.'
+          : err?.message || 'Login failed. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -114,20 +115,19 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f9fc] to-[#eef1f7] p-4">
       <PageMeta title="Admin Login" noindex={true} />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        {/* Logo */}
         <div className="text-center mb-12">
           <div className="inline-block w-12 h-12 rounded-lg bg-[#B8955B] mb-4" />
           <h1 className="text-2xl font-bold text-[#0B1220]">Creative Books SA</h1>
           <p className="text-sm text-[#2B2B2B]/60 mt-2">Admin Portal</p>
         </div>
 
-        {/* Login Card */}
         <div
           className="rounded-2xl p-8 mb-6"
           style={{
@@ -146,7 +146,6 @@ export default function AdminLogin() {
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-[#0B1220] mb-2">
                 Email Address
@@ -155,16 +154,16 @@ export default function AdminLogin() {
                 <Mail className="absolute left-3 top-3 w-5 h-5 text-[#B8955B]" />
                 <input
                   type="email"
+                  autoComplete="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-[#ddd] rounded-lg focus:outline-none focus:border-[#B8955B]"
                   placeholder="admin@example.com"
-                  disabled={locked}
+                  disabled={loading}
                 />
               </div>
             </div>
 
-            {/* Password Field */}
             <div>
               <label className="block text-sm font-medium text-[#0B1220] mb-2">
                 Password
@@ -173,16 +172,18 @@ export default function AdminLogin() {
                 <Lock className="absolute left-3 top-3 w-5 h-5 text-[#B8955B]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 border border-[#ddd] rounded-lg focus:outline-none focus:border-[#B8955B]"
                   placeholder="••••••••"
-                  disabled={locked}
+                  disabled={loading}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((current) => !current)}
                   className="absolute right-3 top-3 text-[#2B2B2B]/60"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -193,42 +194,18 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={locked}
-                className="w-4 h-4 rounded border-[#ddd]"
-              />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-[#2B2B2B]/70">
-                Remember me (30 days)
-              </label>
-            </div>
-
-            {/* Login Button */}
             <button
               type="submit"
-              disabled={loading || locked}
+              disabled={loading}
               className="w-full py-2.5 bg-[#B8955B] text-white font-medium rounded-lg hover:bg-[#a07d4a] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading ? 'Logging in...' : 'Log In'}
             </button>
           </form>
-
-          {/* Forgotten Password */}
-          <div className="mt-4 text-center">
-            <button className="text-sm text-[#B8955B] hover:text-[#a07d4a]">
-              Forgotten password?
-            </button>
-          </div>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs text-[#2B2B2B]/50 border-t border-[#ddd]/30 pt-6">
-          Creative Books SA — Admin Portal
+          Creative Books SA Admin Portal
         </p>
       </motion.div>
     </div>
