@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import AdminSidebar from './AdminSidebar';
 import CommandPalette from './CommandPalette';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 export default function AdminLayout({ children }) {
-  // Prevent admin pages from being indexed by search engines
   useEffect(() => {
     let meta = document.querySelector('meta[name="robots"]');
     if (!meta) {
@@ -23,81 +22,90 @@ export default function AdminLayout({ children }) {
   const [cmdOpen, setCmdOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [theme, setTheme] = useState(() => getTheme(localStorage.getItem(CURRENT_THEME_KEY) || 'brand'));
-
-  // Listen for theme changes from Settings
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key === CURRENT_THEME_KEY) setTheme(getTheme(e.newValue || 'brand'));
-    };
-    window.addEventListener('storage', onStorage);
-    // Also poll localStorage for same-tab changes
-    const poll = setInterval(() => {
-      const stored = localStorage.getItem(CURRENT_THEME_KEY) || 'brand';
-      setTheme(t => t.id !== stored ? getTheme(stored) : t);
-    }, 500);
-    return () => { window.removeEventListener('storage', onStorage); clearInterval(poll); };
-  }, []);
-  const [notifPermission, setNotifPermission] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'denied');
   const lastSeenRef = useRef(new Set());
   const navigate = useNavigate();
 
-  // Global Cmd+K / Ctrl+K handler
   useEffect(() => {
-    const handler = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCmdOpen(o => !o);
+    const onStorage = (event) => {
+      if (event.key === CURRENT_THEME_KEY) setTheme(getTheme(event.newValue || 'brand'));
+    };
+    window.addEventListener('storage', onStorage);
+    const poll = setInterval(() => {
+      const stored = localStorage.getItem(CURRENT_THEME_KEY) || 'brand';
+      setTheme(current => current.id !== stored ? getTheme(stored) : current);
+    }, 500);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      clearInterval(poll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handler = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
+        setCmdOpen(open => !open);
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // Request notification permission on first load
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-      Notification.requestPermission().then(p => setNotifPermission(p));
+      Notification.requestPermission().catch(() => {});
     }
   }, []);
 
-  // Load initial unread count
   useEffect(() => {
-    base44.entities.Submission.filter({ status: 'new' })
-      .then(subs => {
-        subs.forEach(s => lastSeenRef.current.add(s.id));
-        setUnreadCount(subs.length);
-      })
-      .catch(() => {});
-  }, []);
+    let cancelled = false;
 
-  // Subscribe to new submissions in real-time
-  useEffect(() => {
-    const unsubscribe = base44.entities.Submission.subscribe((event) => {
-      if (event.type === 'create') {
-        if (!lastSeenRef.current.has(event.id)) {
-          lastSeenRef.current.add(event.id);
-          setUnreadCount(prev => prev + 1);
-          // Browser push notification
+    supabase
+      .from('submissions')
+      .select('id')
+      .eq('status', 'new')
+      .then(({ data, error }) => {
+        if (cancelled || error) return;
+        (data || []).forEach(submission => lastSeenRef.current.add(submission.id));
+        setUnreadCount((data || []).length);
+      });
+
+    const channel = supabase
+      .channel('admin-layout-new-submissions')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'submissions' },
+        payload => {
+          const submission = payload.new;
+          if (submission?.status !== 'new' || lastSeenRef.current.has(submission.id)) return;
+
+          lastSeenRef.current.add(submission.id);
+          setUnreadCount(previous => previous + 1);
+
           if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-            const sub = event.data;
-            new Notification('New Submission — Creative Books SA', {
-              body: `${sub?.full_name || 'Someone'} submitted an enquiry${
-                sub?.service_interest?.length ? ` about ${sub.service_interest[0]}` : ''
+            new Notification('New Submission | Creative Books SA', {
+              body: `${submission.full_name || 'Someone'} submitted an enquiry${
+                submission.service_interest?.length ? ` about ${submission.service_interest[0]}` : ''
               }`,
               icon: '/favicon.ico',
-              tag: event.id,
+              tag: submission.id,
             });
           }
-        }
-      }
-    });
-    return unsubscribe;
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('adminRememberMe');
     localStorage.removeItem('adminEmail');
-    navigate('/admin/login');
+    await supabase.auth.signOut();
+    navigate('/admin/login', { replace: true });
   };
 
   const currentTime = new Date().toLocaleTimeString('en-ZA', {
@@ -107,12 +115,9 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="flex h-screen" style={{ background: theme.bg, '--admin-accent': theme.accent }}>
-      {/* Sidebar */}
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
         <div
           className="h-14 border-b flex items-center justify-between px-6"
           style={{ background: '#ffffff', borderColor: '#e5e7eb' }}
@@ -122,14 +127,9 @@ export default function AdminLayout({ children }) {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden p-2 hover:bg-[#f0f0f0] rounded-lg"
             >
-              {sidebarOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            {/* Search → opens Command Palette */}
             <button
               onClick={() => setCmdOpen(true)}
               className="hidden sm:flex items-center gap-2 flex-1 max-w-md px-4 py-2 bg-[#f5f5f5] rounded-lg text-sm text-[#2B2B2B]/50 border border-[#ddd]/30 hover:border-[#B8955B]/50 hover:bg-[#f0f0f0] transition-colors"
@@ -143,12 +143,13 @@ export default function AdminLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Time */}
             <span className="text-sm text-[#2B2B2B]/60 hidden sm:inline">{currentTime}</span>
 
-            {/* Notifications */}
             <button
-              onClick={() => { setUnreadCount(0); navigate('/admin/submissions'); }}
+              onClick={() => {
+                setUnreadCount(0);
+                navigate('/admin/submissions');
+              }}
               className="relative p-2 hover:bg-[#f0f0f0] rounded-lg"
               title="View submissions"
             >
@@ -160,7 +161,6 @@ export default function AdminLayout({ children }) {
               )}
             </button>
 
-            {/* Logout */}
             <button
               onClick={handleLogout}
               className="p-2 hover:bg-[#f0f0f0] rounded-lg text-[#2B2B2B]"
@@ -171,11 +171,8 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
 
-        {/* Page Content */}
         <div className="flex-1 overflow-auto">
-          <div className="p-6 lg:p-7 h-full">
-            {children}
-          </div>
+          <div className="p-6 lg:p-7 h-full">{children}</div>
         </div>
       </div>
 
