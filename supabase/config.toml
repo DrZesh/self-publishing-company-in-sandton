@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.automation-engine]
 verify_jwt = false
+
+[functions.manual-communication]
+verify_jwt = false
