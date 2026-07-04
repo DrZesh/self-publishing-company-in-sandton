@@ -21,6 +21,26 @@ function parseSort(sort = '-created_date') {
   };
 }
 
+function cleanFinancePayload(table, payload) {
+  const cleaned = { ...payload };
+
+  if (table === 'invoices') {
+    if (cleaned.due_date === '') cleaned.due_date = null;
+    if (cleaned.quote_id === '') cleaned.quote_id = null;
+    if (cleaned.line_items && !Array.isArray(cleaned.line_items)) cleaned.line_items = [];
+  }
+
+  if (table === 'quotes') {
+    if (cleaned.valid_until === '') cleaned.valid_until = null;
+  }
+
+  if (table === 'payments') {
+    cleaned.amount = Number(cleaned.amount) || 0;
+  }
+
+  return cleaned;
+}
+
 function makeSupabaseEntity(table) {
   return {
     async list(sort = '-created_date', limit = 200) {
@@ -66,7 +86,7 @@ function makeSupabaseEntity(table) {
     async create(payload) {
       const { data, error } = await supabase
         .from(table)
-        .insert(payload)
+        .insert(cleanFinancePayload(table, payload))
         .select('*')
         .single();
 
@@ -77,7 +97,7 @@ function makeSupabaseEntity(table) {
     async update(id, payload) {
       const { data, error } = await supabase
         .from(table)
-        .update(payload)
+        .update(cleanFinancePayload(table, payload))
         .eq('id', id)
         .select('*')
         .single();
@@ -100,28 +120,70 @@ function makeSupabaseEntity(table) {
   };
 }
 
-const supabaseContactEntity = makeSupabaseEntity('contacts');
-const supabaseTaskEntity = makeSupabaseEntity('tasks');
+const supabaseEntities = {
+  Contact: makeSupabaseEntity('contacts'),
+  Task: makeSupabaseEntity('tasks'),
+  Quote: makeSupabaseEntity('quotes'),
+  QuoteLineItem: makeSupabaseEntity('quote_line_items'),
+  Invoice: makeSupabaseEntity('invoices'),
+  Payment: makeSupabaseEntity('payments'),
+};
 
 function currentPath() {
   return typeof window === 'undefined' ? '' : window.location.pathname;
 }
 
-function usesMigratedCrmEntity(entityName) {
+function usesMigratedEntity(entityName) {
   const path = currentPath();
-  const migratedRoutes = ['/admin/contacts', '/admin/pipeline', '/admin/tasks'];
 
-  return (
-    migratedRoutes.some(route => path.startsWith(route)) &&
+  const crmRoutes = ['/admin/contacts', '/admin/pipeline', '/admin/tasks'];
+  if (
+    crmRoutes.some(route => path.startsWith(route)) &&
     ['Contact', 'Task'].includes(entityName)
-  );
+  ) {
+    return true;
+  }
+
+  const financeRoutes = ['/admin/quotes', '/admin/invoices', '/admin/payments'];
+  if (
+    financeRoutes.some(route => path.startsWith(route)) &&
+    ['Contact', 'Quote', 'QuoteLineItem', 'Invoice', 'Payment'].includes(entityName)
+  ) {
+    return true;
+  }
+
+  return false;
 }
+
+function publicQuoteToken() {
+  const match = currentPath().match(/^\/quote\/view\/[^/]+\/([^/]+)/);
+  return match?.[1] || null;
+}
+
+const quoteSignatureBridge = {
+  async create(payload) {
+    const { data, error } = await supabase.functions.invoke('quote-actions', {
+      body: {
+        action: 'sign',
+        token: publicQuoteToken(),
+        ...payload,
+      },
+    });
+
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    return data.signature;
+  },
+};
 
 const entitiesBridge = new Proxy(base44Sdk.entities, {
   get(target, property, receiver) {
-    if (usesMigratedCrmEntity(property)) {
-      if (property === 'Contact') return supabaseContactEntity;
-      if (property === 'Task') return supabaseTaskEntity;
+    if (usesMigratedEntity(property)) {
+      return supabaseEntities[property];
+    }
+
+    if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) {
+      return quoteSignatureBridge;
     }
 
     return Reflect.get(target, property, receiver);
@@ -208,6 +270,26 @@ const functionsBridge = new Proxy(base44Sdk.functions, {
           return { data: { activities: data || [] } };
         }
 
+        if (functionName === 'quoteActions') {
+          const { data, error } = await supabase.functions.invoke('quote-actions', {
+            body: payload,
+          });
+
+          if (error) throw error;
+          if (data?.error) throw new Error(data.error);
+          return { data };
+        }
+
+        if (functionName === 'sendInvoiceEmail') {
+          const { data, error } = await supabase.functions.invoke('send-invoice-email', {
+            body: payload,
+          });
+
+          if (error) throw error;
+          if (data?.error) throw new Error(data.error);
+          return { data };
+        }
+
         return target.invoke(functionName, payload);
       };
     }
@@ -216,8 +298,8 @@ const functionsBridge = new Proxy(base44Sdk.functions, {
   },
 });
 
-// Transitional client: authentication and selected CRM workflows use Supabase,
-// while modules not yet migrated continue to use the existing Base44 backend.
+// Transitional client: authentication and selected CRM/finance workflows use
+// Supabase, while modules not yet migrated continue on the existing backend.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
