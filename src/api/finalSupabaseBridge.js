@@ -9,6 +9,10 @@ function isEmailTemplatePath() {
   return currentPath().startsWith('/admin/email-templates');
 }
 
+function isFinanceHubPath() {
+  return currentPath().startsWith('/admin/finance');
+}
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -17,39 +21,41 @@ function parseSort(sort = '-created_date') {
   };
 }
 
+function makeReadEntity(table) {
+  return {
+    async list(sort = '-created_date', limit = 200) {
+      const { column, ascending } = parseSort(sort);
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .order(column, { ascending })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    },
+
+    async filter(filters = {}, sort = '-created_date', limit = 200) {
+      const { column, ascending } = parseSort(sort);
+      let query = supabase.from(table).select('*');
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value === null) query = query.is(key, null);
+        else if (value !== undefined) query = query.eq(key, value);
+      });
+      const { data, error } = await query.order(column, { ascending }).limit(limit);
+      if (error) throw error;
+      return data || [];
+    },
+
+    async get(id) {
+      const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
+      if (error) throw error;
+      return data;
+    },
+  };
+}
+
 const emailTemplateEntity = {
-  async list(sort = '-created_date', limit = 200) {
-    const { column, ascending } = parseSort(sort);
-    const { data, error } = await supabase
-      .from('email_templates')
-      .select('*')
-      .order(column, { ascending })
-      .limit(limit);
-    if (error) throw error;
-    return data || [];
-  },
-
-  async filter(filters = {}, sort = '-created_date', limit = 200) {
-    const { column, ascending } = parseSort(sort);
-    let query = supabase.from('email_templates').select('*');
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value === null) query = query.is(key, null);
-      else if (value !== undefined) query = query.eq(key, value);
-    });
-    const { data, error } = await query.order(column, { ascending }).limit(limit);
-    if (error) throw error;
-    return data || [];
-  },
-
-  async get(id) {
-    const { data, error } = await supabase
-      .from('email_templates')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data;
-  },
+  ...makeReadEntity('email_templates'),
 
   async create(payload) {
     const { data, error } = await supabase
@@ -84,9 +90,17 @@ const emailTemplateEntity = {
   },
 };
 
+const financeEntities = {
+  Quote: makeReadEntity('quotes'),
+  Invoice: makeReadEntity('invoices'),
+  Payment: makeReadEntity('payments'),
+  Contact: makeReadEntity('contacts'),
+};
+
 const entitiesBridge = new Proxy(transitionalBase44.entities, {
   get(target, property, receiver) {
     if (isEmailTemplatePath() && property === 'EmailTemplate') return emailTemplateEntity;
+    if (isFinanceHubPath() && financeEntities[property]) return financeEntities[property];
     return Reflect.get(target, property, receiver);
   },
 });
