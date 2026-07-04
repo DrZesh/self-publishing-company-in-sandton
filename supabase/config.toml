@@ -23,3 +23,9 @@ verify_jwt = false
 
 [functions.portal-actions]
 verify_jwt = false
+
+[functions.communications-actions]
+verify_jwt = false
+
+[functions.automation-engine]
+verify_jwt = false
