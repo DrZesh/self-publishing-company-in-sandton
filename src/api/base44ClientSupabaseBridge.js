@@ -12,6 +12,21 @@ const BRIDGE_STORAGE_FIELDS = [
   'thumbnail_url',
 ];
 
+const SERVICE_FIELD_MAP = {
+  serviceName: 'service_name',
+  packageName: 'package_name',
+  pricingType: 'pricing_type',
+  basePrice: 'base_price',
+  bookSizeCondition: 'book_size_condition',
+  pageCountMin: 'page_count_min',
+  pageCountMax: 'page_count_max',
+  wordCountMin: 'word_count_min',
+  wordCountMax: 'word_count_max',
+  copyQuantityMin: 'copy_quantity_min',
+  copyQuantityMax: 'copy_quantity_max',
+  addOnCondition: 'add_on_condition',
+};
+
 let lastSignedContract = null;
 
 function currentPath() {
@@ -36,6 +51,10 @@ function isBookLibraryAdminPath() {
 
 function isCollectionAdminPath() {
   return currentPath().startsWith('/admin/collections');
+}
+
+function isServiceAdminPath() {
+  return currentPath().startsWith('/admin/services');
 }
 
 function currentContractToken() {
@@ -177,6 +196,37 @@ function cleanCollectionPayload(payload) {
   return cleaned;
 }
 
+function cleanServicePayload(payload) {
+  const cleaned = {};
+  Object.entries(payload || {}).forEach(([key, value]) => {
+    const targetKey = SERVICE_FIELD_MAP[key] || key;
+    cleaned[targetKey] = value;
+  });
+
+  [
+    'price', 'base_price', 'quantity', 'page_count_min', 'page_count_max',
+    'word_count_min', 'word_count_max', 'copy_quantity_min', 'copy_quantity_max',
+  ].forEach(field => {
+    if (cleaned[field] === '' || cleaned[field] === undefined) delete cleaned[field];
+    else if (cleaned[field] !== null) cleaned[field] = Number(cleaned[field]);
+  });
+
+  return cleaned;
+}
+
+function serviceRowToLegacy(row) {
+  if (!row) return row;
+  const legacy = { ...row };
+  Object.entries(SERVICE_FIELD_MAP).forEach(([legacyKey, databaseKey]) => {
+    legacy[legacyKey] = row[databaseKey];
+  });
+  return legacy;
+}
+
+function hydrateServiceRows(rows) {
+  return Array.isArray(rows) ? rows.map(serviceRowToLegacy) : serviceRowToLegacy(rows);
+}
+
 function makeSupabaseEntity(table, options = {}) {
   const hydrate = options.hydrate || (async value => value);
   const clean = options.clean || (value => value);
@@ -197,8 +247,9 @@ function makeSupabaseEntity(table, options = {}) {
       const { column, ascending } = parseSort(sort);
       let query = supabase.from(table).select('*');
       Object.entries(filters).forEach(([key, value]) => {
-        if (value === null) query = query.is(key, null);
-        else if (value !== undefined) query = query.eq(key, value);
+        const databaseKey = SERVICE_FIELD_MAP[key] || key;
+        if (value === null) query = query.is(databaseKey, null);
+        else if (value !== undefined) query = query.eq(databaseKey, value);
       });
       const { data, error } = await query.order(column, { ascending }).limit(limit);
       if (error) throw error;
@@ -251,6 +302,10 @@ const bookRecordEntity = makeSupabaseEntity('book_records', {
 const collectionSignatureEntity = makeSupabaseEntity('collection_signatures', {
   hydrate: hydrateBridgeStorageRows,
   clean: cleanCollectionPayload,
+});
+const serviceEntity = makeSupabaseEntity('services', {
+  hydrate: hydrateServiceRows,
+  clean: cleanServicePayload,
 });
 const contactEntity = makeSupabaseEntity('contacts');
 const projectEntity = makeSupabaseEntity('projects');
@@ -344,6 +399,8 @@ const entitiesBridge = new Proxy(transitionalBase44.entities, {
       if (property === 'Project') return projectEntity;
       if (property === 'Contact') return contactEntity;
     }
+
+    if (isServiceAdminPath() && property === 'Service') return serviceEntity;
 
     return Reflect.get(target, property, receiver);
   },
