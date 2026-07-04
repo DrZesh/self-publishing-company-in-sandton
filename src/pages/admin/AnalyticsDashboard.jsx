@@ -40,28 +40,39 @@ export default function AnalyticsDashboard() {
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(null);
+  const [error, setError] = useState(null);
 
-  const fetchAll = useCallback(async () => {
+  const fetchAll = useCallback(async (forceRefresh = false) => {
     setLoading(true);
-    const [r, p, s, rt] = await Promise.all([
-      base44.functions.invoke('getAnalyticsData', { action: 'report', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'top_pages', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'sources', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID }),
-    ]);
-    setReport(r.data);
-    setTopPages(p.data);
-    setSources(s.data);
-    setRealtime(rt.data);
-    setLastRefresh(new Date());
-    setLoading(false);
+    setError(null);
+    try {
+      const [r, p, s, rt] = await Promise.all([
+        base44.functions.invoke('getAnalyticsData', { action: 'report', propertyId: PROPERTY_ID, forceRefresh }),
+        base44.functions.invoke('getAnalyticsData', { action: 'top_pages', propertyId: PROPERTY_ID, forceRefresh }),
+        base44.functions.invoke('getAnalyticsData', { action: 'sources', propertyId: PROPERTY_ID, forceRefresh }),
+        base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID, forceRefresh }),
+      ]);
+      setReport(r.data);
+      setTopPages(p.data);
+      setSources(s.data);
+      setRealtime(rt.data);
+      setLastRefresh(new Date());
+    } catch (fetchError) {
+      setError(fetchError.message || 'Google Analytics data could not be loaded.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    fetchAll();
+    fetchAll(false);
     const interval = setInterval(async () => {
-      const rt = await base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID });
-      setRealtime(rt.data);
+      try {
+        const rt = await base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID });
+        setRealtime(rt.data);
+      } catch {
+        // Keep the last known realtime value when a background poll fails.
+      }
     }, 30000);
     return () => clearInterval(interval);
   }, [fetchAll]);
@@ -110,14 +121,14 @@ export default function AnalyticsDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 font-heading">Website Analytics</h1>
-            <p className="text-sm text-gray-500 mt-0.5">creativebooks.co.za — last 30 days</p>
+            <p className="text-sm text-gray-500 mt-0.5">creativebooks.co.za · last 30 days</p>
           </div>
           <div className="flex items-center gap-3">
             {lastRefresh && (
               <span className="text-xs text-gray-400">Updated {lastRefresh.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' })}</span>
             )}
             <button
-              onClick={fetchAll}
+              onClick={() => fetchAll(true)}
               disabled={loading}
               className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
             >
@@ -147,6 +158,13 @@ export default function AnalyticsDashboard() {
           )}
         </div>
 
+        {error && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+            {error}
+            <button onClick={() => fetchAll(true)} className="ml-3 underline">Retry</button>
+          </div>
+        )}
+
         {loading && !report && (
           <div className="flex items-center justify-center h-48">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-[#B87333] rounded-full animate-spin" />
@@ -167,7 +185,7 @@ export default function AnalyticsDashboard() {
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart2 className="w-4 h-4 text-[#B87333]" />
-                <h2 className="text-sm font-semibold text-gray-800">Sessions &amp; Users — Last 30 Days</h2>
+                <h2 className="text-sm font-semibold text-gray-800">Sessions &amp; Users · Last 30 Days</h2>
               </div>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={chartData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>

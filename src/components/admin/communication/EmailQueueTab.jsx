@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import { CheckCircle, XCircle, Clock, Send, Mail, AlertTriangle } from 'lucide-react';
 
@@ -12,6 +13,15 @@ const STATUS_STYLES = {
   cancelled:        { label: 'Cancelled',           bg: '#f8fafc', color: '#64748b', icon: XCircle },
 };
 
+async function runQueueAction(action, queueId) {
+  const { data, error } = await supabase.functions.invoke('communications-actions', {
+    body: { action, queue_id: queueId },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data;
+}
+
 export default function EmailQueueTab() {
   const qc = useQueryClient();
 
@@ -21,31 +31,25 @@ export default function EmailQueueTab() {
   });
 
   const approve = useMutation({
-    mutationFn: async (item) => {
-      await base44.entities.MessageQueue.update(item.id, {
-        status: 'scheduled',
-        approved_by: 'admin',
-        approved_at: new Date().toISOString(),
-      });
-      // Fire the actual send
-      await base44.functions.invoke('sendBrandedEmail', {
-        to: item.recipient,
-        subject: item.rendered_subject,
-        html: item.rendered_body,
-      });
-      await base44.entities.MessageQueue.update(item.id, { status: 'sent', sent_at: new Date().toISOString() });
+    mutationFn: item => runQueueAction('approve_queue', item.id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['message-queue'] });
+      toast.success('Email approved and sent');
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['message-queue'] }); toast.success('Email approved & sent'); },
-    onError: () => toast.error('Failed to send'),
+    onError: error => toast.error(error.message || 'Failed to approve and send'),
   });
 
   const cancel = useMutation({
-    mutationFn: (id) => base44.entities.MessageQueue.update(id, { status: 'cancelled' }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['message-queue'] }); toast.success('Cancelled'); },
+    mutationFn: id => runQueueAction('cancel_queue', id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['message-queue'] });
+      toast.success('Cancelled');
+    },
+    onError: error => toast.error(error.message || 'Failed to cancel message'),
   });
 
   const pending = queue.filter(q => q.status === 'pending_approval');
-  const rest    = queue.filter(q => q.status !== 'pending_approval');
+  const rest = queue.filter(q => q.status !== 'pending_approval');
 
   if (isLoading) return <div className="p-12 text-center text-gray-400">Loading queue…</div>;
 
@@ -133,17 +137,24 @@ function QueueCard({ item, onApprove, onCancel, approving }) {
 
       {/* Body preview */}
       {item.rendered_body && (
-        <div className="bg-white border border-amber-100 rounded-lg p-3 max-h-28 overflow-hidden text-xs text-gray-600 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: item.rendered_body.replace(/<[^>]+>/g, ' ').slice(0, 300) + '…' }} />
+        <div
+          className="bg-white border border-amber-100 rounded-lg p-3 max-h-28 overflow-hidden text-xs text-gray-600 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: item.rendered_body.replace(/<[^>]+>/g, ' ').slice(0, 300) + '…' }}
+        />
       )}
 
       <div className="flex gap-2">
-        <button onClick={onApprove} disabled={approving}
-          className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors">
+        <button
+          onClick={onApprove}
+          disabled={approving}
+          className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors"
+        >
           <Send className="w-3.5 h-3.5" /> {approving ? 'Sending…' : 'Approve & Send'}
         </button>
-        <button onClick={onCancel}
-          className="px-4 py-2 bg-white border border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 text-gray-600 text-xs font-medium rounded-lg transition-colors">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 bg-white border border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 text-gray-600 text-xs font-medium rounded-lg transition-colors"
+        >
           Cancel
         </button>
       </div>

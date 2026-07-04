@@ -1,0 +1,67 @@
+project_id = "creative-books-sa"
+
+[functions.capture-form-submission]
+verify_jwt = false
+
+[functions.quote-actions]
+verify_jwt = false
+
+[functions.send-invoice-email]
+verify_jwt = false
+
+[functions.document-actions]
+verify_jwt = false
+
+[functions.e-signature-actions]
+verify_jwt = false
+
+[functions.booking-actions]
+verify_jwt = false
+
+[functions.appointment-reminders]
+verify_jwt = false
+
+[functions.portal-actions]
+verify_jwt = false
+
+[functions.communications-actions]
+verify_jwt = false
+
+[functions.automation-engine]
+verify_jwt = false
+
+[functions.manual-communication]
+verify_jwt = false
+
+[functions.dashboard-metrics]
+verify_jwt = true
+
+[functions.search-console-data]
+verify_jwt = true
+
+[functions.analytics-data]
+verify_jwt = true
+
+[functions.contract-actions]
+verify_jwt = false
+
+[functions.contract-file-actions]
+verify_jwt = false
+
+[functions.adobe-sign-actions]
+verify_jwt = true
+
+[functions.adobe-sign-webhook]
+verify_jwt = false
+
+[functions.client-service-actions]
+verify_jwt = true
+
+[functions.walkin-checkin]
+verify_jwt = false
+
+[functions.google-reviews]
+verify_jwt = false
+
+[functions.contact-email-actions]
+verify_jwt = true

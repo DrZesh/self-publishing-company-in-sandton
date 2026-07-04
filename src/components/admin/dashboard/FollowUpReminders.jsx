@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, CheckCircle, Mail, FileText, User, ChevronRight, RefreshCw, Clock } from 'lucide-react';
+import {
+  Bell,
+  CheckCircle,
+  Mail,
+  User,
+  ChevronRight,
+  RefreshCw,
+  Clock,
+  CheckSquare,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
+import { crmService } from '@/services/crmService';
 
 const PRIORITY_COLORS = {
   high: 'bg-red-100 text-red-700 border-red-200',
@@ -15,9 +23,8 @@ const PRIORITY_COLORS = {
 
 const TYPE_ICONS = {
   lead_followup: User,
-  quote_followup: FileText,
-  quote_expiring: Clock,
   submission_conversion: Mail,
+  task_overdue: CheckSquare,
 };
 
 export default function FollowUpReminders() {
@@ -26,11 +33,17 @@ export default function FollowUpReminders() {
   const navigate = useNavigate();
 
   const fetchFollowUps = async () => {
+    setLoading(true);
+
     try {
-      const res = await base44.functions.invoke('getFollowUpReminders', {});
-      setData(res.data);
+      const result = await crmService.getFollowUpReminders();
+      setData(result);
     } catch (error) {
       console.error('Error fetching follow-ups:', error);
+      setData({
+        followUps: [],
+        summary: { total: 0, high: 0, medium: 0, low: 0 },
+      });
     } finally {
       setLoading(false);
     }
@@ -40,17 +53,16 @@ export default function FollowUpReminders() {
     fetchFollowUps();
   }, []);
 
-  const handleAction = (followUp) => {
+  const handleAction = followUp => {
     switch (followUp.type) {
       case 'lead_followup':
         navigate(`/admin/leads?contact=${followUp.contact_id}`);
         break;
-      case 'quote_followup':
-      case 'quote_expiring':
-        navigate(`/admin/quotes/${followUp.quote_id}`);
-        break;
       case 'submission_conversion':
         navigate(`/admin/submissions?id=${followUp.submission_id}`);
+        break;
+      case 'task_overdue':
+        navigate('/admin/tasks');
         break;
       default:
         break;
@@ -101,12 +113,14 @@ export default function FollowUpReminders() {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {data.followUps.slice(0, 5).map((followUp, idx) => {
+          {data.followUps.slice(0, 5).map((followUp, index) => {
             const Icon = TYPE_ICONS[followUp.type] || Bell;
+            const age = followUp.days_overdue || followUp.days_pending || 0;
+
             return (
               <div
-                key={idx}
-                className={`p-3 rounded-lg border ${PRIORITY_COLORS[followUp.priority]} hover:shadow-sm transition-all cursor-pointer`}
+                key={`${followUp.type}-${followUp.task_id || followUp.lead_id || followUp.submission_id || index}`}
+                className={`p-3 rounded-lg border ${PRIORITY_COLORS[followUp.priority] || PRIORITY_COLORS.low} hover:shadow-sm transition-all cursor-pointer`}
                 onClick={() => handleAction(followUp)}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -115,21 +129,16 @@ export default function FollowUpReminders() {
                     <div className="flex-1">
                       <p className="text-xs font-semibold">{followUp.title}</p>
                       <p className="text-xs opacity-80 mt-0.5">{followUp.description}</p>
-                      {followUp.estimated_value && (
+                      {followUp.estimated_value ? (
                         <p className="text-xs font-medium mt-1">
-                          R {followUp.estimated_value.toLocaleString()}
+                          R {Number(followUp.estimated_value).toLocaleString('en-ZA')}
                         </p>
-                      )}
-                      {followUp.quote_total && (
-                        <p className="text-xs font-medium mt-1">
-                          R {followUp.quote_total.toLocaleString()}
-                        </p>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
                     <Badge variant="outline" className="text-xs">
-                      {followUp.days_overdue || followUp.days_pending || followUp.days_until_expiry}d
+                      {age}d
                     </Badge>
                     <ChevronRight className="w-3 h-3 opacity-50" />
                   </div>
@@ -137,13 +146,13 @@ export default function FollowUpReminders() {
               </div>
             );
           })}
-          
+
           {data.followUps.length > 5 && (
             <Button
               variant="ghost"
               size="sm"
               className="w-full text-xs mt-2"
-              onClick={() => navigate('/admin/leads')}
+              onClick={() => navigate('/admin/tasks')}
             >
               View all {data.followUps.length} follow-ups →
             </Button>

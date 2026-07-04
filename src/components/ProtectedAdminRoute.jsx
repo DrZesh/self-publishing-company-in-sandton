@@ -1,32 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function ProtectedAdminRoute({ children }) {
-  const [isAdmin, setIsAdmin] = useState(null);
+  const { user, profile, isLoadingAuth, authChecked } = useAuth();
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
-        if (!isAuthenticated) {
-          setIsAdmin(false);
-          return;
-        }
-
-        const user = await base44.auth.me();
-        setIsAdmin(user?.role === 'admin');
-      } catch (err) {
-        console.error('Admin check failed:', err);
-        setIsAdmin(false);
-      }
-    };
-
-    checkAdmin();
-  }, []);
-
-  if (isAdmin === null) {
+  if (isLoadingAuth || !authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8f9fc]">
         <div className="flex items-center gap-3">
@@ -37,7 +17,13 @@ export default function ProtectedAdminRoute({ children }) {
     );
   }
 
-  if (!isAdmin) {
+  if (!user) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  const hasAdminAccess = ['super_admin', 'admin'].includes(profile?.role);
+
+  if (!hasAdminAccess) {
     return <Navigate to="/admin/login" replace />;
   }
 

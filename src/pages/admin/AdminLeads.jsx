@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useEffect, useMemo, useState } from 'react';
+import { crmService } from '@/services/crmService';
 import AdminLayout from '@/components/admin/AdminLayout';
 import LeadDetailPanel from '@/components/admin/leads/LeadDetailPanel';
 import LeadEditModal from '@/components/admin/leads/LeadEditModal';
 import AILeadSummary from '@/components/admin/leads/AILeadSummary';
-import { Search, Plus, ChevronRight, Download, MessageCircle, Brain, X } from 'lucide-react';
+import { Search, Plus, ChevronRight, Download, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const STAGES = ['new', 'contacted', 'qualified', 'quoted', 'negotiating', 'won', 'lost'];
@@ -30,15 +30,22 @@ const STAGE_COLORS = {
 };
 
 const SERVICE_OPTIONS = [
-  'Book Printing', 'Book Editing', 'Proofreading', 'Thesis Editing', 'Dissertation Editing',
-  'Book Cover Design', 'Typesetting', 'Ghostwriting', 'Ebook Publishing', 'Self Publishing',
-  "Children's Books", 'Memoir Writing', 'Biography Writing', 'Author Websites', 'Other',
+  'Book Printing',
+  'Book Editing',
+  'Proofreading',
+  'Thesis Editing',
+  'Dissertation Editing',
+  'Book Cover Design',
+  'Typesetting',
+  'Ghostwriting',
+  'Ebook Publishing',
+  'Self Publishing',
+  "Children's Books",
+  'Memoir Writing',
+  'Biography Writing',
+  'Author Websites',
+  'Other',
 ];
-
-const SOURCE_LABELS = {
-  organic_search: 'Organic Search', direct: 'Direct', social: 'Social',
-  referral: 'Referral', paid: 'Paid Ads', email: 'Email', other: 'Other',
-};
 
 export default function AdminLeads() {
   const [leads, setLeads] = useState([]);
@@ -48,79 +55,153 @@ export default function AdminLeads() {
   const [search, setSearch] = useState('');
   const [stageFilter, setStageFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('');
-  const [sourceFilter, setSourceFilter] = useState('');
   const [selectedLead, setSelectedLead] = useState(null);
   const [editLead, setEditLead] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const load = async () => {
+    setLoading(true);
+
+    try {
+      const [leadData, contactData, submissionData] = await Promise.all([
+        crmService.listLeads(200),
+        crmService.listContacts(500),
+        crmService.listSubmissions(200),
+      ]);
+
+      setLeads(leadData || []);
+      setContacts(contactData || []);
+      setSubmissions(submissionData || []);
+    } catch (error) {
+      console.error('Failed to load leads:', error);
+      toast.error('Failed to load leads');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    Promise.all([
-      base44.entities.Lead.list('-created_date', 200),
-      base44.entities.Contact.list('-created_date', 200),
-      base44.entities.Submission.list('-created_date', 200),
-    ]).then(([l, c, s]) => { setLeads(l); setContacts(c); setSubmissions(s); })
-      .finally(() => setLoading(false));
+    load();
   }, []);
 
-  const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
+  const contactMap = useMemo(
+    () => Object.fromEntries(contacts.map(contact => [contact.id, contact])),
+    [contacts]
+  );
 
-  const filtered = leads.filter(l => {
-    if (stageFilter !== 'all' && l.stage !== stageFilter) return false;
+  const filtered = leads.filter(lead => {
+    if (stageFilter !== 'all' && lead.stage !== stageFilter) return false;
+
     if (serviceFilter) {
-      const services = (l.service_interest || []).join(' ').toLowerCase();
+      const services = (lead.service_interest || []).join(' ').toLowerCase();
       if (!services.includes(serviceFilter.toLowerCase())) return false;
     }
-    if (search) {
-      const c = contactMap[l.contact_id];
-      const q = search.toLowerCase();
-      const matches = c?.full_name?.toLowerCase().includes(q) ||
-        c?.email?.toLowerCase().includes(q) ||
-        c?.phone?.toLowerCase().includes(q) ||
-        c?.book_title?.toLowerCase().includes(q) ||
-        (l.service_interest || []).join(' ').toLowerCase().includes(q);
+
+    if (search.trim()) {
+      const contact = contactMap[lead.contact_id];
+      const query = search.toLowerCase();
+      const matches =
+        contact?.full_name?.toLowerCase().includes(query) ||
+        contact?.email?.toLowerCase().includes(query) ||
+        contact?.phone?.toLowerCase().includes(query) ||
+        contact?.book_title?.toLowerCase().includes(query) ||
+        (lead.service_interest || []).join(' ').toLowerCase().includes(query);
+
       if (!matches) return false;
     }
+
     return true;
   });
 
-  const openLeads = leads.filter(l => !['won', 'lost'].includes(l.stage));
-  const pipelineValue = openLeads.reduce((s, l) => s + (l.weighted_value || 0), 0);
-  const wonValue = leads.filter(l => l.stage === 'won').reduce((s, l) => s + (l.estimated_value || 0), 0);
+  const openLeads = leads.filter(lead => !['won', 'lost'].includes(lead.stage));
+  const pipelineValue = openLeads.reduce((sum, lead) => sum + Number(lead.weighted_value || 0), 0);
+  const wonValue = leads
+    .filter(lead => lead.stage === 'won')
+    .reduce((sum, lead) => sum + Number(lead.estimated_value || 0), 0);
 
   const handleSave = async (data) => {
-    if (editLead?.id) {
-      const updated = await base44.entities.Lead.update(editLead.id, data);
-      setLeads(prev => prev.map(l => l.id === editLead.id ? { ...l, ...data } : l));
-      if (selectedLead?.id === editLead.id) setSelectedLead(prev => ({ ...prev, ...data }));
-      toast.success('Lead updated');
-    } else {
-      const created = await base44.entities.Lead.create(data);
-      setLeads(prev => [created, ...prev]);
-      toast.success('Lead created');
+    try {
+      if (editLead?.id) {
+        const updated = await crmService.updateLead(editLead.id, data);
+        setLeads(previous => previous.map(lead => lead.id === editLead.id ? updated : lead));
+        if (selectedLead?.id === editLead.id) setSelectedLead(updated);
+        toast.success('Lead updated');
+      } else {
+        const created = await crmService.createLead(data);
+        setLeads(previous => [created, ...previous]);
+        toast.success('Lead created');
+      }
+
+      setShowEditModal(false);
+    } catch (error) {
+      console.error('Failed to save lead:', error);
+      toast.error(`Failed to save lead: ${error.message}`);
+      throw error;
     }
-    setShowEditModal(false);
   };
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this lead? This cannot be undone.')) return;
-    await base44.entities.Lead.delete(id);
-    setLeads(prev => prev.filter(l => l.id !== id));
-    setSelectedLead(null);
-    setShowEditModal(false);
-    toast.success('Lead deleted');
+
+    try {
+      await crmService.deleteLead(id);
+      setLeads(previous => previous.filter(lead => lead.id !== id));
+      setSelectedLead(null);
+      setShowEditModal(false);
+      toast.success('Lead deleted');
+    } catch (error) {
+      console.error('Failed to delete lead:', error);
+      toast.error(`Failed to delete lead: ${error.message}`);
+    }
   };
 
-  const handleSelectLead = (lead) => {
-    setSelectedLead(lead);
+  const handleStageChange = async (newStage) => {
+    if (!selectedLead) return;
+
+    try {
+      const updated = await crmService.updateLead(selectedLead.id, {
+        stage: newStage,
+      });
+
+      setLeads(previous => previous.map(lead => lead.id === updated.id ? updated : lead));
+      setSelectedLead(updated);
+      toast.success(`Stage updated to ${STAGE_LABELS[newStage] || newStage}`);
+    } catch (error) {
+      toast.error(`Failed to update stage: ${error.message}`);
+    }
+  };
+
+  const exportCsv = () => {
+    const headers = ['Name', 'Email', 'Phone', 'Stage', 'Service', 'Book Title', 'Value (R)', 'Date'];
+    const rows = filtered.map(lead => {
+      const contact = contactMap[lead.contact_id];
+      return [
+        contact?.full_name || '',
+        contact?.email || '',
+        contact?.phone || '',
+        STAGE_LABELS[lead.stage] || lead.stage,
+        (lead.service_interest || []).join('; '),
+        contact?.book_title || '',
+        lead.estimated_value || 0,
+        new Date(lead.created_date).toLocaleDateString('en-ZA'),
+      ];
+    });
+
+    const csv = [headers, ...rows]
+      .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const anchor = document.createElement('a');
+    anchor.href = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
+    anchor.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.click();
   };
 
   return (
     <AdminLayout>
       <div className="flex h-full gap-0">
-        {/* Main list */}
         <div className={`flex-1 min-w-0 transition-all ${selectedLead ? 'hidden lg:block lg:max-w-none' : ''}`}>
           <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Leads</h1>
@@ -129,57 +210,66 @@ export default function AdminLeads() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => {
-                  const headers = ['Name','Email','Phone','Stage','Service','Book Title','Value (R)','Date'];
-                  const rows = filtered.map(l => {
-                    const c = contactMap[l.contact_id];
-                    return [c?.full_name||'',c?.email||'',c?.phone||'',STAGE_LABELS[l.stage]||l.stage,(l.service_interest||[]).join('; '),c?.book_title||'',l.estimated_value||0,new Date(l.created_date).toLocaleDateString('en-ZA')];
-                  });
-                  const csv = [headers,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-                  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`leads-${new Date().toISOString().slice(0,10)}.csv`;a.click();
-                }}
-                  className="flex items-center gap-2 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-semibold hover:border-[#B87333] hover:text-[#B87333] transition-colors bg-white">
+                <button
+                  onClick={exportCsv}
+                  className="flex items-center gap-2 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-semibold hover:border-[#B87333] hover:text-[#B87333] transition-colors bg-white"
+                >
                   <Download className="w-4 h-4" /> Export CSV
                 </button>
-                <button onClick={() => { setEditLead(null); setShowEditModal(true); }}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-lg text-sm font-semibold hover:bg-[#a06428] transition-colors">
+                <button
+                  onClick={() => {
+                    setEditLead(null);
+                    setShowEditModal(true);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#B87333] text-white rounded-lg text-sm font-semibold hover:bg-[#a06428] transition-colors"
+                >
                   <Plus className="w-4 h-4" /> New Lead
                 </button>
               </div>
             </div>
 
-            {/* Stage filter pills */}
             <div className="flex gap-2 flex-wrap mb-4">
-              <button onClick={() => setStageFilter('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
+              <button
+                onClick={() => setStageFilter('all')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}
+              >
                 All ({leads.length})
               </button>
-              {STAGES.map(s => (
-                <button key={s} onClick={() => setStageFilter(s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === s ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
-                  {STAGE_LABELS[s] || s} ({leads.filter(l => l.stage === s).length})
+              {STAGES.map(stage => (
+                <button
+                  key={stage}
+                  onClick={() => setStageFilter(stage)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === stage ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}
+                >
+                  {STAGE_LABELS[stage] || stage} ({leads.filter(lead => lead.stage === stage).length})
                 </button>
               ))}
             </div>
 
-            {/* Search + filters row */}
             <div className="flex gap-3 mb-5 flex-wrap">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-                <input value={search} onChange={e => setSearch(e.target.value)}
+                <input
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
                   placeholder="Search name, email, phone, book title…"
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white" />
+                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white"
+                />
               </div>
-              <select value={serviceFilter} onChange={e => setServiceFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white text-gray-600">
+              <select
+                value={serviceFilter}
+                onChange={event => setServiceFilter(event.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white text-gray-600"
+              >
                 <option value="">All Services</option>
-                {SERVICE_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                {SERVICE_OPTIONS.map(service => <option key={service} value={service}>{service}</option>)}
               </select>
             </div>
 
-            {/* Table */}
             {loading ? (
-              <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />)}</div>
+              <div className="space-y-2">
+                {[...Array(6)].map((_, index) => <div key={index} className="h-16 bg-gray-100 rounded-xl animate-pulse" />)}
+              </div>
             ) : filtered.length === 0 ? (
               <div className="py-20 text-center bg-white rounded-xl border border-gray-200">
                 <div className="text-4xl mb-3">🎯</div>
@@ -197,7 +287,6 @@ export default function AdminLeads() {
                         <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Stage</th>
                         <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Value</th>
                         <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">Next Action</th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden xl:table-cell">Date</th>
                         <th className="px-4 py-3 w-8" />
                       </tr>
                     </thead>
@@ -207,10 +296,13 @@ export default function AdminLeads() {
                         const isOverdue = lead.next_action_due && new Date(lead.next_action_due) < new Date();
                         const services = (lead.service_interest || []).slice(0, 2);
                         const isSelected = selectedLead?.id === lead.id;
+
                         return (
-                          <tr key={lead.id}
-                            onClick={() => handleSelectLead(lead)}
-                            className={`border-b border-gray-100 hover:bg-amber-50/40 cursor-pointer transition-colors ${isSelected ? 'bg-amber-50 border-l-2 border-l-[#B87333]' : ''}`}>
+                          <tr
+                            key={lead.id}
+                            onClick={() => setSelectedLead(lead)}
+                            className={`border-b border-gray-100 hover:bg-amber-50/40 cursor-pointer transition-colors ${isSelected ? 'bg-amber-50 border-l-2 border-l-[#B87333]' : ''}`}
+                          >
                             <td className="px-4 py-3">
                               <p className="font-semibold text-gray-900">{contact?.full_name || '—'}</p>
                               <p className="text-xs text-gray-400">{contact?.email || ''}</p>
@@ -218,11 +310,13 @@ export default function AdminLeads() {
                             </td>
                             <td className="px-4 py-3 hidden sm:table-cell">
                               <div className="flex flex-wrap gap-1">
-                                {services.length ? services.map(s => (
-                                  <span key={s} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{s}</span>
+                                {services.length ? services.map(service => (
+                                  <span key={service} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{service}</span>
                                 )) : <span className="text-xs text-gray-300">—</span>}
                               </div>
-                              {contact?.book_title && <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[140px]">📖 {contact.book_title}</p>}
+                              {contact?.book_title && (
+                                <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[140px]">📖 {contact.book_title}</p>
+                              )}
                             </td>
                             <td className="px-4 py-3">
                               <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STAGE_COLORS[lead.stage] || 'bg-gray-100 text-gray-600'}`}>
@@ -230,16 +324,15 @@ export default function AdminLeads() {
                               </span>
                             </td>
                             <td className="px-4 py-3 text-right hidden md:table-cell">
-                              <p className="font-semibold text-gray-900">R{(lead.estimated_value || 0).toLocaleString()}</p>
+                              <p className="font-semibold text-gray-900">R{Number(lead.estimated_value || 0).toLocaleString()}</p>
                               <p className="text-xs text-gray-400">{lead.probability_percent || 0}% prob</p>
                             </td>
                             <td className="px-4 py-3 hidden lg:table-cell max-w-[180px]">
-                              {lead.next_action
-                                ? <p className={`text-xs truncate ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-600'}`}>{isOverdue ? '⚠ ' : ''}{lead.next_action}</p>
-                                : <span className="text-xs text-gray-300">—</span>}
-                            </td>
-                            <td className="px-4 py-3 hidden xl:table-cell">
-                              <p className="text-xs text-gray-400">{new Date(lead.created_date).toLocaleDateString('en-ZA')}</p>
+                              {lead.next_action ? (
+                                <p className={`text-xs truncate ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-600'}`}>
+                                  {isOverdue ? '⚠ ' : ''}{lead.next_action}
+                                </p>
+                              ) : <span className="text-xs text-gray-300">—</span>}
                             </td>
                             <td className="px-4 py-3"><ChevronRight className="w-4 h-4 text-gray-300" /></td>
                           </tr>
@@ -253,7 +346,6 @@ export default function AdminLeads() {
           </div>
         </div>
 
-        {/* Detail panel */}
         {selectedLead && (
           <div className="flex-1 max-w-2xl border-l border-gray-200 bg-white overflow-y-auto">
             <div className="p-6 space-y-4">
@@ -263,37 +355,29 @@ export default function AdminLeads() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              
-              {/* AI Lead Intelligence */}
+
               <AILeadSummary
                 lead={selectedLead}
                 contact={contactMap[selectedLead.contact_id]}
-                submission={submissions.find(s => s.email === contactMap[selectedLead.contact_id]?.email)}
-                onGenerateSummary={(analysis) => {
-                  console.log('AI Analysis:', analysis);
-                }}
-                onGenerateReply={(reply) => {
-                  console.log('AI Reply:', reply);
-                }}
+                submission={submissions.find(submission => submission.email === contactMap[selectedLead.contact_id]?.email)}
+                onGenerateSummary={analysis => console.log('AI Analysis:', analysis)}
+                onGenerateReply={reply => console.log('AI Reply:', reply)}
               />
 
-              {/* Rest of lead details */}
               <LeadDetailPanel
                 lead={selectedLead}
                 contact={contactMap[selectedLead.contact_id]}
-                submissions={submissions.filter(s => {
-                  const c = contactMap[selectedLead.contact_id];
-                  return s.email === c?.email;
+                submissions={submissions.filter(submission => {
+                  const contact = contactMap[selectedLead.contact_id];
+                  return submission.email === contact?.email;
                 })}
                 onClose={() => setSelectedLead(null)}
-                onEdit={() => { setEditLead(selectedLead); setShowEditModal(true); }}
-                onDelete={handleDelete}
-                onStageChange={async (newStage) => {
-                  await base44.entities.Lead.update(selectedLead.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
-                  setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, stage: newStage } : l));
-                  setSelectedLead(prev => ({ ...prev, stage: newStage }));
-                  toast.success(`Stage updated to ${newStage}`);
+                onEdit={() => {
+                  setEditLead(selectedLead);
+                  setShowEditModal(true);
                 }}
+                onDelete={handleDelete}
+                onStageChange={handleStageChange}
               />
             </div>
           </div>

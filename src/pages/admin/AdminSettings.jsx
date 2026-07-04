@@ -3,7 +3,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { BarChart2, Shield, ExternalLink, Users, Target, FileText, Columns, Mail, BookOpen, Inbox, LayoutDashboard, Search, CheckCircle } from 'lucide-react';
-import { ADMIN_THEMES, getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
+import { ADMIN_THEMES, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 function Section({ title, sub, children }) {
   return (
@@ -39,34 +39,27 @@ export default function AdminSettings() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Contact.list('-created_date', 1).catch(() => []),
-      base44.entities.Lead.list('-created_date', 1).catch(() => []),
-      base44.entities.Quote.list('-created_date', 1).catch(() => []),
-      base44.entities.Submission.filter({ status: 'new' }).catch(() => []),
-    ]).then(([contacts, leads, quotes, unread]) => {
-      setCounts({
-        contacts: contacts.length,
-        leads: leads.filter ? leads.length : 0,
-        quotes: quotes.length,
-        unread: unread.length,
-      });
-    }).finally(() => setLoadingCounts(false));
-
-    // Get real counts
-    Promise.all([
       base44.entities.Contact.list('-created_date', 500),
       base44.entities.Lead.list('-created_date', 500),
       base44.entities.Quote.list('-created_date', 500),
-    ]).then(([c, l, q]) => {
-      setCounts(prev => ({ ...prev, contacts: c.length, leads: l.length, quotes: q.length }));
-    }).catch(() => {});
+      base44.entities.Submission.filter({ status: 'new' }),
+    ]).then(([contacts, leads, quotes, unread]) => {
+      setCounts({
+        contacts: contacts.length,
+        leads: leads.length,
+        quotes: quotes.length,
+        unread: unread.length,
+      });
+    }).catch(() => {
+      setCounts({ contacts: 0, leads: 0, quotes: 0, unread: 0 });
+    }).finally(() => setLoadingCounts(false));
   }, []);
 
   const adminPages = [
     { label: 'Dashboard', path: '/admin/dashboard', sub: 'Business overview & KPIs', icon: LayoutDashboard },
     { label: 'Submissions', path: '/admin/submissions', sub: 'Incoming enquiry inbox', icon: Inbox },
     { label: 'Leads', path: '/admin/leads', sub: 'Sales lead management', icon: Target },
-    { label: 'Pipeline', path: '/admin/pipeline', sub: '15-stage production kanban', icon: Columns },
+    { label: 'Pipeline', path: '/admin/pipeline', sub: 'Production and sales workflow', icon: Columns },
     { label: 'Quotes', path: '/admin/quotes', sub: 'Quote builder & tracking', icon: FileText },
     { label: 'Contacts', path: '/admin/contacts', sub: 'Author & client CRM', icon: Users },
     { label: 'Email Templates', path: '/admin/email-templates', sub: 'Reusable email templates', icon: Mail },
@@ -83,23 +76,24 @@ export default function AdminSettings() {
           <p className="text-sm text-black/50 mt-0.5">Admin panel configuration, integrations and portal overview</p>
         </div>
 
-        {/* Theme Selector */}
         <Section title="Dashboard Theme" sub="Choose a visual style for the entire admin dashboard">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {ADMIN_THEMES.map(t => {
-              const isActive = activeTheme === t.id;
+            {ADMIN_THEMES.map(theme => {
+              const isActive = activeTheme === theme.id;
               return (
-                <button key={t.id} onClick={() => applyTheme(t.id)}
+                <button
+                  key={theme.id}
+                  onClick={() => applyTheme(theme.id)}
                   className={`relative rounded-xl p-3 border-2 transition-all text-left ${
                     isActive ? 'border-[#B87333] shadow-md' : 'border-gray-200 hover:border-gray-400'
-                  }`}>
-                  {/* Color swatch */}
-                  <div className="w-full h-10 rounded-lg mb-2 overflow-hidden" style={{ background: t.preview }}>
+                  }`}
+                >
+                  <div className="w-full h-10 rounded-lg mb-2 overflow-hidden" style={{ background: theme.preview }}>
                     <div className="w-1/3 h-full" style={{ background: 'rgba(255,255,255,0.15)' }} />
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm">{t.badge}</span>
-                    <span className="text-xs font-semibold text-gray-800 truncate">{t.name}</span>
+                    <span className="text-sm">{theme.badge}</span>
+                    <span className="text-xs font-semibold text-gray-800 truncate">{theme.name}</span>
                   </div>
                   {isActive && (
                     <div className="absolute top-2 right-2">
@@ -110,11 +104,10 @@ export default function AdminSettings() {
               );
             })}
           </div>
-          <p className="text-xs text-black/40 mt-3">Theme applies immediately across the sidebar, backgrounds and accent colours. Refresh if any component doesn't update.</p>
+          <p className="text-xs text-black/40 mt-3">Theme applies immediately across the sidebar, backgrounds and accent colours. Refresh if any component does not update.</p>
         </Section>
 
-        {/* Data Overview */}
-        <Section title="Data Overview" sub="Current counts across your CRM">
+        <Section title="Data Overview" sub="Current counts across your Supabase CRM">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: 'Contacts', value: counts.contacts, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -135,26 +128,26 @@ export default function AdminSettings() {
           </div>
         </Section>
 
-        {/* Integrations */}
         <Section title="Integrations" sub="Connected external services powering your admin panel">
-          <Row label="Google Search Console" sub="sc-domain:creativebooks.co.za — connected">
+          <Row label="Supabase" sub="Database, authentication, Storage and Edge Functions">
+            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">Connected</span>
+          </Row>
+          <Row label="Google Search Console" sub="sc-domain:creativebooks.co.za">
             <Link to="/admin/seo" className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold hover:bg-emerald-100">
               <BarChart2 className="w-3.5 h-3.5" /> View
             </Link>
           </Row>
-          <Row label="Resend Email" sub="Transactional emails — form notifications, estimates, quotes">
-            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">Connected</span>
+          <Row label="Resend Email" sub="Transactional and automated email delivery">
+            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">Configured server-side</span>
           </Row>
-          <Row label="Google Reviews" sub="Live reviews fetched from Google Places API">
-            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">Connected</span>
-          </Row>
-          <Row label="Google API Key" sub="Used for Places, Reviews, and Search Console">
-            <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">Set ✓</span>
+          <Row label="Google Analytics" sub="GA4 reporting and realtime analytics">
+            <Link to="/admin/analytics" className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold hover:bg-emerald-100">
+              <BarChart2 className="w-3.5 h-3.5" /> View
+            </Link>
           </Row>
         </Section>
 
-        {/* Admin Pages */}
-        <Section title="Admin Pages" sub="Quick links to all sections of the portal">
+        <Section title="Admin Pages" sub="Quick links to key sections of the portal">
           {adminPages.map(item => (
             <Row key={item.path} label={item.label} sub={item.sub}>
               <Link to={item.path} className="flex items-center gap-1 text-xs text-[#B87333] hover:underline font-medium">
@@ -164,34 +157,32 @@ export default function AdminSettings() {
           ))}
         </Section>
 
-        {/* Pipeline Stages Reference */}
-        <Section title="Pipeline Stages" sub="The 15 production stages used in the Pipeline kanban">
+        <Section title="Pipeline Stages" sub="Production stages used in the CRM workflow">
           <div className="flex flex-wrap gap-1.5">
-            {['New Enquiry','Information Requested','Quote in Progress','Quote Sent','Payment Pending','Project Started','Editing','Cover Design','Typesetting','Sample Queued','Sample Approved','Mass Production','Completed','Delivered','Lost'].map((stage, i) => (
+            {['New Enquiry','Information Requested','Quote in Progress','Quote Sent','Payment Pending','Project Started','Editing','Cover Design','Typesetting','Sample Queued','Sample Approved','Mass Production','Completed','Delivered','Lost'].map((stage, index) => (
               <span key={stage} className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700">
-                <span className="text-gray-300 font-mono">{i + 1}.</span> {stage}
+                <span className="text-gray-300 font-mono">{index + 1}.</span> {stage}
               </span>
             ))}
           </div>
         </Section>
 
-        {/* Security */}
         <Section title="Security & Access" sub="Admin portal access control">
-          <Row label="Admin Access" sub="Only users with role='admin' can access this portal">
+          <Row label="Admin Access" sub="Protected routes require an authenticated Supabase admin role">
             <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" /> Protected
             </span>
           </Row>
-          <Row label="Session" sub="Admin sessions secured via Base44 auth">
-            <span className="text-xs text-black/40">Always-on</span>
+          <Row label="Session" sub="Admin sessions are secured through Supabase Auth">
+            <span className="text-xs text-black/40">Active while authenticated</span>
           </Row>
         </Section>
 
         <Section title="About" sub="Creative Books SA Admin Portal">
           <div className="space-y-1.5 text-sm text-black/60">
-            <p>Built on Base44 · React · Tailwind CSS · Google Search Console API</p>
-            <p>Dashboard data refreshes every 60 seconds.</p>
-            <p>GSC data has a 2–3 day reporting lag (Google's own delay).</p>
+            <p>React admin application with Supabase data, Auth, Storage and Edge Functions.</p>
+            <p>Migrated modules are routed through layered compatibility adapters during cutover.</p>
+            <p>Analytics and Search Console data are fetched through authenticated server functions.</p>
           </div>
         </Section>
       </div>
