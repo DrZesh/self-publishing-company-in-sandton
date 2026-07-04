@@ -22,6 +22,12 @@ const STORAGE_FIELDS = [
   'signature_image_url',
 ];
 
+let portalCache = {
+  token: null,
+  promise: null,
+  data: null,
+};
+
 function parseSort(sort = '-created_date') {
   const descending = sort.startsWith('-');
   return {
@@ -277,6 +283,11 @@ function currentPath() {
   return typeof window === 'undefined' ? '' : window.location.pathname;
 }
 
+function currentPortalToken() {
+  const match = currentPath().match(/^\/portal\/([^/]+)/);
+  return match?.[1] || null;
+}
+
 function isDocumentAdminPath(path = currentPath()) {
   return [
     '/admin/documents',
@@ -295,16 +306,16 @@ function isBookingAdminPath(path = currentPath()) {
   return ['/admin/appointments', '/admin/booking-settings'].some(route => path.startsWith(route));
 }
 
-function isBookingPublicPath(path = currentPath()) {
-  return path === '/book' || path.startsWith('/appointment/cancel/');
-}
-
 function isDocumentPublicPath(path = currentPath()) {
   return path.startsWith('/doc/view/');
 }
 
 function isESignaturePublicPath(path = currentPath()) {
   return path.startsWith('/sign/esig/');
+}
+
+function isClientPortalPublicPath(path = currentPath()) {
+  return path.startsWith('/portal/');
 }
 
 function usesMigratedEntity(entityName) {
@@ -345,6 +356,67 @@ function usesMigratedEntity(entityName) {
   return false;
 }
 
+async function loadPortalBundle() {
+  const portalToken = currentPortalToken();
+  if (!portalToken) throw new Error('Invalid portal link');
+
+  if (portalCache.token === portalToken && portalCache.data) return portalCache.data;
+  if (portalCache.token === portalToken && portalCache.promise) return portalCache.promise;
+
+  const promise = supabase.functions.invoke('portal-actions', {
+    body: { action: 'get_portal_data', token: portalToken },
+  }).then(({ data, error }) => {
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    portalCache = { token: portalToken, promise: null, data };
+    return data;
+  }).catch(error => {
+    portalCache = { token: null, promise: null, data: null };
+    throw error;
+  });
+
+  portalCache = { token: portalToken, promise, data: null };
+  return promise;
+}
+
+function filterRows(rows, filters = {}) {
+  return (rows || []).filter(row => Object.entries(filters).every(([key, value]) => row?.[key] === value));
+}
+
+function makePortalReadEntity(section) {
+  const readRows = async () => {
+    const bundle = await loadPortalBundle();
+    if (section === 'access') return bundle.access ? [bundle.access] : [];
+    if (section === 'contact') return bundle.contact ? [bundle.contact] : [];
+    return bundle[section] || [];
+  };
+
+  return {
+    async list() {
+      return readRows();
+    },
+    async filter(filters = {}) {
+      return filterRows(await readRows(), filters);
+    },
+    async get(id) {
+      return (await readRows()).find(row => row.id === id) || null;
+    },
+    async update(id) {
+      return (await readRows()).find(row => row.id === id) || null;
+    },
+  };
+}
+
+const portalEntities = {
+  ClientPortalAccess: makePortalReadEntity('access'),
+  Contact: makePortalReadEntity('contact'),
+  Quote: makePortalReadEntity('quotes'),
+  Invoice: makePortalReadEntity('invoices'),
+  Project: makePortalReadEntity('projects'),
+  Document: makePortalReadEntity('documents'),
+  Contract: makePortalReadEntity('contracts'),
+};
+
 function publicQuoteToken() {
   const match = currentPath().match(/^\/quote\/view\/[^/]+\/([^/]+)/);
   return match?.[1] || null;
@@ -363,6 +435,7 @@ const quoteSignatureBridge = {
 
 const entitiesBridge = new Proxy(base44Sdk.entities, {
   get(target, property, receiver) {
+    if (isClientPortalPublicPath() && portalEntities[property]) return portalEntities[property];
     if (usesMigratedEntity(property)) return supabaseEntities[property];
     if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) return quoteSignatureBridge;
     return Reflect.get(target, property, receiver);
@@ -570,8 +643,8 @@ const integrationsBridge = new Proxy(base44Sdk.integrations, {
 });
 
 // Transitional client: authentication plus selected CRM, finance, document,
-// e-signature, project, production and appointment workflows use Supabase.
-// Unmigrated modules continue on Base44 until their dependencies are migrated.
+// e-signature, project, production, appointment and public client portal workflows
+// use Supabase. Unmigrated modules continue on Base44 until their dependencies move.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
