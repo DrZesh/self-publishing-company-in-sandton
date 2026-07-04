@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.manual-communication]
 verify_jwt = false
+
+[functions.dashboard-metrics]
+verify_jwt = true
