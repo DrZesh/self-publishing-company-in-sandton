@@ -111,14 +111,14 @@ function cleanEntityPayload(table, payload) {
   if (table === 'invoices') {
     if (cleaned.due_date === '') cleaned.due_date = null;
     if (cleaned.quote_id === '') cleaned.quote_id = null;
-    if (cleaned.line_items && !Array.isArray(cleaned.line_items)) cleaned.line_items = [];
+    if ('line_items' in cleaned && !Array.isArray(cleaned.line_items)) cleaned.line_items = [];
   }
 
   if (table === 'quotes') {
     if (cleaned.valid_until === '') cleaned.valid_until = null;
   }
 
-  if (table === 'payments') {
+  if (table === 'payments' && 'amount' in cleaned) {
     cleaned.amount = Number(cleaned.amount) || 0;
   }
 
@@ -127,15 +127,15 @@ function cleanEntityPayload(table, payload) {
       if (cleaned[field] === '') cleaned[field] = null;
     });
     if (cleaned.project_id === '') cleaned.project_id = null;
-    if (!Array.isArray(cleaned.labels)) cleaned.labels = [];
-    cleaned.file_size_kb = Number(cleaned.file_size_kb) || 0;
-    cleaned.version = Number(cleaned.version) || 1;
-    cleaned.default_expiry_days = Number(cleaned.default_expiry_days) || 14;
+    if ('labels' in cleaned && !Array.isArray(cleaned.labels)) cleaned.labels = [];
+    if ('file_size_kb' in cleaned) cleaned.file_size_kb = Number(cleaned.file_size_kb) || 0;
+    if ('version' in cleaned) cleaned.version = Number(cleaned.version) || 1;
+    if ('default_expiry_days' in cleaned) cleaned.default_expiry_days = Number(cleaned.default_expiry_days) || 14;
   }
 
   if (table === 'clauses') {
-    if (!Array.isArray(cleaned.tags)) cleaned.tags = [];
-    cleaned.sort_order = Number(cleaned.sort_order) || 0;
+    if ('tags' in cleaned && !Array.isArray(cleaned.tags)) cleaned.tags = [];
+    if ('sort_order' in cleaned) cleaned.sort_order = Number(cleaned.sort_order) || 0;
   }
 
   if (table === 'e_signature_requests') {
@@ -144,11 +144,11 @@ function cleanEntityPayload(table, payload) {
       if (cleaned[field] === '') cleaned[field] = null;
     });
     if (cleaned.project_id === '') cleaned.project_id = null;
-    if (!Array.isArray(cleaned.contract_fields)) cleaned.contract_fields = [];
-    if (!Array.isArray(cleaned.reminder_days)) cleaned.reminder_days = [];
-    if (!cleaned.admin_field_values || Array.isArray(cleaned.admin_field_values)) cleaned.admin_field_values = {};
-    if (!cleaned.client_field_values || Array.isArray(cleaned.client_field_values)) cleaned.client_field_values = {};
-    if (!Array.isArray(cleaned.audit_trail)) cleaned.audit_trail = [];
+    if ('contract_fields' in cleaned && !Array.isArray(cleaned.contract_fields)) cleaned.contract_fields = [];
+    if ('reminder_days' in cleaned && !Array.isArray(cleaned.reminder_days)) cleaned.reminder_days = [];
+    if ('admin_field_values' in cleaned && (!cleaned.admin_field_values || Array.isArray(cleaned.admin_field_values))) cleaned.admin_field_values = {};
+    if ('client_field_values' in cleaned && (!cleaned.client_field_values || Array.isArray(cleaned.client_field_values))) cleaned.client_field_values = {};
+    if ('audit_trail' in cleaned && !Array.isArray(cleaned.audit_trail)) cleaned.audit_trail = [];
   }
 
   if (table === 'projects') {
@@ -156,22 +156,22 @@ function cleanEntityPayload(table, payload) {
       if (cleaned[field] === '') cleaned[field] = null;
     });
     if (cleaned.deadline === '') cleaned.deadline = null;
-    cleaned.project_value = Number(cleaned.project_value) || 0;
+    if ('project_value' in cleaned) cleaned.project_value = Number(cleaned.project_value) || 0;
     if (cleaned.queue_number === '') cleaned.queue_number = null;
     else if (cleaned.queue_number !== undefined && cleaned.queue_number !== null) {
       cleaned.queue_number = Number(cleaned.queue_number) || null;
     }
-    if (!cleaned.revision_counts || Array.isArray(cleaned.revision_counts)) {
+    if ('revision_counts' in cleaned && (!cleaned.revision_counts || Array.isArray(cleaned.revision_counts))) {
       cleaned.revision_counts = { cover_design: 0, editing: 0, layout: 0, proofreading: 0 };
     }
-    if (!cleaned.revision_limits || Array.isArray(cleaned.revision_limits)) {
+    if ('revision_limits' in cleaned && (!cleaned.revision_limits || Array.isArray(cleaned.revision_limits))) {
       cleaned.revision_limits = { cover_design: 2, editing: 1, layout: 2, proofreading: 1 };
     }
-    if (!cleaned.book_spec || Array.isArray(cleaned.book_spec)) cleaned.book_spec = {};
+    if ('book_spec' in cleaned && (!cleaned.book_spec || Array.isArray(cleaned.book_spec))) cleaned.book_spec = {};
   }
 
   if (table === 'client_delays') {
-    cleaned.days_delayed = Number(cleaned.days_delayed) || 0;
+    if ('days_delayed' in cleaned) cleaned.days_delayed = Number(cleaned.days_delayed) || 0;
     if (cleaned.contact_id === '') cleaned.contact_id = null;
   }
 
