@@ -51,6 +51,32 @@ Deno.serve(async request => {
       reply_to: 'info@creativebooks.co.za',
     };
 
+    const resolveContact = async (contactId?: string | null, email?: string | null) => {
+      if (contactId) {
+        const { data, error } = await admin
+          .from('contacts')
+          .select('id, full_name, email')
+          .eq('id', contactId)
+          .maybeSingle();
+        if (error) throw error;
+        if (data) return data;
+      }
+
+      if (email) {
+        const normalizedEmail = email.trim().toLowerCase();
+        const { data, error } = await admin
+          .from('contacts')
+          .select('id, full_name, email')
+          .ilike('email', normalizedEmail)
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        return data;
+      }
+
+      return null;
+    };
+
     if (action === 'send_email') {
       if (!body.to || !body.subject || !body.body_html) return json({ error: 'to, subject and body_html are required' }, 400);
       const key = Deno.env.get('RESEND_API_KEY');
@@ -70,10 +96,10 @@ Deno.serve(async request => {
       const result = await response.json();
       if (!response.ok) return json({ error: result?.message || 'Email delivery failed' }, 502);
 
-      if (body.contact_id) {
-        const { data: contact } = await admin.from('contacts').select('full_name').eq('id', body.contact_id).maybeSingle();
-        await admin.from('message_logs').insert({
-          client_id: body.contact_id,
+      const contact = await resolveContact(body.contact_id, body.to);
+      if (contact) {
+        const { error: logError } = await admin.from('message_logs').insert({
+          client_id: contact.id,
           project_id: body.project_id || null,
           channel: 'email',
           recipient: body.to,
@@ -86,9 +112,11 @@ Deno.serve(async request => {
           dedup_key: `manual_email__${crypto.randomUUID()}`,
           provider: 'resend',
           provider_message_id: result?.id || null,
-          client_name: contact?.full_name || null,
+          client_name: contact.full_name || null,
         });
+        if (logError) console.warn('Manual email delivered but log insert failed:', logError.message);
       }
+
       return json({ success: true, provider: 'resend', id: result?.id || null });
     }
 
@@ -100,10 +128,10 @@ Deno.serve(async request => {
       const response = await fetch(`https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(phone)}&text=${encodeURIComponent(body.message)}&apikey=${encodeURIComponent(key)}`);
       if (!response.ok) return json({ error: `WhatsApp delivery failed with HTTP ${response.status}` }, 502);
 
-      if (body.contact_id) {
-        const { data: contact } = await admin.from('contacts').select('full_name').eq('id', body.contact_id).maybeSingle();
-        await admin.from('message_logs').insert({
-          client_id: body.contact_id,
+      const contact = await resolveContact(body.contact_id, null);
+      if (contact) {
+        const { error: logError } = await admin.from('message_logs').insert({
+          client_id: contact.id,
           project_id: body.project_id || null,
           channel: 'whatsapp',
           recipient: body.to_number,
@@ -115,9 +143,11 @@ Deno.serve(async request => {
           triggered_by: 'admin',
           dedup_key: `manual_whatsapp__${crypto.randomUUID()}`,
           provider: 'callmebot',
-          client_name: contact?.full_name || null,
+          client_name: contact.full_name || null,
         });
+        if (logError) console.warn('Manual WhatsApp delivered but log insert failed:', logError.message);
       }
+
       return json({ success: true, provider: 'callmebot', to: body.to_number });
     }
 
