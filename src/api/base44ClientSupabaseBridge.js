@@ -17,6 +17,10 @@ const functionsBridge = new Proxy(transitionalBase44.functions, {
         return invokeSupabaseFunction('search-console-data', payload);
       }
 
+      if (functionName === 'getAnalyticsData') {
+        return invokeSupabaseFunction('analytics-data', payload);
+      }
+
       return target.invoke(functionName, payload);
     };
   },
