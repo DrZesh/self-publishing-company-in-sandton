@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.e-signature-actions]
 verify_jwt = false
+
+[functions.booking-actions]
+verify_jwt = false
+
+[functions.appointment-reminders]
+verify_jwt = false
