@@ -13,6 +13,7 @@ Apply the migrations in this order:
 ```text
 supabase/migrations/202607040001_auth_foundation.sql
 supabase/migrations/202607040002_submissions_leads.sql
+supabase/migrations/202607040003_contacts_pipeline_tasks_followups.sql
 ```
 
 The first migration creates:
@@ -35,6 +36,16 @@ The second migration creates:
 - automatic lead weighted-value calculation
 - atomic `convert_submission_to_lead` database function
 - realtime publication for submission changes
+
+The third migration adds:
+
+- pipeline-compatible fields to `public.contacts`
+- pipeline stage-change timestamps and activity logging
+- `public.tasks`
+- task status, priority, ownership and completion tracking
+- Row Level Security for tasks
+- `get_follow_up_reminders()` for overdue tasks, stale leads and unread submissions
+- `get_contact_activity()` for migrated CRM activity history
 
 ## 3. Deploy the submission capture Edge Function
 
@@ -88,12 +99,33 @@ Test these flows before merging the migration branch:
 5. Submit the public Contact form and confirm it appears in `/admin/submissions`.
 6. Submit the public Quote form and confirm the contact and submission are linked.
 7. Open a new submission and confirm its status changes from `new` to `read`.
-8. Add and save internal notes.
+8. Add and save internal submission notes.
 9. Convert a submission to a lead and confirm the lead, contact linkage and submission status update together.
 10. Create, edit, change stage and delete a manual lead.
-11. Sign out and confirm that protected routes return to `/admin/login`.
+11. Open `/admin/contacts` and create, edit, search, filter, import and export contacts.
+12. Open a contact detail record and confirm contact and notes edits persist in Supabase.
+13. Open `/admin/pipeline` and create a deal, move stages, edit value, probability, package, owner and close date.
+14. Confirm pipeline stage changes create CRM activity log records.
+15. Open `/admin/tasks` and create a task, filter tasks and mark a task Done.
+16. Confirm overdue tasks appear in the Follow-up Reminders widget.
+17. Confirm stale leads and unread submissions appear in Follow-up Reminders according to their age thresholds.
+18. Sign out and confirm that protected routes return to `/admin/login`.
 
-## 7. Deployment environment
+## 7. Transitional compatibility bridge
+
+The application contains large existing screens that still call the Base44-style client API. For migrated CRM routes, the compatibility bridge translates Contact and Task entity methods to Supabase.
+
+The migrated route scope is:
+
+```text
+/admin/contacts
+/admin/pipeline
+/admin/tasks
+```
+
+This is intentional. Modules outside those routes continue to use the existing backend until their related tables and foreign-key dependencies are migrated. Do not globally redirect all Contact calls until Quotes, Invoices, Payments, Projects and related records have been migrated or mapped to Supabase IDs.
+
+## 8. Deployment environment
 
 Add the same public Supabase environment variables to the deployment platform. Preview deployments should use a non-production Supabase environment where possible.
 
@@ -101,16 +133,14 @@ Add the same public Supabase environment variables to the deployment platform. P
 
 The recommended order for the remaining Creative Books SA app is:
 
-1. Admin Contacts screen and contact detail dependencies
-2. Pipeline and Follow-ups
-3. Quotes and Invoices
-4. Payments
-5. Documents and E-signatures
-6. Projects and Production Board
-7. Appointments and Booking Settings
-8. Client Portal
-9. Automations, Email, WhatsApp and Notifications
-10. Reports, Revenue Forecast and Analytics
-11. SEO and Search Console integrations
+1. Quotes and Invoices
+2. Payments
+3. Documents and E-signatures
+4. Projects and Production Board
+5. Appointments and Booking Settings
+6. Client Portal
+7. Automations, Email, WhatsApp and Notifications
+8. Dashboard metrics, Reports, Revenue Forecast and Analytics
+9. SEO and Search Console integrations
 
 Each module should receive its own database migration, Row Level Security policies, data-access layer and test pass before Base44 dependencies are removed from that module.
