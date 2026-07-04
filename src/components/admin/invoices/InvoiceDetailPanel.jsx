@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { X, Edit2, Send, Download, Loader2 } from 'lucide-react';
+import { X, Edit2, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import InvoiceModal from './InvoiceModal';
 
 const STATUS_COLORS = {
-  'Draft': 'bg-gray-100 text-gray-600',
-  'Sent': 'bg-blue-100 text-blue-700',
-  'Paid': 'bg-green-100 text-green-700',
-  'Overdue': 'bg-red-100 text-red-700',
+  Draft: 'bg-gray-100 text-gray-600',
+  Sent: 'bg-blue-100 text-blue-700',
+  Paid: 'bg-green-100 text-green-700',
+  Overdue: 'bg-red-100 text-red-700',
   'Partially Paid': 'bg-yellow-100 text-yellow-700',
 };
 
@@ -19,34 +19,62 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
   const [sending, setSending] = useState(false);
 
   const handleSendEmail = async () => {
-    if (!contact?.email) { toast.error('Contact has no email address.'); return; }
+    if (!contact?.email) {
+      toast.error('Contact has no email address.');
+      return;
+    }
+
     if (!confirm(`Send invoice ${invoice.invoice_number} to ${contact.email}?`)) return;
+
     setSending(true);
+
     try {
-      const res = await base44.functions.invoke('sendInvoiceEmail', { invoice_id: invoice.id });
-      if (res.data?.success) {
+      const result = await base44.functions.invoke('sendInvoiceEmail', {
+        invoice_id: invoice.id,
+      });
+
+      if (result.data?.success) {
         toast.success(`Invoice sent to ${contact.email}`);
         onUpdated();
       } else {
-        toast.error(res.data?.error || 'Failed to send invoice.');
+        toast.error(result.data?.error || 'Failed to send invoice.');
       }
-    } catch (err) {
-      toast.error(err?.response?.data?.error || 'Failed to send invoice.');
+    } catch (error) {
+      toast.error(error.message || 'Failed to send invoice.');
     } finally {
       setSending(false);
     }
   };
 
   const markPaid = async () => {
+    const balance = Number(invoice.balance_due || 0);
+
+    if (balance <= 0) {
+      toast.info('This invoice has no outstanding balance.');
+      return;
+    }
+
     setMarking(true);
-    await base44.entities.Invoice.update(invoice.id, {
-      status: 'Paid',
-      amount_paid: invoice.total,
-      balance_due: 0,
-      paid_at: new Date().toISOString(),
-    });
-    setMarking(false);
-    onUpdated();
+
+    try {
+      await base44.entities.Payment.create({
+        invoice_id: invoice.id,
+        contact_id: invoice.contact_id,
+        amount: balance,
+        payment_date: new Date().toISOString().slice(0, 10),
+        payment_method: 'Other',
+        reference: `Manual settlement for ${invoice.invoice_number}`,
+        status: 'Confirmed',
+        notes: 'Created from the invoice Mark as Paid action.',
+      });
+
+      toast.success('Invoice marked as paid and payment recorded');
+      onUpdated();
+    } catch (error) {
+      toast.error(error.message || 'Failed to record settlement payment.');
+    } finally {
+      setMarking(false);
+    }
   };
 
   return (
@@ -67,7 +95,6 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
           </div>
 
           <div className="p-6 space-y-6">
-            {/* Summary */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-gray-50 rounded-xl p-3 text-center">
                 <p className="text-xs text-gray-500">Total</p>
@@ -83,7 +110,6 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
               </div>
             </div>
 
-            {/* Line Items */}
             {invoice.line_items?.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">Line Items</h3>
@@ -98,8 +124,8 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                      {invoice.line_items.map((item, i) => (
-                        <tr key={i}>
+                      {invoice.line_items.map((item, index) => (
+                        <tr key={index}>
                           <td className="px-4 py-2">{item.description}</td>
                           <td className="px-4 py-2 text-right">{item.quantity}</td>
                           <td className="px-4 py-2 text-right">R {(item.unit_price || 0).toLocaleString()}</td>
@@ -128,16 +154,15 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
               </div>
             )}
 
-            {/* Details */}
             <div className="bg-gray-50 rounded-xl p-4 space-y-2">
               {[
                 { label: 'Book Title', value: invoice.book_title },
                 { label: 'Due Date', value: invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('en-ZA') : null },
                 { label: 'Payment Terms', value: invoice.payment_terms },
-              ].filter(d => d.value).map(d => (
-                <div key={d.label} className="flex justify-between text-sm">
-                  <span className="text-gray-500">{d.label}</span>
-                  <span className="text-gray-900 font-medium text-right max-w-[60%]">{d.value}</span>
+              ].filter(detail => detail.value).map(detail => (
+                <div key={detail.label} className="flex justify-between text-sm">
+                  <span className="text-gray-500">{detail.label}</span>
+                  <span className="text-gray-900 font-medium text-right max-w-[60%]">{detail.value}</span>
                 </div>
               ))}
             </div>
@@ -149,11 +174,10 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
               </div>
             )}
 
-            {/* Actions */}
             <div className="flex gap-3">
               {invoice.status !== 'Paid' && (
                 <Button onClick={markPaid} disabled={marking} className="flex-1 bg-green-600 hover:bg-green-700 text-white">
-                  {marking ? 'Updating...' : 'Mark as Paid'}
+                  {marking ? 'Recording...' : 'Mark as Paid'}
                 </Button>
               )}
               <Button variant="outline" onClick={handleSendEmail} disabled={sending} className="flex-1">
@@ -170,7 +194,10 @@ export default function InvoiceDetailPanel({ invoice, contact, onClose, onUpdate
           invoice={invoice}
           contacts={contact ? [contact] : []}
           onClose={() => setShowEdit(false)}
-          onSaved={() => { setShowEdit(false); onUpdated(); }}
+          onSaved={() => {
+            setShowEdit(false);
+            onUpdated();
+          }}
         />
       )}
     </>
