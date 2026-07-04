@@ -59,3 +59,6 @@ verify_jwt = true
 
 [functions.walkin-checkin]
 verify_jwt = false
+
+[functions.google-reviews]
+verify_jwt = false
