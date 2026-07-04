@@ -1,11 +1,15 @@
 import { base44 as transitionalBase44 } from './base44Client.js';
 import { supabase } from './supabaseClient.js';
 
-const CONTRACT_STORAGE_FIELDS = [
+const BRIDGE_STORAGE_FIELDS = [
   'contract_file_url',
   'signed_file_url',
   'admin_signature_url',
   'signature_image_url',
+  'profile_photo_url',
+  'final_cover_url',
+  'final_interior_url',
+  'thumbnail_url',
 ];
 
 let lastSignedContract = null;
@@ -20,6 +24,18 @@ function isContractAdminPath() {
 
 function isContractPublicPath() {
   return currentPath().startsWith('/sign/contract/');
+}
+
+function isAuthorAdminPath() {
+  return currentPath().startsWith('/admin/authors');
+}
+
+function isBookLibraryAdminPath() {
+  return currentPath().startsWith('/admin/books');
+}
+
+function isCollectionAdminPath() {
+  return currentPath().startsWith('/admin/collections');
 }
 
 function currentContractToken() {
@@ -67,7 +83,7 @@ function normalizeStorageValue(value) {
   }
 }
 
-async function hydrateContractRows(rows) {
+async function hydrateBridgeStorageRows(rows) {
   const list = Array.isArray(rows) ? rows : [rows];
   if (!list.length) return Array.isArray(rows) ? [] : rows;
 
@@ -75,7 +91,7 @@ async function hydrateContractRows(rows) {
   const pathsByBucket = new Map();
   list.forEach((row, rowIndex) => {
     if (!row) return;
-    CONTRACT_STORAGE_FIELDS.forEach(field => {
+    BRIDGE_STORAGE_FIELDS.forEach(field => {
       const parsed = parseStorageUri(row[field]);
       if (!parsed) return;
       refs.push({ rowIndex, field, ...parsed });
@@ -105,11 +121,16 @@ async function hydrateContractRows(rows) {
   return Array.isArray(rows) ? hydrated : hydrated[0];
 }
 
-function cleanContractPayload(payload) {
+function cleanStorageFields(payload) {
   const cleaned = { ...payload };
-  CONTRACT_STORAGE_FIELDS.forEach(field => {
+  BRIDGE_STORAGE_FIELDS.forEach(field => {
     if (field in cleaned) cleaned[field] = normalizeStorageValue(cleaned[field]);
   });
+  return cleaned;
+}
+
+function cleanContractPayload(payload) {
+  const cleaned = cleanStorageFields(payload);
   if (cleaned.project_id === '') cleaned.project_id = null;
   if (cleaned.expiry_date === '') cleaned.expiry_date = null;
   if ('reminder_count' in cleaned) cleaned.reminder_count = Number(cleaned.reminder_count) || 0;
@@ -118,6 +139,41 @@ function cleanContractPayload(payload) {
   }
   if ('audit_trail' in cleaned && !Array.isArray(cleaned.audit_trail)) cleaned.audit_trail = [];
   delete cleaned.signer_ip;
+  return cleaned;
+}
+
+function cleanAuthorPayload(payload) {
+  const cleaned = cleanStorageFields(payload);
+  if (cleaned.contact_id === '') cleaned.contact_id = null;
+  if ('books_published' in cleaned && !Array.isArray(cleaned.books_published)) cleaned.books_published = [];
+  if ('services_used' in cleaned && !Array.isArray(cleaned.services_used)) cleaned.services_used = [];
+  if ('tags' in cleaned && !Array.isArray(cleaned.tags)) cleaned.tags = [];
+  if ('reprint_history' in cleaned && !Array.isArray(cleaned.reprint_history)) cleaned.reprint_history = [];
+  if ('total_books_printed' in cleaned) cleaned.total_books_printed = Math.max(0, Number(cleaned.total_books_printed) || 0);
+  return cleaned;
+}
+
+function cleanBookRecordPayload(payload) {
+  const cleaned = cleanStorageFields(payload);
+  ['contact_id', 'author_id', 'project_id'].forEach(field => {
+    if (cleaned[field] === '') cleaned[field] = null;
+  });
+  if ('services_provided' in cleaned && !Array.isArray(cleaned.services_provided)) cleaned.services_provided = [];
+  if ('print_specs' in cleaned && (!cleaned.print_specs || Array.isArray(cleaned.print_specs))) cleaned.print_specs = {};
+  if ('reprint_count' in cleaned) cleaned.reprint_count = Math.max(0, Number(cleaned.reprint_count) || 0);
+  if (cleaned.year_completed === '') cleaned.year_completed = null;
+  else if (cleaned.year_completed !== undefined && cleaned.year_completed !== null) {
+    cleaned.year_completed = Number(cleaned.year_completed) || null;
+  }
+  if (cleaned.last_reprint_date === '') cleaned.last_reprint_date = null;
+  return cleaned;
+}
+
+function cleanCollectionPayload(payload) {
+  const cleaned = cleanStorageFields(payload);
+  if (cleaned.invoice_id === '') cleaned.invoice_id = null;
+  if ('quantity_collected' in cleaned) cleaned.quantity_collected = Math.max(1, Number(cleaned.quantity_collected) || 1);
+  if (!cleaned.collection_date) cleaned.collection_date = new Date().toISOString();
   return cleaned;
 }
 
@@ -181,10 +237,23 @@ function makeSupabaseEntity(table, options = {}) {
 }
 
 const contractEntity = makeSupabaseEntity('contracts', {
-  hydrate: hydrateContractRows,
+  hydrate: hydrateBridgeStorageRows,
   clean: cleanContractPayload,
 });
+const authorEntity = makeSupabaseEntity('authors', {
+  hydrate: hydrateBridgeStorageRows,
+  clean: cleanAuthorPayload,
+});
+const bookRecordEntity = makeSupabaseEntity('book_records', {
+  hydrate: hydrateBridgeStorageRows,
+  clean: cleanBookRecordPayload,
+});
+const collectionSignatureEntity = makeSupabaseEntity('collection_signatures', {
+  hydrate: hydrateBridgeStorageRows,
+  clean: cleanCollectionPayload,
+});
 const contactEntity = makeSupabaseEntity('contacts');
+const projectEntity = makeSupabaseEntity('projects');
 
 async function invokeSupabaseFunction(functionName, payload) {
   const { data, error } = await supabase.functions.invoke(functionName, { body: payload || {} });
@@ -193,15 +262,15 @@ async function invokeSupabaseFunction(functionName, payload) {
   return { data };
 }
 
-async function uploadAdminContractFile({ file }) {
+async function uploadAdminFile({ file }, { folder, imageBucket = 'signature-artifacts' }) {
   if (!file) throw new Error('A file is required');
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError) throw userError;
   if (!user) throw new Error('Authentication is required to upload files');
 
-  const bucket = file.type?.startsWith('image/') ? 'signature-artifacts' : 'document-files';
+  const bucket = file.type?.startsWith('image/') ? imageBucket : 'document-files';
   const safeName = (file.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_').slice(-140);
-  const path = `contracts/admin/${user.id}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
+  const path = `${folder}/${user.id}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
   const { error } = await supabase.storage.from(bucket).upload(path, file, {
     contentType: file.type || 'application/octet-stream',
     upsert: false,
@@ -211,6 +280,14 @@ async function uploadAdminContractFile({ file }) {
   const { data: signed, error: signedError } = await supabase.storage.from(bucket).createSignedUrl(path, 7200);
   if (signedError) throw signedError;
   return { file_url: signed.signedUrl, storage_uri: storageUri(bucket, path) };
+}
+
+async function uploadAdminContractFile(payload) {
+  return uploadAdminFile(payload, { folder: 'contracts/admin' });
+}
+
+async function uploadCollectionSignatureFile(payload) {
+  return uploadAdminFile(payload, { folder: 'collections/signatures' });
 }
 
 async function uploadPublicContractFile({ file }) {
@@ -254,6 +331,20 @@ const entitiesBridge = new Proxy(transitionalBase44.entities, {
       if (property === 'Contract') return contractEntity;
       if (property === 'Contact') return contactEntity;
     }
+
+    if (isAuthorAdminPath()) {
+      if (property === 'Author') return authorEntity;
+      if (property === 'BookRecord') return bookRecordEntity;
+    }
+
+    if (isBookLibraryAdminPath() && property === 'BookRecord') return bookRecordEntity;
+
+    if (isCollectionAdminPath()) {
+      if (property === 'CollectionSignature') return collectionSignatureEntity;
+      if (property === 'Project') return projectEntity;
+      if (property === 'Contact') return contactEntity;
+    }
+
     return Reflect.get(target, property, receiver);
   },
 });
@@ -298,6 +389,7 @@ const functionsBridge = new Proxy(transitionalBase44.functions, {
 const coreBridge = new Proxy(transitionalBase44.integrations.Core, {
   get(target, property, receiver) {
     if (property === 'UploadFile' && isContractAdminPath()) return uploadAdminContractFile;
+    if (property === 'UploadFile' && isCollectionAdminPath()) return uploadCollectionSignatureFile;
     if (property === 'UploadFile' && isContractPublicPath()) return uploadPublicContractFile;
 
     if (property === 'SendEmail' && isContractPublicPath()) {
