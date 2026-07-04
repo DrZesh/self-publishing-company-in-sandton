@@ -114,9 +114,7 @@ function cleanEntityPayload(table, payload) {
     if ('line_items' in cleaned && !Array.isArray(cleaned.line_items)) cleaned.line_items = [];
   }
 
-  if (table === 'quotes') {
-    if (cleaned.valid_until === '') cleaned.valid_until = null;
-  }
+  if (table === 'quotes' && cleaned.valid_until === '') cleaned.valid_until = null;
 
   if (table === 'payments' && 'amount' in cleaned) {
     cleaned.amount = Number(cleaned.amount) || 0;
@@ -175,6 +173,25 @@ function cleanEntityPayload(table, payload) {
     if (cleaned.contact_id === '') cleaned.contact_id = null;
   }
 
+  if (table === 'booking_services') {
+    if ('duration_minutes' in cleaned) cleaned.duration_minutes = Number(cleaned.duration_minutes) || 30;
+    if ('buffer_minutes' in cleaned) cleaned.buffer_minutes = Number(cleaned.buffer_minutes) || 0;
+    if ('sort_order' in cleaned) cleaned.sort_order = Number(cleaned.sort_order) || 0;
+    if ('allowed_modes' in cleaned && !Array.isArray(cleaned.allowed_modes)) cleaned.allowed_modes = [];
+  }
+
+  if (table === 'availability_rules' && 'min_notice_hours' in cleaned) {
+    cleaned.min_notice_hours = Number(cleaned.min_notice_hours) || 0;
+  }
+
+  if (table === 'appointments') {
+    ['service_id', 'linked_lead_id', 'linked_client_id'].forEach(field => {
+      if (cleaned[field] === '') cleaned[field] = null;
+    });
+    if ('service_duration_minutes' in cleaned) cleaned.service_duration_minutes = Number(cleaned.service_duration_minutes) || 30;
+    if (cleaned.proposed_date === '') cleaned.proposed_date = null;
+  }
+
   return cleaned;
 }
 
@@ -187,7 +204,6 @@ function makeSupabaseEntity(table) {
         .select('*')
         .order(column, { ascending })
         .limit(limit);
-
       if (error) throw error;
       return hydrateStorageRows(data || []);
     },
@@ -195,27 +211,17 @@ function makeSupabaseEntity(table) {
     async filter(filters = {}, sort = '-created_date', limit = 200) {
       const { column, ascending } = parseSort(sort);
       let query = supabase.from(table).select('*');
-
       Object.entries(filters).forEach(([key, value]) => {
         if (value === null) query = query.is(key, null);
         else if (value !== undefined) query = query.eq(key, value);
       });
-
-      const { data, error } = await query
-        .order(column, { ascending })
-        .limit(limit);
-
+      const { data, error } = await query.order(column, { ascending }).limit(limit);
       if (error) throw error;
       return hydrateStorageRows(data || []);
     },
 
     async get(id) {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        .eq('id', id)
-        .single();
-
+      const { data, error } = await supabase.from(table).select('*').eq('id', id).single();
       if (error) throw error;
       return hydrateStorageRows(data);
     },
@@ -226,7 +232,6 @@ function makeSupabaseEntity(table) {
         .insert(cleanEntityPayload(table, payload))
         .select('*')
         .single();
-
       if (error) throw error;
       return hydrateStorageRows(data);
     },
@@ -238,19 +243,12 @@ function makeSupabaseEntity(table) {
         .eq('id', id)
         .select('*')
         .single();
-
       if (error) throw error;
       return hydrateStorageRows(data);
     },
 
     async delete(id) {
-      const { data, error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id)
-        .select('id')
-        .single();
-
+      const { data, error } = await supabase.from(table).delete().eq('id', id).select('id').single();
       if (error) throw error;
       return data;
     },
@@ -270,6 +268,9 @@ const supabaseEntities = {
   ESignatureRequest: makeSupabaseEntity('e_signature_requests'),
   Project: makeSupabaseEntity('projects'),
   ClientDelay: makeSupabaseEntity('client_delays'),
+  BookingService: makeSupabaseEntity('booking_services'),
+  AvailabilityRule: makeSupabaseEntity('availability_rules'),
+  Appointment: makeSupabaseEntity('appointments'),
 };
 
 function currentPath() {
@@ -287,10 +288,15 @@ function isDocumentAdminPath(path = currentPath()) {
 }
 
 function isProjectAdminPath(path = currentPath()) {
-  return [
-    '/admin/projects',
-    '/admin/production-board',
-  ].some(route => path.startsWith(route));
+  return ['/admin/projects', '/admin/production-board'].some(route => path.startsWith(route));
+}
+
+function isBookingAdminPath(path = currentPath()) {
+  return ['/admin/appointments', '/admin/booking-settings'].some(route => path.startsWith(route));
+}
+
+function isBookingPublicPath(path = currentPath()) {
+  return path === '/book' || path.startsWith('/appointment/cancel/');
 }
 
 function isDocumentPublicPath(path = currentPath()) {
@@ -304,35 +310,37 @@ function isESignaturePublicPath(path = currentPath()) {
 function usesMigratedEntity(entityName) {
   const path = currentPath();
 
-  const crmRoutes = ['/admin/contacts', '/admin/pipeline', '/admin/tasks'];
   if (
-    crmRoutes.some(route => path.startsWith(route)) &&
+    ['/admin/contacts', '/admin/pipeline', '/admin/tasks'].some(route => path.startsWith(route)) &&
     ['Contact', 'Task'].includes(entityName)
-  ) {
-    return true;
-  }
+  ) return true;
 
-  const financeRoutes = ['/admin/quotes', '/admin/invoices', '/admin/payments'];
   if (
-    financeRoutes.some(route => path.startsWith(route)) &&
+    ['/admin/quotes', '/admin/invoices', '/admin/payments'].some(route => path.startsWith(route)) &&
     ['Contact', 'Quote', 'QuoteLineItem', 'Invoice', 'Payment'].includes(entityName)
-  ) {
-    return true;
-  }
+  ) return true;
 
   if (
     isDocumentAdminPath(path) &&
     ['Contact', 'Document', 'DocumentActivity', 'Clause', 'ESignatureRequest'].includes(entityName)
-  ) {
-    return true;
-  }
+  ) return true;
 
   if (
     isProjectAdminPath(path) &&
     ['Contact', 'Project', 'ClientDelay', 'Quote', 'Invoice', 'Document'].includes(entityName)
-  ) {
-    return true;
-  }
+  ) return true;
+
+  if (
+    isBookingAdminPath(path) &&
+    ['Appointment', 'BookingService', 'AvailabilityRule'].includes(entityName)
+  ) return true;
+
+  if (path.startsWith('/admin/dashboard') && entityName === 'Appointment') return true;
+
+  if (
+    path === '/book' &&
+    ['BookingService', 'AvailabilityRule'].includes(entityName)
+  ) return true;
 
   return false;
 }
@@ -345,13 +353,8 @@ function publicQuoteToken() {
 const quoteSignatureBridge = {
   async create(payload) {
     const { data, error } = await supabase.functions.invoke('quote-actions', {
-      body: {
-        action: 'sign',
-        token: publicQuoteToken(),
-        ...payload,
-      },
+      body: { action: 'sign', token: publicQuoteToken(), ...payload },
     });
-
     if (error) throw error;
     if (data?.error) throw new Error(data.error);
     return data.signature;
@@ -360,25 +363,15 @@ const quoteSignatureBridge = {
 
 const entitiesBridge = new Proxy(base44Sdk.entities, {
   get(target, property, receiver) {
-    if (usesMigratedEntity(property)) {
-      return supabaseEntities[property];
-    }
-
-    if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) {
-      return quoteSignatureBridge;
-    }
-
+    if (usesMigratedEntity(property)) return supabaseEntities[property];
+    if (property === 'QuoteSignature' && currentPath().startsWith('/quote/view/')) return quoteSignatureBridge;
     return Reflect.get(target, property, receiver);
   },
 });
 
 const authBridge = {
   async me() {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError) throw userError;
     if (!user) return null;
 
@@ -387,22 +380,13 @@ const authBridge = {
       .select('id, email, full_name, role')
       .eq('id', user.id)
       .single();
-
     if (profileError) throw profileError;
 
-    return {
-      ...user,
-      ...profile,
-      email: profile?.email || user.email,
-    };
+    return { ...user, ...profile, email: profile?.email || user.email };
   },
 
   async isAuthenticated() {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-
+    const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
     return Boolean(session?.user);
   },
@@ -410,78 +394,95 @@ const authBridge = {
   async logout(redirectUrl) {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-
-    if (redirectUrl && typeof window !== 'undefined') {
-      window.location.assign('/admin/login');
-    }
+    if (redirectUrl && typeof window !== 'undefined') window.location.assign('/admin/login');
   },
 
   redirectToLogin() {
-    if (typeof window !== 'undefined') {
-      window.location.assign('/admin/login');
-    }
+    if (typeof window !== 'undefined') window.location.assign('/admin/login');
   },
 };
 
 async function invokeSupabaseFunction(functionName, payload) {
-  const { data, error } = await supabase.functions.invoke(functionName, {
-    body: payload,
-  });
+  const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
   return { data };
 }
 
+function translateAppointmentAction(payload = {}) {
+  return {
+    ...payload,
+    appointment_id: payload.appointment_id || payload.appointmentId,
+    decline_reason: payload.decline_reason ?? payload.declineReason,
+    propose_date: payload.propose_date || payload.proposeDate,
+    propose_time: payload.propose_time || payload.proposeTime,
+  };
+}
+
 const functionsBridge = new Proxy(base44Sdk.functions, {
   get(target, property, receiver) {
-    if (property === 'invoke') {
-      return async (functionName, payload) => {
-        if (functionName === 'captureFormSubmission') {
-          return invokeSupabaseFunction('capture-form-submission', payload);
-        }
+    if (property !== 'invoke') return Reflect.get(target, property, receiver);
 
-        if (functionName === 'getFollowUpReminders') {
-          const { data, error } = await supabase.rpc('get_follow_up_reminders');
-          if (error) throw error;
-          return { data };
-        }
+    return async (functionName, payload) => {
+      if (functionName === 'captureFormSubmission') {
+        return invokeSupabaseFunction('capture-form-submission', payload);
+      }
 
-        if (functionName === 'getSubmissionDetail' && currentPath().startsWith('/admin/pipeline')) {
-          const { data, error } = await supabase.rpc('get_contact_activity', {
-            p_contact_id: payload?.submission_id,
-          });
+      if (functionName === 'getFollowUpReminders') {
+        const { data, error } = await supabase.rpc('get_follow_up_reminders');
+        if (error) throw error;
+        return { data };
+      }
 
-          if (error) throw error;
-          return { data: { activities: data || [] } };
-        }
+      if (functionName === 'getSubmissionDetail' && currentPath().startsWith('/admin/pipeline')) {
+        const { data, error } = await supabase.rpc('get_contact_activity', {
+          p_contact_id: payload?.submission_id,
+        });
+        if (error) throw error;
+        return { data: { activities: data || [] } };
+      }
 
-        if (functionName === 'quoteActions') {
-          return invokeSupabaseFunction('quote-actions', payload);
-        }
+      if (functionName === 'quoteActions') return invokeSupabaseFunction('quote-actions', payload);
+      if (functionName === 'sendInvoiceEmail') return invokeSupabaseFunction('send-invoice-email', payload);
 
-        if (functionName === 'sendInvoiceEmail') {
-          return invokeSupabaseFunction('send-invoice-email', payload);
-        }
+      if (
+        functionName === 'documentActions' &&
+        (isDocumentAdminPath() || isDocumentPublicPath())
+      ) return invokeSupabaseFunction('document-actions', payload);
 
-        if (
-          functionName === 'documentActions' &&
-          (isDocumentAdminPath() || isDocumentPublicPath())
-        ) {
-          return invokeSupabaseFunction('document-actions', payload);
-        }
+      if (
+        functionName === 'eSignatureActions' &&
+        (currentPath().startsWith('/admin/esignatures') || isESignaturePublicPath())
+      ) return invokeSupabaseFunction('e-signature-actions', payload);
 
-        if (
-          functionName === 'eSignatureActions' &&
-          (currentPath().startsWith('/admin/esignatures') || isESignaturePublicPath())
-        ) {
-          return invokeSupabaseFunction('e-signature-actions', payload);
-        }
+      if (functionName === 'getAvailableSlots' && currentPath() === '/book') {
+        return invokeSupabaseFunction('booking-actions', {
+          action: 'get_available_slots',
+          service_id: payload?.serviceId || payload?.service_id,
+          date: payload?.date,
+        });
+      }
 
-        return target.invoke(functionName, payload);
-      };
-    }
+      if (functionName === 'createBookingRequest' && currentPath() === '/book') {
+        return invokeSupabaseFunction('booking-actions', {
+          action: 'create_booking',
+          ...payload,
+        });
+      }
 
-    return Reflect.get(target, property, receiver);
+      if (
+        functionName === 'appointmentActions' &&
+        (isBookingAdminPath() || currentPath().startsWith('/appointment/cancel/'))
+      ) {
+        return invokeSupabaseFunction('booking-actions', translateAppointmentAction(payload));
+      }
+
+      if (functionName === 'appointmentReminders' && isBookingAdminPath()) {
+        return invokeSupabaseFunction('appointment-reminders', payload || {});
+      }
+
+      return target.invoke(functionName, payload);
+    };
   },
 });
 
@@ -538,10 +539,7 @@ async function uploadMigratedFile({ file }) {
     return { file_url: publicGrant.file_url };
   }
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError) throw userError;
   if (!user) throw new Error('Authentication is required to upload files');
 
@@ -559,9 +557,7 @@ async function uploadMigratedFile({ file }) {
 
 const coreIntegrationsBridge = new Proxy(base44Sdk.integrations.Core, {
   get(target, property, receiver) {
-    if (property === 'UploadFile' && migratedStorageRoute()) {
-      return uploadMigratedFile;
-    }
+    if (property === 'UploadFile' && migratedStorageRoute()) return uploadMigratedFile;
     return Reflect.get(target, property, receiver);
   },
 });
@@ -574,8 +570,8 @@ const integrationsBridge = new Proxy(base44Sdk.integrations, {
 });
 
 // Transitional client: authentication plus selected CRM, finance, document,
-// e-signature, project and production workflows use Supabase. Unmigrated modules
-// continue on Base44 until their dependencies are migrated.
+// e-signature, project, production and appointment workflows use Supabase.
+// Unmigrated modules continue on Base44 until their dependencies are migrated.
 export const base44 = new Proxy(base44Sdk, {
   get(target, property, receiver) {
     if (property === 'auth') return authBridge;
