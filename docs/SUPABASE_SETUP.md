@@ -19,6 +19,8 @@ supabase/migrations/202607040005_finance_rpc_hardening.sql
 supabase/migrations/202607040006_documents_esignatures.sql
 supabase/migrations/202607040007_projects_production.sql
 supabase/migrations/202607040008_project_workflow_hardening.sql
+supabase/migrations/202607040009_appointments_booking.sql
+supabase/migrations/202607040010_appointments_booking_hardening.sql
 ```
 
 The migrations currently provide:
@@ -88,6 +90,23 @@ The migrations currently provide:
 - CRM pipeline protection so legacy actions cannot move an active project contact backwards from `Project Started` to `Payment Pending`
 - indexes for transitional project links in invoices, payments, documents and e-signatures
 
+### Appointments and Booking Settings
+
+- `public.booking_services`
+- `public.availability_rules`
+- `public.appointments`
+- seven seeded weekday availability rules so Booking Settings has a complete starting structure
+- public read access to active booking services and availability rules
+- server-side `get_available_appointment_slots()` calculation in Africa/Johannesburg time
+- service duration and buffer-aware slot generation
+- minimum-notice enforcement
+- approved appointment overlap exclusion
+- transaction-level date locking during approval
+- a database trigger that prevents overlapping approved appointments even when a direct administrative table update is attempted
+- secure client cancellation and reschedule tokens
+- linked Contact and Lead references
+- reminder state, proposal state, Google Calendar event IDs and appointment status tracking
+
 ## 3. Deploy the Edge Functions
 
 Deploy these functions:
@@ -98,9 +117,11 @@ supabase/functions/quote-actions
 supabase/functions/send-invoice-email
 supabase/functions/document-actions
 supabase/functions/e-signature-actions
+supabase/functions/booking-actions
+supabase/functions/appointment-reminders
 ```
 
-The document and e-signature functions have `verify_jwt = false` because public clients open token-protected links. Administrative actions inside those functions still perform Supabase Auth and admin-role checks before any privileged operation.
+The document, e-signature and booking functions have `verify_jwt = false` because selected actions are public and protected by document tokens, signature tokens, cancellation tokens or server-side booking validation. Administrative actions inside those functions still perform Supabase Auth and admin-role checks before privileged operations.
 
 Set the required private function secrets:
 
@@ -108,15 +129,27 @@ Set the required private function secrets:
 CAPTURE_IP_SALT=<LONG_RANDOM_SECRET>
 RESEND_API_KEY=<RESEND_API_KEY>
 SITE_URL=https://www.creativebooks.co.za
+APPOINTMENT_CRON_SECRET=<LONG_RANDOM_SECRET>
 ```
 
-Optional WhatsApp signing-link delivery uses:
+Optional WhatsApp notifications use:
 
 ```text
 CALLMEBOT_API_KEY=<CALLMEBOT_API_KEY>
+WHATSAPP_NOTIFY_NUMBER=<ADMIN_WHATSAPP_NUMBER>
 ```
 
-Do not expose `SUPABASE_SERVICE_ROLE_KEY`, Resend keys, WhatsApp keys or hashing salts in browser environment variables. Supabase provides service environment values to the Edge Function runtime.
+Optional Google Calendar synchronization uses a service account and a calendar shared with that service account:
+
+```text
+GOOGLE_CALENDAR_ID=<CALENDAR_ID>
+GOOGLE_SERVICE_ACCOUNT_EMAIL=<SERVICE_ACCOUNT_EMAIL>
+GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=<PRIVATE_KEY>
+```
+
+The private key can be stored with escaped newline characters. The booking function converts `\n` sequences back to newlines before importing the key.
+
+Do not expose `SUPABASE_SERVICE_ROLE_KEY`, Resend keys, WhatsApp keys, cron secrets, service-account private keys or hashing salts in browser environment variables. Supabase provides its service environment values to the Edge Function runtime.
 
 ## 4. Configure local environment variables
 
@@ -141,7 +174,18 @@ where id = '<USER_UUID>';
 
 The browser application must never contain a Supabase service-role key.
 
-## 6. Test the migrated flows
+## 6. Schedule appointment reminders
+
+Run `appointment-reminders` every 30 minutes. Send the same private value configured in `APPOINTMENT_CRON_SECRET` as the `x-cron-secret` request header.
+
+The reminder function sends reminders in two windows:
+
+- 24 hours before an approved appointment
+- 1 hour before an approved appointment
+
+It marks each reminder as sent only after the email request succeeds, preventing the same reminder from being intentionally sent on every scheduled invocation.
+
+## 7. Test the migrated flows
 
 Test these flows before merging the migration branch.
 
@@ -217,13 +261,35 @@ Test these flows before merging the migration branch.
 11. Confirm the Project Detail pre-production checklist reads Supabase quotes, invoices and documents for the same contact.
 12. Confirm Message History continues to use the transitional communication backend until the communication module is migrated.
 
-## 7. Transitional compatibility bridge
+### Appointments and Booking Settings
+
+1. Open `/admin/booking-settings` and confirm all seven weekday rules load from Supabase.
+2. Change opening hours, close a weekday and update the global minimum-notice period.
+3. Create, edit, deactivate and reactivate a booking service.
+4. Open `/book` while signed out and confirm active services and availability rules load.
+5. Open `/book` while signed in and confirm public booking options still load.
+6. Select a service and date and confirm unavailable, past and too-soon slots are not returned.
+7. Submit a booking request and confirm the server uses the stored service name, duration and allowed modes rather than trusting browser-supplied snapshots.
+8. Confirm an existing Contact is linked by email, or a new Contact is created when no match exists.
+9. Confirm the admin email and optional WhatsApp alert are generated for a new request.
+10. Open `/admin/appointments` and approve a pending request.
+11. Confirm approval email delivery and optional Google Calendar synchronization.
+12. Create two overlapping pending requests, approve one, then confirm the second cannot be approved while the first remains approved.
+13. Decline an appointment and confirm the reason is emailed to the client.
+14. Propose a new date and time and confirm the proposed values are stored and emailed.
+15. Open `/appointment/cancel/:token`, cancel an approved appointment and confirm its Google Calendar event is removed when calendar synchronization is configured.
+16. Mark an approved appointment `completed` and another `no_show` from the admin screen.
+17. Confirm the dashboard Today’s Appointments widget reads the same Supabase appointment data.
+18. Run `appointment-reminders` with the cron secret and verify 24-hour and 1-hour reminder windows and sent flags.
+
+## 8. Transitional compatibility bridge
 
 Large existing screens still call the Base44-style client API. The compatibility bridge translates selected calls to Supabase only on migrated routes.
 
 Current migrated route scope:
 
 ```text
+/admin/dashboard                Appointment widget only
 /admin/contacts
 /admin/pipeline
 /admin/tasks
@@ -237,6 +303,10 @@ Current migrated route scope:
 /admin/esignatures
 /admin/projects
 /admin/production-board
+/admin/appointments
+/admin/booking-settings
+/book
+/appointment/cancel/:token
 /doc/view/:id/:token
 /sign/esig/:requestId/:token
 ```
@@ -256,6 +326,9 @@ Clause
 ESignatureRequest
 Project
 ClientDelay
+BookingService
+AvailabilityRule
+Appointment
 ```
 
 It also bridges public and admin actions to these Edge Functions:
@@ -264,6 +337,8 @@ It also bridges public and admin actions to these Edge Functions:
 quote-actions
 document-actions
 e-signature-actions
+booking-actions
+appointment-reminders
 send-invoice-email
 capture-form-submission
 ```
@@ -274,7 +349,7 @@ Project routes intentionally keep `MessageLog` on the existing communication bac
 
 Modules outside the migrated route scope continue to use the existing backend until their dependent tables and ID relationships are migrated or mapped. Do not globally redirect every Base44 entity yet.
 
-## 8. Deployment environment
+## 9. Deployment environment
 
 Add the public Supabase environment variables to the deployment platform. Preview deployments should use a non-production Supabase environment where possible.
 
@@ -282,10 +357,9 @@ Add the public Supabase environment variables to the deployment platform. Previe
 
 The recommended order for the remaining Creative Books SA app is:
 
-1. Appointments and Booking Settings
-2. Client Portal
-3. Automations, Email, WhatsApp and Notifications
-4. Dashboard metrics, Reports, Revenue Forecast and Analytics
-5. SEO and Search Console integrations
+1. Client Portal
+2. Automations, Email, WhatsApp and Notifications
+3. Dashboard metrics, Reports, Revenue Forecast and Analytics
+4. SEO and Search Console integrations
 
 Each module should receive its own database migration, Row Level Security policies, data-access layer and test pass before Base44 dependencies are removed from that module.
