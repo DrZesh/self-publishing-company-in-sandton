@@ -1,15 +1,33 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Search, Copy, Link2, Trash2, ToggleLeft, ToggleRight, Eye, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
-const generateToken = () => Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
-
 const SECTIONS = ['quotes', 'invoices', 'projects', 'documents'];
+
+async function listPortalAccesses() {
+  const { data, error } = await supabase
+    .from('client_portal_access')
+    .select('*')
+    .order('created_date', { ascending: false })
+    .limit(200);
+  if (error) throw error;
+  return data || [];
+}
+
+async function listContacts() {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('id, full_name, email')
+    .order('created_date', { ascending: false })
+    .limit(500);
+  if (error) throw error;
+  return data || [];
+}
 
 function PortalLinkModal({ contacts, onClose, onSaved }) {
   const [form, setForm] = useState({
@@ -20,35 +38,44 @@ function PortalLinkModal({ contacts, onClose, onSaved }) {
   });
   const [saving, setSaving] = useState(false);
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const set = (key, value) => setForm(current => ({ ...current, [key]: value }));
 
-  const toggleSection = (s) => {
-    setForm(f => ({
-      ...f,
-      allowed_sections: f.allowed_sections.includes(s) ? f.allowed_sections.filter(x => x !== s) : [...f.allowed_sections, s],
+  const toggleSection = section => {
+    setForm(current => ({
+      ...current,
+      allowed_sections: current.allowed_sections.includes(section)
+        ? current.allowed_sections.filter(item => item !== section)
+        : [...current.allowed_sections, section],
     }));
   };
 
-  const handleContactChange = (id) => {
-    const contact = contacts.find(c => c.id === id);
-    setForm(f => ({ ...f, contact_id: id, email: contact?.email || '' }));
+  const handleContactChange = id => {
+    const contact = contacts.find(item => item.id === id);
+    setForm(current => ({ ...current, contact_id: id, email: contact?.email || '' }));
   };
 
   const handleSave = async () => {
     if (!form.contact_id || !form.email) return;
+
     setSaving(true);
-    const expiresAt = new Date(Date.now() + form.expires_in_days * 24 * 60 * 60 * 1000).toISOString();
-    await base44.entities.ClientPortalAccess.create({
-      contact_id: form.contact_id,
-      email: form.email,
-      access_token: generateToken(),
-      is_active: true,
-      expires_at: expiresAt,
-      allowed_sections: form.allowed_sections,
-      access_count: 0,
-    });
-    setSaving(false);
-    onSaved();
+    try {
+      const days = Math.max(1, Number(form.expires_in_days) || 30);
+      const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+      const { error } = await supabase.from('client_portal_access').insert({
+        contact_id: form.contact_id,
+        email: form.email.trim().toLowerCase(),
+        is_active: true,
+        expires_at: expiresAt,
+        allowed_sections: form.allowed_sections,
+        access_count: 0,
+      });
+      if (error) throw error;
+      onSaved();
+    } catch (error) {
+      toast.error(error.message || 'Failed to create portal link');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -61,31 +88,31 @@ function PortalLinkModal({ contacts, onClose, onSaved }) {
         <div className="p-6 space-y-4">
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client *</label>
-            <select value={form.contact_id} onChange={e => handleContactChange(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+            <select value={form.contact_id} onChange={event => handleContactChange(event.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
               <option value="">Select client...</option>
-              {contacts.map(c => <option key={c.id} value={c.id}>{c.full_name} — {c.email}</option>)}
+              {contacts.map(contact => <option key={contact.id} value={contact.id}>{contact.full_name} — {contact.email}</option>)}
             </select>
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client Email *</label>
-            <Input value={form.email} onChange={e => set('email', e.target.value)} placeholder="client@example.com" />
+            <Input value={form.email} onChange={event => set('email', event.target.value)} placeholder="client@example.com" />
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Expires In (days)</label>
-            <Input type="number" value={form.expires_in_days} onChange={e => set('expires_in_days', parseInt(e.target.value))} />
+            <Input type="number" min="1" value={form.expires_in_days} onChange={event => set('expires_in_days', Number.parseInt(event.target.value, 10))} />
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 block">Allowed Sections</label>
             <div className="grid grid-cols-2 gap-2">
-              {SECTIONS.map(s => (
+              {SECTIONS.map(section => (
                 <button
-                  key={s}
+                  key={section}
                   type="button"
-                  onClick={() => toggleSection(s)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors capitalize ${form.allowed_sections.includes(s) ? 'bg-[#B87333]/10 border-[#B87333] text-[#B87333]' : 'bg-white border-gray-200 text-gray-500'}`}
+                  onClick={() => toggleSection(section)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors capitalize ${form.allowed_sections.includes(section) ? 'bg-[#B87333]/10 border-[#B87333] text-[#B87333]' : 'bg-white border-gray-200 text-gray-500'}`}
                 >
-                  <span className={`w-3 h-3 rounded-full border-2 ${form.allowed_sections.includes(s) ? 'bg-[#B87333] border-[#B87333]' : 'border-gray-400'}`} />
-                  {s}
+                  <span className={`w-3 h-3 rounded-full border-2 ${form.allowed_sections.includes(section) ? 'bg-[#B87333] border-[#B87333]' : 'border-gray-400'}`} />
+                  {section}
                 </button>
               ))}
             </div>
@@ -109,46 +136,61 @@ export default function AdminClientPortal() {
 
   const { data: accesses = [], isLoading } = useQuery({
     queryKey: ['client_portal_accesses'],
-    queryFn: () => base44.entities.ClientPortalAccess.list('-created_date', 200),
+    queryFn: listPortalAccesses,
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: listContacts,
   });
 
   const toggleAccess = useMutation({
-    mutationFn: ({ id, is_active }) => base44.entities.ClientPortalAccess.update(id, { is_active }),
+    mutationFn: async ({ id, is_active }) => {
+      const { error } = await supabase.from('client_portal_access').update({ is_active }).eq('id', id);
+      if (error) throw error;
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] }),
+    onError: error => toast.error(error.message || 'Failed to update portal access'),
   });
 
   const regenerateToken = useMutation({
-    mutationFn: (id) => base44.entities.ClientPortalAccess.update(id, { access_token: generateToken(), access_count: 0 }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] }); toast.success('Token regenerated'); },
+    mutationFn: async id => {
+      const { error } = await supabase.rpc('regenerate_client_portal_token', { p_access_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] });
+      toast.success('Token regenerated');
+    },
+    onError: error => toast.error(error.message || 'Failed to regenerate token'),
   });
 
   const deleteAccess = useMutation({
-    mutationFn: (id) => base44.entities.ClientPortalAccess.delete(id),
+    mutationFn: async id => {
+      const { error } = await supabase.from('client_portal_access').delete().eq('id', id);
+      if (error) throw error;
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] }),
+    onError: error => toast.error(error.message || 'Failed to delete portal link'),
   });
 
-  const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
+  const contactMap = Object.fromEntries(contacts.map(contact => [contact.id, contact]));
 
-  const filtered = accesses.filter(a => {
-    const q = search.toLowerCase();
-    const contact = contactMap[a.contact_id];
-    return !q || a.email?.toLowerCase().includes(q) || contact?.full_name?.toLowerCase().includes(q);
+  const filtered = accesses.filter(access => {
+    const query = search.toLowerCase();
+    const contact = contactMap[access.contact_id];
+    return !query || access.email?.toLowerCase().includes(query) || contact?.full_name?.toLowerCase().includes(query);
   });
 
-  const getPortalUrl = (token) => `${window.location.origin}/portal/${token}`;
+  const getPortalUrl = accessToken => `${window.location.origin}/portal/${accessToken}`;
 
-  const copyLink = (token) => {
-    navigator.clipboard.writeText(getPortalUrl(token));
+  const copyLink = async accessToken => {
+    await navigator.clipboard.writeText(getPortalUrl(accessToken));
     toast.success('Portal link copied!');
   };
 
-  const activeCount = accesses.filter(a => a.is_active).length;
-  const expiredCount = accesses.filter(a => a.expires_at && new Date(a.expires_at) < new Date()).length;
+  const activeCount = accesses.filter(access => access.is_active).length;
+  const expiredCount = accesses.filter(access => access.expires_at && new Date(access.expires_at) < new Date()).length;
 
   return (
     <AdminLayout>
@@ -163,7 +205,6 @@ export default function AdminClientPortal() {
           </Button>
         </div>
 
-        {/* KPIs */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white rounded-xl border border-gray-100 p-4">
             <p className="text-xs text-gray-500">Total Links</p>
@@ -179,7 +220,6 @@ export default function AdminClientPortal() {
           </div>
         </div>
 
-        {/* Info Banner */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
           <Link2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
           <div>
@@ -188,13 +228,11 @@ export default function AdminClientPortal() {
           </div>
         </div>
 
-        {/* Search */}
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input placeholder="Search by client or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+          <Input placeholder="Search by client or email..." value={search} onChange={event => setSearch(event.target.value)} className="pl-9" />
         </div>
 
-        {/* Access Links Table */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-gray-400">Loading...</div>
@@ -208,8 +246,8 @@ export default function AdminClientPortal() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  {['Client', 'Email', 'Sections', 'Views', 'Expires', 'Status', 'Actions'].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  {['Client', 'Email', 'Sections', 'Views', 'Expires', 'Status', 'Actions'].map(header => (
+                    <th key={header} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{header}</th>
                   ))}
                 </tr>
               </thead>
@@ -223,8 +261,8 @@ export default function AdminClientPortal() {
                       <td className="px-4 py-3 text-gray-500">{access.email}</td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1">
-                          {(access.allowed_sections || []).map(s => (
-                            <span key={s} className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs capitalize">{s}</span>
+                          {(access.allowed_sections || []).map(section => (
+                            <span key={section} className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs capitalize">{section}</span>
                           ))}
                         </div>
                       </td>
@@ -272,7 +310,10 @@ export default function AdminClientPortal() {
         <PortalLinkModal
           contacts={contacts}
           onClose={() => setShowModal(false)}
-          onSaved={() => { queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] }); setShowModal(false); }}
+          onSaved={() => {
+            queryClient.invalidateQueries({ queryKey: ['client_portal_accesses'] });
+            setShowModal(false);
+          }}
         />
       )}
     </AdminLayout>
