@@ -9,6 +9,11 @@ function isEmailTemplatePath() {
   return currentPath().startsWith('/admin/email-templates');
 }
 
+function isContactEmailPath() {
+  const path = currentPath();
+  return path.startsWith('/admin/message-centre') || path.startsWith('/admin/contacts/detail');
+}
+
 function isFinanceHubPath() {
   return currentPath().startsWith('/admin/finance');
 }
@@ -150,7 +155,7 @@ const signatureArchiveEntities = {
 
 const entitiesBridge = new Proxy(transitionalBase44.entities, {
   get(target, property, receiver) {
-    if (isEmailTemplatePath() && property === 'EmailTemplate') return emailTemplateEntity;
+    if ((isEmailTemplatePath() || isContactEmailPath()) && property === 'EmailTemplate') return emailTemplateEntity;
     if (isFinanceHubPath() && financeEntities[property]) return financeEntities[property];
     if (isSettingsPath() && settingsEntities[property]) return settingsEntities[property];
     if (isCalendarPath() && calendarEntities[property]) return calendarEntities[property];
@@ -166,6 +171,9 @@ const functionsBridge = new Proxy(transitionalBase44.functions, {
     return async (functionName, payload = {}) => {
       if (functionName === 'fetchGoogleReviews') {
         return invokeSupabaseFunction('google-reviews', payload);
+      }
+      if (functionName === 'sendContactEmail' && isContactEmailPath()) {
+        return invokeSupabaseFunction('contact-email-actions', payload);
       }
       return target.invoke(functionName, payload);
     };
