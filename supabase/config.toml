@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.send-invoice-email]
 verify_jwt = false
+
+[functions.document-actions]
+verify_jwt = false
+
+[functions.e-signature-actions]
+verify_jwt = false
