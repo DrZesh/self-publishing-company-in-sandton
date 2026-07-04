@@ -53,3 +53,6 @@ verify_jwt = true
 
 [functions.adobe-sign-webhook]
 verify_jwt = false
+
+[functions.client-service-actions]
+verify_jwt = true
