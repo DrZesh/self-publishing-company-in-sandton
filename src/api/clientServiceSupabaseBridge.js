@@ -170,11 +170,47 @@ function makeEntity(table, { clean = value => value, hydrate = value => value } 
   };
 }
 
+const clientServiceProjectBaseEntity = makeEntity('client_service_projects', {
+  clean: cleanClientServiceProject,
+  hydrate: hydrateStorageRows,
+});
+
+const clientServiceProjectEntity = {
+  ...clientServiceProjectBaseEntity,
+  async create(payload) {
+    const prepared = { ...payload };
+    const shouldResolveSavedFirstStage = !prepared.current_stage_key
+      || prepared.current_stage_key === 'intro'
+      || prepared.current_stage_key === 'project_started';
+
+    if (shouldResolveSavedFirstStage && prepared.service_type) {
+      const { data: workflow, error } = await supabase
+        .from('client_service_workflows')
+        .select('stages')
+        .eq('service_type', prepared.service_type)
+        .maybeSingle();
+      if (error) throw error;
+
+      const firstStage = Array.isArray(workflow?.stages) ? workflow.stages[0] : null;
+      if (firstStage?.key) {
+        prepared.current_stage_key = firstStage.key;
+        prepared.current_stage_label = firstStage.label || firstStage.key;
+        if (Array.isArray(prepared.stage_history) && prepared.stage_history.length === 1) {
+          prepared.stage_history = [{
+            ...prepared.stage_history[0],
+            stage_key: prepared.current_stage_key,
+            stage_label: prepared.current_stage_label,
+          }];
+        }
+      }
+    }
+
+    return clientServiceProjectBaseEntity.create(prepared);
+  },
+};
+
 const migratedEntities = {
-  ClientServiceProject: makeEntity('client_service_projects', {
-    clean: cleanClientServiceProject,
-    hydrate: hydrateStorageRows,
-  }),
+  ClientServiceProject: clientServiceProjectEntity,
   ServiceEmailLog: makeEntity('service_email_logs', { clean: cleanServiceEmailLog }),
   ClientServiceWorkflow: makeEntity('client_service_workflows', { clean: cleanWorkflow }),
   SalesPipeline: makeEntity('sales_pipelines', { clean: cleanPipeline }),
