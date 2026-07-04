@@ -28,6 +28,7 @@ export default function GoogleReviews() {
   const [expanded, setExpanded] = useState(false);
   const [reviews, setReviews] = useState(fallbackReviews);
   const [avgRating, setAvgRating] = useState('5.0');
+  const [reviewCount, setReviewCount] = useState(fallbackReviews.length);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function GoogleReviews() {
         if (response.data?.reviews?.length > 0) {
           setReviews(response.data.reviews);
           setAvgRating(response.data.avgRating?.toFixed(1) || '5.0');
+          setReviewCount(Number(response.data.totalReviews || response.data.reviews.length));
         }
       } catch (error) {
         console.log('Using fallback reviews:', error.message);
@@ -49,16 +51,14 @@ export default function GoogleReviews() {
   }, []);
 
   const displayReviews = expanded ? reviews : reviews.slice(0, 3);
-  const totalReviews = reviews.length;
 
-  // Schema markup for Google
   const reviewSchema = {
     '@context': 'https://schema.org',
     '@type': 'AggregateRating',
-    'ratingValue': avgRating,
-    'bestRating': '5',
-    'worstRating': '1',
-    'ratingCount': totalReviews,
+    ratingValue: avgRating,
+    bestRating: '5',
+    worstRating: '1',
+    ratingCount: reviewCount,
   };
 
   return (
@@ -82,7 +82,7 @@ export default function GoogleReviews() {
                 ))}
               </div>
               <span className="font-heading text-2xl font-bold text-[#0F0F0F]">{avgRating}</span>
-              <span className="text-[#0F0F0F]/60 font-body">Based on {totalReviews} reviews</span>
+              <span className="text-[#0F0F0F]/60 font-body">Based on {reviewCount} reviews</span>
             </div>
           )}
         </motion.div>
@@ -90,7 +90,7 @@ export default function GoogleReviews() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {displayReviews.map((review, idx) => (
             <motion.div
-              key={idx}
+              key={`${review.name}-${review.date}-${idx}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -102,7 +102,7 @@ export default function GoogleReviews() {
                 <span className="text-xs text-[#0F0F0F]/40">{review.date}</span>
               </div>
               <div className="flex gap-1 mb-3">
-                {[...Array(review.rating)].map((_, i) => (
+                {[...Array(Math.max(0, Math.min(5, Number(review.rating) || 0)))].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
@@ -122,7 +122,7 @@ export default function GoogleReviews() {
               Show Less
             </motion.button>
           )}
-          {!expanded && totalReviews > 3 && (
+          {!expanded && reviews.length > 3 && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
