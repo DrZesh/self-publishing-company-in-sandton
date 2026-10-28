@@ -203,7 +203,7 @@ export default function PrintingA5() {
       <PageMeta
         title="A5 Book Printing in Johannesburg"
         description="Affordable A5 book printing in SA — cream or white paper, perfect binding, from 100 copies. Free printed proof and competitive pricing. Order now."
-        canonical="https://www.creativebooks.co.za/printing/a5"
+        canonical="https://creativebooks.co.za/printing/a5"
       />
 
       {/* ── Hero ── */}
@@ -218,7 +218,7 @@ export default function PrintingA5() {
           style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.6), transparent)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-20 w-full">
-          <Breadcrumbs light items={[{ label: 'Printing', path: '/bookprinting' }, { label: 'A5 Printing', path: '/printing/a5' }]} />
+          <Breadcrumbs light items={[{ label: 'Printing', path: '/book-printing' }, { label: 'A5 Printing', path: '/printing/a5' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl mt-6">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">
               A5 Book Printing · Johannesburg
@@ -461,7 +461,7 @@ export default function PrintingA5() {
                 Request a Book Printing Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/bookprinting"
+              <Link to="/book-printing"
                 className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 All Printing Services
@@ -475,8 +475,8 @@ export default function PrintingA5() {
         { label: '6×9 Printing', path: '/printing/6x9' },
         { label: 'Hardcover Printing', path: '/printing/hardcover' },
         { label: "Children's Book Printing", path: '/printing/childrensbooks' },
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-        { label: 'Softcover Printing', path: '/softcoverprinting' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
+        { label: 'Softcover Printing', path: '/book-printing' },
         { label: 'Get a Quote', path: '/getquote' },
       ]} light />
     </div>

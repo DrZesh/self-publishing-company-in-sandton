@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Calendar, Clock, MapPin, Video, ChevronRight } from 'lucide-react';
 
 function formatTime(t) {
@@ -14,7 +14,7 @@ export default function TodaysAppointmentsWidget() {
 
   const { data: appointments = [] } = useQuery({
     queryKey: ['appointments-today'],
-    queryFn: () => base44.entities.Appointment.filter({ date: today, status: 'approved' }),
+    queryFn: () => platform.entities.Appointment.filter({ date: today, status: 'approved' }),
     refetchInterval: 60000,
   });
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { X, Upload, Loader2 } from 'lucide-react';
+import { X, Upload, Loader2, UserPlus } from 'lucide-react';
 
 export default function ContractModal({ contacts, contract, onClose, onSaved }) {
   const [form, setForm] = useState({
@@ -18,18 +18,34 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
   const [signedFile, setSignedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [manualClient, setManualClient] = useState(false);
+  const [manualName, setManualName] = useState('');
+  const [manualEmail, setManualEmail] = useState('');
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const uploadFile = async (file) => {
-    const result = await base44.integrations.Core.UploadFile({ file });
+    const result = await platform.integrations.Core.UploadFile({ file });
     return result.file_url;
   };
 
   const handleSave = async () => {
-    if (!form.contact_id || !form.title) return;
+    if ((!form.contact_id && !manualClient) || !form.title) return;
+    if (manualClient && !manualName) return;
     setSaving(true);
     setUploading(true);
+
+    let contact_id = form.contact_id;
+
+    // If manual client, create a new Contact first
+    if (manualClient) {
+      const newContact = await platform.entities.Contact.create({
+        full_name: manualName,
+        email: manualEmail || '',
+        lifecycle_stage: 'lead',
+      });
+      contact_id = newContact.id;
+    }
 
     let contract_file_url = contract?.contract_file_url || '';
     let signed_file_url = contract?.signed_file_url || '';
@@ -42,10 +58,10 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
     }
 
     setUploading(false);
-    const data = { ...form, contract_file_url, signed_file_url };
+    const data = { ...form, contact_id, contract_file_url, signed_file_url };
 
-    if (contract) await base44.entities.Contract.update(contract.id, data);
-    else await base44.entities.Contract.create(data);
+    if (contract) await platform.entities.Contract.update(contract.id, data);
+    else await platform.entities.Contract.create(data);
 
     setSaving(false);
     onSaved();
@@ -60,11 +76,29 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
         </div>
         <div className="p-6 space-y-4">
           <div>
-            <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Client *</label>
-            <select value={form.contact_id} onChange={e => set('contact_id', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-              <option value="">Select client...</option>
-              {contacts.map(c => <option key={c.id} value={c.id}>{c.full_name} — {c.email}</option>)}
-            </select>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Client *</label>
+              <button
+                type="button"
+                onClick={() => { setManualClient(m => !m); set('contact_id', ''); setManualName(''); setManualEmail(''); }}
+                className="flex items-center gap-1 text-xs text-[#B87333] hover:underline font-medium"
+              >
+                <UserPlus className="w-3 h-3" />
+                {manualClient ? 'Select from list' : 'Add client manually'}
+              </button>
+            </div>
+            {manualClient ? (
+              <div className="space-y-2">
+                <Input value={manualName} onChange={e => setManualName(e.target.value)} placeholder="Client full name *" />
+                <Input value={manualEmail} onChange={e => setManualEmail(e.target.value)} placeholder="Client email (optional)" type="email" />
+                <p className="text-xs text-gray-400">A new contact will be created automatically when you save.</p>
+              </div>
+            ) : (
+              <select value={form.contact_id} onChange={e => set('contact_id', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="">Select client...</option>
+                {contacts.map(c => <option key={c.id} value={c.id}>{c.full_name} — {c.email}</option>)}
+              </select>
+            )}
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1 block">Document Title *</label>
@@ -119,7 +153,7 @@ export default function ContractModal({ contacts, contract, onClose, onSaved }) 
         </div>
         <div className="flex gap-3 p-6 border-t">
           <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-          <Button onClick={handleSave} disabled={saving || uploading || !form.contact_id || !form.title} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
+          <Button onClick={handleSave} disabled={saving || uploading || (!form.contact_id && !manualClient) || (manualClient && !manualName) || !form.title} className="flex-1 bg-[#B87333] hover:bg-[#A06828] text-white">
             {(saving || uploading) ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{uploading ? 'Uploading...' : 'Saving...'}</> : contract ? 'Update Document' : 'Save Document'}
           </Button>
         </div>

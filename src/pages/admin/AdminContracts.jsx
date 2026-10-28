@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,16 +53,16 @@ export default function AdminContracts() {
 
   const { data: contracts = [], isLoading } = useQuery({
     queryKey: ['contracts'],
-    queryFn: () => base44.entities.Contract.list('-created_date', 200),
+    queryFn: () => platform.entities.Contract.list('-created_date', 200),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const updateContract = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Contract.update(id, data),
+    mutationFn: ({ id, data }) => platform.entities.Contract.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contracts'] }),
   });
 
@@ -70,10 +70,14 @@ export default function AdminContracts() {
 
   const handleSendForSignature = async (contract) => {
     setSendingId(contract.id);
-    const res = await base44.functions.invoke('contractSignature', { action: 'send', contract_id: contract.id });
+    const isResend = contract.status !== 'Draft';
+    const res = await platform.functions.invoke('contractSignature', {
+      action: isResend ? 'resend' : 'send',
+      contract_id: contract.id,
+    });
     setSendingId(null);
     if (res.data?.success) {
-      toast.success('Signing link sent to client');
+      toast.success(isResend ? 'Signing link resent to client' : 'Signing link sent to client');
       queryClient.invalidateQueries({ queryKey: ['contracts'] });
     } else {
       toast.error(res.data?.error || 'Failed to send');

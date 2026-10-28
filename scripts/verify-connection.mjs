@@ -1,0 +1,14 @@
+import { createClient } from '@supabase/supabase-js';
+import { existsSync, readFileSync } from 'node:fs';
+if(existsSync('.env.local')) process.loadEnvFile('.env.local');
+const url=process.env.VITE_SUPABASE_URL;
+const key=process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+if(!url || !key) throw new Error('Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in .env.local first.');
+const client=createClient(url,key,{auth:{persistSession:false}});
+const {data,error}=await client.rpc('cb_list',{entity_table:'company_settings'});
+if(error) throw new Error(`Supabase schema check failed: ${error.message}`);
+const privateCheck=await client.from('contact').select('id').limit(1);
+if(!privateCheck.error && privateCheck.data?.length) throw new Error('Anonymous visitors can read CRM contacts. Do not deploy.');
+const response=await client.functions.invoke('quoteActions',{body:{action:'send'}});
+if(!response.error) throw new Error('Staff function access was not rejected. Do not deploy.');
+console.log('Supabase connection and schema verified. Anonymous CRM read and staff function access are denied.');

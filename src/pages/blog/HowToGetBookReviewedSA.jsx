@@ -24,7 +24,7 @@ const article = {
   relatedLinks: [
     { label: 'How to Market Your Book', path: '/howtomarketandsellyourselfpublishedbookinsouthafrica' },
     { label: 'How to Launch Your Book', path: '/howtolaunchyourbooksuccessfullyinsouthafrica' },
-    { label: 'Author Websites', path: '/authorwebsites' },
+    { label: 'Author Websites', path: '/author-websites' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

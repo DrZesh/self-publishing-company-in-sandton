@@ -47,7 +47,7 @@ export default function WhyChooseUsNew() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                to="/bookpublishing"
+                to="/book-publishing"
                 className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
                 style={{ border: '1px solid rgba(255,255,255,0.12)' }}
               >

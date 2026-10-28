@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,8 +58,8 @@ function ClauseModal({ clause, onClose, onSaved }) {
   const handleSave = async () => {
     if (!form.name || !form.content) { toast.error('Name and content are required.'); return; }
     setSaving(true);
-    if (clause) await base44.entities.Clause.update(clause.id, form);
-    else await base44.entities.Clause.create(form);
+    if (clause) await platform.entities.Clause.update(clause.id, form);
+    else await platform.entities.Clause.create(form);
     setSaving(false);
     onSaved();
   };
@@ -125,8 +125,8 @@ function UploadTemplateModal({ onClose, onSaved }) {
   const handleUpload = async () => {
     if (!file || !form.template_label) { toast.error('Please provide a name and file.'); return; }
     setUploading(true);
-    const result = await base44.integrations.Core.UploadFile({ file });
-    await base44.entities.Document.create({
+    const result = await platform.integrations.Core.UploadFile({ file });
+    await platform.entities.Document.create({
       file_name: file.name,
       file_url: result.file_url,
       file_type: file.type,
@@ -196,21 +196,21 @@ export default function AdminClauseLibrary() {
 
   const { data: clauses = [], isLoading: loadingClauses } = useQuery({
     queryKey: ['clauses'],
-    queryFn: () => base44.entities.Clause.list('name', 200),
+    queryFn: () => platform.entities.Clause.list('name', 200),
   });
 
   const { data: templates = [], isLoading: loadingTemplates } = useQuery({
     queryKey: ['document-templates'],
-    queryFn: () => base44.entities.Document.filter({ is_template: true }),
+    queryFn: () => platform.entities.Document.filter({ is_template: true }),
   });
 
   const deleteClause = useMutation({
-    mutationFn: (id) => base44.entities.Clause.delete(id),
+    mutationFn: (id) => platform.entities.Clause.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clauses'] }),
   });
 
   const deleteTemplate = useMutation({
-    mutationFn: (id) => base44.entities.Document.delete(id),
+    mutationFn: (id) => platform.entities.Document.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['document-templates'] }),
   });
 

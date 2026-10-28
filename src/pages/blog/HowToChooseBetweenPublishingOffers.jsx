@@ -13,7 +13,7 @@ const article = {
     { heading: "Don't Just Chase the Biggest Advance", text: "A smaller publisher deeply passionate about your book with a focused marketing plan may well outperform a larger house that treats your book as a secondary title." },
     { heading: "Evaluate Each Publisher's Track Record", text: "Did comparable titles get wide bookshop distribution? Were they reviewed in major South African publications? Did they sell through their initial print runs? Author forums and Facebook groups can provide candid publisher feedback." },
     { heading: 'Compare the Contract Terms', text: "Beyond royalty rates and advances, compare: territory (South Africa only, or world rights?); rights granted; reversion clause; and option clause breadth." },
-    { heading: 'Consider the Self-Publishing Alternative', text: "If neither offer is compelling, remember that self-publishing with Creative Books SA gives you full control, 100% of revenue, and a professional-quality book — often faster than waiting for a traditional publisher's production cycle. Compare the options on their <a href='/selfpublishingpackagesinsouthafrica'>packages page</a>." },
+    { heading: 'Consider the Self-Publishing Alternative', text: "If neither offer is compelling, remember that self-publishing with Creative Books SA gives you full control, 100% of revenue, and a professional-quality book — often faster than waiting for a traditional publisher's production cycle. Compare the options on their <a href='/self-publishing-packages-in-south-africa'>packages page</a>." },
   ],
   ctaText: "Compare every option before you sign. Request a Creative Books SA quote to see what professional self-publishing looks like as an alternative.",
   faqs: [
@@ -21,7 +21,7 @@ const article = {
     { q: 'Is self-publishing better than a bad traditional deal?', a: "Often yes. If neither traditional offer is compelling, self-publishing with Creative Books SA gives you full control, 100% revenue, and faster time to market." },
   ],
   relatedLinks: [
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'What is a Fair Book Deal', path: '/whatisafairbookdealforsouthafricanauthors' },
     { label: 'Questions to Ask a Publisher', path: '/questionstoaskapublisher' },
     { label: 'Request a Quote', path: '/getquote' },

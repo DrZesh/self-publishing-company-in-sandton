@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { useNavigate } from 'react-router-dom';
 import { Bell, CheckCircle, Mail, FileText, User, ChevronRight, RefreshCw, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ export default function FollowUpReminders() {
 
   const fetchFollowUps = async () => {
     try {
-      const res = await base44.functions.invoke('getFollowUpReminders', {});
+      const res = await platform.functions.invoke('getFollowUpReminders', {});
       setData(res.data);
     } catch (error) {
       console.error('Error fetching follow-ups:', error);

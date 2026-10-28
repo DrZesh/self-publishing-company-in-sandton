@@ -1,34 +1,37 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import KpiCards from '@/components/admin/dashboard/KpiCards';
-import SalesPipeline from '@/components/admin/dashboard/SalesPipeline';
 import ActivityFeed from '@/components/admin/dashboard/ActivityFeed';
-import FollowUps from '@/components/admin/dashboard/FollowUps';
 import MonthlyTrendChart from '@/components/admin/dashboard/MonthlyTrendChart';
 import ServiceBreakdownCard from '@/components/admin/dashboard/ServiceBreakdownCard';
 import QuoteConversionFunnel from '@/components/admin/dashboard/QuoteConversionFunnel';
 import QuoteExpiryAlerts from '@/components/admin/dashboard/QuoteExpiryAlerts';
 import AICopilot from '@/components/admin/dashboard/AICopilot';
-import FollowUpReminders from '@/components/admin/dashboard/FollowUpReminders';
-import TodaysAppointmentsWidget from '@/components/appointments/TodaysAppointmentsWidget';
 import DealPerformanceSummary from '@/components/admin/dashboard/DealPerformanceSummary';
+import FinanceSummary from '@/components/admin/dashboard/FinanceSummary';
+import AdminChatPanel from '@/components/admin/dashboard/AdminChatPanel';
+import QuoteAutomationWidget from '@/components/admin/dashboard/QuoteAutomationWidget';
+import SmartFollowUpCenter from '@/components/admin/dashboard/SmartFollowUpCenter';
+import ProjectHealthBoard from '@/components/admin/projects/ProjectHealthBoard.jsx';
 import {
-  Plus, FileText, Receipt, Upload, Send, MessageSquare,
-  Mail, CheckSquare, FolderKanban, RefreshCw, Zap, Clock,
-  AlertTriangle, TrendingUp, Users, Target, Package, ChevronRight,
-  Activity, Sparkles, BarChart3, Star, Layers
+  FileText, Receipt, MessageSquare,
+  CheckSquare, FolderKanban, RefreshCw, Zap,
+  Target,
+  Sparkles
 } from 'lucide-react';
 
-// ─── Glass card wrapper ───────────────────────────────────────────────────────
+// ─── Futuristic Glass card wrapper with neon accents ─────────────────────────
 function Glass({ children, className = '', style = {} }) {
   return (
     <div
-      className={`rounded-2xl border border-white/70 backdrop-blur-xl ${className}`}
+      className={`rounded-2xl backdrop-blur-xl border ${className}`}
       style={{
-        background: 'rgba(255,255,255,0.80)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.9)',
+        background: 'rgba(0,0,0,0.25)',
+        backdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255,255,255,0.15)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
         ...style,
       }}
     >
@@ -37,58 +40,62 @@ function Glass({ children, className = '', style = {} }) {
   );
 }
 
-// ─── Quick Action Button ──────────────────────────────────────────────────────
-function QA({ label, icon: Icon, to, gradient, onClick }) {
+// ─── Quick Action Button with neon glow ──────────────────────────────────────
+function QA({ label, icon: Icon, to, color, onClick }) {
   const navigate = useNavigate();
   const handleClick = () => { if (onClick) onClick(); else if (to) navigate(to); };
   return (
     <button
       onClick={handleClick}
-      className="group flex flex-col items-center gap-2.5 p-3.5 rounded-2xl border border-slate-200/80 bg-white/70 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-slate-300 hover:shadow-md"
+      className="group flex flex-col items-center gap-2.5 p-3.5 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 border"
+      style={{
+        background: 'rgba(255,255,255,0.07)',
+        borderColor: 'rgba(255,255,255,0.15)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+      }}
     >
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
-        style={{ background: gradient, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+        className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+        style={{ 
+          background: color, 
+          boxShadow: `0 4px 16px ${color}60, 0 0 20px ${color}40`
+        }}
       >
         <Icon className="w-5 h-5 text-white drop-shadow" />
       </div>
-      <span className="text-[10px] font-semibold text-slate-500 text-center leading-tight tracking-wide uppercase group-hover:text-slate-700 transition-colors">{label}</span>
+      <span className="text-[10px] font-semibold text-cyan-200/80 text-center leading-tight tracking-wide uppercase group-hover:text-cyan-100 transition-colors">{label}</span>
     </button>
   );
 }
 
-// ─── Status KPI strip ─────────────────────────────────────────────────────────
+// ─── Status KPI strip with neon accents ──────────────────────────────────────
 function StatusStrip({ metrics, loading }) {
   const items = [
-    { label: 'New Leads', value: metrics?.new_leads_today ?? 0, gradient: 'linear-gradient(135deg,#f97316,#fb923c)', glow: '#f9731620', icon: Target },
-    { label: 'Unsigned', value: metrics?.unsigned_contracts ?? 0, gradient: 'linear-gradient(135deg,#ef4444,#f87171)', glow: '#ef444420', icon: FileText },
-    { label: 'Signatures', value: metrics?.docs_awaiting_signature ?? 0, gradient: 'linear-gradient(135deg,#eab308,#fbbf24)', glow: '#eab30820', icon: Star },
-    { label: 'Proofs', value: metrics?.proofs_pending ?? 0, gradient: 'linear-gradient(135deg,#a855f7,#c084fc)', glow: '#a855f720', icon: Clock },
-    { label: 'Collection', value: metrics?.ready_for_collection ?? 0, gradient: 'linear-gradient(135deg,#10b981,#34d399)', glow: '#10b98120', icon: Package },
-    { label: 'Tasks Due', value: metrics?.tasks_due_today ?? 0, gradient: 'linear-gradient(135deg,#3b82f6,#60a5fa)', glow: '#3b82f620', icon: CheckSquare },
-    { label: 'Overdue', value: metrics?.overdue_invoices ?? 0, gradient: 'linear-gradient(135deg,#f43f5e,#fb7185)', glow: '#f43f5e20', icon: Receipt },
-    { label: 'Projects', value: metrics?.active_projects ?? 0, gradient: 'linear-gradient(135deg,#6366f1,#818cf8)', glow: '#6366f120', icon: FolderKanban },
+    { label: 'New Leads', value: metrics?.new_leads_today ?? 0, color: '#22d3ee', glow: 'rgba(34, 211, 238, 0.3)', icon: Target },
+    { label: 'Tasks Due', value: metrics?.tasks_due_today ?? 0, color: '#3b82f6', glow: 'rgba(59, 130, 246, 0.3)', icon: CheckSquare },
   ];
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       {items.map((item) => {
         const Icon = item.icon;
         return (
           <div
             key={item.label}
-            className={`relative rounded-2xl border border-white/70 p-4 overflow-hidden backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${loading ? 'animate-pulse' : ''}`}
+            className={`relative rounded-xl p-4 overflow-hidden backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] ${loading ? 'animate-pulse' : ''}`}
             style={{
-              background: 'rgba(255,255,255,0.85)',
-              boxShadow: `0 4px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(255,255,255,0.9), inset 0 0 20px ${item.glow}`,
+              background: 'rgba(0,0,0,0.25)',
+              backdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
             }}
           >
-            <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-30 blur-xl" style={{ background: item.gradient }} />
+            <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-20 blur-2xl" style={{ background: item.color }} />
             <div className="relative">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center mb-2" style={{ background: item.gradient, boxShadow: `0 2px 8px ${item.glow}` }}>
-                <Icon className="w-3.5 h-3.5 text-white" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2" style={{ background: item.color, boxShadow: `0 2px 12px ${item.glow}` }}>
+                <Icon className="w-4 h-4 text-white" />
               </div>
-              <p className="text-2xl font-black text-slate-800 tracking-tight">{loading ? '—' : item.value}</p>
-              <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">{item.label}</p>
+              <p className="text-2xl font-bold text-cyan-50 tracking-tight">{loading ? '—' : item.value}</p>
+              <p className="text-[9px] font-semibold text-cyan-200/60 uppercase tracking-wider mt-0.5">{item.label}</p>
             </div>
           </div>
         );
@@ -97,46 +104,7 @@ function StatusStrip({ metrics, loading }) {
   );
 }
 
-// ─── Alerts panel ─────────────────────────────────────────────────────────────
-function AlertsPanel({ metrics }) {
-  const alerts = [
-    metrics?.unsigned_contracts > 0 && { label: `${metrics.unsigned_contracts} unsigned contract${metrics.unsigned_contracts > 1 ? 's' : ''}`, to: '/admin/contracts', color: '#ef4444', icon: AlertTriangle },
-    metrics?.overdue_invoices > 0 && { label: `${metrics.overdue_invoices} overdue invoice${metrics.overdue_invoices > 1 ? 's' : ''}`, to: '/admin/invoices', color: '#f97316', icon: Receipt },
-    metrics?.tasks_due_today > 0 && { label: `${metrics.tasks_due_today} task${metrics.tasks_due_today > 1 ? 's' : ''} due today`, to: '/admin/tasks', color: '#3b82f6', icon: CheckSquare },
-    metrics?.proofs_pending > 0 && { label: `${metrics.proofs_pending} proof${metrics.proofs_pending > 1 ? 's' : ''} awaiting approval`, to: '/admin/projects', color: '#a855f7', icon: Clock },
-    metrics?.ready_for_collection > 0 && { label: `${metrics.ready_for_collection} project${metrics.ready_for_collection > 1 ? 's' : ''} ready`, to: '/admin/collections', color: '#10b981', icon: Package },
-  ].filter(Boolean);
-
-  if (!alerts.length) return null;
-
-  return (
-    <Glass className="p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#ef4444,#f87171)' }}>
-          <AlertTriangle className="w-3.5 h-3.5 text-white" />
-        </div>
-        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Needs Attention</span>
-        <span className="ml-auto text-xs font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">{alerts.length}</span>
-      </div>
-      <div className="space-y-2">
-        {alerts.map((a, i) => {
-          const Icon = a.icon;
-          return (
-            <Link key={i} to={a.to}
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all hover:scale-[1.01]"
-              style={{ background: a.color + '10', borderColor: a.color + '30' }}>
-              <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: a.color }} />
-              <span className="text-xs font-semibold" style={{ color: a.color }}>{a.label}</span>
-              <ChevronRight className="w-3 h-3 ml-auto opacity-50" style={{ color: a.color }} />
-            </Link>
-          );
-        })}
-      </div>
-    </Glass>
-  );
-}
-
-// ─── Live ticker ──────────────────────────────────────────────────────────────
+// ─── Live ticker with neon pulse ─────────────────────────────────────────────
 function LiveTicker() {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
@@ -144,10 +112,10 @@ function LiveTicker() {
     return () => clearInterval(t);
   }, []);
   return (
-    <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-      <span className="font-semibold text-slate-500">LIVE</span>
-      <span className="text-slate-300">·</span>
+    <div className="flex items-center gap-2 text-xs font-mono text-white/60">
+      <span className="w-1.5 h-1.5 rounded-full bg-white/70 animate-pulse inline-block" />
+      <span className="font-bold text-white/80">LIVE</span>
+      <span className="text-white/30">·</span>
       <span>{time.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
     </div>
   );
@@ -164,8 +132,8 @@ export default function AdminDashboard() {
   const fetchDashboard = useCallback(async () => {
     try {
       const [meRes, metricsRes] = await Promise.all([
-        base44.auth.me(),
-        base44.functions.invoke('getAdminDashboardMetrics', { dateRange }),
+        platform.auth.me(),
+        platform.functions.invoke('getAdminDashboardMetrics', { dateRange }),
       ]);
       setUser(meRes);
       setDashData(metricsRes.data);
@@ -182,7 +150,7 @@ export default function AdminDashboard() {
     return () => clearInterval(refreshTimer.current);
   }, [fetchDashboard]);
 
-  const isOwner = user?.role === 'admin';
+  const isSuperUser = user?.role === 'admin' || user?.role === 'super_user';
   const metrics = dashData?.metrics;
   const pipeline = dashData?.pipeline;
   const activity = dashData?.activity;
@@ -196,43 +164,53 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div
         className="min-h-screen -m-6 lg:-m-7 p-6 lg:p-8 relative"
-        style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #f8faff 40%, #eef3ff 100%)' }}
+        style={{ 
+          backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
       >
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(100,120,200,0.55) 0%, rgba(180,100,200,0.45) 50%, rgba(100,160,220,0.5) 100%)' }} />
+        
         <div className="relative max-w-[1400px] mx-auto space-y-6">
 
           {/* ── HEADER ── */}
-          <div className="flex items-start justify-between flex-wrap gap-4">
+          <div className="flex items-start justify-between flex-wrap gap-4 relative">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#B87333,#d4944a)' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ 
+                background: 'linear-gradient(135deg,#22d3ee,#06b6d4)',
+                boxShadow: '0 4px 20px rgba(34, 211, 238, 0.5)'
+              }}>
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-black text-slate-800 tracking-tight">
+                <h1 className="text-2xl font-bold text-cyan-50 tracking-tight">
                   {greeting}{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}
                 </h1>
-                <p className="text-xs text-slate-400 font-medium mt-0.5">
+                <p className="text-xs text-cyan-200/60 font-medium mt-0.5">
                   {new Date().toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <LiveTicker />
-              <div className="flex items-center gap-1 p-1 rounded-xl border border-white/70 bg-white/80 backdrop-blur-xl">
+              <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.15)' }}>
                 {['today', 'week', 'month', 'year'].map(r => (
                   <button key={r} onClick={() => setDateRange(r)}
                     className="px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all duration-200"
                     style={dateRange === r ? {
-                      background: 'linear-gradient(135deg,#B87333,#d4944a)',
+                      background: 'linear-gradient(135deg, #ec4899, #f97316)',
                       color: 'white',
-                      boxShadow: '0 2px 8px rgba(184,115,51,0.3)',
-                    } : { color: '#64748b' }}>
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                    } : { color: 'rgba(255,255,255,0.55)' }}>
                     {r}
                   </button>
                 ))}
               </div>
               <button onClick={fetchDashboard}
-                className="p-2.5 rounded-xl border border-white/70 bg-white/80 backdrop-blur-xl transition-all hover:border-[#B87333]/40 hover:shadow-md hover:scale-105">
-                <RefreshCw className="w-4 h-4 text-slate-400" />
+                className="p-2.5 rounded-xl backdrop-blur-xl transition-all hover:scale-105"
+                style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <RefreshCw className="w-4 h-4 text-white/70" />
               </button>
             </div>
           </div>
@@ -240,45 +218,34 @@ export default function AdminDashboard() {
           {/* ── STATUS STRIP ── */}
           <StatusStrip metrics={metrics} loading={loading} />
 
+          {/* ── FINANCE SUMMARY ── */}
+          <FinanceSummary />
+
           {/* ── QUICK ACTIONS ── */}
           <Glass className="p-5">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#B87333,#d4944a)' }}>
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #ec4899, #f97316)' }}>
                 <Zap className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Quick Actions</span>
-              <div className="flex-1 h-px ml-2 bg-gradient-to-r from-amber-200/60 to-transparent" />
+              <span className="text-xs font-bold text-white/70 uppercase tracking-widest">Quick Actions</span>
+              <div className="flex-1 h-px ml-2 bg-gradient-to-r from-white/20 to-transparent" />
             </div>
-            <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-10 gap-2">
-              <QA label="Add Lead" icon={Target} to="/admin/leads" gradient="linear-gradient(135deg,#B87333,#d4944a)" />
-              <QA label="New Quote" icon={FileText} to="/admin/quotes/new" gradient="linear-gradient(135deg,#6366f1,#818cf8)" />
-              <QA label="New Invoice" icon={Receipt} to="/admin/invoices" gradient="linear-gradient(135deg,#10b981,#34d399)" />
-              <QA label="New Project" icon={FolderKanban} to="/admin/projects" gradient="linear-gradient(135deg,#3b82f6,#60a5fa)" />
-              <QA label="Upload Doc" icon={Upload} to="/admin/documents" gradient="linear-gradient(135deg,#8b5cf6,#a78bfa)" />
-              <QA label="Send Doc" icon={Send} to="/admin/documents" gradient="linear-gradient(135deg,#0ea5e9,#38bdf8)" />
-              <QA label="WhatsApp" icon={MessageSquare} to="/admin/automations" gradient="linear-gradient(135deg,#22c55e,#4ade80)" />
-              <QA label="Send Email" icon={Mail} to="/admin/email-templates" gradient="linear-gradient(135deg,#f59e0b,#fbbf24)" />
-              <QA label="Add Task" icon={CheckSquare} to="/admin/tasks" gradient="linear-gradient(135deg,#ef4444,#f87171)" />
-              <QA label="Service Updates" icon={Layers} to="/admin/client-service" gradient="linear-gradient(135deg,#6366f1,#818cf8)" />
+            <div className="grid grid-cols-5 gap-3">
+              <QA label="New Quote" icon={FileText} to="/admin/quotes/new" color="#8b5cf6" />
+              <QA label="New Invoice" icon={Receipt} to="/admin/invoices" color="#10b981" />
+              <QA label="New Project" icon={FolderKanban} to="/admin/projects" color="#3b82f6" />
+              <QA label="Add Task" icon={CheckSquare} to="/admin/tasks" color="#f43f5e" />
+              <QA label="Client Chat" icon={MessageSquare} to="/admin/chat" color="#22c55e" />
             </div>
           </Glass>
 
-          {/* ── ALERTS + KPIs ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 space-y-4">
-              <AlertsPanel metrics={metrics} />
-              <FollowUpReminders />
-            </div>
-            <div className="lg:col-span-2">
-              <KpiCards metrics={metrics} isOwner={isOwner} loading={loading} />
-            </div>
-          </div>
+          {/* ── KPIs ── */}
+          <KpiCards metrics={metrics} isOwner={isSuperUser} loading={loading} />
 
           {/* ── AI COPILOT ── */}
           <AICopilot data={{ leads: dashData?.leads, quotes: dashData?.quotes, submissions: dashData?.submissions }} />
 
-          {/* ── SALES PIPELINE ── */}
-          <SalesPipeline pipeline={pipeline} loading={loading} />
+
 
           {/* ── CHARTS ROW ── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -290,11 +257,14 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <QuoteConversionFunnel />
             <QuoteExpiryAlerts />
-            <FollowUps followUps={followUps} loading={loading} />
+            <QuoteAutomationWidget />
           </div>
 
-          {/* ── APPOINTMENTS ── */}
-          <TodaysAppointmentsWidget />
+          {/* ── PROJECT HEALTH + FOLLOW-UPS ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ProjectHealthBoard />
+            <SmartFollowUpCenter />
+          </div>
 
           {/* ── DEAL PERFORMANCE SUMMARY ── */}
           <DealPerformanceSummary />
@@ -302,11 +272,14 @@ export default function AdminDashboard() {
           {/* ── ACTIVITY FEED ── */}
           <ActivityFeed activity={activity} loading={loading} />
 
+
+
           {/* ── FOOTER ── */}
           <div className="text-center pb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200/80 bg-white/60">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <p className="text-xs text-slate-400 font-mono">Auto-refreshes every 60s · Creative Books SA Command Centre</p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl"
+              style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
+              <p className="text-xs text-white/50 font-mono">Auto-refreshes every 60s · Creative Books SA Command Centre</p>
             </div>
           </div>
         </div>

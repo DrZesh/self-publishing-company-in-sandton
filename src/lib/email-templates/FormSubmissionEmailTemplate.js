@@ -305,7 +305,7 @@ export const FormSubmissionEmailTemplate = `<!DOCTYPE html>
                 <p class="footer-brand">Creative Books SA</p>
                 <p class="footer-tagline">Printing, Publishing, Editing, Cover Design and Author Website Services</p>
                 <div class="footer-info">
-                    Website: <a href="https://www.creativebooks.co.za">www.creativebooks.co.za</a><br>
+                    Website: <a href="https://creativebooks.co.za">www.creativebooks.co.za</a><br>
                     Email: <a href="mailto:info@creativebooks.co.za">info@creativebooks.co.za</a><br>
                     Phone: <a href="tel:{{company_phone}}">{{company_phone}}</a>
                 </div>

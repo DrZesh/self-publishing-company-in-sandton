@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, ExternalLink, Download } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 function ExpandedQueryRow({ query, days }) {
   const [data, setData] = useState(null);
@@ -8,15 +8,15 @@ function ExpandedQueryRow({ query, days }) {
 
   React.useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('searchConsoleData', { action: 'query_pages', query, days })
+    platform.functions.invoke('searchConsoleData', { action: 'query_pages', query, days })
       .then(r => setData(r.data?.rows || []))
       .catch(() => setData([]))
       .finally(() => setLoading(false));
   }, [query, days]);
 
   if (loading) return (
-    <tr><td colSpan={5} className="px-4 py-3 bg-[#fdf9f4]">
-      <div className="flex items-center gap-2 text-xs text-black/40">
+    <tr><td colSpan={5} className="px-4 py-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
+      <div className="flex items-center gap-2 text-xs text-white/40">
         <div className="w-3 h-3 border-2 border-[#B87333]/30 border-t-[#B87333] rounded-full animate-spin" />
         Loading pages for this query…
       </div>
@@ -24,18 +24,18 @@ function ExpandedQueryRow({ query, days }) {
   );
 
   return (
-    <tr><td colSpan={5} className="px-4 py-2 bg-[#fdf9f4] border-b border-black/5">
-      <div className="text-xs font-semibold text-black/50 mb-2 uppercase tracking-wide">Pages ranking for this query:</div>
+    <tr><td colSpan={5} className="px-4 py-2 border-b border-white/5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+      <div className="text-xs font-semibold text-white/40 mb-2 uppercase tracking-wide">Pages ranking for this query:</div>
       {(data || []).length === 0 ? (
-        <div className="text-xs text-black/30 py-1">No page data available</div>
+        <div className="text-xs text-white/30 py-1">No page data available</div>
       ) : (
         <div className="space-y-1">
           {data.map((r, i) => (
             <div key={i} className="flex items-center gap-3 text-xs py-1">
               <span className="text-[#B87333] font-medium truncate max-w-xs">{r.keys[0]?.replace('https://www.creativebooks.co.za', '') || '/'}</span>
-              <span className="text-black/60">{r.clicks} clicks</span>
-              <span className="text-black/40">{r.impressions} impr.</span>
-              <a href={r.keys[0]} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3 h-3 text-black/30 hover:text-[#B87333]" /></a>
+              <span className="text-white/60">{r.clicks} clicks</span>
+              <span className="text-white/40">{r.impressions} impr.</span>
+              <a href={r.keys[0]} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3 h-3 text-white/30 hover:text-[#B87333]" /></a>
             </div>
           ))}
         </div>
@@ -80,7 +80,7 @@ export default function GscQueriesTable({ rows = [], days, limit }) {
   };
 
   const SortHeader = ({ label, k }) => (
-    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold text-black/50 uppercase tracking-wide cursor-pointer hover:text-[#B87333] select-none">
+    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide cursor-pointer hover:text-[#B87333] select-none">
       {label} {sortKey === k ? (sortDir === 'asc' ? '↑' : '↓') : ''}
     </th>
   );
@@ -91,25 +91,28 @@ export default function GscQueriesTable({ rows = [], days, limit }) {
       {!limit && (
         <div className="flex flex-wrap gap-3 mb-4">
           <input value={filter} onChange={e => setFilter(e.target.value)} placeholder="Filter queries…"
-            className="px-3 py-1.5 border border-black/10 rounded-lg text-sm focus:outline-none focus:border-[#B87333] w-48" />
+            className="px-3 py-1.5 rounded-lg text-sm focus:outline-none text-white placeholder-white/30 w-48"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }} />
           <select value={posFilter} onChange={e => setPosFilter(e.target.value)}
-            className="px-3 py-1.5 border border-black/10 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white">
-            <option value="all">All positions</option>
-            <option value="1-10">1–10 (Page 1)</option>
-            <option value="11-20">11–20 (Page 2)</option>
-            <option value="21-50">21–50</option>
-            <option value="51+">51+</option>
+            className="px-3 py-1.5 rounded-lg text-sm focus:outline-none text-white"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <option value="all" className="bg-slate-800">All positions</option>
+            <option value="1-10" className="bg-slate-800">1–10 (Page 1)</option>
+            <option value="11-20" className="bg-slate-800">11–20 (Page 2)</option>
+            <option value="21-50" className="bg-slate-800">21–50</option>
+            <option value="51+" className="bg-slate-800">51+</option>
           </select>
-          <button onClick={exportCsv} className="flex items-center gap-1.5 px-3 py-1.5 border border-black/10 rounded-lg text-sm text-black/60 hover:border-[#B87333] hover:text-[#B87333] transition-colors ml-auto">
+          <button onClick={exportCsv} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/60 hover:text-[#B87333] transition-colors ml-auto"
+            style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
             <Download className="w-3.5 h-3.5" /> Export CSV
           </button>
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-black/8 shadow-sm overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[560px]">
-            <thead className="bg-[#F9F7F2]">
+            <thead style={{ background: 'rgba(255,255,255,0.06)' }}>
               <tr>
                 <th className="px-4 py-3 w-8" />
                 <SortHeader label="Query" k="query" />
@@ -121,23 +124,23 @@ export default function GscQueriesTable({ rows = [], days, limit }) {
             </thead>
             <tbody>
               {displayed.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-black/30 text-sm">No queries match your filters</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-sm">No queries match your filters</td></tr>
               )}
               {displayed.map((r, i) => (
                 <React.Fragment key={i}>
                   <tr onClick={() => setExpanded(expanded === i ? null : i)}
-                    className="border-t border-black/5 hover:bg-[#F9F7F2] transition-colors cursor-pointer">
-                    <td className="px-4 py-3 text-black/30">
+                    className="border-t border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                    <td className="px-4 py-3 text-white/30">
                       {expanded === i ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                     </td>
-                    <td className="px-4 py-3 font-medium text-[#1A1208] max-w-[200px]">
+                    <td className="px-4 py-3 font-medium text-white max-w-[200px]">
                       <span className="truncate block" title={r.keys[0]}>{r.keys[0]}</span>
                     </td>
                     <td className="px-4 py-3 text-[#B87333] font-semibold">{r.clicks.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-black/60">{r.impressions.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-black/60">{(r.ctr * 100).toFixed(1)}%</td>
+                    <td className="px-4 py-3 text-white/60">{r.impressions.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-white/60">{(r.ctr * 100).toFixed(1)}%</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.position <= 3 ? 'bg-emerald-100 text-emerald-700' : r.position <= 10 ? 'bg-blue-100 text-blue-700' : r.position <= 20 ? 'bg-amber-100 text-amber-700' : 'bg-black/5 text-black/50'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.position <= 3 ? 'bg-emerald-500/20 text-emerald-300' : r.position <= 10 ? 'bg-blue-500/20 text-blue-300' : r.position <= 20 ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/40'}`}>
                         #{r.position.toFixed(0)}
                       </span>
                     </td>
@@ -150,7 +153,7 @@ export default function GscQueriesTable({ rows = [], days, limit }) {
         </div>
       </div>
       {displayed.length > 0 && (
-        <div className="text-xs text-black/30 mt-2 text-right">{displayed.length} queries shown</div>
+        <div className="text-xs text-white/30 mt-2 text-right">{displayed.length} queries shown</div>
       )}
     </div>
   );

@@ -1,29 +1,37 @@
-import { useState, useCallback, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useState, useCallback, useEffect } from 'react';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User, MessageSquare, History, MoveRight, Loader2 } from 'lucide-react';
+import { Sparkles, AlertTriangle, Settings2, Plus, Search, X, Edit2, ArrowRight, CheckCircle, Mail, Phone, ExternalLink, BookOpen, Calendar, TrendingUp, User, MessageSquare, History, MoveRight, Loader2, Upload, Settings, Grid, List, Columns, Minimize2, Maximize2, DollarSign, Eye, EyeOff, Layers } from 'lucide-react';
 import NewDealModal from '@/components/pipeline/NewDealModal';
+import WorkflowPanel from '@/components/admin/workflow/WorkflowPanel';
+import PipelineSettingsModal from '@/components/admin/pipeline/PipelineSettingsModal';
+import PipelineBuilderModal from '@/components/admin/pipeline/PipelineBuilderModal';
 
 // ── Stage config ──────────────────────────────────────────────────────────────
 const STAGES = [
-  { id: 'Inquiry',   label: 'Inquiry',   color: '#6366f1', prob: 0.20, active: true },
-  { id: 'Quotation', label: 'Quotation', color: '#0ea5e9', prob: 0.55, active: true },
-  { id: 'Won',       label: 'Won',       color: '#16a34a', prob: 1,    active: false },
+  { id: 'New Enquiry', label: 'New Enquiry', color: '#6366f1', prob: 0.10, active: true },
+  { id: 'Reviewed by Admin', label: 'Reviewed', color: '#8b5cf6', prob: 0.20, active: true },
+  { id: 'Quote Required', label: 'Quote Required', color: '#a855f7', prob: 0.30, active: true },
+  { id: 'Quote Sent', label: 'Quote Sent', color: '#0ea5e9', prob: 0.50, active: true },
+  { id: 'Quote Viewed', label: 'Quote Viewed', color: '#06b6d4', prob: 0.60, active: true },
+  { id: 'Quote Accepted', label: 'Quote Accepted', color: '#10b981', prob: 0.75, active: true },
+  { id: 'NDA Required', label: 'NDA Required', color: '#f59e0b', prob: 0.80, active: true },
+  { id: 'NDA Sent', label: 'NDA Sent', color: '#f97316', prob: 0.85, active: true },
+  { id: 'NDA Signed', label: 'NDA Signed', color: '#16a34a', prob: 0.90, active: true },
+  { id: 'Invoice Required', label: 'Invoice Required', color: '#eab308', prob: 0.92, active: true },
+  { id: 'Invoice Sent', label: 'Invoice Sent', color: '#84cc16', prob: 0.95, active: true },
+  { id: 'Payment Pending', label: 'Payment Pending', color: '#d97706', prob: 0.98, active: true },
+  { id: 'Payment Received', label: 'Payment Received', color: '#16a34a', prob: 1,    active: false },
+  { id: 'Project Active', label: 'Project Active', color: '#2563eb', prob: 1,    active: false },
+  { id: 'Completed', label: 'Completed', color: '#4b5563', prob: 1,    active: false },
+  { id: 'Archived', label: 'Archived', color: '#6b7280', prob: 0,    active: false },
   { id: 'Lost',      label: 'Lost',      color: '#e11d48', prob: 0,    active: false },
   { id: 'Ghosted',   label: 'Ghosted',   color: '#64748b', prob: 0,    active: false },
 ];
 
 function mapStage(contact) {
-  const s = contact.pipeline_stage || '';
-  const lr = (contact.lost_reason || '').toLowerCase();
-  if (lr.includes('ghost')) return 'Ghosted';
-  const WON = ['Project Started','Editing','Cover Design','Typesetting','Sample Queued','Sample Approved','Mass Production','Completed','Delivered'];
-  const QUOT = ['Quote in Progress','Quote Sent','Payment Pending'];
-  if (WON.includes(s)) return 'Won';
-  if (s === 'Lost') return 'Lost';
-  if (QUOT.includes(s)) return 'Quotation';
-  return 'Inquiry';
+  return contact.pipeline_stage || 'New Enquiry';
 }
 
 const PRIORITY_MAP = {
@@ -66,694 +74,154 @@ function avatarColor(name) {
   return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
 }
 
-function aiSuggestion(contact, stage) {
-  const days = getDaysInStage(contact);
-  const val = contact.pipeline_value || 0;
-  if (stage === 'Inquiry') {
-    if (days > 3) return 'Follow up — no response in ' + days + ' days';
-    return 'Send intro email with publishing packages';
-  }
-  if (stage === 'Quotation') {
-    if (days > 5) return 'Chase quote — client has not responded';
-    if (val > 30000) return 'High-value deal — offer a discovery call';
-    return 'Send revised quote if no response today';
-  }
-  return null;
-}
-
 function toContactStage(newStage, lostReason) {
-  if (newStage === 'Inquiry')   return { pipeline_stage: 'New Enquiry', lost_reason: '' };
-  if (newStage === 'Quotation') return { pipeline_stage: 'Quote Sent', lost_reason: '' };
-  if (newStage === 'Won')       return { pipeline_stage: 'Project Started', lost_reason: '' };
-  if (newStage === 'Lost')      return { pipeline_stage: 'Lost', lost_reason: lostReason || 'Did not proceed' };
-  if (newStage === 'Ghosted')   return { pipeline_stage: 'Lost', lost_reason: 'Ghosted' };
-  return {};
+    if (newStage === 'Lost')      return { pipeline_stage: 'Lost', lost_reason: lostReason || 'Did not proceed' };
+    if (newStage === 'Ghosted')   return { pipeline_stage: 'Lost', lost_reason: 'Ghosted' };
+    return { pipeline_stage: newStage, lost_reason: '' };
 }
 
-// ── Avatar ────────────────────────────────────────────────────────────────────
-function Avatar({ name, size = 28 }) {
-  const bg = avatarColor(name);
-  return (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.38, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
-      {initials(name)}
-    </div>
-  );
-}
-
-// ── Deal card ─────────────────────────────────────────────────────────────────
-function DealCard({ contact, isTop, showAI, onMove, onSelect }) {
+function DealCard({ contact, isTop, onMove, onSelect }) {
   const stage = mapStage(contact);
   const days = getDaysInStage(contact);
   const stalled = days > 7;
   const pri = getPriority(contact);
-  const ai = showAI ? aiSuggestion(contact, stage) : null;
   const [menuOpen, setMenuOpen] = useState(false);
   const prob = contact.probability != null
     ? contact.probability
     : Math.round((STAGES.find(s => s.id === stage)?.prob ?? 0.2) * 100);
+  
+  // Check if workflow exists for this contact
+  const hasWorkflow = contact.pipeline_stage && contact.pipeline_stage !== 'New Enquiry';
+
+  const submissionTime = contact.created_date 
+    ? new Date(contact.created_date).toLocaleString('en-ZA', { 
+        month: 'short', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    : null;
 
   return (
     <div
       className="deal-card"
       onClick={() => onSelect(contact)}
       style={{
-        background: stalled ? 'rgba(251,191,36,0.06)' : 'rgba(255,255,255,0.93)',
+        background: '#ffffff',
         borderRadius: 12,
-        border: stalled ? '1.5px solid rgba(245,158,11,0.7)' : '1px solid rgba(255,255,255,0.6)',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        border: '1px solid #e5e7eb',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         position: 'relative',
-        marginBottom: 10,
+        marginBottom: 8,
         cursor: 'pointer',
+        transition: 'all 0.2s ease',
       }}
     >
-      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: pri.color, borderRadius: '12px 0 0 12px' }} />
-      <div style={{ padding: '12px 12px 12px 16px' }}>
+      <div style={{ padding: '10px 10px 10px 12px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
-            <Avatar name={contact.full_name} size={28} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+            <div style={{ width: 24, height: 24, borderRadius: '50%', background: avatarColor(contact.full_name), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+              {initials(contact.full_name)}
+            </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 600, fontSize: 13, color: '#1e1e2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.full_name}</div>
+              <div style={{ fontWeight: 600, fontSize: 12, color: '#1f2937', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.full_name}</div>
               {contact.book_title && (
-                <div style={{ fontSize: 11, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📖 {contact.book_title}</div>
+                <div style={{ fontSize: 10, color: '#6b7280', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📖 {contact.book_title}</div>
               )}
             </div>
           </div>
-          <div style={{ position: 'relative', flexShrink: 0, marginLeft: 6 }}>
+          <div style={{ position: 'relative', flexShrink: 0, marginLeft: 4 }}>
             <button onClick={e => { e.stopPropagation(); setMenuOpen(o => !o); }}
-              style={{ padding: '2px 6px', fontSize: 16, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
+              style={{ padding: '2px 4px', fontSize: 14, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
             {menuOpen && (
-              <div style={{ position: 'absolute', right: 0, top: 24, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 140, padding: 6 }}>
+              <div style={{ position: 'absolute', right: 0, top: 20, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 130, padding: 4, maxHeight: '200px', overflowY: 'auto' }}>
                 {STAGES.filter(s => s.id !== stage).map(s => (
                   <button key={s.id}
                     onClick={e => { e.stopPropagation(); setMenuOpen(false); onMove(contact.id, s.id); }}
-                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 10px', fontSize: 12, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 6 }}
+                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '5px 8px', fontSize: 11, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 4 }}
                     onMouseEnter={e => e.currentTarget.style.background = '#f5f6fa'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
-                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: s.color, marginRight: 6 }} />
-                    Move to {s.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 20, color: '#1e1e2e', marginBottom: 6, letterSpacing: '-0.5px' }}>
-          {fmtRandFull(contact.pipeline_value)}
-        </div>
-
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-            <span style={{ fontSize: 10, color: '#94a3b8' }}>Win probability</span>
-            <span style={{ fontSize: 10, fontWeight: 700, color: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48' }}>{prob}%</span>
-          </div>
-          <div style={{ height: 4, background: '#f1f5f9', borderRadius: 4, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${prob}%`, background: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48', borderRadius: 4, transition: 'width 0.3s' }} />
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
-          {contact.package_type && (
-            <span style={{ background: '#ede9fe', color: '#6d28d9', fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', padding: '2px 6px', borderRadius: 20 }}>{contact.package_type}</span>
-          )}
-          {isTop && (
-            <span style={{ background: '#4f46e5', color: '#fff', fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', padding: '2px 7px', borderRadius: 20, textTransform: 'uppercase' }}>Act now</span>
-          )}
-          <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 10, color: pri.color, fontWeight: 600 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: pri.color, display: 'inline-block' }} />
-            {pri.label}
-          </span>
-          {stalled ? (
-            <span style={{ background: '#fef3c7', color: '#d97706', fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 3 }}>
-              <AlertTriangle style={{ width: 9, height: 9 }} /> Stalled {days}d
-            </span>
-          ) : (
-            <span style={{ fontSize: 10, color: '#94a3b8' }}>{days}d in stage</span>
-          )}
-        </div>
-
-        {ai && (
-          <div style={{ marginTop: 8, background: '#f5f3ff', border: '1px solid #ede9fe', borderRadius: 8, padding: '6px 10px', display: 'flex', alignItems: 'flex-start', gap: 6 }}>
-            <Sparkles style={{ width: 12, height: 12, color: '#7c3aed', flexShrink: 0, marginTop: 1 }} />
-            <span style={{ fontSize: 11, color: '#5b21b6', lineHeight: 1.4 }}>{ai}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ── Deal detail panel ─────────────────────────────────────────────────────────
-const PKG_TYPES = ['Full publishing','Editing only','Cover + layout','Typesetting','Print run','Other'];
-const STAGE_OPTS = [
-  { label: 'Inquiry',   pipeline_stage: 'New Enquiry' },
-  { label: 'Quotation', pipeline_stage: 'Quote Sent' },
-  { label: 'Won',       pipeline_stage: 'Project Started' },
-  { label: 'Lost',      pipeline_stage: 'Lost' },
-];
-
-const EMAIL_TEMPLATES = [
-  { id: 'intro', subject: 'Welcome to Creative Books SA', body: 'Dear {{client_name}},\n\nThank you for your interest in publishing your book, {{book_title}}. We would be delighted to help you bring your manuscript to life.\n\nOur team specializes in full-service publishing including editing, cover design, typesetting, and printing. Would you be available for a quick call this week to discuss your project?\n\nWarm regards,\nCreative Books SA\n084 230 5393' },
-  { id: 'quote_followup', subject: 'Following up on your quote', body: 'Dear {{client_name}},\n\nI hope this email finds you well. I wanted to follow up on the quote we sent for {{book_title}}.\n\nDo you have any questions about the package or our services? We are here to help and can adjust the package to better fit your needs if required.\n\nLooking forward to hearing from you.\n\nKind regards,\nCreative Books SA' },
-  { id: 'quote_reminder', subject: 'Quote reminder - {{book_title}}', body: 'Dear {{client_name}},\n\nThis is a friendly reminder that your quote ({{quote_number}}) for {{book_title}} is still available.\n\nThe quote is valid for 30 days from the date of issue. If you have any questions or would like to discuss the package further, please do not hesitate to contact us.\n\nBest regards,\nCreative Books SA' },
-  { id: 'high_value', subject: 'Premium publishing package for {{book_title}}', body: 'Dear {{client_name}},\n\nThank you for considering Creative Books SA for your publishing project, {{book_title}}.\n\nGiven the scope of your project, I believe our premium package would be the perfect fit. It includes:\n- Professional editing\n- Custom cover design\n- Typesetting and layout\n- Print-ready files\n- ISBN registration\n- Marketing support\n\nWould you be available for a discovery call this week?\n\nWarm regards,\nCreative Books SA' },
-];
-
-function DealDetailPanel({ contact, onClose, onMove, onConvert, onUpdate, stages }) {
-  const stage = mapStage(contact);
-  const days = getDaysInStage(contact);
-  const pri = getPriority(contact);
-  const prob = contact.probability != null
-    ? contact.probability
-    : Math.round((stages.find(s => s.id === stage)?.prob ?? 0.2) * 100);
-  const stageConf = stages.find(s => s.id === stage);
-  const closeDate = contact.expected_close_date
-    ? new Date(contact.expected_close_date).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' })
-    : null;
-
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [emailTab, setEmailTab] = useState('compose');
-  const [emailForm, setEmailForm] = useState({ to: contact.email || '', subject: '', body: '' });
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [sendingEmail, setSendingEmail] = useState(false);
-  const [sendingWA, setSendingWA] = useState(false);
-  const [showActivity, setShowActivity] = useState(false);
-  const [activityLogs, setActivityLogs] = useState([]);
-  const [ef, setEfState] = useState({
-    pipeline_value: contact.pipeline_value || '',
-    probability: contact.probability ?? '',
-    package_type_val: contact.package_type || '',
-    pipeline_stage_val: contact.pipeline_stage || 'New Enquiry',
-    expected_close_date: contact.expected_close_date ? contact.expected_close_date.split('T')[0] : '',
-    pipeline_owner: contact.pipeline_owner || '',
-  });
-  const setEF = (k, v) => setEfState(f => ({ ...f, [k]: v }));
-
-  const resolveTemplateVars = (text) => {
-    if (!text) return '';
-    return text
-      .replace(/{{client_name}}/g, contact.full_name || '')
-      .replace(/{{book_title}}/g, contact.book_title || '[Book Title]')
-      .replace(/{{quote_number}}/g, 'Quote #' + (contact.id || '123').slice(-4));
-  };
-
-  const handleSelectTemplate = (template) => {
-    setSelectedTemplate(template.id);
-    setEmailForm({
-      to: contact.email || '',
-      subject: resolveTemplateVars(template.subject),
-      body: resolveTemplateVars(template.body),
-    });
-  };
-
-  const handleSendEmail = async () => {
-    if (!emailForm.to || !emailForm.subject || !emailForm.body) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-    setSendingEmail(true);
-    try {
-      const res = await base44.functions.invoke('sendContactEmail', {
-        action: 'send',
-        to: emailForm.to,
-        subject: emailForm.subject,
-        body_html: `<p>${emailForm.body.replace(/\n/g, '<br/>')}</p>`,
-      });
-      if (res.data?.success) {
-        toast.success('Email sent successfully!');
-        setEmailForm({ to: '', subject: '', body: '' });
-        setSelectedTemplate(null);
-        setEmailTab('compose');
-      } else {
-        toast.error(res.data?.error || 'Failed to send email');
-      }
-    } catch (e) {
-      toast.error('Failed to send: ' + (e?.message || 'Unknown error'));
-    } finally {
-      setSendingEmail(false);
-    }
-  };
-
-  const handleSendWhatsApp = async () => {
-    const number = contact.whatsapp_number || contact.phone;
-    if (!number) {
-      toast.error('No WhatsApp number found');
-      return;
-    }
-    const message = `Hi ${contact.full_name || 'there'}, this is Creative Books SA. Regarding your publishing project, "${contact.book_title || 'your book'}" - how are you doing? Would you like to chat about next steps?`;
-    setSendingWA(true);
-    try {
-      const res = await base44.functions.invoke('sendWhatsAppNotification', {
-        to_number: number,
-        message: message,
-        contact_id: contact.id,
-        type: 'Pipeline Follow-up',
-      });
-      if (res.data?.success) {
-        toast.success('WhatsApp sent!');
-      } else {
-        toast.error(res.data?.error || 'Failed to send');
-      }
-    } catch (e) {
-      toast.error('Failed to send: ' + (e?.message || 'Unknown error'));
-    } finally {
-      setSendingWA(false);
-    }
-  };
-
-  const loadActivity = async () => {
-    try {
-      const res = await base44.functions.invoke('getSubmissionDetail', { submission_id: contact.id });
-      if (res.data?.activities) {
-        setActivityLogs(res.data.activities);
-      }
-    } catch (e) {
-      console.error('Failed to load activity:', e);
-    }
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    const updates = {
-      pipeline_value: ef.pipeline_value !== '' ? Number(ef.pipeline_value) : undefined,
-      probability: ef.probability !== '' ? Number(ef.probability) : null,
-      package_type: ef.package_type_val || undefined,
-      pipeline_stage: ef.pipeline_stage_val || undefined,
-      pipeline_stage_changed_at: new Date().toISOString(),
-      expected_close_date: ef.expected_close_date || undefined,
-      pipeline_owner: ef.pipeline_owner || undefined,
-    };
-    await base44.entities.Contact.update(contact.id, updates);
-    setSaving(false);
-    setEditing(false);
-    onUpdate(contact.id, updates);
-    toast.success('Deal updated');
-  };
-
-  const inStyle = { width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '7px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none', fontFamily: 'inherit' };
-
-  return (
-    <>
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 100 }} onClick={onClose} />
-      <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 390, background: '#fff', zIndex: 101, boxShadow: '-8px 0 40px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-
-        {/* Header */}
-        <div style={{ background: `linear-gradient(135deg, ${stageConf?.color || '#6366f1'} 0%, ${stageConf?.color || '#6366f1'}aa 100%)`, padding: '24px 20px 20px', flexShrink: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
-            <Avatar name={contact.full_name} size={48} />
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setEditing(e => !e)}
-                style={{ background: editing ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: '5px 12px', cursor: 'pointer', color: editing ? '#4f46e5' : '#fff', fontSize: 12, fontWeight: 700 }}>
-                {editing ? 'Cancel' : '✏️ Edit'}
-              </button>
-              <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', width: 30, height: 30, cursor: 'pointer', color: '#fff', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
-            </div>
-          </div>
-          <h2 style={{ color: '#fff', fontWeight: 700, fontSize: 18, margin: '0 0 3px', fontFamily: 'var(--font-heading)' }}>{contact.full_name}</h2>
-          {contact.company && <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, margin: '0 0 8px' }}>{contact.company}</p>}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
-            <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20 }}>{stage}</span>
-            <span style={{ background: pri.color, color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20 }}>{pri.label} priority</span>
-          </div>
-        </div>
-
-        {/* Body */}
-        <div style={{ padding: 20, flex: 1 }}>
-
-          {editing ? (
-            /* ── Edit form ── */
-            <div style={{ background: '#f8fafc', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 12px' }}>Edit Deal Details</p>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Value (R)</label>
-                  <input type="number" value={ef.pipeline_value} onChange={e => setEF('pipeline_value', e.target.value)} style={inStyle} />
-                </div>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Win Prob %</label>
-                  <input type="number" min="0" max="100" value={ef.probability} onChange={e => setEF('probability', e.target.value)} placeholder={String(prob)} style={inStyle} />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Package Type</label>
-                  <select value={ef.package_type_val} onChange={e => setEF('package_type_val', e.target.value)} style={{ ...inStyle, color: '#374151' }}>
-                    <option value="">— None —</option>
-                    {PKG_TYPES.map(p => <option key={p} value={p}>{p}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Stage</label>
-                  <select value={ef.pipeline_stage_val} onChange={e => setEF('pipeline_stage_val', e.target.value)} style={{ ...inStyle, color: '#374151' }}>
-                    {STAGE_OPTS.map(s => <option key={s.pipeline_stage} value={s.pipeline_stage}>{s.label}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Close Date</label>
-                  <input type="date" value={ef.expected_close_date} onChange={e => setEF('expected_close_date', e.target.value)} style={inStyle} />
-                </div>
-                <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Owner</label>
-                  <input value={ef.pipeline_owner} onChange={e => setEF('pipeline_owner', e.target.value)} placeholder="Assigned to…" style={inStyle} />
-                </div>
-              </div>
-
-              <button onClick={handleSave} disabled={saving}
-                style={{ width: '100%', padding: '10px 0', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
-                {saving ? 'Saving…' : '✓ Save Changes'}
-              </button>
-            </div>
-          ) : (
-            /* ── Read-only tiles ── */
-            <>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
-                <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
-                  <p style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px' }}>Deal Value</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 800, color: '#1e1e2e', margin: 0 }}>{fmtRandFull(contact.pipeline_value)}</p>
-                </div>
-                <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
-                  <p style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px' }}>Weighted</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 800, color: '#16a34a', margin: 0 }}>{fmtRandFull((contact.pipeline_value || 0) * (prob / 100))}</p>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>Win probability</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48' }}>{prob}%</span>
-                </div>
-                <div style={{ height: 6, background: '#f1f5f9', borderRadius: 6, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${prob}%`, background: prob >= 60 ? '#16a34a' : prob >= 30 ? '#f59e0b' : '#e11d48', borderRadius: 6 }} />
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Info rows */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
-            {contact.email && (
-              <a href={`mailto:${contact.email}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9, textDecoration: 'none', color: '#374151' }}>
-                <Mail style={{ width: 14, height: 14, color: '#6366f1', flexShrink: 0 }} />
-                <span style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{contact.email}</span>
-              </a>
-            )}
-            {contact.phone && (
-              <a href={`tel:${contact.phone}`} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9, textDecoration: 'none', color: '#374151' }}>
-                <Phone style={{ width: 14, height: 14, color: '#0ea5e9', flexShrink: 0 }} />
-                <span style={{ fontSize: 13 }}>{contact.phone}</span>
-              </a>
-            )}
-            {contact.book_title && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
-                <BookOpen style={{ width: 14, height: 14, color: '#f59e0b', flexShrink: 0 }} />
-                <span style={{ fontSize: 13, color: '#374151' }}>{contact.book_title}</span>
-              </div>
-            )}
-            {contact.package_type && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
-                <TrendingUp style={{ width: 14, height: 14, color: '#8b5cf6', flexShrink: 0 }} />
-                <span style={{ fontSize: 13, color: '#374151' }}>{contact.package_type}</span>
-              </div>
-            )}
-            {closeDate && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
-                <Calendar style={{ width: 14, height: 14, color: '#e11d48', flexShrink: 0 }} />
-                <span style={{ fontSize: 13, color: '#374151' }}>Close by {closeDate}</span>
-              </div>
-            )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#f8fafc', borderRadius: 9 }}>
-              <User style={{ width: 14, height: 14, color: '#94a3b8', flexShrink: 0 }} />
-              <span style={{ fontSize: 13, color: '#94a3b8' }}>{days}d in {stage} stage</span>
-            </div>
-          </div>
-
-          {/* Quick move buttons — hidden in edit mode */}
-          {!editing && (
-            <>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Move to stage</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 18 }}>
-                {stages.filter(s => s.id !== stage).map(s => (
-                  <button key={s.id} onClick={() => { onMove(contact.id, s.id); onClose(); }}
-                    style={{ padding: '6px 12px', fontSize: 12, fontWeight: 600, border: `1.5px solid ${s.color}`, borderRadius: 20, background: '#fff', color: s.color, cursor: 'pointer' }}>
-                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: s.color, display: 'inline-block', marginRight: 5 }} />
+                    <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: s.color, marginRight: 4 }} />
                     {s.label}
                   </button>
                 ))}
               </div>
-            </>
-          )}
-
-          {/* Email Composer */}
-          <div style={{ marginTop: 16, borderTop: '1px solid #e7e8f0', paddingTop: 16 }}>
-            <div style={{ display: 'flex', gap: 1, marginBottom: 12 }}>
-              <button onClick={() => setEmailTab('compose')}
-                style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, borderBottom: emailTab === 'compose' ? '2px solid #4f46e5' : '2px solid transparent', background: 'none', border: 'none', cursor: 'pointer', color: emailTab === 'compose' ? '#4f46e5' : '#64748b' }}>
-                Compose
-              </button>
-              <button onClick={() => setEmailTab('templates')}
-                style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, borderBottom: emailTab === 'templates' ? '2px solid #4f46e5' : '2px solid transparent', background: 'none', border: 'none', cursor: 'pointer', color: emailTab === 'templates' ? '#4f46e5' : '#64748b' }}>
-                Templates
-              </button>
-            </div>
-
-            {emailTab === 'templates' && (
-              <div style={{ marginBottom: 12 }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Quick Templates</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {EMAIL_TEMPLATES.map(t => (
-                    <button key={t.id} onClick={() => handleSelectTemplate(t)}
-                      style={{ padding: '8px 10px', background: selectedTemplate === t.id ? '#ede9fe' : '#f8fafc', border: selectedTemplate === t.id ? '1px solid #4f46e5' : '1px solid #e7e8f0', borderRadius: 8, textAlign: 'left', cursor: 'pointer' }}>
-                      <p style={{ fontSize: 11, fontWeight: 600, color: '#374151', margin: '0 0 2px' }}>{t.subject.split(' — ')[0]}</p>
-                      <p style={{ fontSize: 9, color: '#64748b', margin: 0 }}>{t.body.slice(0, 60)}...</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {emailTab === 'compose' && (
-              <div style={{ background: '#f8fafc', borderRadius: 12, padding: 12 }}>
-                <div style={{ marginBottom: 8 }}>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>To</label>
-                  <input value={emailForm.to} onChange={e => setEmailForm(f => ({ ...f, to: e.target.value }))}
-                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '7px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
-                    placeholder="recipient@email.com" />
-                </div>
-                <div style={{ marginBottom: 8 }}>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Subject</label>
-                  <input value={emailForm.subject} onChange={e => setEmailForm(f => ({ ...f, subject: e.target.value }))}
-                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '7px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }}
-                    placeholder="Email subject..." />
-                </div>
-                <div style={{ marginBottom: 10 }}>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>Message</label>
-                  <textarea value={emailForm.body} onChange={e => setEmailForm(f => ({ ...f, body: e.target.value }))}
-                    rows={6} style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 7, padding: '8px 10px', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'none', fontFamily: 'inherit' }}
-                    placeholder="Type your message..." />
-                </div>
-                <button onClick={handleSendEmail} disabled={sendingEmail || !emailForm.to || !emailForm.subject || !emailForm.body}
-                  style={{ width: '100%', padding: '10px 0', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: (sendingEmail || !emailForm.to || !emailForm.subject || !emailForm.body) ? 0.6 : 1 }}>
-                  <Mail style={{ width: 14, height: 14 }} />
-                  {sendingEmail ? 'Sending...' : 'Send Email'}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Actions */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            <button onClick={handleSendWhatsApp} disabled={sendingWA || !(contact.whatsapp_number || contact.phone)}
-              style={{ padding: '10px 0', background: '#25D366', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: (sendingWA || !(contact.whatsapp_number || contact.phone)) ? 0.6 : 1 }}>
-              <MessageSquare style={{ width: 14, height: 14 }} />
-              {sendingWA ? 'Sending...' : 'WhatsApp'}
-            </button>
-            <button onClick={() => { setShowActivity(!showActivity); if (!showActivity) loadActivity(); }}
-              style={{ padding: '10px 0', background: '#f8fafc', color: '#374151', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <History style={{ width: 14, height: 14 }} />
-              Activity
-            </button>
-          </div>
-
-          {showActivity && (
-            <div style={{ background: '#f8fafc', borderRadius: 12, padding: 12, maxHeight: 200, overflowY: 'auto' }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Recent Activity</p>
-              {activityLogs.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {activityLogs.slice(0, 5).map((log, i) => (
-                    <div key={i} style={{ fontSize: 11, color: '#64748b', padding: '6px 8px', background: '#fff', borderRadius: 6 }}>
-                      <span style={{ fontWeight: 600, color: '#374151' }}>{log.type || 'Activity'}</span>
-                      <span style={{ marginLeft: 6 }}>{log.description || ''}</span>
-                      <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>{log.created_date ? new Date(log.created_date).toLocaleString('en-ZA') : ''}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', padding: '12px 0' }}>No recent activity</p>
-              )}
-            </div>
-          )}
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-            <a href={`/admin/contacts/detail?id=${contact.id}`}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#1e1e2e', color: '#fff', borderRadius: 9, textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
-              <ExternalLink style={{ width: 14, height: 14 }} /> Open Full Contact
-            </a>
-            {stage === 'Won' && (
-              <button onClick={() => { onConvert(contact); onClose(); }}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 0', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                <ArrowRight style={{ width: 14, height: 14 }} /> Convert to Project
-              </button>
             )}
           </div>
         </div>
-      </div>
-    </>
-  );
-}
 
-// ── Convert to Project modal ──────────────────────────────────────────────────
-function ConvertToProjectModal({ contact, onClose, onConverted }) {
-  const [form, setForm] = useState({
-    book_title: contact.book_title || '',
-    author_name: contact.full_name || '',
-    service_type: 'Full Publishing Package',
-    project_value: contact.pipeline_value || 0,
-    notes: '',
-  });
-  const [saving, setSaving] = useState(false);
-  const [done, setDone] = useState(false);
+        <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 18, color: '#1f2937', marginBottom: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+           {fmtRandFull(contact.pipeline_value)}
+         </div>
 
-  const save = async () => {
-    setSaving(true);
-    await base44.entities.Project.create({
-      contact_id: contact.id,
-      book_title: form.book_title,
-      author_name: form.author_name,
-      service_type: form.service_type,
-      project_value: Number(form.project_value) || 0,
-      stage: 'Quote Accepted',
-      notes: form.notes,
-    });
-    setSaving(false);
-    setDone(true);
-    setTimeout(() => { onConverted(); onClose(); }, 1400);
-  };
-
-  const SERVICE_TYPES = ['Full Publishing Package','Printing Only','Editing Only','Cover Design Only','Typesetting Only','Ebook','Ghostwriting',"Children's Book",'Academic Editing','Custom'];
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={onClose}>
-      <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 24px 64px rgba(0,0,0,0.25)', maxWidth: 480, width: '100%', padding: 28 }} onClick={e => e.stopPropagation()}>
-        {done ? (
-          <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <CheckCircle style={{ width: 48, height: 48, color: '#16a34a', margin: '0 auto 12px' }} />
-            <p style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e' }}>Project Created!</p>
-            <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>You can manage it in Admin → Projects.</p>
+        <div style={{ marginBottom: 6 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+            <span style={{ fontSize: 9, color: '#9ca3af' }}>Win probability</span>
+            <span style={{ fontSize: 9, fontWeight: 700, color: prob >= 60 ? '#34d399' : prob >= 30 ? '#fbbf24' : '#f87171' }}>{prob}%</span>
           </div>
-        ) : (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <div>
-                <h2 style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e', margin: 0 }}>Convert Deal to Project</h2>
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: '3px 0 0' }}>{contact.full_name}</p>
-              </div>
-              <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8', lineHeight: 1 }}>✕</button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Book Title</label>
-                <input value={form.book_title} onChange={e => setForm(f => ({ ...f, book_title: e.target.value }))} placeholder="e.g. My Memoir"
-                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Author Name</label>
-                <input value={form.author_name} onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
-                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Service Type</label>
-                  <select value={form.service_type} onChange={e => setForm(f => ({ ...f, service_type: e.target.value }))}
-                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 10px', fontSize: 12, color: '#374151', outline: 'none' }}>
-                    {SERVICE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Project Value (R)</label>
-                  <input type="number" value={form.project_value} onChange={e => setForm(f => ({ ...f, project_value: e.target.value }))}
-                    style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none' }} />
-                </div>
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 5 }}>Notes (optional)</label>
-                <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} placeholder="Any handover notes…"
-                  style={{ width: '100%', border: '1px solid #e7e8f0', borderRadius: 8, padding: '8px 12px', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'none' }} />
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button onClick={onClose} style={{ flex: 1, padding: '10px 0', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, background: '#fff', cursor: 'pointer', color: '#374151' }}>Cancel</button>
-              <button onClick={save} disabled={saving || !form.book_title.trim()}
-                style={{ flex: 2, padding: '10px 0', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, opacity: (!form.book_title.trim() || saving) ? 0.6 : 1 }}>
-                <ArrowRight style={{ width: 15, height: 15 }} />
-                {saving ? 'Creating…' : 'Create Project'}
-              </button>
-            </div>
-          </>
+          <div style={{ height: 4, background: '#e5e7eb', borderRadius: 4, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${prob}%`, background: `linear-gradient(90deg, ${prob >= 60 ? '#10b981' : prob >= 30 ? '#f59e0b' : '#ef4444'}, ${prob >= 60 ? '#34d399' : prob >= 30 ? '#fbbf24' : '#f87171'})`, borderRadius: 4, transition: 'width 0.3s' }} />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap', marginBottom: 6 }}>
+          {contact.package_type && (
+            <span style={{ 
+              background: '#ede9fe', 
+              color: '#5b21b6', 
+              fontSize: 8, 
+              fontWeight: 700, 
+              padding: '2px 6px', 
+              borderRadius: 12,
+              border: '1px solid #c4b5fd',
+              whiteSpace: 'nowrap',
+            }}>{contact.package_type}</span>
+          )}
+          <span style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 9, color: pri.color, fontWeight: 600 }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: pri.color, display: 'inline-block' }} />
+            {pri.label}
+          </span>
+          {stalled ? (
+            <span style={{ 
+              background: 'rgba(245, 158, 11, 0.15)', 
+              color: '#fbbf24', 
+              fontSize: 8, 
+              fontWeight: 700, 
+              padding: '2px 6px', 
+              borderRadius: 12, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 2,
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              whiteSpace: 'nowrap',
+            }}>
+              <AlertTriangle style={{ width: 7, height: 7 }} /> {days}d
+            </span>
+          ) : (
+            <span style={{ fontSize: 9, color: '#9ca3af', whiteSpace: 'nowrap' }}>{days}d</span>
+          )}
+        </div>
+
+        {submissionTime && (
+          <div style={{ fontSize: 8, color: '#9ca3af', display: 'flex', alignItems: 'center', gap: 3, marginBottom: 4 }}>
+            <Calendar style={{ width: 8, height: 8 }} />
+            <span style={{ whiteSpace: 'nowrap' }}>{submissionTime.split(',')[0]}</span>
+          </div>
         )}
-      </div>
-    </div>
-  );
-}
 
-// ── Resolved row ──────────────────────────────────────────────────────────────
-function ResolvedRow({ contact, onMove, onConvert }) {
-  const stage = mapStage(contact);
-  const stageConf = STAGES.find(s => s.id === stage);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const date = contact.pipeline_stage_changed_at
-    ? new Date(contact.pipeline_stage_changed_at).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short' })
-    : '—';
-  let sub = '';
-  if (stage === 'Won')     sub = `Closed ${date}`;
-  if (stage === 'Lost')    sub = `${contact.lost_reason || 'No reason'} · ${date}`;
-  if (stage === 'Ghosted') sub = `Last reply ${date}`;
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 9, background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.5)', marginBottom: 6, position: 'relative' }}>
-      <Avatar name={contact.full_name} size={24} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.full_name}</div>
-        <div style={{ fontSize: 11, color: '#94a3b8' }}>{sub}</div>
-      </div>
-      <div style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 600, color: stageConf.color, flexShrink: 0 }}>{fmtRand(contact.pipeline_value)}</div>
-      {stage === 'Won' && (
-        <button onClick={() => onConvert(contact)} title="Convert to Project"
-          style={{ background: '#16a34a', color: '#fff', border: 'none', borderRadius: 6, padding: '3px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}>
-          <ArrowRight style={{ width: 10, height: 10 }} /> Project
-        </button>
-      )}
-      <div style={{ position: 'relative', flexShrink: 0 }}>
-        <button onClick={() => setMenuOpen(o => !o)} style={{ padding: '2px 4px', fontSize: 14, color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>···</button>
-        {menuOpen && (
-          <div style={{ position: 'absolute', right: 0, top: 22, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 50, minWidth: 140, padding: 6 }}>
-            {STAGES.filter(s => s.id !== stage).map(s => (
-              <button key={s.id} onClick={() => { setMenuOpen(false); onMove(contact.id, s.id); }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 10px', fontSize: 12, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 6 }}
-                onMouseEnter={e => e.currentTarget.style.background = '#f5f6fa'}
-                onMouseLeave={e => e.currentTarget.style.background = 'none'}
-              >
-                <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: s.color, marginRight: 6 }} />
-                Move to {s.label}
-              </button>
-            ))}
+        {hasWorkflow && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 8, color: '#10b981', fontWeight: 600, marginTop: 4 }}>
+            <CheckCircle style={{ width: 8, height: 8 }} />
+            Workflow Active
+          </div>
+        )}
+        
+        {contact._linked_pipeline_deal_id && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 8, color: '#6366f1', fontWeight: 600, marginTop: 4 }}>
+            <TrendingUp style={{ width: 8, height: 8 }} />
+            Linked to Sales Pipeline
           </div>
         )}
       </div>
@@ -761,71 +229,49 @@ function ResolvedRow({ contact, onMove, onConvert }) {
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
 export default function AdminPipeline() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
-  const [showAI, setShowAI] = useState(true);
-  const [showTotals, setShowTotals] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accentColor, setAccentColor] = useState('#4f46e5');
-  const [bulkOpen, setBulkOpen] = useState(false);
-  const [bulkEdits, setBulkEdits] = useState({});
-  const [convertContact, setConvertContact] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
-  const [newDealOpen, setNewDealOpen] = useState(false);
-  const [migrateOpen, setMigrateOpen] = useState(false);
-  const [migrating, setMigrating] = useState(false);
-  const [migrateResult, setMigrateResult] = useState(null);
-  const [pipelines, setPipelines] = useState([]);
-  const [targetPipelineId, setTargetPipelineId] = useState('');
+  const [showWorkflow, setShowWorkflow] = useState(false);
+  const [layoutMode, setLayoutMode] = useState('kanban'); // 'kanban', 'list', 'compact'
+  const [columnWidth, setColumnWidth] = useState(280);
+  const [showStageTotals, setShowStageTotals] = useState(true);
+  const [cardDensity, setCardDensity] = useState('comfortable'); // 'compact', 'comfortable'
+  const [showPipelineBuilder, setShowPipelineBuilder] = useState(false);
+  const [showContactPicker, setShowContactPicker] = useState(false);
+  const [contactPickerSearch, setContactPickerSearch] = useState('');
+  const [customPipelines, setCustomPipelines] = useState([]);
+  const [viewingPipeline, setViewingPipeline] = useState(null);
 
-  useEffect(() => {
-    base44.entities.SalesPipeline.filter({ is_active: true }).then(ps => {
-      setPipelines(ps);
-      if (ps.length > 0) setTargetPipelineId(ps[0].id);
-    }).catch(() => {});
+  const loadCustomPipelines = useCallback(async () => {
+    try {
+      const res = await platform.functions.invoke('manageCustomPipeline', { action: 'list_pipelines' });
+      setCustomPipelines(res.data?.pipelines || []);
+    } catch (e) { /* silent */ }
   }, []);
 
-  const handleMigrate = async () => {
-    if (!targetPipelineId) { toast.error('Please select a target pipeline'); return; }
-    setMigrating(true);
-    setMigrateResult(null);
-    try {
-      const res = await base44.functions.invoke('migrateDealsToNewPipeline', { pipeline_id: targetPipelineId });
-      setMigrateResult(res.data);
-      if (res.data?.success) toast.success(res.data.message);
-      else toast.error(res.data?.error || 'Migration failed');
-    } catch (err) {
-      toast.error('Migration failed: ' + err.message);
-    } finally {
-      setMigrating(false);
-    }
-  };
-
   const load = useCallback(async () => {
-    const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
+    const all = await platform.entities.Contact.list('-updated_date', 500);
     setContacts(all);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); loadCustomPipelines(); }, [load, loadCustomPipelines]);
 
   const handleMove = async (contactId, newStage) => {
     const contact = contacts.find(c => c.id === contactId);
     if (!contact) return;
-    const now = new Date().toISOString();
-    const updates = { ...toContactStage(newStage), pipeline_stage_changed_at: now };
+
+    const updates = toContactStage(newStage);
+    await platform.entities.Contact.update(contactId, { ...updates, pipeline_stage_changed_at: new Date().toISOString() });
+
     setContacts(prev => prev.map(c => c.id === contactId ? { ...c, ...updates, _pipelineStageOverride: newStage } : c));
-    try {
-      await base44.entities.Contact.update(contactId, updates);
-      toast.success(`Moved to ${newStage}`);
-    } catch {
-      setContacts(prev => prev.map(c => c.id === contactId ? contact : c));
-      toast.error('Failed to update');
-    }
+    toast.success(`Moved to ${newStage}`);
   };
 
   const handleUpdate = (contactId, updates) => {
@@ -835,12 +281,6 @@ export default function AdminPipeline() {
 
   function getEffectiveStage(c) {
     return c._pipelineStageOverride || mapStage(c);
-  }
-
-  function effectiveProb(contact) {
-    const stage = getEffectiveStage(contact);
-    if (contact.probability != null) return contact.probability / 100;
-    return STAGES.find(s => s.id === stage)?.prob ?? 0.20;
   }
 
   const owners = [...new Set(contacts.map(c => c.pipeline_owner).filter(Boolean))];
@@ -856,105 +296,64 @@ export default function AdminPipeline() {
 
   const byStage = {};
   STAGES.forEach(s => { byStage[s.id] = []; });
-  filtered.forEach(c => { const st = getEffectiveStage(c); if (byStage[st]) byStage[st].push(c); });
-
-  STAGES.filter(s => s.active).forEach(s => {
-    byStage[s.id].sort((a, b) => {
-      const pa = getPriority(a).rank, pb = getPriority(b).rank;
-      if (pb !== pa) return pb - pa;
-      return (b.pipeline_value || 0) - (a.pipeline_value || 0);
-    });
+  filtered.forEach(c => { 
+    const st = getEffectiveStage(c);
+    if (!byStage[st]) {
+        // Find a stage that includes this as a substring
+        const parentStage = STAGES.find(s => s.id.includes(st));
+        if (parentStage) {
+            byStage[parentStage.id].push(c);
+        } else {
+            if (!byStage['New Enquiry']) byStage['New Enquiry'] = [];
+            byStage['New Enquiry'].push(c);
+        }
+    } else {
+        byStage[st].push(c);
+    }
   });
 
-  const openContacts = [...byStage['Inquiry'], ...byStage['Quotation']];
-  const openPipeline = openContacts.reduce((s, c) => s + (c.pipeline_value || 0), 0);
-  const weightedForecast = openContacts.reduce((s, c) => s + (c.pipeline_value || 0) * effectiveProb(c), 0);
-  const wonCount = byStage['Won'].length;
-  const lostCount = byStage['Lost'].length + byStage['Ghosted'].length;
-  const winRate = (wonCount + lostCount) > 0 ? Math.round((wonCount / (wonCount + lostCount)) * 100) : 0;
-  const stalledDeals = openContacts.filter(c => getDaysInStage(c) > 7);
-  const stalledValue = stalledDeals.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+  STAGES.filter(s => s.active).forEach(s => {
+    if (byStage[s.id]) {
+        byStage[s.id].sort((a, b) => {
+          const pa = getPriority(a).rank, pb = getPriority(b).rank;
+          if (pb !== pa) return pb - pa;
+          return (b.pipeline_value || 0) - (a.pipeline_value || 0);
+        });
+    }
+  });
 
-  const handleBulkSave = async () => {
-    const updates = Object.entries(bulkEdits);
-    await Promise.all(updates.map(([id, vals]) => base44.entities.Contact.update(id, vals)));
-    setBulkEdits({});
-    setBulkOpen(false);
-    load();
-    toast.success(`Updated ${updates.length} deal${updates.length !== 1 ? 's' : ''}`);
-  };
+  const openContacts = STAGES.filter(s => s.active).flatMap(s => byStage[s.id] || []);
+  const openPipeline = openContacts.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+  const weightedForecast = openContacts.reduce((s, c) => s + (c.pipeline_value || 0) * (STAGES.find(st => st.id === getEffectiveStage(c))?.prob ?? 0), 0);
+  const wonCount = (byStage['Payment Received']?.length || 0) + (byStage['Project Active']?.length || 0) + (byStage['Completed']?.length || 0);
+  const lostCount = (byStage['Lost']?.length || 0) + (byStage['Ghosted']?.length || 0);
+  const winRate = (wonCount + lostCount) > 0 ? Math.round((wonCount / (wonCount + lostCount)) * 100) : 0;
 
   return (
     <AdminLayout>
-      <div style={{ minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px', background: '#F4F5F7', position: 'relative' }}>
-
-
+      <div style={{ minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px', background: 'linear-gradient(135deg, #F4F5F7 0%, #FFFFFF 100%)', position: 'relative' }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
           {/* Header */}
-          <div style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1e1e2e', margin: 0, fontFamily: 'var(--font-heading)' }}>Deals Pipeline</h1>
-              <p style={{ fontSize: 13, color: '#6b7280', margin: '2px 0 0' }}>
-                {new Date().toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })} · {ownerFilter || 'All owners'} · {filtered.length} deals
+              <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1e1e2e', margin: 0, fontFamily: 'var(--font-heading)' }}>Deals Pipeline</h1>
+              <p style={{ fontSize: 12, color: '#6b7280', margin: '4px 0 0' }}>
+                {new Date().toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' })} · {filtered.length} deals · 
+                <span style={{ color: '#10b981', fontWeight: 600 }}> Auto-syncing to Sales Pipeline</span>
               </p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, color: '#94a3b8' }} />
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search deals…"
-                  style={{ paddingLeft: 32, paddingRight: 10, height: 36, border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', outline: 'none', width: 180 }} />
-                {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X style={{ width: 13, height: 13 }} /></button>}
-              </div>
-
-              {owners.length > 0 && (
-                <select value={ownerFilter} onChange={e => setOwnerFilter(e.target.value)}
-                  style={{ height: 36, border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', padding: '0 10px', outline: 'none' }}>
-                  <option value="">All owners</option>
-                  {owners.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              )}
-
-              <div style={{ position: 'relative' }}>
-                <button onClick={() => setSettingsOpen(o => !o)}
-                  style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Settings2 style={{ width: 14, height: 14 }} /> Tweaks
-                </button>
-                {settingsOpen && (
-                  <div style={{ position: 'absolute', right: 0, top: 42, background: '#fff', border: '1px solid #e7e8f0', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', zIndex: 60, padding: 16, minWidth: 220 }}>
-                    <p style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Display settings</p>
-                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}>
-                      <span style={{ fontSize: 13, color: '#374151' }}>AI suggestions</span>
-                      <input type="checkbox" checked={showAI} onChange={e => setShowAI(e.target.checked)} />
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}>
-                      <span style={{ fontSize: 13, color: '#374151' }}>Column totals</span>
-                      <input type="checkbox" checked={showTotals} onChange={e => setShowTotals(e.target.checked)} />
-                    </label>
-                    <div style={{ marginTop: 4 }}>
-                      <p style={{ fontSize: 13, color: '#374151', marginBottom: 6 }}>Accent color</p>
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        {['#4f46e5','#B87333','#0ea5e9','#16a34a','#e11d48'].map(c => (
-                          <button key={c} onClick={() => setAccentColor(c)}
-                            style={{ width: 22, height: 22, borderRadius: '50%', background: c, border: accentColor === c ? '2px solid #1e1e2e' : '2px solid transparent', cursor: 'pointer' }} />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <button onClick={() => { setBulkEdits({}); setBulkOpen(true); }}
-                style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Edit2 style={{ width: 13, height: 13 }} /> Bulk edit values
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <button onClick={() => setSettingsOpen(true)}
+                style={{ height: 32, padding: '0 12px', background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Settings style={{ width: 12, height: 12 }} /> Layout
               </button>
-
-              <button onClick={() => { setMigrateOpen(true); setMigrateResult(null); }}
-                style={{ height: 36, padding: '0 14px', border: '1px solid #e5e7eb', borderRadius: 8, fontSize: 13, color: '#374151', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <MoveRight style={{ width: 13, height: 13 }} /> Move to Sales Pipeline
+              <button onClick={() => setShowPipelineBuilder(true)}
+                style={{ height: 32, padding: '0 12px', background: '#8b5cf6', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Settings2 style={{ width: 12, height: 12 }} /> Custom Pipeline
               </button>
-              <button onClick={() => setNewDealOpen(true)}
-                style={{ height: 36, padding: '0 16px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Plus style={{ width: 14, height: 14 }} /> New deal
+               <button onClick={() => { setContactPickerSearch(''); setShowContactPicker(true); }}
+                style={{ height: 32, padding: '0 12px', background: accentColor, color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
+                <Sparkles style={{ width: 12, height: 12 }} /> New Workflow
               </button>
             </div>
           </div>
@@ -964,51 +363,67 @@ export default function AdminPipeline() {
               <div style={{ width: 32, height: 32, border: '4px solid rgba(255,255,255,0.1)', borderTop: `4px solid ${accentColor}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
             </div>
           ) : (
-            <div style={{ padding: '20px 28px 0' }}>
-              {/* KPI Strip */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr auto', gap: 12, marginBottom: 20 }}>
-                <KpiTile label="Open Pipeline" value={fmtRand(openPipeline)} sub={`${openContacts.length} active deals`} tinted />
-                <KpiTile label="Weighted Forecast" value={fmtRand(weightedForecast)} sub="by stage probability" />
-                <KpiTile label="Win Rate" value={`${winRate}%`} sub={`${wonCount} won, ${lostCount} lost/ghosted`} />
-                <KpiTile
-                  label="Needs Attention"
-                  value={stalledDeals.length > 0 ? fmtRand(stalledValue) : '0'}
-                  sub={stalledDeals.length > 0 ? `${stalledDeals.length} deals stalled >7d` : 'No stalled deals'}
-                  warn={stalledDeals.length > 0}
-                />
-                <FunnelCard inquiry={byStage['Inquiry'].length} quotation={byStage['Quotation'].length} won={byStage['Won'].length} />
-              </div>
-
-              {/* Kanban */}
-              <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 12, alignItems: 'flex-start' }}>
+            <div style={{ padding: '16px 20px 0' }}>
+              <div style={{ 
+                display: 'flex', 
+                gap: 12, 
+                overflowX: 'auto', 
+                paddingBottom: 16, 
+                alignItems: 'flex-start',
+                scrollSnapType: 'x mandatory',
+                WebkitOverflowScrolling: 'touch',
+              }}>
                 {STAGES.map(stage => {
-                  const cards = byStage[stage.id];
+                  const cards = byStage[stage.id] || [];
                   const colTotal = cards.reduce((s, c) => s + (c.pipeline_value || 0), 0);
+                  if (!stage.active && cards.length === 0) return null;
+
                   return (
-                    <div key={stage.id} style={{ minWidth: 260, flex: stage.active ? '0 0 280px' : '0 0 240px', display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: 14, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
-                      <div style={{ borderBottom: `3px solid ${stage.color}`, padding: '12px 14px 10px' }}>
+                    <div key={stage.id} style={{ 
+                      minWidth: columnWidth,
+                      maxWidth: columnWidth + 40,
+                      flex: `0 0 ${columnWidth}px`,
+                      scrollSnapAlign: 'start',
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      background: stage.active ? 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' : '#ffffff',
+                      borderRadius: 10, 
+                      border: '1px solid #e5e7eb',
+                      boxShadow: stage.active ? '0 2px 8px rgba(0,0,0,0.08)' : '0 1px 4px rgba(0,0,0,0.04)',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ 
+                        borderBottom: `3px solid ${stage.color}`, 
+                        padding: cardDensity === 'compact' ? '8px 10px' : '12px 14px',
+                        background: '#f9fafb'
+                      }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                            <span style={{ width: 9, height: 9, borderRadius: '50%', background: stage.color, display: 'inline-block', flexShrink: 0 }} />
-                            <span style={{ fontWeight: 700, fontSize: 13, color: '#1e1e2e' }}>{stage.label}</span>
-                            <span style={{ background: '#f3f4f6', color: '#374151', fontSize: 11, fontWeight: 600, borderRadius: 20, padding: '1px 7px' }}>{cards.length}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: stage.color, display: 'inline-block', flexShrink: 0 }} />
+                            <span style={{ fontWeight: 700, fontSize: 11, color: '#1f2937', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stage.label}</span>
+                            <span style={{ background: stage.color, color: '#ffffff', fontSize: 10, fontWeight: 700, borderRadius: 20, padding: '2px 6px', flexShrink: 0 }}>{cards.length}</span>
                           </div>
-                          {showTotals && colTotal > 0 && (
-                            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#374151' }}>{fmtRand(colTotal)}</span>
+                          {colTotal > 0 && showStageTotals && (
+                            <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 700, color: '#059669', flexShrink: 0, marginLeft: 4 }}>{fmtRand(colTotal)}</span>
                           )}
                         </div>
                       </div>
-                      <div style={{ flex: 1, padding: '10px 10px 0' }}>
-                        {cards.length === 0 && (
-                          <div style={{ border: '2px dashed #e5e7eb', borderRadius: 10, padding: '20px 0', textAlign: 'center', color: '#9ca3af', fontSize: 12 }}>Empty</div>
-                        )}
-                        {cards.map((c, i) =>
-                          stage.active ? (
-                            <DealCard key={c.id} contact={c} isTop={i === 0} showAI={showAI} onMove={handleMove} onSelect={setSelectedContact} />
-                          ) : (
-                            <ResolvedRow key={c.id} contact={c} onMove={handleMove} onConvert={setConvertContact} />
-                          )
-                        )}
+                      <div style={{ flex: 1, padding: cardDensity === 'compact' ? '6px 6px 0' : '8px 8px 0', minHeight: '200px', maxHeight: 'calc(100vh - 280px)', overflowY: 'auto' }}>
+                         {cards.length === 0 && (
+                           <div style={{ border: '2px dashed #e5e7eb', borderRadius: 8, padding: '16px 8px', textAlign: 'center', color: '#9ca3af', fontSize: 11 }}>Empty</div>
+                         )}
+                        {cards.map((c, i) => (
+                            <DealCard 
+                              key={c.id} 
+                              contact={c} 
+                              isTop={i === 0} 
+                              onMove={handleMove} 
+                              onSelect={(contact) => {
+                                setSelectedContact(contact);
+                                setShowWorkflow(true);
+                              }} 
+                            />
+                        ))}
                       </div>
                     </div>
                   );
@@ -1016,203 +431,220 @@ export default function AdminPipeline() {
               </div>
             </div>
           )}
+
+          {/* Custom Pipelines Section */}
+          {customPipelines.length > 0 && (
+            <div style={{ padding: '0 20px 24px' }}>
+              <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: 20, marginBottom: 12 }}>
+                <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1e1e2e', margin: 0 }}>Custom Pipelines</h2>
+                <p style={{ fontSize: 11, color: '#6b7280', margin: '4px 0 0' }}>Click a pipeline to view its stages</p>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                {customPipelines.map(p => (
+                  <div
+                    key={p.id}
+                    onClick={() => setViewingPipeline(p)}
+                    style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '14px 18px', cursor: 'pointer', minWidth: 220, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#8b5cf6'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; e.currentTarget.style.borderColor = '#e5e7eb'; }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#8b5cf6' }} />
+                      <span style={{ fontWeight: 700, fontSize: 13, color: '#1f2937' }}>{p.name}</span>
+                    </div>
+                    {p.description && <p style={{ fontSize: 11, color: '#6b7280', margin: '0 0 6px' }}>{p.description}</p>}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {(p.stages || []).slice(0, 5).map(s => (
+                        <span key={s.id} style={{ fontSize: 9, background: '#f3f4f6', color: '#374151', padding: '2px 6px', borderRadius: 8, fontWeight: 600 }}>{s.name}</span>
+                      ))}
+                      {(p.stages || []).length > 5 && <span style={{ fontSize: 9, color: '#9ca3af' }}>+{p.stages.length - 5} more</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* New deal modal */}
-        {newDealOpen && (
-          <NewDealModal onClose={() => setNewDealOpen(false)} onCreated={() => load()} />
-        )}
-
-        {/* Deal detail panel */}
-        {selectedContact && (
-          <DealDetailPanel
-            contact={selectedContact}
-            onClose={() => setSelectedContact(null)}
-            onMove={(id, stage) => { handleMove(id, stage); setSelectedContact(null); }}
-            onConvert={setConvertContact}
-            onUpdate={handleUpdate}
-            stages={STAGES}
-          />
-        )}
-
-        {/* Convert to Project modal */}
-        {convertContact && (
-          <ConvertToProjectModal
-            contact={convertContact}
-            onClose={() => setConvertContact(null)}
-            onConverted={() => { toast.success('Project created!'); load(); }}
-          />
-        )}
-
-        {/* Migrate to Sales Pipeline modal */}
-        {migrateOpen && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={() => setMigrateOpen(false)}>
-            <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 24px 64px rgba(0,0,0,0.3)', maxWidth: 460, width: '100%', padding: 28 }} onClick={e => e.stopPropagation()}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        {/* Custom Pipeline Detail Modal — full-screen Kanban view */}
+        {viewingPipeline && (
+          <div className="fixed inset-0 z-50 flex flex-col bg-gray-50">
+            {/* Header */}
+            <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-purple-500" />
                 <div>
-                  <h2 style={{ fontWeight: 700, fontSize: 17, color: '#1e1e2e', margin: 0 }}>Move Deals to Sales Pipeline</h2>
-                  <p style={{ fontSize: 12, color: '#94a3b8', margin: '4px 0 0' }}>Copies all contacts with pipeline stages into your new Sales Pipeline as deals. Duplicates are skipped automatically.</p>
+                  <h2 className="text-lg font-bold text-gray-900">{viewingPipeline.name}</h2>
+                  {viewingPipeline.description && <p className="text-xs text-gray-500">{viewingPipeline.description}</p>}
                 </div>
-                <button onClick={() => setMigrateOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8' }}>✕</button>
+                <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">{(viewingPipeline.stages || []).length} stages</span>
               </div>
-              {migrateResult ? (
-                <div style={{ background: migrateResult.success ? '#f0fdf4' : '#fef2f2', border: `1px solid ${migrateResult.success ? '#bbf7d0' : '#fecaca'}`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
-                  <p style={{ fontWeight: 700, fontSize: 15, color: migrateResult.success ? '#166534' : '#991b1b', margin: '0 0 6px' }}>
-                    {migrateResult.success ? '✅ Migration Complete' : '❌ Migration Failed'}
-                  </p>
-                  <p style={{ fontSize: 13, color: migrateResult.success ? '#166534' : '#991b1b', margin: 0 }}>{migrateResult.message || migrateResult.error}</p>
-                  {migrateResult.errors?.length > 0 && (
-                    <div style={{ marginTop: 8, fontSize: 11, color: '#6b7280' }}>
-                      {migrateResult.errors.map((e, i) => <div key={i}>⚠ {e.contact}: {e.error}</div>)}
+              <button onClick={() => setViewingPipeline(null)} className="p-2 hover:bg-gray-100 rounded-xl">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            {/* Kanban Stages */}
+            <div className="flex-1 overflow-x-auto p-5">
+              <div className="flex gap-4 h-full" style={{ minHeight: 400 }}>
+                {(viewingPipeline.stages || []).map((stage, idx) => {
+                  const stageColor = stage.color && stage.color.startsWith('#') ? stage.color : '#8b5cf6';
+                  return (
+                    <div key={stage.id || idx} style={{ minWidth: 240, flex: '0 0 240px', display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 10, border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                      {/* Stage Header */}
+                      <div style={{ borderBottom: `3px solid ${stageColor}`, padding: '10px 12px', background: '#f9fafb' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ width: 8, height: 8, borderRadius: '50%', background: stageColor, display: 'inline-block', flexShrink: 0 }} />
+                          <span style={{ fontWeight: 700, fontSize: 11, color: '#1f2937', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{stage.name}</span>
+                        </div>
+                        {stage.description && <p style={{ fontSize: 10, color: '#9ca3af', margin: '4px 0 0' }}>{stage.description}</p>}
+                      </div>
+                      {/* Stage Body */}
+                      <div style={{ flex: 1, padding: '10px 8px', minHeight: 120 }}>
+                        {stage.suggested_actions?.length > 0 && (
+                          <div>
+                            <p style={{ fontSize: 9, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Suggested Actions</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                              {stage.suggested_actions.map((a, ai) => (
+                                <div key={ai} style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <span style={{ fontSize: 10 }}>
+                                    {a.action_type === 'send_email' ? '✉️' : a.action_type === 'send_whatsapp' ? '💬' : a.action_type === 'create_task' ? '✅' : '📋'}
+                                  </span>
+                                  <span style={{ fontSize: 10, color: '#1d4ed8', fontWeight: 600 }}>{a.action_name}</span>
+                                  {a.delay_days > 0 && <span style={{ fontSize: 9, color: '#60a5fa', marginLeft: 'auto' }}>+{a.delay_days}d</span>}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {(!stage.suggested_actions || stage.suggested_actions.length === 0) && (
+                          <div style={{ border: '2px dashed #e5e7eb', borderRadius: 8, padding: '16px 8px', textAlign: 'center', color: '#d1d5db', fontSize: 11 }}>No actions</div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div style={{ marginBottom: 16 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>Target Pipeline</label>
-                    {pipelines.length === 0 ? (
-                      <p style={{ fontSize: 13, color: '#e11d48' }}>No active Sales Pipelines found. Please create one first.</p>
-                    ) : (
-                      <select value={targetPipelineId} onChange={e => setTargetPipelineId(e.target.value)}
-                        style={{ width: '100%', border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#374151', outline: 'none' }}>
-                        {pipelines.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                      </select>
-                    )}
-                  </div>
-                  <p style={{ fontSize: 12, color: '#6b7280', background: '#f8fafc', borderRadius: 8, padding: '10px 12px', marginBottom: 16 }}>
-                    📋 {contacts.filter(c => c.pipeline_stage).length} contacts with pipeline stages will be migrated.
-                  </p>
-                </>
-              )}
-              <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setMigrateOpen(false)} style={{ flex: 1, padding: '10px 0', border: '1px solid #e7e8f0', borderRadius: 9, fontSize: 13, background: '#fff', cursor: 'pointer', color: '#374151' }}>Close</button>
-                {!migrateResult && (
-                  <button onClick={handleMigrate} disabled={migrating || !targetPipelineId || pipelines.length === 0}
-                    style={{ flex: 2, padding: '10px 0', background: '#B87333', color: '#fff', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, opacity: (migrating || !targetPipelineId) ? 0.6 : 1 }}>
-                    {migrating ? <Loader2 style={{ width: 15, height: 15, animation: 'spin 0.8s linear infinite' }} /> : <MoveRight style={{ width: 15, height: 15 }} />}
-                    {migrating ? 'Migrating...' : 'Migrate All Deals'}
-                  </button>
+                  );
+                })}
+                {(viewingPipeline.stages || []).length === 0 && (
+                  <div className="flex items-center justify-center w-full text-gray-400 text-sm">No stages defined for this pipeline.</div>
                 )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Bulk edit modal */}
-        {bulkOpen && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={() => setBulkOpen(false)}>
-            <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 24px 64px rgba(0,0,0,0.3)', maxWidth: 700, width: '100%', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-              <div style={{ padding: '20px 24px', borderBottom: '1px solid #e7e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <h2 style={{ fontWeight: 700, fontSize: 18, color: '#1e1e2e', margin: 0 }}>Bulk Edit Deal Values</h2>
-                  <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>Set value, probability and package type for open deals</p>
-                </div>
-                <button onClick={() => setBulkOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8' }}>✕</button>
+        {showWorkflow && selectedContact && (
+          <WorkflowPanel contactId={selectedContact.id} onClose={() => { setShowWorkflow(false); setSelectedContact(null); }} />
+        )}
+
+        {/* Contact Picker Modal for New Workflow */}
+        {showContactPicker && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowContactPicker(false)}>
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">New Workflow</h3>
+              <p className="text-sm text-gray-500 mb-4">Select a contact to start a workflow for:</p>
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search by name or book title..."
+                value={contactPickerSearch}
+                onChange={e => setContactPickerSearch(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              />
+              <div className="max-h-72 overflow-y-auto space-y-1">
+                {contacts
+                  .filter(c => {
+                    if (!contactPickerSearch) return true;
+                    const q = contactPickerSearch.toLowerCase();
+                    return c.full_name?.toLowerCase().includes(q) || c.book_title?.toLowerCase().includes(q);
+                  })
+                  .slice(0, 30)
+                  .map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        setSelectedContact(c);
+                        setShowContactPicker(false);
+                        setShowWorkflow(true);
+                      }}
+                      className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-indigo-50 border border-transparent hover:border-indigo-200 transition-colors"
+                    >
+                      <div className="font-medium text-gray-900 text-sm">{c.full_name}</div>
+                      {c.book_title && <div className="text-xs text-gray-500">📖 {c.book_title}</div>}
+                      {c.pipeline_stage && <div className="text-xs text-indigo-500 mt-0.5">{c.pipeline_stage}</div>}
+                    </button>
+                  ))}
+                {contacts.filter(c => {
+                  if (!contactPickerSearch) return true;
+                  const q = contactPickerSearch.toLowerCase();
+                  return c.full_name?.toLowerCase().includes(q) || c.book_title?.toLowerCase().includes(q);
+                }).length === 0 && (
+                  <p className="text-sm text-gray-400 text-center py-4">No contacts found</p>
+                )}
               </div>
-              <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #e7e8f0' }}>
-                      <th style={{ textAlign: 'left', padding: '8px 0', color: '#64748b', fontWeight: 600 }}>Contact</th>
-                      <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Stage</th>
-                      <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Value (R)</th>
-                      <th style={{ textAlign: 'left', padding: '8px 8px', color: '#64748b', fontWeight: 600 }}>Prob %</th>
-                      <th style={{ textAlign: 'left', padding: '8px 0', color: '#64748b', fontWeight: 600 }}>Package</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {openContacts.map(c => (
-                      <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '8px 0' }}>
-                          <div style={{ fontWeight: 600, color: '#1e1e2e' }}>{c.full_name}</div>
-                          {c.book_title && <div style={{ fontSize: 11, color: '#94a3b8' }}>{c.book_title}</div>}
-                        </td>
-                        <td style={{ padding: '8px 8px', color: '#64748b' }}>{getEffectiveStage(c)}</td>
-                        <td style={{ padding: '8px 8px' }}>
-                          <input type="number" defaultValue={c.pipeline_value || ''}
-                            onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], pipeline_value: Number(e.target.value) } }))}
-                            placeholder="0" style={{ width: 90, border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 8px', fontSize: 13 }} />
-                        </td>
-                        <td style={{ padding: '8px 8px' }}>
-                          <input type="number" min="0" max="100" defaultValue={c.probability ?? ''}
-                            onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], probability: Number(e.target.value) } }))}
-                            placeholder={String(Math.round((STAGES.find(s => s.id === getEffectiveStage(c))?.prob ?? 0.2) * 100))}
-                            style={{ width: 60, border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 8px', fontSize: 13 }} />
-                        </td>
-                        <td style={{ padding: '8px 0' }}>
-                          <select defaultValue={c.package_type || ''}
-                            onChange={e => setBulkEdits(prev => ({ ...prev, [c.id]: { ...prev[c.id], package_type: e.target.value } }))}
-                            style={{ border: '1px solid #e7e8f0', borderRadius: 6, padding: '4px 6px', fontSize: 12, color: '#374151' }}>
-                            <option value="">—</option>
-                            {['Full publishing','Editing only','Cover + layout','Typesetting','Print run','Other'].map(p => (
-                              <option key={p} value={p}>{p}</option>
-                            ))}
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {openContacts.length === 0 && <p style={{ color: '#94a3b8', textAlign: 'center', padding: 32 }}>No open deals to edit.</p>}
-              </div>
-              <div style={{ padding: '16px 24px', borderTop: '1px solid #e7e8f0', display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-                <button onClick={() => setBulkOpen(false)} style={{ padding: '8px 20px', border: '1px solid #e7e8f0', borderRadius: 8, fontSize: 13, background: '#fff', cursor: 'pointer' }}>Cancel</button>
-                <button onClick={handleBulkSave} disabled={Object.keys(bulkEdits).length === 0}
-                  style={{ padding: '8px 24px', background: accentColor, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: Object.keys(bulkEdits).length === 0 ? 0.5 : 1 }}>
-                  Save {Object.keys(bulkEdits).length > 0 ? `(${Object.keys(bulkEdits).length})` : ''} changes
-                </button>
-              </div>
+              <button onClick={() => setShowContactPicker(false)} className="mt-3 w-full py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                Cancel
+              </button>
             </div>
           </div>
         )}
+        {settingsOpen && (
+          <PipelineSettingsModal 
+            layoutMode={layoutMode}
+            setLayoutMode={setLayoutMode}
+            columnWidth={columnWidth}
+            setColumnWidth={setColumnWidth}
+            showStageTotals={showStageTotals}
+            setShowStageTotals={setShowStageTotals}
+            cardDensity={cardDensity}
+            setCardDensity={setCardDensity}
+            onClose={() => setSettingsOpen(false)}
+          />
+        )}
+        {showPipelineBuilder && (
+          <PipelineBuilderModal 
+            onClose={() => setShowPipelineBuilder(false)}
+            onSaved={() => { loadCustomPipelines(); setShowPipelineBuilder(false); }}
+          />
+        )}
       </div>
-
-      <style>{`
+       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
-        .deal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important; transition: all 0.15s ease; }
+        .deal-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+          border-color: #d1d5db !important;
+        }
+        
+        @media (max-width: 768px) {
+          .admin-layout-main {
+            padding: 12px !important;
+          }
+          .deal-card {
+            margin-bottom: 6px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .deal-card {
+            font-size: 12px;
+          }
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        div[style*="overflowX: auto"]::-webkit-scrollbar {
+          height: 6px;
+        }
+        div[style*="overflowX: auto"]::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 8px;
+        }
+        div[style*="overflowX: auto"]::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 8px;
+        }
+        div[style*="overflowX: auto"]::-webkit-scrollbar-thumb:hover {
+          background: #a1a1a1;
+        }
       `}</style>
     </AdminLayout>
-  );
-}
-
-function KpiTile({ label, value, sub, tinted, warn }) {
-  return (
-    <div style={{ background: tinted ? '#FDF8F2' : '#ffffff', border: warn ? '1.5px solid #f59e0b' : tinted ? '1px solid #e8d5b7' : '1px solid #e5e7eb', borderRadius: 12, padding: '14px 16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-      <p style={{ fontSize: 11, color: warn ? '#d97706' : '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{label}</p>
-      <p style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 700, color: warn ? '#d97706' : '#1e1e2e', margin: '0 0 2px' }}>{value}</p>
-      <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{sub}</p>
-    </div>
-  );
-}
-
-function FunnelCard({ inquiry, quotation, won }) {
-  const bars = [
-    { label: 'Inquiry',   count: inquiry,   color: '#6366f1' },
-    { label: 'Quotation', count: quotation,  color: '#0ea5e9' },
-    { label: 'Won',       count: won,        color: '#16a34a' },
-  ];
-  const max = Math.max(...bars.map(b => b.count), 1);
-  const convQ = inquiry   > 0 ? Math.round((quotation / inquiry)   * 100) : 0;
-  const convW = quotation > 0 ? Math.round((won       / quotation) * 100) : 0;
-
-  return (
-    <div style={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '14px 16px', minWidth: 160, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
-      <p style={{ fontSize: 11, color: '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Funnel</p>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10 }}>
-        {bars.map((b, i) => (
-          <div key={b.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1 }}>
-            <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#1e1e2e' }}>{b.count}</span>
-            <div style={{ width: '100%', background: '#f3f4f6', borderRadius: 4, overflow: 'hidden', height: 40, display: 'flex', alignItems: 'flex-end' }}>
-              <div style={{ width: '100%', background: b.color, height: `${Math.max(8, Math.round((b.count / max) * 40))}px`, borderRadius: 4, transition: 'height 0.3s' }} />
-            </div>
-            {i === 0 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>{convQ}% →</span>}
-            {i === 1 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>{convW}% →</span>}
-            {i === 2 && <span style={{ fontSize: 9, color: '#9ca3af', marginTop: 1 }}>&nbsp;</span>}
-            <span style={{ fontSize: 10, color: '#6b7280', fontWeight: 500 }}>{b.label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }

@@ -114,10 +114,9 @@ export default function AcademicEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Academic Editing Services"
-        description="Professional academic editing services for researchers, postgraduate students and institutions in South Africa."
-        description="Academic editing for SA students and researchers — theses, dissertations, research papers, academic books. UNISA, UJ, UP, Wits formatting standards."
-        canonical="https://www.creativebooks.co.za/academicediting"
+        title="Academic Editing Services in South Africa | Creative Books"
+        description="Academic editing for South African students & researchers - theses, dissertations & research papers. UNISA, UJ, UP & Wits standards. Confidential. Get a quote."
+        canonical="https://creativebooks.co.za/academicediting"
       />
 
       {/* FAQ Schema */}
@@ -139,7 +138,7 @@ export default function AcademicEditing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Academic Editing & Research Services · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Academic Editing Services
+              Academic Editing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">
               Professional Academic Writing, Language Editing, Technical Editing and Research Support
@@ -373,7 +372,7 @@ export default function AcademicEditing() {
                 Request an Academic Services Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/bookediting" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
+              <Link to="/book-editing" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Book Editing Services
               </Link>
@@ -383,11 +382,11 @@ export default function AcademicEditing() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Editing Services',    path: '/bookediting' },
+        { label: 'Book Editing Services',    path: '/book-editing' },
         { label: 'Proofreading Services',    path: '/proofreading' },
         { label: 'Thesis Editing',           path: '/thesisediting' },
         { label: 'Dissertation Editing',     path: '/dissertationediting' },
-        { label: 'Language Editing',         path: '/languageediting' },
+        { label: 'Language Editing',         path: '/book-editing' },
         { label: 'Request a Quote',          path: '/getquote' },
       ]} light />
     </div>

@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Business Book Printing Johannesburg', description: 'Professional business book printing and publishing in Johannesburg.', url: '/businessbookprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Business Book Printing', path: '/businessbookprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Business Book Printing', path: '/businessbookprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function BusinessBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Business Book Printing"
-        description="Business book printing in Johannesburg for entrepreneurs, consultants and speakers — trade paperback and hardcover with bulk pricing for corporate orders."
+        title="Business Book Printing in Johannesburg | Creative Books SA"
+        description="Business book printing in Johannesburg for entrepreneurs, consultants and speakers - trade paperback and hardcover with bulk pricing for corporate orders."
         keywords="business book printing Johannesburg, corporate book printing, leadership book printing South Africa, entrepreneur book printing, business publishing Johannesburg"
-        canonical="https://www.creativebooks.co.za/businessbookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/businessbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,11 +50,11 @@ export default function BusinessBookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Business Book Publishing', path: '/businessbookpublishing' },
+          { label: 'Business Book Publishing', path: '/book-publishing' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: '6×9 Book Printing', path: '/printing/6x9' },
           { label: 'Hardcover Printing', path: '/printing/hardcover' },
-          { label: 'Amazon KDP', path: '/amazonkdp' },
+          { label: 'Amazon KDP', path: '/ebook-publishing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Business Book"

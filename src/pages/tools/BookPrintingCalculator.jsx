@@ -223,7 +223,7 @@ export default function BookPrintingCalculator() {
                     </button>
                   ))}
                 </div>
-                <Link to="/seo/longtail/A5vs6x9BookPrinting" className="text-copper text-xs mt-2 inline-block hover:underline">
+                <Link to="/a5vs6x9bookprinting" className="text-copper text-xs mt-2 inline-block hover:underline">
                   Not sure which size? Read A5 vs 6×9 Book Printing →
                 </Link>
               </div>

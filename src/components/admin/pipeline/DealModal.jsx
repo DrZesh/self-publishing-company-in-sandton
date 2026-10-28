@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { X, Loader2, ExternalLink, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { SERVICE_TYPES } from '@/components/admin/clientservice/WORKFLOWS';
 
@@ -52,10 +52,10 @@ export default function DealModal({ deal, pipeline, stages, onClose, onSaved, on
       };
       let saved;
       if (isEdit) {
-        saved = await base44.entities.PipelineDeal.update(deal.id, data);
+        saved = await platform.entities.PipelineDeal.update(deal.id, data);
         toast.success('Deal updated');
       } else {
-        saved = await base44.entities.PipelineDeal.create(data);
+        saved = await platform.entities.PipelineDeal.create(data);
         toast.success('Deal created');
       }
       onSaved(saved);
@@ -69,7 +69,7 @@ export default function DealModal({ deal, pipeline, stages, onClose, onSaved, on
 
   const handleDelete = async () => {
     if (!confirm('Delete this deal? This cannot be undone.')) return;
-    await base44.entities.PipelineDeal.delete(deal.id);
+    await platform.entities.PipelineDeal.delete(deal.id);
     toast.success('Deal deleted');
     onSaved(null);
     onClose();

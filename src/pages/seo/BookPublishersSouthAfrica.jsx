@@ -23,13 +23,13 @@ const schema = {
     serviceSchema({
       name: 'Book Publishers South Africa',
       description: 'Professional book publishing services from one of South Africa\'s top publishers. Editing, design, printing and distribution with full author rights retention.',
-      url: '/bookpublisherssouthafrica',
+      url: '/book-publishers-south-africa',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Book Publishers South Africa', path: '/bookpublisherssouthafrica' },
+      { name: 'Book Publishers South Africa', path: '/book-publishers-south-africa' },
     ]),
   ],
 };
@@ -38,16 +38,16 @@ export default function BookPublishersSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Book Publishers South Africa"
-        description="Independent book publishers in South Africa working with local authors — editing, design and printing combined into clear, costed packages from R21,000."
+        title="Book Publishers in South Africa | Creative Books SA"
+        description="A trusted book publisher in South Africa - editing, design, printing & distribution in clear, costed packages from R21,000. You keep every right. Get a quote."
         keywords="book publishers South Africa, book publishers in South Africa, publishing company South Africa, South African book publishers, publish a book South Africa"
-        canonical="https://www.creativebooks.co.za/bookpublisherssouthafrica"
+        canonical="https://creativebooks.co.za/book-publishers-south-africa"
         schema={schema}
       />
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Book Publishers South Africa"
-        title="Book Publishers South Africa"
+        title="Book Publishers in South Africa"
         description="Creative Books SA is one of South Africa's most experienced book publishers, offering full-service publishing for authors nationwide. From manuscript evaluation and professional editing to cover design, typesetting, printing, and global distribution — we bring your book to life while you keep 100% of your rights."
         features={[
           { title: 'Full-Service Publishing', description: 'Editing, design, typesetting, printing, ISBN, and distribution all handled under one roof in Johannesburg.' },
@@ -65,13 +65,13 @@ export default function BookPublishersSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Best Publishers SA', path: '/bestpublishingcompaniesinsouthafrica' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
+          { label: 'Publishing Companies SA', path: '/publishing-companies-south-africa' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Best Publishers SA', path: '/best-publishing-companies-in-south-africa' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'ISBN Registration', path: '/isbn' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Publish Your Book With South Africa's Trusted Publishers"

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,12 +106,12 @@ export default function AdminDocumentBuilder() {
 
   const { data: clauses = [] } = useQuery({
     queryKey: ['clauses'],
-    queryFn: () => base44.entities.Clause.list('name', 200),
+    queryFn: () => platform.entities.Clause.list('name', 200),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const selectedContact = contacts.find(c => c.id === contactId);
@@ -226,8 +226,8 @@ export default function AdminDocumentBuilder() {
     setSaving(true);
     const blob = new Blob([content], { type: 'text/html' });
     const file = new File([blob], `${title}.html`, { type: 'text/html' });
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    await base44.entities.Document.create({
+    const { file_url } = await platform.integrations.Core.UploadFile({ file });
+    await platform.entities.Document.create({
       file_name: title,
       file_url,
       file_type: 'text/html',
@@ -236,7 +236,7 @@ export default function AdminDocumentBuilder() {
       is_template: !contactId,
       template_label: !contactId ? title : undefined,
       status: 'Draft',
-      uploaded_by: (await base44.auth.me())?.email || '',
+      uploaded_by: (await platform.auth.me())?.email || '',
     });
     setSaving(false);
     toast.success('Saved to Document Library!');
@@ -245,7 +245,7 @@ export default function AdminDocumentBuilder() {
   const handleAIAssist = async () => {
     if (!title) { toast.error('Add a document title first so the AI knows what to generate.'); return; }
     setAiGenerating(true);
-    const result = await base44.integrations.Core.InvokeLLM({
+    const result = await platform.integrations.Core.InvokeLLM({
       prompt: `Generate professional legal/business document content for a self-publishing company called Creative Books SA in South Africa. Document type: "${title}". ${category ? `Category: ${category}.` : ''} ${selectedContact ? `Client name: ${selectedContact.full_name}. Book title: ${selectedContact.book_title || 'TBD'}.` : 'Use {{client_name}} and {{book_title}} as merge fields.'}\n\nWrite the full document body text in a professional format. Include relevant sections, numbered clauses, and proper structure. Keep it practical and legally sensible but note this is not legal advice. Output plain text paragraphs only, no markdown.`,
     });
     setContent(prev => prev + `\n\n${result}`);

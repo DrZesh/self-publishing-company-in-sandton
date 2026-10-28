@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Mail, FileText, MessageSquare, Activity, MoveRight } from 'lucide-react';
 
 const TYPE_CONFIG = {
@@ -46,11 +46,11 @@ export default function ContactTimeline({ contact }) {
     if (!contact?.id) return;
 
     Promise.all([
-      base44.entities.EmailMessage.filter({ contact_id: contact.id }, '-sent_at', 50).catch(() => []),
-      base44.entities.Note.filter({ entity_id: contact.id, entity_type: 'contact' }, '-created_date', 50).catch(() => []),
-      base44.entities.Submission.filter({ email: contact.email }, '-created_date', 20).catch(() => []),
-      base44.entities.PipelineStageHistory.filter({ contact_id: contact.id }, '-changed_at', 20).catch(() => []),
-      base44.entities.ActivityLog.filter({ entity_id: contact.id, entity_type: 'contact' }, '-created_date', 20).catch(() => []),
+      platform.entities.EmailMessage.filter({ contact_id: contact.id }, '-sent_at', 50).catch(() => []),
+      platform.entities.Note.filter({ entity_id: contact.id, entity_type: 'contact' }, '-created_date', 50).catch(() => []),
+      platform.entities.Submission.filter({ email: contact.email }, '-created_date', 20).catch(() => []),
+      platform.entities.PipelineStageHistory.filter({ contact_id: contact.id }, '-changed_at', 20).catch(() => []),
+      platform.entities.ActivityLog.filter({ entity_id: contact.id, entity_type: 'contact' }, '-created_date', 20).catch(() => []),
     ]).then(([emails, notes, submissions, stageHistory, activities]) => {
       const timeline = [
         ...emails.map(e => ({

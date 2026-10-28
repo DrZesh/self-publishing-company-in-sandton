@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,8 +64,8 @@ export default function AdminCommunication() {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [testingEmail, setTestingEmail] = useState(false);
 
-  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => base44.entities.Contact.list('-created_date', 500) });
-  const { data: activityLogs = [] } = useQuery({ queryKey: ['activitylog-comms'], queryFn: () => base44.entities.ActivityLog.list('-created_date', 200) });
+  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => platform.entities.Contact.list('-created_date', 500) });
+  const { data: activityLogs = [] } = useQuery({ queryKey: ['activitylog-comms'], queryFn: () => platform.entities.ActivityLog.list('-created_date', 200) });
 
   const selectedContact = contacts.find(c => c.id === contactId);
 
@@ -80,7 +80,7 @@ export default function AdminCommunication() {
     if (!number) { toast.error(isTest ? 'Set a test number first' : 'No phone number found'); return; }
     if (!msg.trim()) { toast.error('No message to send'); return; }
     isTest ? setTesting(true) : setSending(true);
-    const res = await base44.functions.invoke('sendWhatsAppNotification', {
+    const res = await platform.functions.invoke('sendWhatsAppNotification', {
       to_number: number,
       message: msg,
       contact_id: contactId || undefined,
@@ -96,7 +96,7 @@ export default function AdminCommunication() {
     if (!to) { toast.error(isTest ? 'Set a test email in Settings' : 'Enter recipient email'); return; }
     if (!emailForm.subject || !emailForm.body) { toast.error('Subject and body are required'); return; }
     isTest ? setTestingEmail(true) : setSendingEmail(true);
-    const res = await base44.functions.invoke('sendContactEmail', {
+    const res = await platform.functions.invoke('sendContactEmail', {
       action: 'send',
       to,
       subject: emailForm.subject,

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { Plus, Settings, ChevronDown, Search, Filter, RefreshCw } from 'lucide-react';
 import PipelineStats from './PipelineStats';
@@ -98,13 +98,13 @@ export default function SalesPipelineTab({ onProjectCreated }) {
 
   const { data: pipelines = [] } = useQuery({
     queryKey: ['sales-pipelines'],
-    queryFn: () => base44.entities.SalesPipeline.list('-created_date', 50),
+    queryFn: () => platform.entities.SalesPipeline.list('-created_date', 50),
     staleTime: 30000,
   });
 
   const { data: customTemplates = [] } = useQuery({
     queryKey: ['pipeline-templates'],
-    queryFn: () => base44.entities.PipelineTemplate.list('-created_date', 50),
+    queryFn: () => platform.entities.PipelineTemplate.list('-created_date', 50),
     staleTime: 60000,
   });
 
@@ -125,7 +125,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
   const { data: allDeals = [] } = useQuery({
     queryKey: ['pipeline-deals', activePipelineId],
     queryFn: () => activePipelineId
-      ? base44.entities.PipelineDeal.filter({ pipeline_id: activePipelineId }, '-updated_date', 200)
+      ? platform.entities.PipelineDeal.filter({ pipeline_id: activePipelineId }, '-updated_date', 200)
       : [],
     enabled: !!activePipelineId,
     staleTime: 15000,
@@ -157,8 +157,8 @@ export default function SalesPipelineTab({ onProjectCreated }) {
     const firstStage = workflow?.[0] || { key: 'project_started', label: 'Project Started' };
 
     try {
-      const user = await base44.auth.me();
-      const project = await base44.entities.ClientServiceProject.create({
+      const user = await platform.auth.me();
+      const project = await platform.entities.ClientServiceProject.create({
         client_name: deal.client_name,
         client_email: deal.client_email || '',
         client_phone: deal.client_phone || '',
@@ -181,7 +181,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
         }],
       });
 
-      await base44.entities.PipelineDeal.update(deal.id, {
+      await platform.entities.PipelineDeal.update(deal.id, {
         linked_project_id: project.id,
         project_created_at: new Date().toISOString(),
         project_created_by: user?.email || 'auto',
@@ -195,7 +195,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
       if (onProjectCreated) onProjectCreated();
       toast.success(`✅ Project created for ${deal.client_name} — switching to Projects tab.`);
     } catch (err) {
-      await base44.entities.PipelineDeal.update(deal.id, {
+      await platform.entities.PipelineDeal.update(deal.id, {
         project_creation_failed: true,
         project_creation_error: err.message,
       });
@@ -214,7 +214,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
     qc.setQueryData(['pipeline-deals', activePipelineId], prev =>
       (prev || []).map(d => d.id === deal.id ? { ...d, stage_key: newStageKey } : d)
     );
-    await base44.entities.PipelineDeal.update(deal.id, updateData);
+    await platform.entities.PipelineDeal.update(deal.id, updateData);
     if (wonStage && newStageKey === wonStage.key && !deal.linked_project_id) {
       const updatedDeal = { ...deal, stage_key: newStageKey };
       if (!updatedDeal.service_type) setServicePrompt(updatedDeal);
@@ -242,7 +242,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
       (prev || []).map(d => d.id === draggableId ? { ...d, stage_key: newStageKey } : d)
     );
 
-    await base44.entities.PipelineDeal.update(draggableId, updateData);
+    await platform.entities.PipelineDeal.update(draggableId, updateData);
 
     // Auto-create project on Won
     if (wonStage && newStageKey === wonStage.key && !deal.linked_project_id) {

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import SalesPipelineTab from '@/components/admin/pipeline/SalesPipelineTab';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Plus, Search, RefreshCw, Settings, List, Send, Edit3,
          ChevronDown, CheckCircle, XCircle } from 'lucide-react';
@@ -113,13 +113,13 @@ export default function AdminClientServiceUpdates() {
 
   const { data: projects = [], isLoading: loadingProjects } = useQuery({
     queryKey: ['client-service-projects'],
-    queryFn: () => base44.entities.ClientServiceProject.list('-updated_date', 100),
+    queryFn: () => platform.entities.ClientServiceProject.list('-updated_date', 100),
     staleTime: 30000,
   });
 
   const { data: emailLogs = [] } = useQuery({
     queryKey: ['service-email-logs'],
-    queryFn: () => base44.entities.ServiceEmailLog.list('-sent_at', 200),
+    queryFn: () => platform.entities.ServiceEmailLog.list('-sent_at', 200),
     staleTime: 30000,
   });
 

@@ -26,9 +26,9 @@ const steps = [
     icon: Mail,
     title: 'Send the Email',
     description: 'Email your request to the National Library of South Africa with all the details above.',
-    email: 'Kholofelo.mojela@nlsa.ac.za',
+    email: 'Rhulani.Bila@nlsa.ac.za',
     emailSubject: 'ISBN Application – [Your Book Title]',
-    emailBody: `Dear Kholofelo,\n\nI would like to apply for an ISBN for my book.\n\nBook Title: [Your Title]\nAuthor / Publisher Name: [Your Name]\nCell Number: [Your Number]\nEmail Address: [Your Email]\nPhysical Address: [Your Address]\nFormat(s) Required: [eBook / Softcover / Hardcover]\n\nThank you,\n[Your Name]`,
+    emailBody: `Dear Rhulani,\n\nI would like to apply for an ISBN for my book.\n\nBook Title: [Your Title]\nAuthor / Publisher Name: [Your Name]\nCell Number: [Your Number]\nEmail Address: [Your Email]\nPhysical Address: [Your Address]\nFormat(s) Required: [eBook / Softcover / Hardcover]\n\nThank you,\n[Your Name]`,
   },
   {
     number: '03',
@@ -111,7 +111,7 @@ export default function ISBNRegistration() {
     <>
       <PageMeta
         title="ISBN Registration in South Africa"
-        canonical="https://www.creativebooks.co.za/isbn"
+        canonical="https://creativebooks.co.za/isbn"
         description="How to register a free ISBN with the National Library of South Africa. Step-by-step guide for self-published authors with forms and timelines."
         keywords="ISBN South Africa, how to get ISBN number South Africa, NLSA ISBN registration, ISBN registration South Africa"
       />
@@ -235,7 +235,7 @@ export default function ISBNRegistration() {
             <p className="text-white/60 font-body mb-6 max-w-xl mx-auto text-sm leading-relaxed">
               All Creative Books SA publishing packages include ISBN registration as a standard service. We handle the full NLSA application, form completion, and ISBN management on your behalf.
             </p>
-            <Link to="/publishingpackages"
+            <Link to="/publishingpackages/a5"
               className="group inline-flex items-center gap-2 px-6 py-3 bg-copper text-white rounded-full hover:bg-copper/90 transition-all text-sm font-medium">
               View Publishing Packages <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -259,12 +259,12 @@ export default function ISBNRegistration() {
       <InternalLinks
         title="Related Services & Resources"
         links={[
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Publishing', path: '/book-publishing' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'How to Publish a Book', path: '/howtopublishabook' },
-          { label: 'Book Printing', path: '/bookprinting' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+          { label: 'Book Printing', path: '/book-printing' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
           { label: 'Blog', path: '/blog' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

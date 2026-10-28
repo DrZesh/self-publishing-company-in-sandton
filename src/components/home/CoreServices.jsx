@@ -14,21 +14,21 @@ const services = [
   {
     name: 'Book Publishing',
     description: 'Complete self-publishing packages for first-time authors.',
-    route: '/selfpublishingpackagesinsouthafrica',
+    route: '/self-publishing-packages-in-south-africa',
     icon: Book,
     accentColor: 'from-[#1a73e8]/20 to-[#1a73e8]/5',
   },
   {
     name: 'Book Editing',
     description: 'Developmental editing, copy editing and proofreading.',
-    route: '/copyediting',
+    route: '/book-editing',
     icon: PenTool,
     accentColor: 'from-[#10b981]/20 to-[#10b981]/5',
   },
   {
     name: 'Book Cover Design',
     description: 'Custom, professional book cover design for your genre.',
-    route: '/bookcoverdesign',
+    route: '/book-cover-design',
     icon: Palette,
     accentColor: 'from-[#8b5cf6]/20 to-[#8b5cf6]/5',
   },
@@ -42,7 +42,7 @@ const services = [
   {
     name: 'Ebook Publishing',
     description: 'Ebook formatting and Amazon KDP setup.',
-    route: '/ebookpublishing',
+    route: '/ebook-publishing',
     icon: Tablet,
     accentColor: 'from-[#ec4899]/20 to-[#ec4899]/5',
   },

@@ -11,24 +11,24 @@ export default function PrintingMegaPanel() {
         <ul className="space-y-3.5">
           <li>
             <div className="flex items-center gap-2">
-              <Link to="/printing/PrintingA5" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+              <Link to="/printing/a5" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
                 A5 Printing
               </Link>
               <span className="inline-block px-2 py-0.5 bg-copper text-white text-xs font-bold rounded-full uppercase">Most Popular</span>
             </div>
           </li>
           <li>
-            <Link to="/printing/Printing6x9" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/printing/6x9" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               6x9 Printing
             </Link>
           </li>
           <li>
-            <Link to="/printing/PrintingHardcover" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/printing/hardcover" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Hardcover Printing
             </Link>
           </li>
           <li>
-            <Link to="/printing/PrintingChildrensBooks" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/printing/childrensbooks" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Children's Book Printing
             </Link>
           </li>
@@ -62,27 +62,27 @@ export default function PrintingMegaPanel() {
         <h3 className="text-copper text-xs font-bold uppercase tracking-widest mb-4">Popular Book Types</h3>
         <ul className="space-y-3.5">
           <li>
-            <Link to="/seo/industry/NovelPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/novelprintingjohannesburg" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Novel Printing
             </Link>
           </li>
           <li>
-            <Link to="/seo/industry/MemoirBookPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/memoirbookprintingjohannesburg" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Memoir Printing
             </Link>
           </li>
           <li>
-            <Link to="/seo/industry/ChristianBookPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/christianbookprintingjohannesburg" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Christian Book Printing
             </Link>
           </li>
           <li>
-            <Link to="/seo/industry/CookbookPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/book-printing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Cookbook Printing
             </Link>
           </li>
           <li className="pt-2 border-t border-[#E5E0D5]">
-            <Link to="/services/BookPrinting" className="text-copper text-sm font-semibold hover:text-copper/80 transition-colors inline-flex items-center gap-1">
+            <Link to="/book-printing" className="text-copper text-sm font-semibold hover:text-copper/80 transition-colors inline-flex items-center gap-1">
               View all book types
               <ArrowRight className="w-3 h-3" />
             </Link>
@@ -105,7 +105,7 @@ export default function PrintingMegaPanel() {
             </Link>
           </li>
           <li>
-            <Link to="/seo/longtail/A5vs6x9BookPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/a5vs6x9bookprinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               A5 vs 6x9 Guide
             </Link>
           </li>

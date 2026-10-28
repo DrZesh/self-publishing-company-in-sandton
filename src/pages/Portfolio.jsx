@@ -105,7 +105,7 @@ export default function Portfolio() {
       <PageMeta
         title="Book Design and Printing Portfolio"
         description="Our portfolio of South African book publishing projects — cover designs, interior layouts and printed books across fiction, non-fiction and memoir genres."
-        canonical="https://www.creativebooks.co.za/portfolio"
+        canonical="https://creativebooks.co.za/portfolio"
       />
 
       {/* Hero */}

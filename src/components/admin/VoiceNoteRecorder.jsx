@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Mic, MicOff, Loader2, CheckCircle, Trash2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 
 export default function VoiceNoteRecorder({ contactId, onNoteSaved }) {
@@ -31,11 +31,11 @@ export default function VoiceNoteRecorder({ contactId, onNoteSaved }) {
     try {
       const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
       const file = new File([blob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      const text = await base44.integrations.Core.TranscribeAudio({ audio_url: file_url });
+      const { file_url } = await platform.integrations.Core.UploadFile({ file });
+      const text = await platform.integrations.Core.TranscribeAudio({ audio_url: file_url });
       setTranscript(text);
 
-      const { note_summary } = await base44.integrations.Core.InvokeLLM({
+      const { note_summary } = await platform.integrations.Core.InvokeLLM({
         prompt: `Summarise this voice note / call note for a publishing CRM. Keep it concise (2-4 sentences), professional, and action-focused. Highlight any client requests, decisions made, or next steps mentioned.\n\nTranscript: "${text}"`,
         response_json_schema: { type: 'object', properties: { note_summary: { type: 'string' } } },
       });
@@ -49,7 +49,7 @@ export default function VoiceNoteRecorder({ contactId, onNoteSaved }) {
 
   const saveNote = async () => {
     if (!summary && !transcript) return;
-    await base44.entities.Note.create({
+    await platform.entities.Note.create({
       contact_id: contactId,
       content: `Voice Note (AI Summary):\n\n${summary}\n\n---\nFull Transcript:\n${transcript}`,
       note_type: 'call',

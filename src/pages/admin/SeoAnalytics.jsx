@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, BarChart2, Globe, Monitor, Smartphone, Tablet, RefreshCw, ChevronDown } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import AdminLayout from '@/components/admin/AdminLayout';
 import GscKpiCards from '@/components/admin/gsc/GscKpiCards';
@@ -54,14 +54,14 @@ export default function SeoAnalytics() {
     setError(null);
     try {
       const [trendRes, queriesRes, pagesRes, prevPagesRes, insightsRes, countriesRes, devicesRes, appearanceRes] = await Promise.all([
-        base44.functions.invoke('searchConsoleData', { action: 'performance_compare', days, dimensions: ['date'], rowLimit: 500, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'top_queries', days, rowLimit: 100, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'top_pages', days, rowLimit: 100, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'top_pages', days: days * 2, rowLimit: 100, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'smart_insights', days, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'countries', days, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'devices', days, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'search_appearance', days, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'performance_compare', days, dimensions: ['date'], rowLimit: 500, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'top_queries', days, rowLimit: 100, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'top_pages', days, rowLimit: 100, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'top_pages', days: days * 2, rowLimit: 100, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'smart_insights', days, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'countries', days, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'devices', days, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'search_appearance', days, forceRefresh }),
       ]);
 
       const td = trendRes.data;
@@ -105,6 +105,7 @@ export default function SeoAnalytics() {
 
   return (
     <AdminLayout>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)' }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -113,25 +114,25 @@ export default function SeoAnalytics() {
               <BarChart2 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#1A1208]">SEO Analytics</h1>
-              <p className="text-xs text-black/40">creativebooks.co.za · Google Search Console</p>
+              <h1 className="text-2xl font-bold text-white">SEO Analytics</h1>
+              <p className="text-xs text-white/40">creativebooks.co.za · Google Search Console</p>
             </div>
           </div>
           <button onClick={handleRefresh} disabled={refreshing || refreshCooldown}
-            className="flex items-center gap-2 px-3 py-2 border border-black/10 rounded-xl text-xs font-semibold text-black/60 hover:border-[#B87333] hover:text-[#B87333] disabled:opacity-40 transition-all">
+            className="flex items-center gap-2 px-3 py-2 border border-white/20 rounded-xl text-xs font-semibold text-white/60 hover:border-[#B87333] hover:text-[#B87333] disabled:opacity-40 transition-all">
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             {refreshing ? 'Refreshing…' : refreshCooldown ? 'Refreshed' : 'Refresh Data'}
           </button>
         </div>
 
         {error && (
-          <div className="p-4 mb-6 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+          <div className="p-4 mb-6 rounded-xl text-sm text-red-300" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)' }}>
             ⚠️ {error} <button onClick={() => fetchAll(true)} className="ml-2 underline">Retry</button>
           </div>
         )}
 
         {/* Date range */}
-        <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-5 mb-6">
+        <div className="rounded-2xl p-5 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <GscDateRangeSelector
             days={days} onDaysChange={setDays}
             compare={compare} onCompareChange={setCompare}
@@ -152,25 +153,25 @@ export default function SeoAnalytics() {
         )}
 
         {/* Trend Chart */}
-        <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
-          <h2 className="text-base font-bold text-[#1A1208] mb-4">Traffic Trend</h2>
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <h2 className="text-base font-bold text-white mb-4">Traffic Trend</h2>
           {loading ? <div className="h-56 bg-black/5 rounded-xl animate-pulse" /> : <GscTrendChart rows={trendRows} />}
         </div>
 
         {/* Queries */}
-        <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div className="mb-4">
-            <h2 className="text-base font-bold text-[#1A1208]">Search Queries</h2>
-            <p className="text-xs text-black/40 mt-0.5">Keywords visitors used to find Creative Books SA on Google</p>
+            <h2 className="text-base font-bold text-white">Search Queries</h2>
+            <p className="text-xs text-white/40 mt-0.5">Keywords visitors used to find Creative Books SA on Google</p>
           </div>
           {loading ? <div className="h-48 bg-black/5 rounded-xl animate-pulse" /> : <GscQueriesTable rows={queryRows} days={days} />}
         </div>
 
         {/* Pages */}
-        <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div className="mb-4">
-            <h2 className="text-base font-bold text-[#1A1208]">Top Pages</h2>
-            <p className="text-xs text-black/40 mt-0.5">Pages receiving traffic from Google search</p>
+            <h2 className="text-base font-bold text-white">Top Pages</h2>
+            <p className="text-xs text-white/40 mt-0.5">Pages receiving traffic from Google search</p>
           </div>
           {loading ? <div className="h-48 bg-black/5 rounded-xl animate-pulse" /> : <GscPagesTable rows={pageRows} prevRows={prevPageRows} days={days} />}
         </div>
@@ -178,27 +179,27 @@ export default function SeoAnalytics() {
         {/* Countries + Devices */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Countries */}
-          <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6">
-            <h2 className="text-base font-bold text-[#1A1208] mb-4">Countries</h2>
-            {loading ? <div className="h-48 bg-black/5 rounded-xl animate-pulse" /> : (
+          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-base font-bold text-white mb-4">Countries</h2>
+            {loading ? <div className="h-48 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} /> : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead><tr className="bg-[#F9F7F2]">
+                  <thead><tr style={{ background: 'rgba(255,255,255,0.05)' }}>
                     {['Country', 'Clicks', 'Impr.', 'CTR', 'Pos.'].map(h => (
-                      <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">{h}</th>
+                      <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">{h}</th>
                     ))}
                   </tr></thead>
                   <tbody>
                     {countries.slice(0, 20).map((r, i) => (
-                      <tr key={i} className="border-t border-black/5">
-                        <td className="px-3 py-2 font-medium text-[#1A1208]">{COUNTRY_NAMES[r.keys[0]] || r.keys[0]?.toUpperCase()}</td>
+                      <tr key={i} className="border-t border-white/5">
+                        <td className="px-3 py-2 font-medium text-white">{COUNTRY_NAMES[r.keys[0]] || r.keys[0]?.toUpperCase()}</td>
                         <td className="px-3 py-2 text-[#B87333] font-semibold">{r.clicks}</td>
-                        <td className="px-3 py-2 text-black/60">{r.impressions}</td>
-                        <td className="px-3 py-2 text-black/60">{(r.ctr * 100).toFixed(1)}%</td>
-                        <td className="px-3 py-2 text-black/60">#{r.position.toFixed(0)}</td>
+                        <td className="px-3 py-2 text-white/60">{r.impressions}</td>
+                        <td className="px-3 py-2 text-white/60">{(r.ctr * 100).toFixed(1)}%</td>
+                        <td className="px-3 py-2 text-white/60">#{r.position.toFixed(0)}</td>
                       </tr>
                     ))}
-                    {countries.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-center text-black/30 text-sm">No country data available</td></tr>}
+                    {countries.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-center text-white/30 text-sm">No country data available</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -206,25 +207,25 @@ export default function SeoAnalytics() {
           </div>
 
           {/* Devices */}
-          <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6">
-            <h2 className="text-base font-bold text-[#1A1208] mb-4">Devices</h2>
-            {loading ? <div className="h-48 bg-black/5 rounded-xl animate-pulse" /> : devices.length === 0 ? (
-              <div className="h-48 flex items-center justify-center text-black/30 text-sm">No device data</div>
+          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-base font-bold text-white mb-4">Devices</h2>
+            {loading ? <div className="h-48 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} /> : devices.length === 0 ? (
+              <div className="h-48 flex items-center justify-center text-white/30 text-sm">No device data</div>
             ) : (
               <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 gap-3">
                   {devices.map((r, i) => {
                     const DevIcon = DEVICE_ICONS[r.keys[0]] || Monitor;
                     return (
-                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f4] border border-black/5">
+                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: DEVICE_COLORS[i] + '20' }}>
                           <DevIcon className="w-4 h-4" style={{ color: DEVICE_COLORS[i] }} />
                         </div>
                         <div className="flex-1">
-                          <div className="text-xs font-semibold text-black/70 capitalize">{r.keys[0]?.toLowerCase()}</div>
-                          <div className="text-xs text-black/40">{r.clicks} clicks · {(r.ctr * 100).toFixed(1)}% CTR · #{r.position.toFixed(0)}</div>
+                          <div className="text-xs font-semibold text-white/70 capitalize">{r.keys[0]?.toLowerCase()}</div>
+                          <div className="text-xs text-white/40">{r.clicks} clicks · {(r.ctr * 100).toFixed(1)}% CTR · #{r.position.toFixed(0)}</div>
                         </div>
-                        <div className="text-sm font-bold text-[#1A1208]">{totalClicks ? Math.round(r.clicks / totalClicks * 100) : 0}%</div>
+                        <div className="text-sm font-bold text-white">{totalClicks ? Math.round(r.clicks / totalClicks * 100) : 0}%</div>
                       </div>
                     );
                   })}
@@ -241,7 +242,7 @@ export default function SeoAnalytics() {
                   </ResponsiveContainer>
                 )}
                 {totalClicks > 0 && devices.find(r => r.keys[0] === 'MOBILE')?.clicks / totalClicks > 0.6 && (
-                  <div className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 border border-amber-100">
+                  <div className="text-xs text-amber-300 rounded-lg px-3 py-2" style={{ background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.3)' }}>
                     📱 Mobile is {Math.round(devices.find(r => r.keys[0] === 'MOBILE')?.clicks / totalClicks * 100)}% of traffic — mobile UX is critical.
                   </div>
                 )}
@@ -252,23 +253,23 @@ export default function SeoAnalytics() {
 
         {/* Search Appearance */}
         {searchAppearance.length > 0 && (
-          <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
-            <h2 className="text-base font-bold text-[#1A1208] mb-1">Search Appearance</h2>
-            <p className="text-xs text-black/40 mb-4">Rich results, FAQ schema, and other enhanced appearances in Google</p>
+          <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-base font-bold text-white mb-1">Search Appearance</h2>
+            <p className="text-xs text-white/40 mb-4">Rich results, FAQ schema, and other enhanced appearances in Google</p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead><tr className="bg-[#F9F7F2]">
+                <thead><tr style={{ background: 'rgba(255,255,255,0.05)' }}>
                   {['Appearance Type', 'Clicks', 'Impressions', 'CTR'].map(h => (
-                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">{h}</th>
+                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">{h}</th>
                   ))}
                 </tr></thead>
                 <tbody>
                   {searchAppearance.map((r, i) => (
-                    <tr key={i} className="border-t border-black/5">
-                      <td className="px-4 py-2 font-medium text-[#1A1208] capitalize">{r.keys[0]?.replace(/_/g, ' ').toLowerCase()}</td>
+                    <tr key={i} className="border-t border-white/5">
+                      <td className="px-4 py-2 font-medium text-white capitalize">{r.keys[0]?.replace(/_/g, ' ').toLowerCase()}</td>
                       <td className="px-4 py-2 text-[#B87333] font-semibold">{r.clicks}</td>
-                      <td className="px-4 py-2 text-black/60">{r.impressions}</td>
-                      <td className="px-4 py-2 text-black/60">{(r.ctr * 100).toFixed(1)}%</td>
+                      <td className="px-4 py-2 text-white/60">{r.impressions}</td>
+                      <td className="px-4 py-2 text-white/60">{(r.ctr * 100).toFixed(1)}%</td>
                     </tr>
                   ))}
                 </tbody>
@@ -285,29 +286,29 @@ export default function SeoAnalytics() {
             .slice(0, 8);
           if (!opportunities.length) return null;
           return (
-            <div className="bg-white rounded-2xl border border-amber-200 shadow-sm p-6 mb-6">
+            <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(251,191,36,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(251,191,36,0.2)' }}>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">💡</span>
-                <h2 className="text-base font-bold text-[#1A1208]">Keyword Opportunities</h2>
+                <h2 className="text-base font-bold text-white">Keyword Opportunities</h2>
               </div>
-              <p className="text-xs text-black/40 mb-4">High-impression queries with low CTR — improving titles/meta descriptions here could drive more clicks</p>
+              <p className="text-xs text-white/40 mb-4">High-impression queries with low CTR — improving titles/meta descriptions here could drive more clicks</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead><tr className="bg-amber-50">
+                  <thead><tr style={{ background: 'rgba(251,191,36,0.08)' }}>
                     {['Query', 'Impressions', 'Clicks', 'CTR', 'Position'].map(h => (
-                      <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-black/40 uppercase tracking-wide">{h}</th>
+                      <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">{h}</th>
                     ))}
                   </tr></thead>
                   <tbody>
                     {opportunities.map((r, i) => (
-                      <tr key={i} className="border-t border-black/5 hover:bg-amber-50/40 transition-colors">
-                        <td className="px-3 py-2 font-medium text-[#1A1208] max-w-[240px] truncate">{r.keys[0]}</td>
+                      <tr key={i} className="border-t border-white/5 hover:bg-white/5 transition-colors">
+                        <td className="px-3 py-2 font-medium text-white max-w-[240px] truncate">{r.keys[0]}</td>
                         <td className="px-3 py-2 font-semibold text-[#B87333]">{r.impressions.toLocaleString()}</td>
-                        <td className="px-3 py-2 text-black/60">{r.clicks}</td>
+                        <td className="px-3 py-2 text-white/60">{r.clicks}</td>
                         <td className="px-3 py-2">
-                          <span className="px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs font-semibold">{(r.ctr * 100).toFixed(1)}%</span>
+                          <span className="px-2 py-0.5 bg-red-500/20 text-red-300 rounded text-xs font-semibold">{(r.ctr * 100).toFixed(1)}%</span>
                         </td>
-                        <td className="px-3 py-2 text-black/60">#{r.position.toFixed(1)}</td>
+                        <td className="px-3 py-2 text-white/60">#{r.position.toFixed(1)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -319,7 +320,7 @@ export default function SeoAnalytics() {
 
         {/* Smart Insights */}
         <div className="mb-6">
-          <h2 className="text-base font-bold text-[#1A1208] mb-4">Smart Insights</h2>
+          <h2 className="text-base font-bold text-white mb-4">Smart Insights</h2>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[...Array(2)].map((_, i) => <div key={i} className="h-48 bg-black/5 rounded-2xl animate-pulse" />)}
@@ -330,13 +331,14 @@ export default function SeoAnalytics() {
         </div>
 
         {/* Competitor tracking placeholder */}
-        <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-6">
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div className="flex items-center gap-2 mb-2">
-            <h2 className="text-base font-bold text-[#1A1208]">Competitor Tracking</h2>
-            <span className="text-xs bg-black/5 text-black/40 px-2 py-0.5 rounded-full">Coming soon</span>
+            <h2 className="text-base font-bold text-white">Competitor Tracking</h2>
+            <span className="text-xs text-white/40 px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>Coming soon</span>
           </div>
-          <p className="text-sm text-black/40">Side-by-side impression/position data for competitor domains will be added in a future update. The GSC API does not provide direct competitor data.</p>
+          <p className="text-sm text-white/40">Side-by-side impression/position data for competitor domains will be added in a future update. The GSC API does not provide direct competitor data.</p>
         </div>
+      </div>
       </div>
     </AdminLayout>
   );

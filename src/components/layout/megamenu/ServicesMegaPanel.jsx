@@ -11,30 +11,30 @@ export default function ServicesMegaPanel() {
         <p className="text-[#6B6B6B] text-xs italic mb-4">All-in-one packages from R6,500.</p>
         <ul className="space-y-3.5">
           <li>
-            <Link to="/services/MiniPublishingPackage" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/publishingpackages/mini" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Mini Packages (5 copies)
             </Link>
           </li>
           <li>
             <div className="flex items-center gap-2">
-              <Link to="/publishing/FullPackagesA5" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+              <Link to="/publishingpackages/a5" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
                 A5 Full Packages
               </Link>
               <span className="inline-block px-2 py-0.5 bg-copper text-white text-xs font-bold rounded-full uppercase">Most Popular</span>
             </div>
           </li>
           <li>
-            <Link to="/publishing/FullPackages6x9" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/publishingpackages/6x9" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               6x9 Full Packages
             </Link>
           </li>
           <li>
-            <Link to="/services/EbookPublishing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/ebook-publishing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Ebook Packages
             </Link>
           </li>
           <li className="pt-2 border-t border-[#E5E0D5]">
-            <Link to="/services/SelfPublishingPackages" className="text-copper text-sm font-semibold hover:text-copper/80 transition-colors inline-flex items-center gap-1">
+            <Link to="/self-publishing-packages-in-south-africa" className="text-copper text-sm font-semibold hover:text-copper/80 transition-colors inline-flex items-center gap-1">
               Compare all packages
               <ArrowRight className="w-3 h-3" />
             </Link>
@@ -47,22 +47,22 @@ export default function ServicesMegaPanel() {
         <h3 className="text-copper text-xs font-bold uppercase tracking-widest mb-4">Writing Services</h3>
         <ul className="space-y-3.5">
           <li>
-            <Link to="/services/Ghostwriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/ghostwriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Ghostwriting
             </Link>
           </li>
           <li>
-            <Link to="/services/MemoirWriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/memoirwriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Memoir Writing
             </Link>
           </li>
           <li>
-            <Link to="/services/BiographyWriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/biographywriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Biography Writing
             </Link>
           </li>
           <li>
-            <Link to="/services/ChristianBookWriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/christianbookwriting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Christian Book Writing
             </Link>
           </li>
@@ -74,27 +74,27 @@ export default function ServicesMegaPanel() {
         <h3 className="text-copper text-xs font-bold uppercase tracking-widest mb-4">Editing Services</h3>
         <ul className="space-y-3.5">
           <li>
-            <Link to="/services/BookEditing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/book-editing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Book Editing
             </Link>
           </li>
           <li>
-            <Link to="/services/Proofreading" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/proofreading" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Proofreading
             </Link>
           </li>
           <li>
-            <Link to="/services/AcademicEditing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/academicediting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Academic Editing
             </Link>
           </li>
           <li>
-            <Link to="/services/DissertationEditing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/dissertationediting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Dissertation Editing
             </Link>
           </li>
           <li>
-            <Link to="/services/ThesisEditing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/thesisediting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Thesis Editing
             </Link>
           </li>
@@ -106,22 +106,22 @@ export default function ServicesMegaPanel() {
         <h3 className="text-copper text-xs font-bold uppercase tracking-widest mb-4">Design & Production</h3>
         <ul className="space-y-3.5">
           <li>
-            <Link to="/services/BookCoverDesign" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/book-cover-design" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Book Cover Design
             </Link>
           </li>
           <li>
-            <Link to="/services/BookTypesetting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/typesetting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Book Typesetting
             </Link>
           </li>
           <li>
-            <Link to="/services/BookPrinting" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/book-printing" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Book Printing
             </Link>
           </li>
           <li>
-            <Link to="/services/AuthorWebsites" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/author-websites" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               Author Websites
             </Link>
           </li>
@@ -138,7 +138,7 @@ export default function ServicesMegaPanel() {
           </p>
         </div>
         <Link
-          to="/services/SelfPublishingPackages"
+          to="/self-publishing-packages-in-south-africa"
           className="inline-flex items-center gap-2 text-copper font-semibold hover:text-copper/80 transition-colors text-sm"
         >
           View All Packages

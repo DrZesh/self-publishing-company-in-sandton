@@ -34,10 +34,10 @@ export default function BookPrintingJohannesburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Johannesburg"
-        description="Professional book printing in Johannesburg from R4,500 for 100 copies. A5, 6×9, hardcover, children's books. High-quality printing for authors."
+        title="Book Printing in Johannesburg | Creative Books SA"
+        description="Professional book printing in Johannesburg from R4,500 for 100 copies. A5, 6×9, hardcover & children's books, premium finishes, fast turnaround. Get a quote."
         keywords="book printing Johannesburg, book printers Johannesburg, Johannesburg book printing, printing services Johannesburg, book publishing Johannesburg"
-        canonical="https://www.creativebooks.co.za/bookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/book-printing-johannesburg"
         schema={{ '@graph': [schema] }}
       />
 
@@ -140,10 +140,10 @@ export default function BookPrintingJohannesburg() {
       {/* 12. Internal Links */}
       <InternalLinks
         links={[
-          { label: 'Book Printing', path: '/bookprinting' },
+          { label: 'Book Printing', path: '/book-printing' },
           { label: 'Book Layout & Typesetting', path: '/typesetting' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

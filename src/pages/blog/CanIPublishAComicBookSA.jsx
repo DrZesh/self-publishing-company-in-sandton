@@ -20,8 +20,8 @@ const article = {
     { q: 'How much does it cost to print a comic book in South Africa?', a: 'Costs depend on page count, colour requirements, and print run size. Creative Books SA provides custom quotes for all illustrated and full-colour printing projects.' },
   ],
   relatedLinks: [
-    { label: 'Book Printing', path: '/bookprinting' },
-    { label: 'Book Cover Design', path: '/bookcoverdesign' },
+    { label: 'Book Printing', path: '/book-printing' },
+    { label: 'Book Cover Design', path: '/book-cover-design' },
     { label: "Children's Book Illustrations", path: '/childrensbookillustrationsprinting' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

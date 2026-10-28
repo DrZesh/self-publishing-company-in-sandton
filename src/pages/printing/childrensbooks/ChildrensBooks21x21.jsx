@@ -119,7 +119,7 @@ export default function ChildrensBooks21x21() {
         title="21cm x 21cm Children's Book Printing in Johannesburg"
         description="Premium children's book printing in 21 x 21 cm format. Full colour, gloss cover, saddle stitched. Quality South African printing with nationwide delivery."
         keywords="children's book printing, 21x21 book printing, children's book printing South Africa, square format children's books"
-        canonical="https://www.creativebooks.co.za/printing/childrensbooks/ChildrensBooks21x21"
+        canonical="https://creativebooks.co.za/printing/childrensbooks/ChildrensBooks21x21"
       />
 
       {/* Hero */}
@@ -255,7 +255,7 @@ export default function ChildrensBooks21x21() {
             ))}
           </ol>
           <p className="mt-8 p-4 rounded-lg bg-copper/10 border border-copper/20 text-[#0F0F0F]/70">
-            If you don't have print-ready files yet, we can help. See our <Link to="/bookcoverdesign" className="text-copper font-semibold hover:underline">Book Cover Design</Link>, <Link to="/typesetting" className="text-copper font-semibold hover:underline">Book Typesetting</Link>, and <Link to="/childrensbookpackages" className="text-copper font-semibold hover:underline">Children's Book Packages</Link> services. Also check the <Link to="/resources/CoverSizeCalculator" className="text-copper font-semibold hover:underline">Cover Size Calculator</Link> for exact cover dimensions.
+            If you don't have print-ready files yet, we can help. See our <Link to="/book-cover-design" className="text-copper font-semibold hover:underline">Book Cover Design</Link>, <Link to="/typesetting" className="text-copper font-semibold hover:underline">Book Typesetting</Link>, and <Link to="/childrensbookpackages" className="text-copper font-semibold hover:underline">Children's Book Packages</Link> services. Also check the <Link to="/resources/CoverSizeCalculator" className="text-copper font-semibold hover:underline">Cover Size Calculator</Link> for exact cover dimensions.
           </p>
         </div>
       </section>
@@ -327,7 +327,7 @@ export default function ChildrensBooks21x21() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { title: "Children's Book Packages", desc: 'Complete packages including illustration, layout, cover design, and printing', path: '/childrensbookpackages' },
-              { title: 'Book Cover Design', desc: 'Custom children\'s book cover design from R3,850', path: '/bookcoverdesign' },
+              { title: 'Book Cover Design', desc: 'Custom children\'s book cover design from R3,850', path: '/book-cover-design' },
               { title: 'Book Typesetting', desc: 'Professional layout from R10.50 per page', path: '/typesetting' },
             ].map((item, i) => (
               <Link
@@ -347,7 +347,7 @@ export default function ChildrensBooks21x21() {
         links={[
           { label: 'Children\'s Book Printing', path: '/printing/childrensbooks' },
           { label: 'Children\'s Book Packages', path: '/childrensbookpackages' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
           { label: 'Book Typesetting', path: '/typesetting' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

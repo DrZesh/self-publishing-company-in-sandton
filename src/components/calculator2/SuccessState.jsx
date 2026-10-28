@@ -18,17 +18,20 @@ export default function SuccessState({ data, onReset }) {
         <h2 className="font-heading text-3xl font-bold text-[#1A1208] mb-3">Quote sent, {firstName}!</h2>
 
         <p className="text-[#2C2C2C]/60 mb-2">
-          Check your inbox — quote sent to <strong className="text-copper">{clientInfo?.email}</strong>.
+          ✓ Check your inbox — quote sent to <strong className="text-copper">{clientInfo?.email}</strong>.
+        </p>
+        <p className="text-[#2C2C2C]/60 mb-2">
+          ✓ Your project has been added to our pipeline.
         </p>
         <p className="text-[#2C2C2C]/50 text-sm mb-8">
-          We'll be in touch within 24 hours with a personalised response.
+          Our team will review your estimate and contact you within 24 hours.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/" className="px-8 py-3 bg-copper text-white rounded-full font-semibold hover:bg-copper/90 transition-all shadow-md">
             Back to homepage
           </Link>
-          <Link to="/selfpublishingpackagesinsouthafrica" className="px-8 py-3 border-2 border-copper text-copper rounded-full font-semibold hover:bg-copper/5 transition-all">
+          <Link to="/self-publishing-packages-in-south-africa" className="px-8 py-3 border-2 border-copper text-copper rounded-full font-semibold hover:bg-copper/5 transition-all">
             Browse our services
           </Link>
         </div>

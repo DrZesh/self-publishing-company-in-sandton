@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -48,10 +48,10 @@ export default function AdminContractPrepare() {
 
   useEffect(() => {
     const load = async () => {
-      const user = await base44.auth.me().catch(() => null);
+      const user = await platform.auth.me().catch(() => null);
       if (user) setAdminName(user.full_name || user.email || '');
 
-      const reqs = await base44.entities.ESignatureRequest.filter({ id });
+      const reqs = await platform.entities.ESignatureRequest.filter({ id });
       if (!reqs.length) { toast.error('Request not found'); navigate('/admin/esignatures'); return; }
       const req = reqs[0];
       setRequest(req);
@@ -62,7 +62,7 @@ export default function AdminContractPrepare() {
       // Auto-fill from linked contact if available
       let autoFill = {};
       if (req.contact_id) {
-        const contacts = await base44.entities.Contact.filter({ id: req.contact_id }).catch(() => []);
+        const contacts = await platform.entities.Contact.filter({ id: req.contact_id }).catch(() => []);
         if (contacts.length) {
           const c = contacts[0];
           setContact(c);
@@ -102,11 +102,11 @@ export default function AdminContractPrepare() {
       try {
         const blob = await fetch(adminSignature.dataUrl).then(r => r.blob());
         const file = new File([blob], 'admin_signature.png', { type: 'image/png' });
-        const uploaded = await base44.integrations.Core.UploadFile({ file });
+        const uploaded = await platform.integrations.Core.UploadFile({ file });
         if (uploaded?.file_url) sigUrl = uploaded.file_url;
       } catch { /* fallback to dataUrl */ }
 
-      await base44.functions.invoke('eSignatureActions', {
+      await platform.functions.invoke('eSignatureActions', {
         action: 'admin_sign',
         request_id: id,
         admin_signature_url: sigUrl,
@@ -115,7 +115,7 @@ export default function AdminContractPrepare() {
       });
 
       // Reload
-      const reqs = await base44.entities.ESignatureRequest.filter({ id });
+      const reqs = await platform.entities.ESignatureRequest.filter({ id });
       setRequest(reqs[0]);
       setStep(2);
       toast.success('Admin signature saved');
@@ -129,7 +129,7 @@ export default function AdminContractPrepare() {
   const handleSendToClient = async () => {
     setSending(true);
     try {
-      const res = await base44.functions.invoke('eSignatureActions', { action: 'send', request_id: id });
+      const res = await platform.functions.invoke('eSignatureActions', { action: 'send', request_id: id });
       if (res.data?.success) {
         toast.success('Contract sent to client for countersignature!');
         navigate('/admin/esignatures');

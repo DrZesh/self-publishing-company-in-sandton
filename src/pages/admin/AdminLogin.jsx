@@ -1,33 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import PageMeta from '../../components/shared/PageMeta';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { platform } from '@/api/platformClient';
+import { supabase } from '@/api/supabaseClient';
+import { safeRedirect } from '../../../supabase/functions/_shared/policy.js';
+
+const GoogleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 48 48">
+    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+    <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+    <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.022 35.026 44 30.038 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+  </svg>
+);
+
+const testimonials = [
+  {
+    avatarSrc: "https://randomuser.me/api/portraits/women/57.jpg",
+    name: "Sarah Chen",
+    handle: "@sarahdigital",
+    text: "Amazing platform! The user experience is seamless and the features are exactly what I needed."
+  },
+  {
+    avatarSrc: "https://randomuser.me/api/portraits/men/64.jpg",
+    name: "Marcus Johnson",
+    handle: "@marcustech",
+    text: "This service has transformed how I work. Clean design, powerful features, and excellent support."
+  },
+];
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [locked, setLocked] = useState(false);
 
-  // Check if user is already authenticated as admin
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
+        const isAuthenticated = await platform.auth.isAuthenticated();
         if (isAuthenticated) {
-          const user = await base44.auth.me();
-          if (user?.role === 'admin') {
-            navigate('/admin/dashboard');
+          const user = await platform.auth.me();
+          if (['admin', 'super_user', 'standard_user'].includes(user?.role)) {
+            navigate(safeRedirect(new URLSearchParams(location.search).get('next') || '/admin/dashboard', location.origin));
           } else {
-            setError('You do not have admin access. Contact your administrator.');
+            navigate('/my-portal');
           }
         }
       } catch (err) {
@@ -42,59 +62,23 @@ export default function AdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (locked) {
-      setError('Too many login attempts. Please try again in 15 minutes.');
-      return;
-    }
-
-    if (!email || !password) {
-      setError('Please enter both email and password.');
-      return;
-    }
-
     setLoading(true);
-
     try {
-      // Use Base44's redirectToLogin for OAuth/SSO authentication
-      // For now, we check if user exists and has admin role after they log in
-      // Base44 handles the actual authentication
-      
-      // Redirect to Base44's login page
-      // The user will be redirected back here after login via redirectToLogin callback
-      await base44.auth.redirectToLogin('/admin/login');
-      
-      // After redirect back, check role
-      const user = await base44.auth.me();
-      
-      if (user?.role === 'admin') {
+      const form = new FormData(e.currentTarget);
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: String(form.get('email')), password: String(form.get('password')) });
+      if (signInError) throw signInError;
+      const user = await platform.auth.me();
+      if (['admin', 'super_user', 'standard_user'].includes(user?.role)) {
         if (rememberMe) {
           localStorage.setItem('adminRememberMe', 'true');
           localStorage.setItem('adminEmail', user.email);
         }
-        navigate('/admin/dashboard');
+        navigate(safeRedirect(new URLSearchParams(location.search).get('next') || '/admin/dashboard', location.origin));
       } else {
-        setLoginAttempts(prev => {
-          const newAttempts = prev + 1;
-          if (newAttempts >= 5) {
-            setLocked(true);
-            setTimeout(() => setLocked(false), 15 * 60 * 1000);
-          }
-          return newAttempts;
-        });
-        setError('You do not have admin access. Contact your administrator.');
+        navigate('/my-portal');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setLoginAttempts(prev => {
-        const newAttempts = prev + 1;
-        if (newAttempts >= 5) {
-          setLocked(true);
-          setTimeout(() => setLocked(false), 15 * 60 * 1000);
-        }
-        return newAttempts;
-      });
-      setError('Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -102,135 +86,146 @@ export default function AdminLogin() {
 
   if (checkingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f9fc] to-[#eef1f7]">
-        <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-[#B8955B]" />
-          <span className="text-[#2B2B2B]">Checking authentication...</span>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f9fc] to-[#eef1f7] p-4">
+    <div className="h-screen flex flex-col md:flex-row overflow-hidden bg-white">
       <PageMeta title="Admin Login" noindex={true} />
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
-        {/* Logo */}
-        <div className="text-center mb-12">
-          <div className="inline-block w-12 h-12 rounded-lg bg-[#B8955B] mb-4" />
-          <h1 className="text-2xl font-bold text-[#0B1220]">Creative Books SA</h1>
-          <p className="text-sm text-[#2B2B2B]/60 mt-2">Admin Portal</p>
-        </div>
 
-        {/* Login Card */}
-        <div
-          className="rounded-2xl p-8 mb-6"
-          style={{
-            background: 'rgba(255,255,255,0.85)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.9)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
-          }}
-        >
-          <h2 className="text-xl font-bold text-[#0B1220] mb-6">Log in to your account</h2>
+      {/* ── LEFT: Sign-in form ── */}
+      <section className="flex-1 flex items-center justify-center p-10 bg-white">
+        <div className="w-full max-w-sm space-y-6">
+
+          <div className="space-y-2">
+            <h1 className="text-5xl font-semibold text-gray-900 tracking-tight">Welcome</h1>
+            <p className="text-gray-500 text-sm">Access your account and continue your journey with us</p>
+          </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email Field */}
-            <div>
-              <label className="block text-sm font-medium text-[#0B1220] mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-[#B8955B]" />
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Email Address</label>
+              <div className="rounded-xl border border-gray-200 bg-gray-50/50 focus-within:border-gray-400 focus-within:bg-white transition-colors">
                 <input
+                  name="email" required autoComplete="username"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-[#ddd] rounded-lg focus:outline-none focus:border-[#B8955B]"
-                  placeholder="admin@example.com"
-                  disabled={locked}
+                  placeholder="Enter your email address"
+                  className="w-full bg-transparent text-sm px-4 py-3 rounded-xl focus:outline-none text-gray-900 placeholder:text-gray-400"
                 />
               </div>
             </div>
 
-            {/* Password Field */}
-            <div>
-              <label className="block text-sm font-medium text-[#0B1220] mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 w-5 h-5 text-[#B8955B]" />
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <div className="rounded-xl border border-gray-200 bg-gray-50/50 focus-within:border-gray-400 focus-within:bg-white transition-colors">
+                <div className="relative">
+                  <input
+                    name="password" required autoComplete="current-password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    className="w-full bg-transparent text-sm px-4 py-3 pr-12 rounded-xl focus:outline-none text-gray-900 placeholder:text-gray-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center"
+                  >
+                    {showPassword
+                      ? <EyeOff className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                      : <Eye className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Remember me + Reset */}
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 border border-[#ddd] rounded-lg focus:outline-none focus:border-[#B8955B]"
-                  placeholder="••••••••"
-                  disabled={locked}
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 accent-gray-900"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-[#2B2B2B]/60"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember Me */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={locked}
-                className="w-4 h-4 rounded border-[#ddd]"
-              />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-[#2B2B2B]/70">
-                Remember me (30 days)
+                <span className="text-gray-700">Keep me signed in</span>
               </label>
+              <button
+                type="button"
+                onClick={async () => { const email = document.querySelector('input[name=email]').value; if (!email) { setError('Enter your email address first.'); return; } const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/admin/reset-password' }); setError(error ? error.message : 'Check your email for a password reset link.'); }}
+                className="text-violet-500 hover:text-violet-600 transition-colors text-sm"
+              >
+                Reset password
+              </button>
             </div>
 
-            {/* Login Button */}
+            {/* Sign In Button */}
             <button
               type="submit"
-              disabled={loading || locked}
-              className="w-full py-2.5 bg-[#B8955B] text-white font-medium rounded-lg hover:bg-[#a07d4a] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              disabled={loading}
+              className="w-full rounded-2xl bg-gray-900 py-3.5 font-medium text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
             >
-              {loading ? 'Logging in...' : 'Log In'}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</> : 'Sign In'}
             </button>
           </form>
 
-          {/* Forgotten Password */}
-          <div className="mt-4 text-center">
-            <button className="text-sm text-[#B8955B] hover:text-[#a07d4a]">
-              Forgotten password?
-            </button>
+          {/* Divider */}
+          <div className="relative flex items-center justify-center">
+            <span className="w-full border-t border-gray-200"></span>
+            <span className="px-4 text-xs text-gray-400 bg-white absolute whitespace-nowrap">Or continue with</span>
+          </div>
+
+          {/* Google Button */}
+          <button
+            onClick={async () => { const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + '/admin/login' } }); if (error) setError(error.message); }}
+            className="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-2xl py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
+
+          {/* Create account */}
+          <p className="text-center text-sm text-gray-500">
+            New to our platform?{' '}
+            <a href="mailto:info@creativebooks.co.za" className="text-violet-500 hover:text-violet-600 transition-colors">
+              Create Account
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* ── RIGHT: Hero image + testimonial ── */}
+      <section className="hidden md:block flex-1 relative p-4">
+        <div
+          className="absolute inset-4 rounded-3xl bg-cover bg-center"
+          style={{
+            backgroundImage: `url(https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1400&q=80)`,
+          }}
+        />
+
+        {/* Testimonial card */}
+        <div className="absolute bottom-10 left-8">
+          <div className="flex items-start gap-3 rounded-2xl bg-white/85 backdrop-blur-xl border border-white/60 p-4 w-64 shadow-lg">
+            <img src={testimonials[0].avatarSrc} className="h-10 w-10 object-cover rounded-xl flex-shrink-0" alt={testimonials[0].name} />
+            <div className="text-sm leading-snug">
+              <p className="font-semibold text-gray-900">{testimonials[0].name}</p>
+              <p className="text-gray-400 text-xs">{testimonials[0].handle}</p>
+              <p className="mt-1.5 text-gray-700 text-xs">{testimonials[0].text}</p>
+            </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-[#2B2B2B]/50 border-t border-[#ddd]/30 pt-6">
-          Creative Books SA — Admin Portal
-        </p>
-      </motion.div>
+      </section>
     </div>
   );
 }

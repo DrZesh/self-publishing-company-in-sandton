@@ -290,10 +290,9 @@ export default function Proofreading() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Proofreading Services"
-        description="Professional proofreading services for authors who need clear, polished and publication-ready manuscripts."
-        description="Final-stage manuscript proofreading from R0.25 per word for South African authors. Catch typos, grammar and formatting errors before your book goes to print."
-        canonical="https://www.creativebooks.co.za/proofreading"
+        title="Proofreading Services in South Africa | Creative Books SA"
+        description="Accurate, affordable proofreading services in South Africa for books, theses & manuscripts. Catch every error before you publish. Free sample - get a quote."
+        canonical="https://creativebooks.co.za/proofreading"
         schema={{
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
@@ -319,7 +318,7 @@ export default function Proofreading() {
               Proofreading Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Proofreading Services
+              Proofreading Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">
               Professional Manuscript Proofreading for Authors Preparing to Publish
@@ -637,7 +636,7 @@ export default function Proofreading() {
                 Request a Proofreading Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages"
+              <Link to="/publishingpackages/a5"
                 className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
@@ -648,11 +647,11 @@ export default function Proofreading() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Editing Services',      path: '/bookediting' },
-        { label: 'Copy Editing',               path: '/copyediting' },
-        { label: 'Line Editing',               path: '/bookediting' },
+        { label: 'Book Editing Services',      path: '/book-editing' },
+        { label: 'Copy Editing',               path: '/book-editing' },
+        { label: 'Line Editing',               path: '/book-editing' },
         { label: 'Academic Editing',           path: '/academicediting' },
-        { label: 'Publishing Packages',        path: '/publishingpackages' },
+        { label: 'Publishing Packages',        path: '/publishingpackages/a5' },
         { label: 'Request a Quote',            path: '/getquote' },
       ]} light />
     </div>

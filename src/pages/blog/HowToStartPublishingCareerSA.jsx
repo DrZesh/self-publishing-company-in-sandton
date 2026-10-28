@@ -25,7 +25,7 @@ const article = {
   ],
   relatedLinks: [
     { label: 'What Publishing Jobs Are Available', path: '/whatpublishingjobsareavailableinsouthafrica' },
-    { label: 'Book Editing Services', path: '/bookediting' },
+    { label: 'Book Editing Services', path: '/book-editing' },
     { label: 'Book Typesetting', path: '/typesetting' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

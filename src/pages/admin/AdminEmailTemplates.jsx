@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Plus, Pencil, Trash2, X, Save, FileText, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
@@ -196,7 +196,7 @@ export default function AdminEmailTemplates() {
   const [catFilter, setCatFilter] = useState('all');
 
   useEffect(() => {
-    base44.entities.EmailTemplate.list('-created_date', 100).then(data => {
+    platform.entities.EmailTemplate.list('-created_date', 100).then(data => {
       setTemplates(data);
       setLoading(false);
     });
@@ -204,12 +204,12 @@ export default function AdminEmailTemplates() {
 
   const handleSave = async (data) => {
     if (editingTemplate?.id) {
-      await base44.entities.EmailTemplate.update(editingTemplate.id, data);
+      await platform.entities.EmailTemplate.update(editingTemplate.id, data);
       setTemplates(prev => prev.map(t => t.id === editingTemplate.id ? { ...t, ...data } : t));
       if (selectedTemplate?.id === editingTemplate.id) setSelectedTemplate(prev => ({ ...prev, ...data }));
       toast.success('Template updated');
     } else {
-      const created = await base44.entities.EmailTemplate.create(data);
+      const created = await platform.entities.EmailTemplate.create(data);
       setTemplates(prev => [created, ...prev]);
       toast.success('Template created');
     }
@@ -219,7 +219,7 @@ export default function AdminEmailTemplates() {
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this template?')) return;
-    await base44.entities.EmailTemplate.delete(id);
+    await platform.entities.EmailTemplate.delete(id);
     setTemplates(prev => prev.filter(t => t.id !== id));
     if (selectedTemplate?.id === id) setSelectedTemplate(null);
     toast.success('Template deleted');
@@ -229,7 +229,7 @@ export default function AdminEmailTemplates() {
     if (!confirm('This will create 7 starter templates. Continue?')) return;
     setSeeding(true);
     for (const tpl of STARTER_TEMPLATES) {
-      const created = await base44.entities.EmailTemplate.create({ ...tpl, is_active: true });
+      const created = await platform.entities.EmailTemplate.create({ ...tpl, is_active: true });
       setTemplates(prev => [created, ...prev]);
     }
     setSeeding(false);

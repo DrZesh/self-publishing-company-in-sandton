@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { X, Send, Paperclip, ChevronDown, Bold, Italic, List, Link, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -47,7 +47,7 @@ export default function EmailCompose({ contact, prefill = {}, onClose, onSent, t
       await new Promise(resolve => {
         reader.onload = async (ev) => {
           const base64 = ev.target.result.split(',')[1];
-          const res = await base44.functions.invoke('sendContactEmail', {
+          const res = await platform.functions.invoke('sendContactEmail', {
             action: 'upload_attachment',
             file_data: base64,
             file_name: file.name,
@@ -86,7 +86,7 @@ export default function EmailCompose({ contact, prefill = {}, onClose, onSent, t
     if (!body_html.replace(/<[^>]*>/g, '').trim()) { toast.error('Email body is empty'); return; }
 
     setSending(true);
-    const res = await base44.functions.invoke('sendContactEmail', {
+    const res = await platform.functions.invoke('sendContactEmail', {
       action: 'send',
       contact_id: contact?.id || null,
       to: allTo,

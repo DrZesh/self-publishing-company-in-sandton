@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { PenTool, Upload, FileSignature, ExternalLink, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,7 +59,7 @@ export default function SigningMethodSelector({ contacts, onClose, onCreated }) 
     setContractFile(file);
     setSaving(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await platform.integrations.Core.UploadFile({ file });
       setForm(p => ({ ...p, contract_file_url: file_url }));
     } catch (err) {
       toast.error('Upload failed');
@@ -72,7 +72,7 @@ export default function SigningMethodSelector({ contacts, onClose, onCreated }) 
     if (!form.contact_id || !form.title) { toast.error('Contact and title are required'); return; }
     setSaving(true);
     try {
-      await base44.entities.Contract.create({
+      await platform.entities.Contract.create({
         contact_id: form.contact_id,
         title: form.title,
         book_title: form.book_title,

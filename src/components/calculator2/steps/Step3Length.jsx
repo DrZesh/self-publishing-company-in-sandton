@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import StepCard from '../StepCard';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 const WORDS_PER_PAGE = 250;
 
@@ -29,7 +29,7 @@ export default function Step3Length({ answers, update, onNext, onBack }) {
     setFlashWords(true);
     clearTimeout(wordsTimer.current);
     wordsTimer.current = setTimeout(() => setFlashWords(false), 400);
-    base44.analytics.track({ eventName: 'pages_changed', properties: { pages: p } });
+    platform.analytics.track({ eventName: 'pages_changed', properties: { pages: p } });
   };
 
   const handleWordsChange = (val) => {
@@ -39,7 +39,7 @@ export default function Step3Length({ answers, update, onNext, onBack }) {
     setFlashPages(true);
     clearTimeout(pagesTimer.current);
     pagesTimer.current = setTimeout(() => setFlashPages(false), 400);
-    base44.analytics.track({ eventName: 'words_changed', properties: { words: w } });
+    platform.analytics.track({ eventName: 'words_changed', properties: { words: w } });
   };
 
   const hasError = errors.pages || errors.words;

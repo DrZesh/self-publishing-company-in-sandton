@@ -22,8 +22,8 @@ const article = {
     { q: 'How can I tell if a publisher is legitimate?', a: 'Look for transparent pricing, a professional portfolio of completed books, clear contract terms, and no guaranteed-success promises. Legitimate publishers either invest in you (traditional) or charge clear service fees (self-publishing).' },
   ],
   relatedLinks: [
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-    { label: 'Book Publishing', path: '/bookpublishing' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+    { label: 'Book Publishing', path: '/book-publishing' },
     { label: 'Questions to Ask a Publisher', path: '/questionstoaskapublisher' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

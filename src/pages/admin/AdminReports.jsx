@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, DollarSign, Users, FileText, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Users, FileText, CheckCircle, Clock, AlertTriangle, Download } from 'lucide-react';
 
 const COPPER = '#B87333';
 const COLORS = ['#B87333', '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16'];
@@ -13,12 +13,34 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 export default function AdminReports() {
   const [period, setPeriod] = useState('12m');
 
-  const { data: invoices = [] } = useQuery({ queryKey: ['invoices'], queryFn: () => base44.entities.Invoice.list('-created_date', 500) });
-  const { data: payments = [] } = useQuery({ queryKey: ['payments'], queryFn: () => base44.entities.Payment.list('-payment_date', 500) });
-  const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: () => base44.entities.Project.list('-created_date', 500) });
-  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => base44.entities.Contact.list('-created_date', 500) });
-  const { data: quotes = [] } = useQuery({ queryKey: ['quotes'], queryFn: () => base44.entities.Quote.list('-created_date', 500) });
-  const { data: tasks = [] } = useQuery({ queryKey: ['tasks'], queryFn: () => base44.entities.Task.list('-due_date', 300) });
+  const { data: invoices = [] } = useQuery({ queryKey: ['invoices'], queryFn: () => platform.entities.Invoice.list('-created_date', 500) });
+  const { data: payments = [] } = useQuery({ queryKey: ['payments'], queryFn: () => platform.entities.Payment.list('-payment_date', 500) });
+  const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: () => platform.entities.Project.list('-created_date', 500) });
+  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => platform.entities.Contact.list('-created_date', 500) });
+  const { data: quotes = [] } = useQuery({ queryKey: ['quotes'], queryFn: () => platform.entities.Quote.list('-created_date', 500) });
+  const { data: tasks = [] } = useQuery({ queryKey: ['tasks'], queryFn: () => platform.entities.Task.list('-due_date', 300) });
+
+  const exportReportCsv = () => {
+    const rows = [
+      ['Metric', 'Value'],
+      ['Total Revenue Collected', `R ${totalRevenue.toLocaleString()}`],
+      ['Outstanding Balance', `R ${outstandingBalance.toLocaleString()}`],
+      ['Active Projects', activeProjects],
+      ['Quote Conversion Rate', `${conversionRate}%`],
+      ['Total Contacts', contacts.length],
+      ['Pending Tasks', pendingTasks],
+      ['Overdue Invoices', overdueInvoices],
+      ['Total Projects', projects.length],
+      [],
+      ['Month', 'Revenue', 'Invoices'],
+      ...revenueByMonth.map(r => [r.month, r.revenue, r.invoices]),
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `report_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
 
   // ── Revenue by Month ──────────────────────────────────────────────────────
   const revenueByMonth = useMemo(() => {
@@ -74,6 +96,20 @@ export default function AdminReports() {
     return Object.entries(map).map(([name, value]) => ({ name, value }));
   }, [quotes]);
 
+  // ── Contact Growth ────────────────────────────────────────────────────────
+  const contactGrowth = useMemo(() => {
+    const now = new Date();
+    const monthCount = period === '12m' ? 12 : period === '6m' ? 6 : 3;
+    const result = [];
+    for (let i = monthCount - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const count = contacts.filter(c => (c.created_date || '').startsWith(key)).length;
+      result.push({ month: MONTHS[d.getMonth()], contacts: count });
+    }
+    return result;
+  }, [contacts, period]);
+
   // ── Payment Method Breakdown ──────────────────────────────────────────────
   const paymentMethodData = useMemo(() => {
     const map = {};
@@ -97,29 +133,33 @@ export default function AdminReports() {
 
   return (
     <AdminLayout>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)' }}>
       <div className="space-y-7">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Reports &amp; Analytics</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Business performance overview</p>
+            <h1 className="text-2xl font-bold text-white">Reports &amp; Analytics</h1>
+            <p className="text-sm text-white/50 mt-0.5">Business performance overview</p>
           </div>
           <div className="flex gap-2">
             {['3m', '6m', '12m'].map(p => (
-              <button key={p} onClick={() => setPeriod(p)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+              <button key={p} onClick={() => setPeriod(p)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-[#B87333] text-white' : 'border border-white/20 text-white/60 hover:bg-white/10'}`}>
                 {p === '3m' ? '3 Months' : p === '6m' ? '6 Months' : '12 Months'}
               </button>
             ))}
+            <button onClick={exportReportCsv} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-white/20 text-white/60 hover:bg-white/10 transition-colors">
+              <Download className="w-4 h-4" /> Export CSV
+            </button>
           </div>
         </div>
 
         {/* KPI Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {kpis.map(kpi => (
-            <div key={kpi.label} className="bg-white rounded-xl border border-gray-100 p-4">
+            <div key={kpi.label} className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-gray-500 leading-tight">{kpi.label}</p>
-                <div className={`w-8 h-8 rounded-lg ${kpi.bg} flex items-center justify-center`}>
+                <p className="text-xs text-white/60 leading-tight">{kpi.label}</p>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
                 </div>
               </div>
@@ -129,8 +169,8 @@ export default function AdminReports() {
         </div>
 
         {/* Revenue Trend */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="text-base font-semibold text-gray-800 mb-5">Revenue Collected by Month</h2>
+        <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <h2 className="text-base font-semibold text-white mb-5">Revenue Collected by Month</h2>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={revenueByMonth}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
@@ -145,10 +185,10 @@ export default function AdminReports() {
         {/* 3 Column Charts */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Service Type Breakdown */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h2 className="text-sm font-semibold text-gray-800 mb-4">Projects by Service Type</h2>
+          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-sm font-semibold text-white mb-4">Projects by Service Type</h2>
             {serviceBreakdown.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
+              <p className="text-sm text-white/40 text-center py-8">No data yet</p>
             ) : (
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
@@ -164,19 +204,19 @@ export default function AdminReports() {
                 <div key={item.name} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-                    <span className="text-gray-600 truncate max-w-[120px]">{item.name}</span>
+                    <span className="text-white/60 truncate max-w-[120px]">{item.name}</span>
                   </div>
-                  <span className="font-medium text-gray-700">{item.value}</span>
+                  <span className="font-medium text-white/80">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Quote Conversion */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h2 className="text-sm font-semibold text-gray-800 mb-4">Quote Status Breakdown</h2>
+          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-sm font-semibold text-white mb-4">Quote Status Breakdown</h2>
             {quoteStatusData.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
+              <p className="text-sm text-white/40 text-center py-8">No data yet</p>
             ) : (
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
@@ -192,19 +232,19 @@ export default function AdminReports() {
                 <div key={item.name} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-                    <span className="text-gray-600">{item.name}</span>
+                    <span className="text-white/60">{item.name}</span>
                   </div>
-                  <span className="font-medium text-gray-700">{item.value}</span>
+                  <span className="font-medium text-white/80">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Payment Methods */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h2 className="text-sm font-semibold text-gray-800 mb-4">Revenue by Payment Method</h2>
+          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-sm font-semibold text-white mb-4">Revenue by Payment Method</h2>
             {paymentMethodData.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
+              <p className="text-sm text-white/40 text-center py-8">No data yet</p>
             ) : (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={paymentMethodData} layout="vertical">
@@ -219,10 +259,24 @@ export default function AdminReports() {
           </div>
         </div>
 
+        {/* Contact Growth */}
+        <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <h2 className="text-base font-semibold text-white mb-5">New Contacts per Month</h2>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={contactGrowth}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#9ca3af' }} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
+              <Tooltip formatter={v => [v, 'New Contacts']} contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8, color: '#fff' }} />
+              <Line type="monotone" dataKey="contacts" stroke="#10b981" strokeWidth={2.5} dot={{ fill: '#10b981', r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
         {/* Pipeline Stage Snapshot */}
         {stageData.length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 p-6">
-            <h2 className="text-base font-semibold text-gray-800 mb-5">Active Pipeline Snapshot</h2>
+          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <h2 className="text-base font-semibold text-white mb-5">Active Pipeline Snapshot</h2>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={stageData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
@@ -234,6 +288,7 @@ export default function AdminReports() {
             </ResponsiveContainer>
           </div>
         )}
+      </div>
       </div>
     </AdminLayout>
   );

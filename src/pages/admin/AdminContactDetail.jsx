@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ContactEmailThread from '@/components/admin/email/ContactEmailThread';
 import CommunicationTimeline from '@/components/admin/contacts/CommunicationTimeline';
-import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Globe, User, Building, MapPin, BookOpen, Edit2, Save, X, Plus, Eye } from 'lucide-react';
 import ContactTimeline from '@/components/admin/ContactTimeline';
+import WorkflowPanel from '@/components/admin/workflow/WorkflowPanel';
+import EmailTrackingPanel from '@/components/admin/contacts/EmailTrackingPanel';
+import Contact360Widget from '@/components/admin/contacts/Contact360Widget';
 import { toast } from 'sonner';
-import { PIPELINE_STAGES } from '@/components/pipeline/KanbanBoard';
 
-const TABS = ['Overview', 'Timeline', 'Emails', 'Notes'];
+const TABS = ['Overview', '360° View', 'Workflow', 'Timeline', 'Emails', 'Tracking', 'Notes'];
 
 function InfoRow({ icon: IconComp, label, value }) {
   if (!value) return null;
@@ -39,7 +41,7 @@ export default function AdminContactDetail() {
 
   useEffect(() => {
     if (!contactId) { navigate('/admin/contacts'); return; }
-    base44.entities.Contact.filter({ id: contactId }).then(data => {
+    platform.entities.Contact.filter({ id: contactId }).then(data => {
       if (!data.length) { navigate('/admin/contacts'); return; }
       setContact(data[0]);
       setForm(data[0]);
@@ -49,7 +51,7 @@ export default function AdminContactDetail() {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.Contact.update(contact.id, form);
+    await platform.entities.Contact.update(contact.id, form);
     setContact({ ...contact, ...form });
     setSaving(false);
     setEditing(false);
@@ -99,6 +101,10 @@ export default function AdminContactDetail() {
               className="flex items-center gap-1.5 px-3 py-2 bg-[#B87333] text-white rounded-xl text-sm font-semibold hover:bg-[#a06428]">
               <Mail className="w-4 h-4" /> Email
             </button>
+            <button onClick={() => { setTab('Tracking'); }}
+              className="flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white rounded-xl text-sm font-semibold hover:bg-green-700">
+              <Eye className="w-4 h-4" /> Tracking
+            </button>
             <button onClick={() => setEditing(!editing)}
               className="flex items-center gap-1.5 px-3 py-2 border border-black/15 text-black/60 rounded-xl text-sm font-semibold hover:bg-black/5">
               {editing ? <X className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
@@ -117,28 +123,14 @@ export default function AdminContactDetail() {
           ))}
         </div>
 
-        {/* Tab: Overview */}
+        {/* Tab Content */}
+        {tab === '360° View' && <Contact360Widget contactId={contact.id} />}
+        {tab === 'Workflow' && <WorkflowPanel contactId={contact.id} onClose={() => setTab('Overview')} />}
+        
         {tab === 'Overview' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
               <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-3">Contact Info</h2>
-              {editing ? (
-                <div className="space-y-3">
-                  {[
-                    ['Full Name', 'full_name'],
-                    ['Email', 'email'],
-                    ['Phone', 'phone'],
-                    ['Company', 'company'],
-                    ['Website', 'website_url'],
-                  ].map(([label, key]) => (
-                    <div key={key}>
-                      <label className="block text-xs font-semibold text-black/40 mb-1">{label}</label>
-                      <input value={form[key] || ''} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                        className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
                 <div>
                   <InfoRow icon={Mail} label="Email" value={contact.email} />
                   <InfoRow icon={Phone} label="Phone" value={contact.phone} />
@@ -147,63 +139,20 @@ export default function AdminContactDetail() {
                   <InfoRow icon={User} label="Role" value={contact.role} />
                   <InfoRow icon={MapPin} label="Location" value={[contact.city, contact.province, contact.country].filter(Boolean).join(', ')} />
                 </div>
-              )}
             </div>
 
             <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
               <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-3">Book & Pipeline</h2>
-              {editing ? (
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-black/40 mb-1">Book Title</label>
-                    <input value={form.book_title || ''} onChange={e => setForm(f => ({ ...f, book_title: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-black/40 mb-1">Pipeline Stage</label>
-                    <select value={form.pipeline_stage || ''} onChange={e => setForm(f => ({ ...f, pipeline_stage: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]">
-                      {PIPELINE_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-black/40 mb-1">Pipeline Value (R)</label>
-                    <input type="number" value={form.pipeline_value || ''} onChange={e => setForm(f => ({ ...f, pipeline_value: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-black/40 mb-1">Lifecycle Stage</label>
-                    <select value={form.lifecycle_stage || ''} onChange={e => setForm(f => ({ ...f, lifecycle_stage: e.target.value }))}
-                      className="w-full px-3 py-2 border border-black/15 rounded-xl text-sm focus:outline-none focus:border-[#B87333]">
-                      {['subscriber', 'lead', 'customer', 'repeat_customer', 'past_customer'].map(s => (
-                        <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              ) : (
                 <div>
                   <InfoRow icon={BookOpen} label="Book Title" value={contact.book_title} />
                   <InfoRow icon={User} label="Lifecycle" value={contact.lifecycle_stage?.replace(/_/g, ' ')} />
                   <InfoRow icon={User} label="Pipeline Stage" value={contact.pipeline_stage} />
                   {contact.pipeline_value && <InfoRow icon={User} label="Deal Value" value={`R ${Number(contact.pipeline_value).toLocaleString('en-ZA')}`} />}
                 </div>
-              )}
             </div>
-
-            {editing && (
-              <div className="md:col-span-2 flex gap-3">
-                <button onClick={handleSave} disabled={saving}
-                  className="flex items-center gap-2 px-5 py-3 bg-[#B87333] text-white rounded-xl font-semibold text-sm hover:bg-[#a06428] disabled:opacity-50">
-                  <Save className="w-4 h-4" /> {saving ? 'Saving…' : 'Save Changes'}
-                </button>
-                <button onClick={() => { setEditing(false); setForm(contact); }} className="px-5 py-3 border border-black/15 text-black/60 rounded-xl font-semibold text-sm hover:bg-black/5">Cancel</button>
-              </div>
-            )}
           </div>
         )}
 
-        {/* Tab: Timeline */}
         {tab === 'Timeline' && (
           <div className="space-y-5">
             <CommunicationTimeline contactId={contact.id} />
@@ -214,14 +163,16 @@ export default function AdminContactDetail() {
           </div>
         )}
 
-        {/* Tab: Emails */}
         {tab === 'Emails' && (
           <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
             <ContactEmailThread contact={contact} />
           </div>
         )}
 
-        {/* Tab: Notes */}
+        {tab === 'Tracking' && (
+          <EmailTrackingPanel contactId={contact.id} onClose={() => setTab('Overview')} />
+        )}
+
         {tab === 'Notes' && (
           <div className="bg-white rounded-2xl border border-black/8 p-5 shadow-sm">
             <h2 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-3">Internal Notes</h2>
@@ -229,7 +180,7 @@ export default function AdminContactDetail() {
               placeholder="Private notes about this contact…"
               className="w-full px-4 py-3 border border-black/10 rounded-xl text-sm focus:outline-none focus:border-[#B87333] resize-none" />
             <button onClick={async () => {
-              await base44.entities.Contact.update(contact.id, { description: notes });
+              await platform.entities.Contact.update(contact.id, { description: notes });
               setContact(c => ({ ...c, description: notes }));
               toast.success('Notes saved');
             }} className="mt-3 px-4 py-2 bg-[#B87333] text-white text-sm rounded-xl font-semibold hover:bg-[#a06428] transition-colors">

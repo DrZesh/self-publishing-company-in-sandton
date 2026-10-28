@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { Plus, Trash2, Zap, ToggleLeft, ToggleRight } from 'lucide-react';
 
@@ -39,26 +39,26 @@ export default function AutomationRulesTab() {
 
   const { data: rules = [], isLoading } = useQuery({
     queryKey: ['automation-rules'],
-    queryFn: () => base44.entities.AutomationRule.list('sort_order', 100),
+    queryFn: () => platform.entities.AutomationRule.list('sort_order', 100),
   });
 
   const { data: templates = [] } = useQuery({
     queryKey: ['message-templates'],
-    queryFn: () => base44.entities.MessageTemplate.list('name', 100),
+    queryFn: () => platform.entities.MessageTemplate.list('name', 100),
   });
 
   const toggle = useMutation({
-    mutationFn: ({ id, val }) => base44.entities.AutomationRule.update(id, { is_active: val }),
+    mutationFn: ({ id, val }) => platform.entities.AutomationRule.update(id, { is_active: val }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['automation-rules'] }),
   });
 
   const remove = useMutation({
-    mutationFn: (id) => base44.entities.AutomationRule.delete(id),
+    mutationFn: (id) => platform.entities.AutomationRule.delete(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['automation-rules'] }); toast.success('Rule deleted'); },
   });
 
   const create = useMutation({
-    mutationFn: () => base44.entities.AutomationRule.create({ ...form, sort_order: rules.length }),
+    mutationFn: () => platform.entities.AutomationRule.create({ ...form, sort_order: rules.length }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['automation-rules'] }); setShowForm(false); setForm(BLANK); toast.success('Rule created'); },
   });
 

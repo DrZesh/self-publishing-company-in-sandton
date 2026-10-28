@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { CheckCircle, XCircle, Clock, Send, Mail, AlertTriangle } from 'lucide-react';
 
@@ -17,30 +17,30 @@ export default function EmailQueueTab() {
 
   const { data: queue = [], isLoading } = useQuery({
     queryKey: ['message-queue'],
-    queryFn: () => base44.entities.MessageQueue.list('-created_date', 100),
+    queryFn: () => platform.entities.MessageQueue.list('-created_date', 100),
   });
 
   const approve = useMutation({
     mutationFn: async (item) => {
-      await base44.entities.MessageQueue.update(item.id, {
+      await platform.entities.MessageQueue.update(item.id, {
         status: 'scheduled',
         approved_by: 'admin',
         approved_at: new Date().toISOString(),
       });
       // Fire the actual send
-      await base44.functions.invoke('sendBrandedEmail', {
+      await platform.functions.invoke('sendBrandedEmail', {
         to: item.recipient,
         subject: item.rendered_subject,
         html: item.rendered_body,
       });
-      await base44.entities.MessageQueue.update(item.id, { status: 'sent', sent_at: new Date().toISOString() });
+      await platform.entities.MessageQueue.update(item.id, { status: 'sent', sent_at: new Date().toISOString() });
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['message-queue'] }); toast.success('Email approved & sent'); },
     onError: () => toast.error('Failed to send'),
   });
 
   const cancel = useMutation({
-    mutationFn: (id) => base44.entities.MessageQueue.update(id, { status: 'cancelled' }),
+    mutationFn: (id) => platform.entities.MessageQueue.update(id, { status: 'cancelled' }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['message-queue'] }); toast.success('Cancelled'); },
   });
 

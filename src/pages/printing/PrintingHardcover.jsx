@@ -13,7 +13,7 @@ export default function PrintingHardcover() {
       <PageMeta
         title="Hardcover Book Printing in Johannesburg"
         description="Premium hardcover book printing in SA — case binding, dust jackets, foil stamping. Perfect for memoirs, special editions and corporate gifts."
-        canonical="https://www.creativebooks.co.za/printing/hardcover"
+        canonical="https://creativebooks.co.za/printing/hardcover"
       />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">
@@ -53,8 +53,8 @@ export default function PrintingHardcover() {
         { label: 'A5 Printing', path: '/printing/a5' },
         { label: '6x9 Printing', path: '/printing/6x9' },
         { label: "Children's Book Printing", path: '/printing/childrensbooks' },
-        { label: 'Softcover Printing', path: '/softcoverprinting' },
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+        { label: 'Softcover Printing', path: '/book-printing' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
         { label: 'Get a Quote', path: '/getquote' },
       ]} light />
       <CTASection title="Ready to Print Your Hardcover Book?" description="Get a free hardcover printing quote from our Johannesburg team within 24 hours." />

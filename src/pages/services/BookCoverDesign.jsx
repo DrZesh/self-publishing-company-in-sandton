@@ -6,7 +6,7 @@ import PricingButtons from '../../components/shared/PricingButtons';
 import InternalLinks from '../../components/shared/InternalLinks';
 import PageMeta from '../../components/shared/PageMeta';
 import QuoteFormSection from '../../components/shared/QuoteFormSection';
-import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
+import { serviceSchema, faqSchema, breadcrumbSchema } from '../../lib/seo/schemas';
 
 const printPackages = [
   {
@@ -160,27 +160,25 @@ export default function BookCoverDesign() {
       serviceSchema({
         name: 'Book Cover Design Johannesburg',
         description: 'Professional book cover design services in Johannesburg. Custom print covers, ebook covers, illustrated covers, and stock image designs for authors and publishers.',
-        url: '/bookcoverdesign',
+        url: '/book-cover-design',
         areaServed: 'South Africa',
       }),
       faqSchema(faqs.map(f => ({ question: f.q, answer: f.a }))),
       breadcrumbSchema([
         { name: 'Home', path: '/' },
-        { name: 'Services', path: '/bookcoverdesign' },
-        { name: 'Book Cover Design', path: '/bookcoverdesign' },
+        { name: 'Services', path: '/book-cover-design' },
+        { name: 'Book Cover Design', path: '/book-cover-design' },
       ]),
-      aggregateRatingSchema(),
     ],
   };
 
   return (
     <>
       <PageMeta
-        title="Affordable Book Cover Design Services"
-        description="Affordable book cover design services for authors who need a professional, market-ready cover for print and digital publishing."
-        description="Book cover design that sells — custom, illustrated and photographic covers for SA authors. Print and ebook ready. View portfolio and get a quote."
-        keywords="book cover design Johannesburg, book cover designers South Africa, ebook cover design, print cover design, illustrated book covers, Amazon cover design, professional cover designers"
-        canonical="https://www.creativebooks.co.za/bookcoverdesign"
+        title="Book Cover Design in South Africa | Creative Books SA"
+        description="Stand-out book cover design by South African designers. Print + ebook covers tailored to your genre and market. Two concepts, unlimited vision. Get a quote."
+        keywords="book cover design South Africa, book cover designers South Africa, ebook cover design, print cover design, illustrated book covers, Amazon cover design, professional cover designers"
+        canonical="https://creativebooks.co.za/book-cover-design"
         schema={schema}
       />
 
@@ -192,7 +190,7 @@ export default function BookCoverDesign() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Cover Design · Johannesburg · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Affordable Book Cover Design Services
+              Book Cover Design in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">Professional Book Cover Design for Authors, Publishers and Self-Published Books</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -316,7 +314,7 @@ export default function BookCoverDesign() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request a Book Cover Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+              <Link to="/publishingpackages/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
               </Link>
             </div>
@@ -327,9 +325,9 @@ export default function BookCoverDesign() {
       <InternalLinks links={[
         { label: 'Book Layout & Typesetting', path: '/typesetting' },
         { label: 'eBook Formatting', path: '/ebookformatting' },
-        { label: 'Book Editing Services', path: '/bookediting' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+        { label: 'Book Editing Services', path: '/book-editing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </>

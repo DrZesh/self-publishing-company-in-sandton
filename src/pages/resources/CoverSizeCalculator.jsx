@@ -1,521 +1,315 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Download, ArrowRight, AlertCircle, HelpCircle } from 'lucide-react';
-import PageMeta from '../../components/shared/PageMeta';
-import CTASection from '../../components/shared/CTASection';
-import { jsPDF } from 'jspdf';
+import { Pen, Ruler, FileDown, RotateCcw, ArrowRight, AlertTriangle, ShieldCheck, Mail } from 'lucide-react';
+import PageMeta from '@/components/shared/PageMeta';
+import {
+  TRIM_SIZES, PAPER_TYPES, BINDING_TYPES, COVER_FINISHES, BLEED_OPTIONS,
+  calcDimensions, specCode, fmt, unitLabel,
+} from '@/lib/coverTemplate';
+import { generateCoverPdf } from '@/lib/coverTemplatePdf';
+import CoverDimensionsTable from '@/components/cover/CoverDimensionsTable';
+import CoverTemplateVisual from '@/components/cover/CoverTemplateVisual';
 
-const TRIM_SIZES = [
-  { value: 'a5', label: 'A5 (148 × 210 mm)', width: 148, height: 210 },
-  { value: '6x9', label: '6 × 9 inches (152.4 × 228.6 mm)', width: 152.4, height: 228.6 },
-  { value: '5x8', label: '5 × 8 inches (127 × 203.2 mm)', width: 127, height: 203.2 },
-  { value: '5.5x8.5', label: '5.5 × 8.5 inches (139.7 × 215.9 mm)', width: 139.7, height: 215.9 },
-  { value: 'a4', label: 'A4 (210 × 297 mm)', width: 210, height: 297 },
-  { value: '15x15', label: '15 × 15 cm (150 × 150 mm)', width: 150, height: 150 },
-  { value: '20x20', label: '20 × 20 cm (200 × 200 mm)', width: 200, height: 200 },
-  { value: '21x21', label: '21 × 21 cm (210 × 210 mm)', width: 210, height: 210 },
+const READING_DIRECTIONS = [
+  { value: 'ltr', label: 'Left to Right' },
+  { value: 'rtl', label: 'Right to Left' },
 ];
 
-const PAPER_THICKNESS = {
-  cream78: { label: 'Cream Paper 78 gsm', thickness: 0.092 },
-  white80: { label: 'White Paper 80 gsm Bond', thickness: 0.082 },
-};
-
-function generatePDF(dimensions, trimSize, pages, paper, binding) {
-  try {
-    if (!dimensions || isNaN(dimensions.fullWidth) || isNaN(dimensions.fullHeight)) return;
-    
-    const doc = new jsPDF({ unit: 'mm', format: [dimensions.fullWidth, dimensions.fullHeight], orientation: 'landscape' });
-    const padding = 10;
-
-    // Background
-    doc.setFillColor(255, 255, 255);
-    doc.rect(0, 0, dimensions.fullWidth, dimensions.fullHeight, 'F');
-
-    // Title
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('Book Cover Template', padding, padding + 5);
-    doc.setFontSize(10);
-    doc.text('Creative Books SA', padding, padding + 12);
-
-    // Summary
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    let yPos = padding + 25;
-    const summaryLines = [
-      `Trim Size: ${trimSize.label}`,
-      `Page Count: ${pages}`,
-      `Paper: ${PAPER_THICKNESS[paper].label}`,
-      `Binding: ${binding === 'paperback' ? 'Paperback (Perfect Bound)' : 'Hardcover (Case Bound)'}`,
-      `Spine Width: ${dimensions.spineWidth.toFixed(1)} mm`,
-      `Full Cover Width: ${dimensions.fullWidth.toFixed(1)} mm`,
-      `Full Cover Height: ${dimensions.fullHeight.toFixed(1)} mm`,
-    ];
-    summaryLines.forEach((line) => {
-      doc.text(line, padding, yPos);
-      yPos += 5;
-    });
-
-    // Trim line (solid)
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    const backX = (dimensions.fullWidth - trimSize.width * 2 - dimensions.spineWidth) / 2;
-    const frontX = backX + trimSize.width + dimensions.spineWidth;
-    const trimY = (dimensions.fullHeight - trimSize.height) / 2;
-
-    // Back cover trim
-    doc.rect(backX, trimY, trimSize.width, trimSize.height);
-    // Spine trim
-    doc.line(backX + trimSize.width, trimY, backX + trimSize.width, trimY + trimSize.height);
-    // Front cover trim
-    doc.rect(frontX, trimY, trimSize.width, trimSize.height);
-
-    // Bleed lines (red dashed)
-    doc.setDrawColor(255, 0, 0);
-    doc.setLineDash([2, 2]);
-    const bleedW = trimSize.width * 2 + dimensions.spineWidth + 6;
-    const bleedH = trimSize.height + 6;
-    if (bleedW > 0 && bleedH > 0) {
-      doc.rect(backX - 3, trimY - 3, bleedW, bleedH);
-    }
-
-    // Safety zone (green dashed)
-    doc.setDrawColor(0, 128, 0);
-    doc.setLineDash([3, 3]);
-    const safeZone = 6;
-    const safeW = Math.max(1, trimSize.width - safeZone * 2);
-    const safeH = Math.max(1, trimSize.height - safeZone * 2);
-    if (safeW > 0 && safeH > 0) {
-      doc.rect(backX + safeZone, trimY + safeZone, safeW, safeH);
-      doc.rect(frontX + safeZone, trimY + safeZone, safeW, safeH);
-    }
-
-    // Labels
-    doc.setFont(undefined, 'bold');
-    doc.setFontSize(8);
-    doc.setDrawColor(0, 0, 0);
-    doc.text('BACK COVER', backX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
-    doc.text('SPINE', backX + trimSize.width + dimensions.spineWidth / 2, trimY + trimSize.height / 2, { align: 'center' });
-    doc.text('FRONT COVER', frontX + trimSize.width / 2, trimY + trimSize.height / 2, { align: 'center' });
-
-    // Footer
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(7);
-    doc.text('Generated by Creative Books SA — creativebookssa.co.za — Need this cover designed? Request a quote at /getquote', dimensions.fullWidth / 2, dimensions.fullHeight - 5, { align: 'center' });
-
-    // Download the PDF
-    const filename = `cover-template-${trimSize.value}-${pages}p-${paper}.pdf`;
-    doc.save(filename);
-  } catch (error) {
-    console.error('PDF generation failed:', error);
-  }
-}
+const selectCls = 'flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-1 focus:ring-[#ffc72c]';
+const labelCls = 'text-xs font-medium text-gray-700';
 
 export default function CoverSizeCalculator() {
-  const [trimSize, setTrimSize] = useState('a5');
-  const [pages, setPages] = useState(200);
+  const [unit, setUnit] = useState('mm');
+  const [mode, setMode] = useState('author'); // author | designer
+  const [trimVal, setTrimVal] = useState('6x9');
   const [paper, setPaper] = useState('cream78');
-  const [binding, setBinding] = useState('paperback');
-  const [bleed, setBleed] = useState(3);
-  const [customWidth, setCustomWidth] = useState('');
-  const [customHeight, setCustomHeight] = useState('');
+  const [pages, setPages] = useState(200);
+  const [binding, setBinding] = useState('perfect');
+  const [finish, setFinish] = useState('paperback');
+  const [direction, setDirection] = useState('ltr');
+  const [bleed, setBleed] = useState(3.175);
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
-  const selectedTrimSize = useMemo(() => {
-    if (trimSize === 'custom') {
-      return { value: 'custom', label: `Custom (${customWidth} × ${customHeight} mm)`, width: parseFloat(customWidth) || 0, height: parseFloat(customHeight) || 0 };
-    }
-    return TRIM_SIZES.find((s) => s.value === trimSize) || TRIM_SIZES[0];
-  }, [trimSize, customWidth, customHeight]);
+  const trim = useMemo(() => TRIM_SIZES.find((t) => t.value === trimVal) || TRIM_SIZES[0], [trimVal]);
+  const dims = useMemo(
+    () => calcDimensions({ trim, pages: Number(pages), paper, binding, bleed, finish }),
+    [trim, pages, paper, binding, bleed, finish]
+  );
+  const code = specCode(dims);
 
-  const dimensions = useMemo(() => {
-    if (!selectedTrimSize.width || !selectedTrimSize.height || !pages) return null;
-
-    const paperThickness = PAPER_THICKNESS[paper].thickness;
-    const trimWidth = selectedTrimSize.width;
-    const trimHeight = selectedTrimSize.height;
-
-    // Spine calculation
-    let spineWidth = pages * paperThickness;
-    if (binding === 'hardcover') {
-      spineWidth += 6; // 6mm board thickness
-    }
-
-    // Full cover dimensions
-    let fullWidth = trimWidth * 2 + spineWidth + bleed * 2;
-    let fullHeight = trimHeight + bleed * 2;
-
-    if (binding === 'hardcover') {
-      const wraparound = 17;
-      fullWidth = trimWidth * 2 + spineWidth + wraparound * 2 + bleed * 2;
-      fullHeight = trimHeight + wraparound * 2 + bleed * 2;
-    }
-
-    const safetyZoneWidth = trimWidth - 12;
-    const safetyZoneHeight = trimHeight - 12;
-
-    return {
-      spineWidth: Math.max(3, spineWidth),
-      fullWidth,
-      fullHeight,
-      safetyZoneWidth,
-      safetyZoneHeight,
-      trimWidth,
-      trimHeight,
-      warnThinSpine: spineWidth < 3,
-    };
-  }, [selectedTrimSize, pages, paper, binding, bleed]);
-
-  const handleDownloadPDF = () => {
-    if (!dimensions) return;
-    generatePDF(dimensions, selectedTrimSize, pages, paper, binding);
+  const handleDownload = () => {
+    if (!dims) return;
+    generateCoverPdf(dims, { trimLabel: trim.label, trimValue: trim.value, pages });
   };
 
-  const isCustomSize = trimSize === 'custom';
-  const isInvalidCustom = isCustomSize && (!customWidth || !customHeight || isNaN(parseFloat(customWidth)) || isNaN(parseFloat(customHeight)));
+  const handleEmail = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setEmailSent(true);
+    setTimeout(() => setEmailSent(false), 4000);
+  };
+
+  const reset = () => {
+    setTrimVal('6x9'); setPaper('cream78'); setPages(200);
+    setBinding('perfect'); setFinish('paperback'); setDirection('ltr'); setBleed(3.175);
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#f8f9fa] font-body">
       <PageMeta
-        title="Cover Size Calculator"
-        description="Generate accurate cover dimensions for your book. Free print-ready PDF templates for indie authors. A5, 6×9, children's books, hardcover, and custom sizes."
-        keywords="book cover calculator, cover dimensions, spine width calculator, print-ready cover template"
-        canonical="https://www.creativebookssa.co.za/resources/CoverSizeCalculator"
+        title="Book Cover Template & Dimensions Calculator | Creative Books"
+        description="Calculate exact book cover dimensions and download a print-ready template. Set trim size, page count, paper, and binding to get spine width, bleed, safe area and full cover size."
+        keywords="book cover template calculator, cover dimensions calculator, spine width calculator, print ready cover template south africa"
+        canonical="https://creativebooks.co.za/covercalculator"
       />
 
       {/* Hero */}
-      <section className="relative min-h-[50vh] flex items-center pt-20 bg-[#060504]">
-        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 25% 60%, rgba(184,115,51,0.18) 0%, transparent 55%)' }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ background: 'rgba(184,115,51,0.1)', border: '1px solid rgba(184,115,51,0.2)' }}>
-              <span className="text-copper text-sm font-medium">Free Tool</span>
-            </div>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Cover Size Calculator</h1>
-            <p className="text-white/60 text-lg font-body">
-              Generate accurate, print-ready cover dimensions for your book. Download your free template PDF and start designing.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Calculator */}
-      <section className="py-16 lg:py-20 bg-vellum">
+      <section className="relative pt-32 pb-20 bg-obsidian">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Inputs - 2 columns on desktop */}
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:col-span-2 space-y-6">
-              <h2 className="font-heading text-2xl font-bold text-[#0F0F0F]">Cover Size Calculator</h2>
-              <p className="text-[#0F0F0F]/60 font-body text-sm">
-                Generate accurate, print-ready cover dimensions for your book. Free template PDF download included.
-              </p>
-
-              {/* Trim Size */}
-              <div>
-                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">Trim Size (Book Size)</label>
-                <select
-                  value={trimSize}
-                  onChange={(e) => setTrimSize(e.target.value)}
-                  className="w-full p-3 border border-[#0F0F0F]/10 rounded-lg text-[#0F0F0F]/80 font-body bg-white focus:border-copper focus:outline-none"
-                >
-                  {TRIM_SIZES.map(({ value, label }) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                  <option value="custom">Custom (enter mm)</option>
-                </select>
-              </div>
-
-              {/* Custom Trim Size */}
-              {isCustomSize && (
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-2">Width (mm)</label>
-                    <input
-                      type="number"
-                      value={customWidth}
-                      onChange={(e) => setCustomWidth(e.target.value)}
-                      placeholder="e.g. 148"
-                      className="w-full p-3 border border-[#0F0F0F]/10 rounded-lg font-body bg-white focus:border-copper focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-2">Height (mm)</label>
-                    <input
-                      type="number"
-                      value={customHeight}
-                      onChange={(e) => setCustomHeight(e.target.value)}
-                      placeholder="e.g. 210"
-                      className="w-full p-3 border border-[#0F0F0F]/10 rounded-lg font-body bg-white focus:border-copper focus:outline-none"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Page Count */}
-              <div>
-                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">
-                  Page Count: <span className="text-copper font-semibold">{pages}</span>
-                </label>
-                <input
-                  type="range"
-                  min={24}
-                  max={800}
-                  step={1}
-                  value={pages}
-                  onChange={(e) => setPages(Number(e.target.value))}
-                  className="w-full accent-[#B87333]"
-                />
-                <div className="flex justify-between text-xs text-[#0F0F0F]/40 mt-2">
-                  <span>24 pages</span>
-                  <span>800 pages</span>
-                </div>
-                <p className="text-[#0F0F0F]/60 text-xs mt-2 font-body">
-                  Total pages in your book interior (24-800). Include front matter, content, and back matter.
-                </p>
-              </div>
-
-              {/* Paper Type */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <label className="text-sm font-medium text-[#0F0F0F]/80">Paper Type</label>
-                  <div className="group relative">
-                    <HelpCircle className="w-4 h-4 text-[#0F0F0F]/40 cursor-help" />
-                    <div className="hidden group-hover:block absolute bottom-full left-0 bg-[#0F0F0F] text-white text-xs p-2 rounded whitespace-nowrap mb-1">
-                      Cream paper is thicker than white, resulting in wider spines.
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  {Object.entries(PAPER_THICKNESS).map(([key, { label }]) => (
-                    <label key={key} className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-copper/5 transition-all" style={{ borderColor: paper === key ? '#B87333' : '#0F0F0F10' }}>
-                      <input
-                        type="radio"
-                        name="paper"
-                        value={key}
-                        checked={paper === key}
-                        onChange={(e) => setPaper(e.target.value)}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-sm text-[#0F0F0F]/80 font-body">{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Binding Type */}
-              <div>
-                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">Binding Type</label>
-                <div className="space-y-2">
-                  {[
-                    { value: 'paperback', label: 'Paperback (Perfect Bound)' },
-                    { value: 'hardcover', label: 'Hardcover (Case Bound) — adds 6mm spine + 17mm wraparound' },
-                  ].map(({ value, label }) => (
-                    <label key={value} className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-copper/5 transition-all" style={{ borderColor: binding === value ? '#B87333' : '#0F0F0F10' }}>
-                      <input
-                        type="radio"
-                        name="binding"
-                        value={value}
-                        checked={binding === value}
-                        onChange={(e) => setBinding(e.target.value)}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-sm text-[#0F0F0F]/80 font-body">{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bleed */}
-              <div>
-                <label className="block text-sm font-medium text-[#0F0F0F]/80 mb-3">
-                  Bleed: <span className="font-normal text-[#0F0F0F]/60">{bleed} mm on all sides (industry standard)</span>
-                </label>
-                <div className="flex gap-2">
-                  {[0, 3, 5].map((value) => (
-                    <button
-                      key={value}
-                      onClick={() => setBleed(value)}
-                      className={`px-4 py-2 rounded-lg text-sm font-body border transition-all ${
-                        bleed === value
-                          ? 'border-copper bg-copper/10 text-copper'
-                          : 'border-[#0F0F0F]/10 bg-white text-[#0F0F0F]/70 hover:border-copper/40'
-                      }`}
-                    >
-                      {value} mm
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right Column - Live Preview Panel */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:sticky lg:top-20 lg:h-fit"
-            >
-              <div className="p-8 rounded-2xl bg-white border-2 border-copper/20" style={{ boxShadow: '0 10px 40px rgba(184,115,51,0.1)' }}>
-                <h3 className="font-heading text-xl font-bold text-[#0F0F0F] mb-6">Your Cover Dimensions</h3>
-
-                {dimensions && !isInvalidCustom ? (
-                  <div className="space-y-4">
-                    {/* Primary Measurements */}
-                    <div>
-                      <p className="text-[#0F0F0F]/60 text-xs font-body mb-2">Full Cover Dimensions</p>
-                      <div className="space-y-1">
-                        <p className="font-heading text-2xl font-bold text-copper">
-                          {dimensions.fullWidth.toFixed(1)} × {dimensions.fullHeight.toFixed(1)} mm
-                        </p>
-                        <p className="text-sm text-[#0F0F0F]/70 font-body">
-                          Spine Width: <span className="font-semibold text-copper">{dimensions.spineWidth.toFixed(1)} mm</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Warnings */}
-                    {dimensions.warnThinSpine && (
-                      <div className="flex gap-2 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-                        <AlertCircle className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
-                        <p className="text-xs text-yellow-800">Your book is too thin for visible spine text. Leave blank or use very small type.</p>
-                      </div>
-                    )}
-
-                    {/* Breakdown */}
-                    <div className="pt-4 border-t border-[#0F0F0F]/10 space-y-2">
-                      <p className="text-xs font-semibold text-[#0F0F0F] mb-2">Detailed Breakdown</p>
-                      {[
-                        ['Trim size', `${dimensions.trimWidth} × ${dimensions.trimHeight} mm`],
-                        ['Front/Back cover', `${dimensions.trimWidth} × ${dimensions.trimHeight} mm each`],
-                        ['Spine', `${dimensions.spineWidth.toFixed(1)} mm`],
-                        ['Safety zone', `${dimensions.safetyZoneWidth.toFixed(0)} × ${dimensions.safetyZoneHeight.toFixed(0)} mm`],
-                        ['Bleed', `${bleed} mm on all edges`],
-                        ['Paper', PAPER_THICKNESS[paper].label],
-                        ['Binding', binding === 'paperback' ? 'Paperback (Perfect)' : 'Hardcover (Case)'],
-                      ].map(([key, val]) => (
-                        <div key={key} className="flex justify-between text-xs">
-                          <span className="text-[#0F0F0F]/60 font-body">{key}</span>
-                          <span className="text-[#0F0F0F] font-medium font-body">{val}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Download Button */}
-                    <button
-                      onClick={handleDownloadPDF}
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-copper text-white font-medium rounded-full hover:bg-copper/90 transition-all mt-4"
-                    >
-                      <Download className="w-4 h-4" />
-                      Download PDF Template
-                    </button>
-
-                    {/* Action Links */}
-                    <div className="space-y-2 pt-2">
-                      <Link
-                        to="/getquote"
-                        className="w-full flex items-center justify-center gap-2 px-6 py-2 border-2 border-copper text-copper font-medium rounded-full hover:bg-copper/5 transition-all text-sm"
-                      >
-                        Get a Quote
-                      </Link>
-                    </div>
-                  </div>
-                ) : isInvalidCustom ? (
-                  <div className="flex gap-3 p-4 rounded-lg bg-red-50 border border-red-200">
-                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-red-800">Please enter valid custom dimensions.</p>
-                  </div>
-                ) : null}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* How to Use */}
-      <section className="py-16 lg:py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-12">
-          <div>
-            <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-6">How to Use Your Cover Template</h2>
-            <ol className="space-y-4">
-              {[
-                'Download the PDF template above.',
-                'Open it in your design software (Adobe InDesign, Photoshop, Illustrator, Affinity Designer, or Canva).',
-                'Use the template as a guide layer — your cover artwork goes on top of the template at the exact dimensions shown.',
-                'Keep important text and logos inside the green safety zone.',
-                'Extend background colours and images into the red bleed area so nothing gets cut off.',
-                'Export your final cover as a print-ready PDF (CMYK colour, 300 DPI) and send it to us.',
-              ].map((step, i) => (
-                <li key={i} className="flex gap-3">
-                  <span className="font-heading font-bold text-copper flex-shrink-0">{i + 1}.</span>
-                  <span className="text-[#0F0F0F]/70 font-body">{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div>
-            <h3 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4">Key Terms Explained</h3>
-            <div className="space-y-3">
-              {[
-                { term: 'Trim line', def: 'where the final printed book will be cut.' },
-                { term: 'Bleed', def: 'extra area beyond the trim that gets trimmed off, preventing white edges.' },
-                { term: 'Safety zone', def: 'keep text and key elements inside this area so nothing gets cut off.' },
-                { term: 'Spine', def: 'the bound edge of the book where the title usually appears.' },
-                { term: 'Wraparound (hardcover only)', def: 'the extra 17 mm that folds to the inside of the case boards.' },
-              ].map(({ term, def }) => (
-                <div key={term}>
-                  <p className="font-heading font-semibold text-[#0F0F0F]">{term}</p>
-                  <p className="text-[#0F0F0F]/70 font-body text-sm">{def}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-heading text-2xl font-bold text-[#0F0F0F] mb-4">Why Paper Type Affects Your Spine Width</h3>
-            <p className="text-[#0F0F0F]/70 font-body">
-              The spine width of your book depends directly on how thick each page is. Cream paper at 78 gsm is thicker than white 70 gsm paper, which means the same book
-              printed on cream will have a noticeably wider spine. This matters because your cover designer needs the exact spine width to position the title and any spine
-              artwork correctly. Use this calculator to get the right measurement before you start designing.
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="text-copper text-sm font-body tracking-[0.25em] uppercase mb-4 block">Resources</span>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6">Book Cover Size Calculator</h1>
+            <p className="text-white/60 text-lg leading-relaxed font-body">
+              Calculate exact cover dimensions and download a print-ready template — set your trim size, page count, paper and binding.
             </p>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 lg:py-20 bg-vellum">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="font-heading text-3xl font-bold text-[#0F0F0F] mb-12 text-center">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {[
-              { q: 'What if my book is fewer than 24 pages or more than 800 pages?', a: 'Books outside this range require a custom quote. Contact us to discuss your specific project.' },
-              { q: 'Why does the spine width depend on paper type?', a: 'Each paper type has a different thickness. Cream 78 gsm is thicker than white 70 gsm, so cream books have wider spines than white books with the same page count.' },
-              { q: 'What\'s the difference between paperback and hardcover dimensions?', a: 'Hardcover adds 6 mm to the spine for the cover board thickness, plus 17 mm wraparound on every edge for the case wrap. Your full cover dimensions will be larger overall.' },
-              { q: 'Can I use this template in Canva?', a: 'Yes. Canva supports custom dimensions. Enter the full cover width and height shown above when creating your design.' },
-              { q: 'Do you offer cover design services?', a: 'Yes. Our covers start at R1,650 for paperback. Visit our Book Cover Design page.' },
-              { q: 'What file format should my final cover be?', a: 'We accept print-ready PDF files in CMYK colour mode at 300 DPI. Include 3mm bleed.' },
-              { q: 'Why is there a wraparound on hardcover?', a: 'Hardcover books have rigid cover boards. The printed paper covering wraps around to the inside of the boards, which requires an extra 17 mm of cover material on every edge.' },
-              { q: 'Can I print children\'s books in 15x15, 20x20, or 21x21 cm?', a: 'Yes. We print children\'s books in all three square sizes. Select the size you want in the calculator above to get accurate dimensions for your cover.' },
-            ].map((faq, i) => (
-              <details key={i} className="group border border-[#0F0F0F]/10 rounded-lg p-4 hover:border-copper/40 transition-all">
-                <summary className="flex items-center justify-between cursor-pointer font-medium text-[#0F0F0F]">
-                  {faq.q}
-                  <span className="group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <p className="mt-3 text-[#0F0F0F]/70 font-body text-sm">{faq.a}</p>
-              </details>
-            ))}
+      {/* Top bar */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <p className="text-lg font-semibold text-gray-900 leading-tight">Book Cover Design &amp; Print</p>
+              <p className="text-xs text-gray-500">Cover template &amp; dimensions calculator</p>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Unit toggle */}
+              <div className="flex items-center bg-gray-100 rounded-full p-0.5">
+                {['mm', 'cm', 'inches'].map((u) => (
+                  <button
+                    key={u}
+                    type="button"
+                    onClick={() => setUnit(u)}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${unit === u ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                  >{u}</button>
+                ))}
+              </div>
+              {/* Mode toggle */}
+              <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-full">
+                <button
+                  onClick={() => setMode('author')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${mode === 'author' ? 'bg-[#ffc72c] text-black' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  <Pen className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Author Mode</span>
+                  <span className="sm:hidden">Author</span>
+                </button>
+                <button
+                  onClick={() => setMode('designer')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${mode === 'designer' ? 'bg-[#ffc72c] text-black' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                  <Ruler className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Designer Mode</span>
+                  <span className="sm:hidden">Designer</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <CTASection
-        title="Ready to Design Your Cover?"
-        description="Use your template in Canva, Adobe, or hire our design team. We'll create a stunning, print-ready cover for your book."
-      />
+      {/* Main grid */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Inputs */}
+          <div className="lg:col-span-4">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="px-5 py-4 border-b border-gray-100">
+                <h2 className="text-sm font-semibold text-gray-800">Enter Your Book Information</h2>
+              </div>
+              <div className="p-5 space-y-4">
+                <div className="space-y-1.5">
+                  <label className={labelCls}>1. Trim size</label>
+                  <select value={trimVal} onChange={(e) => setTrimVal(e.target.value)} className={selectCls}>
+                    {TRIM_SIZES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className={labelCls}>2. Interior paper type</label>
+                  <select value={paper} onChange={(e) => setPaper(e.target.value)} className={selectCls}>
+                    {PAPER_TYPES.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className={labelCls}>3. Page count</label>
+                  <input
+                    type="number" min={8} max={800} value={pages}
+                    onChange={(e) => setPages(e.target.value)}
+                    placeholder="Number of pages at your formatted trim size"
+                    className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#ffc72c]"
+                  />
+                  <p className="text-[11px] text-gray-400">
+                    {dims ? `${dims.bindingLabel}: ${dims.minPages}–${dims.maxPages} pages` : 'Perfect Bound: 24–800 pages'}
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className={labelCls}>4. Binding type</label>
+                  <select value={binding} onChange={(e) => setBinding(e.target.value)} className={selectCls}>
+                    {BINDING_TYPES.map((b) => <option key={b.value} value={b.value}>{b.label}</option>)}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className={labelCls}>5. Cover finish</label>
+                  <select value={finish} onChange={(e) => setFinish(e.target.value)} className={selectCls}>
+                    {COVER_FINISHES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className={labelCls}>6. Reading direction</label>
+                  <select value={direction} onChange={(e) => setDirection(e.target.value)} className={selectCls}>
+                    {READING_DIRECTIONS.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
+                  </select>
+                </div>
+
+                <div className="pt-2 space-y-2">
+                  <button
+                    onClick={handleDownload}
+                    className="inline-flex items-center justify-center gap-2 w-full h-10 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm rounded shadow-sm font-medium"
+                  >
+                    <FileDown className="w-4 h-4" /> Download Template
+                  </button>
+                  <button
+                    onClick={reset}
+                    className="inline-flex items-center justify-center gap-2 w-full h-9 text-gray-500 hover:text-gray-800 text-xs"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" /> Reset book information
+                  </button>
+                </div>
+
+                {/* Designer advanced settings */}
+                {mode === 'designer' && (
+                  <div className="pt-4 border-t border-gray-100 space-y-3">
+                    <p className="text-xs font-semibold text-gray-700">Designer mode (advanced settings)</p>
+                    <div className="space-y-1.5">
+                      <label className={labelCls}>Bleed setting</label>
+                      <select value={bleed} onChange={(e) => setBleed(Number(e.target.value))} className={selectCls}>
+                        {BLEED_OPTIONS.map((b) => <option key={b.value} value={b.value}>{b.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* Lead capture */}
+                <div className="pt-4 border-t border-gray-100 space-y-2">
+                  <form onSubmit={handleEmail} className="space-y-2">
+                    <input
+                      type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email My Specs to Myself"
+                      className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#ffc72c]"
+                    />
+                    {emailSent && <p className="text-[11px] text-green-600">Your cover specs have been noted — we'll be in touch.</p>}
+                  </form>
+                  <Link
+                    to="/getquote"
+                    className="inline-flex items-center justify-center gap-2 w-full h-10 bg-[#1a1a1a] hover:bg-black text-white text-sm rounded font-medium"
+                  >
+                    Request a Cover Design <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Results + Visual */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-gray-800">Cover Dimensions &amp; Template</h2>
+                <span className="text-[11px] font-mono px-2 py-1 rounded-full bg-blue-50 text-blue-600">{code}</span>
+              </div>
+              <div className="p-5">
+                {dims?.outOfRange && (
+                  <div className="flex gap-2 p-3 mb-4 rounded-md bg-amber-50 border border-amber-200">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-800">
+                      Your page count is outside the {dims.minPages}–{dims.maxPages} range for {dims.bindingLabel}. Contact us for a custom quote.
+                    </p>
+                  </div>
+                )}
+                {dims?.warnThinSpine && (
+                  <div className="flex gap-2 p-3 mb-4 rounded-md bg-amber-50 border border-amber-200">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-800">Spine is too thin for visible text. Leave the spine blank or use very small type.</p>
+                  </div>
+                )}
+                <CoverDimensionsTable dims={dims} unit={unit} />
+
+                {dims && (
+                  <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-500">Full cover: </span>
+                      <span className="font-semibold text-gray-900">{fmt(dims.fullWidth, unit)} × {fmt(dims.fullHeight, unit)} {unitLabel(unit)}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Spine: </span>
+                      <span className="font-semibold text-gray-900">{fmt(dims.spine, unit)} {unitLabel(unit)}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Live cover visual */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+              <CoverTemplateVisual dims={dims} unit={unit} />
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <button
+                  onClick={handleDownload}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#ffc72c] hover:bg-[#e8b422] text-black text-sm font-semibold rounded"
+                >
+                  <FileDown className="w-4 h-4" /> Download Template
+                </button>
+                <Link
+                  to="/book-cover-design"
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm rounded"
+                >
+                  <ShieldCheck className="w-4 h-4" /> Preflight Check My Cover File
+                </Link>
+                <span className="text-[11px] font-mono px-2 py-1 rounded-full bg-blue-50 text-blue-600">{code}</span>
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+              <h3 className="text-sm font-semibold text-gray-800 mb-3">Key Terms</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-xs">
+                {[
+                  ['Full Cover', 'Total artboard including back, spine, front, wraparound and bleed.'],
+                  ['Bleed', 'Extra area beyond the trim that gets cut off — extend backgrounds into it.'],
+                  ['Safe Area', 'Keep text and logos inside this zone so nothing is trimmed.'],
+                  ['Spine', 'Bound edge width — depends on page count and paper thickness.'],
+                  ['Margin', 'Distance from the trim edge to the safe area.'],
+                  ['Barcode Margin', 'Reserved clear space on the back cover for the ISBN barcode.'],
+                ].map(([t, d]) => (
+                  <div key={t} className="flex gap-2">
+                    <Mail className="hidden" />
+                    <span className="font-semibold text-gray-700 whitespace-nowrap">{t}:</span>
+                    <span className="text-gray-500">{d}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

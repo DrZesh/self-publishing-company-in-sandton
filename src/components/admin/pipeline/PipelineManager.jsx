@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { X, Plus, Trash2, ChevronUp, ChevronDown, Save, Edit3, Trophy, XCircle, Copy, ToggleLeft, ToggleRight } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 
 const inputClass = "w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-400 bg-white transition-all";
@@ -134,10 +134,10 @@ export default function PipelineManager({ pipelines, templates, onClose, onPipel
     try {
       const data = { name, stages: stages.map((s, i) => ({ ...s, order: i })), is_active: true };
       if (editingPipeline) {
-        await base44.entities.SalesPipeline.update(editingPipeline.id, data);
+        await platform.entities.SalesPipeline.update(editingPipeline.id, data);
         toast.success('Pipeline saved');
       } else {
-        await base44.entities.SalesPipeline.create(data);
+        await platform.entities.SalesPipeline.create(data);
         toast.success('Pipeline created');
       }
       onPipelinesChanged();
@@ -151,13 +151,13 @@ export default function PipelineManager({ pipelines, templates, onClose, onPipel
 
   const deletePipeline = async (p) => {
     if (!confirm(`Delete pipeline "${p.name}"? All its deals will also be deleted.`)) return;
-    await base44.entities.SalesPipeline.delete(p.id);
+    await platform.entities.SalesPipeline.delete(p.id);
     onPipelinesChanged();
     toast.success('Pipeline deleted');
   };
 
   const duplicatePipeline = async (p) => {
-    await base44.entities.SalesPipeline.create({
+    await platform.entities.SalesPipeline.create({
       name: p.name + ' (Copy)',
       stages: JSON.parse(JSON.stringify(p.stages)),
       is_active: true,
@@ -169,7 +169,7 @@ export default function PipelineManager({ pipelines, templates, onClose, onPipel
   const saveAsTemplate = async (p) => {
     const name = prompt('Template name:', p.name + ' Template');
     if (!name) return;
-    await base44.entities.PipelineTemplate.create({
+    await platform.entities.PipelineTemplate.create({
       name,
       stages: JSON.parse(JSON.stringify(p.stages)),
       is_default: false,
@@ -179,13 +179,13 @@ export default function PipelineManager({ pipelines, templates, onClose, onPipel
   };
 
   const toggleActive = async (p) => {
-    await base44.entities.SalesPipeline.update(p.id, { is_active: !p.is_active });
+    await platform.entities.SalesPipeline.update(p.id, { is_active: !p.is_active });
     onPipelinesChanged();
   };
 
   const deleteTemplate = async (t) => {
     if (!confirm(`Delete template "${t.name}"?`)) return;
-    await base44.entities.PipelineTemplate.delete(t.id);
+    await platform.entities.PipelineTemplate.delete(t.id);
     onTemplatesChanged();
   };
 

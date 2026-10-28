@@ -2,7 +2,7 @@ import React from 'react';
 import BlogArticlePage from './BlogArticlePage';
 
 const article = {
-  url: '/dosouthafricanpublishersprvidecoverdesign',
+  url: '/dosouthafricanpublishersprovidecoverdesign',
   title: 'Do Publishers Provide Cover Design? | What to Expect',
   description: 'Do publishers provide cover design in South Africa? What traditional publishers include vs self-publishing options, pricing and what makes a strong cover.',
   category: 'Publishing Tips',
@@ -11,7 +11,7 @@ const article = {
   sections: [
     { heading: null, text: "Your book cover is your most powerful marketing tool. Whether your publisher handles it or you arrange it yourself is an important question." },
     { heading: 'Traditional Publishers: Cover Design Is Included', text: "Reputable traditional publishers handle all aspects of cover design as part of their standard publishing service. However, the publisher makes the final call on the cover design, even if you are consulted." },
-    { heading: "Self-Publishing: Cover Design Is Your Responsibility — and Creative Books SA's Expertise", text: "Creative Books SA offers three professional cover design tiers: Authors Book Cover (using your professional photo) — R1,650; Stock Design Cover (from Shutterstock) — R2,150; Illustrated Cover Design — R3,850. All include 2 concepts, revisions, and print-ready files covering front, spine, and back cover. For eBooks, covers start at R1,200. View all <a href='/bookcoverdesign'>cover design options</a>." },
+    { heading: "Self-Publishing: Cover Design Is Your Responsibility — and Creative Books SA's Expertise", text: "Creative Books SA offers three professional cover design tiers: Authors Book Cover (using your professional photo) — R1,650; Stock Design Cover (from Shutterstock) — R2,150; Illustrated Cover Design — R3,850. All include 2 concepts, revisions, and print-ready files covering front, spine, and back cover. For eBooks, covers start at R1,200. View all <a href='/book-cover-design'>cover design options</a>." },
     { heading: 'What Makes a Good South African Book Cover?', text: "A strong cover communicates genre clearly, catches the eye at thumbnail size (critical for online selling on platforms like Takealot and Amazon), is typographically clean, and feels visually contemporary. Creative Books SA's designers understand the South African market and produce original, template-free designs for every client." },
   ],
   ctaText: "Get a professional book cover designed for the South African market. Request a cover design quote from Creative Books SA today.",
@@ -21,9 +21,9 @@ const article = {
     { q: 'What does a full print cover include?', a: 'A full print cover includes the front, spine, and back cover integrated as one file, print-ready with correct bleed, resolution, and barcode placement.' },
   ],
   relatedLinks: [
-    { label: 'Book Cover Design', path: '/bookcoverdesign' },
-    { label: 'Book Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Book Cover Design', path: '/book-cover-design' },
+    { label: 'Book Cover Design South Africa', path: '/book-cover-design' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

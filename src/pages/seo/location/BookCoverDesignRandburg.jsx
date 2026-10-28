@@ -18,10 +18,10 @@ export default function BookCoverDesignRandburg() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Randburg"
-        description="Professional book cover design for Randburg authors — full print covers and eBook covers. Custom, genre-specific designs. Free quote today."
+        title="Book Cover Design in Randburg | Creative Books SA"
+        description="Professional book cover design for Randburg authors - full print covers & eBook covers. Custom, genre-specific designs. Get a free quote from our team today."
         keywords="book cover design Randburg, book cover designer Randburg, book cover design Johannesburg, professional book covers Randburg"
-        canonical="https://www.creativebooks.co.za/bookcoverdesignrandburg"
+        canonical="https://creativebooks.co.za/bookcoverdesignrandburg"
         schema={schema}
       />
       
@@ -32,7 +32,7 @@ export default function BookCoverDesignRandburg() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Randburg</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design Randburg
+                Book Cover Design in Randburg
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Randburg and Greater Johannesburg</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -87,11 +87,11 @@ export default function BookCoverDesignRandburg() {
 
         <InternalLinks
           links={[
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
             { label: 'Book Cover Design Johannesburg', path: '/bookcoverdesignjohannesburg' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
             { label: 'Book Printing', path: '/printing/a5' },
-            { label: 'Publishing Packages', path: '/publishingpackages' },
+            { label: 'Publishing Packages', path: '/publishingpackages/a5' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

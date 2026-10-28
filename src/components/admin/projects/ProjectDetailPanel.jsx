@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { X, Edit2, AlertTriangle, Lock, Users, Clock, Plus, Zap, Send, CheckCircle, XCircle, Pause } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { X, Edit2, AlertTriangle, Lock, Users, Clock, Plus, Zap, Send, CheckCircle, XCircle, Pause, Link as LinkIcon, Copy, ExternalLink, Shield } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 import PrintChecklist from './PrintChecklist';
 import ProjectQRCode from '@/components/admin/ProjectQRCode';
@@ -38,26 +40,29 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
   const [delayType, setDelayType] = useState('');
   const [delayDesc, setDelayDesc] = useState('');
   const [updatingStage, setUpdatingStage] = useState(false);
+  const [showPortalForm, setShowPortalForm] = useState(false);
+  const [customToken, setCustomToken] = useState('');
+  const [portalLoading, setPortalLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
     enabled: showEdit,
   });
 
   const { data: msgLogs = [] } = useQuery({
     queryKey: ['msg-logs-project', project.id],
-    queryFn: () => base44.entities.MessageLog.filter({ project_id: project.id }),
+    queryFn: () => platform.entities.MessageLog.filter({ project_id: project.id }),
   });
 
   const { data: delays = [] } = useQuery({
     queryKey: ['client-delays', project.id],
-    queryFn: () => base44.entities.ClientDelay.filter({ project_id: project.id }),
+    queryFn: () => platform.entities.ClientDelay.filter({ project_id: project.id }),
   });
 
   const addDelay = useMutation({
-    mutationFn: (data) => base44.entities.ClientDelay.create(data),
+    mutationFn: (data) => platform.entities.ClientDelay.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['client-delays', project.id] });
       setShowDelayForm(false);
@@ -68,25 +73,58 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
 
   const handleStageChange = async (newStage) => {
     setUpdatingStage(true);
-    await base44.entities.Project.update(project.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
+    await platform.entities.Project.update(project.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
     setUpdatingStage(false);
     onUpdated();
   };
 
   const handleAutomationToggle = async (field, val) => {
-    await base44.entities.Project.update(project.id, { [field]: val });
+    await platform.entities.Project.update(project.id, { [field]: val });
     onUpdated();
   };
 
+  const handlePortalAction = async (action) => {
+    setPortalLoading(true);
+    try {
+      const response = await platform.functions.invoke('managePortalAccess', {
+        project_id: project.id,
+        contact_id: project.contact_id,
+        action,
+        custom_token: customToken || undefined,
+        allowed_sections: ['quotes', 'invoices', 'projects', 'documents'],
+      });
+      
+      if (response.data.success) {
+        toast.success(action === 'deactivate' ? 'Portal deactivated' : 'Portal link generated');
+        if (response.data.portal_url) {
+          navigator.clipboard.writeText(response.data.portal_url);
+          toast.success('Portal URL copied to clipboard');
+        }
+        setShowPortalForm(false);
+        setCustomToken('');
+        queryClient.invalidateQueries({ queryKey: ['portal-access', project.id] });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to manage portal');
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
+  const { data: portalAccess } = useQuery({
+    queryKey: ['portal-access', project.id],
+    queryFn: () => platform.entities.ClientPortalAccess.filter({ project_id: project.id }).then(r => r[0]),
+  });
+
   const handleWaitingOnChange = async (val) => {
-    await base44.entities.Project.update(project.id, { waiting_on: val });
+    await platform.entities.Project.update(project.id, { waiting_on: val });
     onUpdated();
   };
 
   const handleQueueBlur = async (val) => {
     const num = parseInt(val);
     if (!isNaN(num)) {
-      await base44.entities.Project.update(project.id, { queue_number: num });
+      await platform.entities.Project.update(project.id, { queue_number: num });
       onUpdated();
     }
   };
@@ -383,6 +421,129 @@ export default function ProjectDetailPanel({ project, contact, onClose, onUpdate
                 </div>
               </div>
             )}
+
+            {/* Client Portal Access */}
+            <div className="border border-gray-100 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+                  <Shield className="w-4 h-4 text-[#B87333]" />
+                  Client Portal Access
+                </h3>
+                <button
+                  onClick={() => setShowPortalForm(!showPortalForm)}
+                  className="text-xs text-[#B87333] hover:underline flex items-center gap-1"
+                >
+                  <Plus className="w-3 h-3" /> {portalAccess ? 'Manage' : 'Enable'}
+                </button>
+              </div>
+
+              {showPortalForm && (
+                <div className="bg-[#FFF8F0] border border-[#D4A574]/30 rounded-xl p-3 space-y-3">
+                  <div>
+                    <label className="text-xs font-semibold text-gray-600 mb-1 block">Custom URL Token (optional)</label>
+                    <Input
+                      value={customToken}
+                      onChange={e => setCustomToken(e.target.value)}
+                      placeholder="e.g. client-john-smith"
+                      className="text-sm"
+                    />
+                    <p className="text-[10px] text-gray-500 mt-1">Leave blank for auto-generated token</p>
+                  </div>
+                  
+                  {!portalAccess ? (
+                    <Button
+                      onClick={() => handlePortalAction('generate')}
+                      disabled={portalLoading}
+                      className="w-full bg-[#B87333] hover:bg-[#A06828] text-white text-sm"
+                    >
+                      <LinkIcon className="w-3 h-3 mr-2" />
+                      {portalLoading ? 'Generating...' : 'Generate Portal Link'}
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="bg-white border border-gray-200 rounded-lg p-2">
+                        <p className="text-xs text-gray-500 mb-1">Portal URL:</p>
+                        <div className="flex items-center gap-2">
+                          <code className="text-xs text-[#B87333] font-mono flex-1 truncate">
+                            {window.location.origin}/portal/{portalAccess.access_token}
+                          </code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(`${window.location.origin}/portal/${portalAccess.access_token}`);
+                              toast.success('URL copied');
+                            }}
+                            className="p-1.5 hover:bg-gray-100 rounded"
+                          >
+                            <Copy className="w-3 h-3 text-gray-500" />
+                          </button>
+                          <a
+                            href={`/portal/${portalAccess.access_token}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 hover:bg-gray-100 rounded"
+                          >
+                            <ExternalLink className="w-3 h-3 text-gray-500" />
+                          </a>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${portalAccess.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {portalAccess.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                        {portalAccess.expires_at && (
+                          <span className="text-xs text-gray-500">
+                            Expires: {new Date(portalAccess.expires_at).toLocaleDateString('en-ZA')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={() => handlePortalAction(portalAccess.is_active ? 'deactivate' : 'activate')}
+                          disabled={portalLoading}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          {portalAccess.is_active ? 'Deactivate' : 'Reactivate'}
+                        </Button>
+                        <Button
+                          onClick={() => handlePortalAction('regenerate')}
+                          disabled={portalLoading}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          Regenerate Token
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {!showPortalForm && portalAccess && (
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${portalAccess.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-gray-700">
+                      {portalAccess.is_active ? 'Portal Active' : 'Portal Inactive'}
+                    </p>
+                    <p className="text-[10px] text-gray-400">
+                      {portalAccess.access_count || 0} accesses
+                      {portalAccess.last_accessed_at && ` · Last: ${new Date(portalAccess.last_accessed_at).toLocaleDateString('en-ZA')}`}
+                    </p>
+                  </div>
+                  <a
+                    href={`/portal/${portalAccess.access_token}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-[#B87333] hover:underline flex items-center gap-1"
+                  >
+                    Open <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              )}
+            </div>
 
             {/* Notes */}
             {project.notes && (

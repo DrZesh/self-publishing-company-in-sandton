@@ -23,7 +23,7 @@ const article = {
   ],
   relatedLinks: [
     { label: 'How to Market Your Book', path: '/howtomarketandsellyourselfpublishedbookinsouthafrica' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'How to Print Your Book', path: '/howtoprintyourselfpublishedbookinsouthafrica' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

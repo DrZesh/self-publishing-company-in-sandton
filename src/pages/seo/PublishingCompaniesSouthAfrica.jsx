@@ -23,13 +23,13 @@ const schema = {
     serviceSchema({
       name: 'Book Publishing South Africa',
       description: 'Professional book publishing services in South Africa including editing, cover design, typesetting, ISBN registration, printing and distribution.',
-      url: '/publishingcompaniessouthafrica',
+      url: '/publishing-companies-south-africa',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Publishing Companies South Africa', path: '/publishingcompaniessouthafrica' },
+      { name: 'Publishing Companies South Africa', path: '/publishing-companies-south-africa' },
     ]),
   ],
 };
@@ -38,10 +38,10 @@ export default function PublishingCompaniesSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Publishing Companies South Africa"
-        description="Compare book publishing companies in South Africa — what each offers, how packages are structured, and what to ask before signing with a publisher."
+        title="Publishing Companies in South Africa | Creative Books SA"
+        description="Compare book publishing companies in South Africa - what each offers, how packages work & what to ask before you sign. Transparent pricing from Creative Books SA."
         keywords="publishing companies in South Africa, book publishers South Africa, self publishing South Africa, best publishing company South Africa, book publishing services"
-        canonical="https://www.creativebooks.co.za/publishingcompaniessouthafrica"
+        canonical="https://creativebooks.co.za/publishing-companies-south-africa"
         schema={schema}
       />
       <ServicePageTemplate
@@ -65,16 +65,16 @@ export default function PublishingCompaniesSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Book Publishers South Africa', path: '/bookpublisherssouthafrica' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
-          { label: 'Best Publishers SA', path: '/bestpublishingcompaniesinsouthafrica' },
-          { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+          { label: 'Book Publishers South Africa', path: '/book-publishers-south-africa' },
+          { label: 'Book Publishing', path: '/book-publishing' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'Best Publishers SA', path: '/best-publishing-companies-in-south-africa' },
+          { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Work With a Trusted South African Publishing Company"

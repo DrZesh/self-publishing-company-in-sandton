@@ -28,7 +28,7 @@ export default function BookEditorsSouthAfrica() {
         title="Book Editors South Africa"
         description="Hire a professional book editor in South Africa from R0.30 per word — developmental, line and copy editing for fiction, non-fiction and memoir manuscripts."
         keywords="book editors in South Africa, book editors near me, copy editing services, proofreading services"
-        canonical="https://www.creativebooks.co.za/bookeditorsinsouthafrica"
+        canonical="https://creativebooks.co.za/bookeditorsinsouthafrica"
         schema={schema}
       />
       
@@ -118,11 +118,11 @@ export default function BookEditorsSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'Book Editing', path: '/bookediting' },
+            { label: 'Book Editing', path: '/book-editing' },
             { label: 'Proofreading', path: '/proofreading' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
-            { label: 'Book Printing', path: '/bookprinting' },
-            { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+            { label: 'Book Printing', path: '/book-printing' },
+            { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

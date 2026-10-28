@@ -28,11 +28,10 @@ export default function BookPrintingMidrand() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Midrand"
-        description="Book printing for Midrand authors — A5, 6×9, hardcover. Cream or white paper, from 100 copies, delivered to Midrand within 1–2 business days."
-        description="Book printing for Midrand authors — A5, 6×9, hardcover. Cream or white paper, from 100 copies, delivered to Midrand within 1–2 business days."
+        title="Book Printing in Midrand | Creative Books SA"
+        description="Book printing for Midrand authors - A5, 6×9 & hardcover. Cream or white paper, from 100 copies, delivered within 1-2 business days. Get a free quote today."
         keywords="book printing Midrand, book printers Midrand, Midrand book printing, printing services Midrand, book publishing Midrand"
-        canonical="https://www.creativebooks.co.za/bookprintingmidrand"
+        canonical="https://creativebooks.co.za/bookprintingmidrand"
         schema={{ '@graph': [schema] }}
       />
 

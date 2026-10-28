@@ -22,9 +22,9 @@ const article = {
     { q: 'What do literary agents charge in South Africa?', a: 'Legitimate agents work on commission — typically 15% of domestic deals and 20% of international deals. Never pay an upfront reading fee.' },
   ],
   relatedLinks: [
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-    { label: 'Book Publishing', path: '/bookpublishing' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
+    { label: 'Book Publishing', path: '/book-publishing' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

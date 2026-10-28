@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Eye, Send, Edit3, CheckCircle, AlertCircle, Loader2, ChevronDown } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { WORKFLOWS } from './WORKFLOWS';
 
@@ -26,7 +26,7 @@ export default function StageUpdateModal({ project, onClose, onUpdated }) {
   const handleStageOnly = async () => {
     setLoading(true);
     try {
-      await base44.functions.invoke('clientServiceActions', {
+      await platform.functions.invoke('clientServiceActions', {
         action: 'update_stage',
         projectId: project.id,
         stageKey: selectedStage.key,
@@ -46,14 +46,14 @@ export default function StageUpdateModal({ project, onClose, onUpdated }) {
     setLoading(true);
     try {
       // Update stage first
-      await base44.functions.invoke('clientServiceActions', {
+      await platform.functions.invoke('clientServiceActions', {
         action: 'update_stage',
         projectId: project.id,
         stageKey: selectedStage.key,
         stageLabel: selectedStage.label,
       });
       // Send email
-      await base44.functions.invoke('clientServiceActions', {
+      await platform.functions.invoke('clientServiceActions', {
         action: 'send_stage_email',
         projectId: project.id,
         stageKey: selectedStage.key,
@@ -63,7 +63,7 @@ export default function StageUpdateModal({ project, onClose, onUpdated }) {
         isWelcome: selectedStage.isWelcome || false,
       });
       // Mark email sent in history
-      await base44.functions.invoke('clientServiceActions', {
+      await platform.functions.invoke('clientServiceActions', {
         action: 'mark_stage_email_sent',
         projectId: project.id,
         stageKey: selectedStage.key,

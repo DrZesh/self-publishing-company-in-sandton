@@ -19,7 +19,7 @@ const featuredPosts = [
   {
     title: 'How to Get an ISBN for Your Book in South Africa',
     excerpt: 'Step-by-step guide to registering your ISBN through the National Library of South Africa — free, official, and required for retail.',
-    path: '/howtogetanisbnforyourbook',
+    path: '/how-to-get-an-isbn-for-your-book',
     tag: 'ISBN Guide',
   },
 ];

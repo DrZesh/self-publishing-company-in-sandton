@@ -203,7 +203,7 @@ export default function Printing6x9() {
       <PageMeta
         title="6x9 Book Printing in Johannesburg"
         description="6×9 trade paperback printing — the international standard for novels and non-fiction. Cream paper, perfect binding, from 100 copies. Free proof."
-        canonical="https://www.creativebooks.co.za/printing/6x9"
+        canonical="https://creativebooks.co.za/printing/6x9"
       />
 
       {/* ── Hero ── */}
@@ -216,7 +216,7 @@ export default function Printing6x9() {
           style={{ background: 'linear-gradient(90deg, transparent, rgba(184,149,91,0.6), transparent)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-20 w-full">
-          <Breadcrumbs light items={[{ label: 'Printing', path: '/bookprinting' }, { label: '6×9 Printing', path: '/printing/6x9' }]} />
+          <Breadcrumbs light items={[{ label: 'Printing', path: '/book-printing' }, { label: '6×9 Printing', path: '/printing/6x9' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl mt-6">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">
               6×9 Book Printing · Johannesburg
@@ -425,13 +425,13 @@ export default function Printing6x9() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-px" style={{ background: '#B8955B' }} />
-              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">White Paper</span>
+              <span className="text-[#B8955B] text-xs tracking-[0.3em] uppercase font-body">Cream Paper</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              6×9 White Paper Printing
+              Cream Paper Printing
             </h2>
             <p className="text-white/45 font-body text-sm max-w-2xl leading-relaxed">
-              Printed on 80gsm Bond White paper, our white option provides a clean, bright reading experience — ideal for business books, academic works and professional publications.
+              Printed on 78gsm cream paper, our cream option provides a warm, easy-on-the-eyes reading experience — ideal for novels, memoirs and long-form fiction.
             </p>
           </motion.div>
 
@@ -469,7 +469,7 @@ export default function Printing6x9() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {creamPricing.map((pkg, i) => (
-              <DarkPricingCard key={pkg.name + '-white'} pkg={pkg} paperType="White Paper · 80gsm Bond" i={i} />
+              <DarkPricingCard key={pkg.name + '-cream'} pkg={pkg} paperType="78 Gsm Cream Paper" i={i} />
             ))}
           </div>
           <p className="text-white/25 text-xs font-body mt-4 text-center">Need adjustments or have questions? Click 'Get a Custom Quote'. Ready to email us directly? Click 'Email Now' to send a pre-filled email.</p>
@@ -510,7 +510,7 @@ export default function Printing6x9() {
                 Request a Book Printing Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/bookprinting"
+              <Link to="/book-printing"
                 className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 All Printing Services
@@ -524,8 +524,8 @@ export default function Printing6x9() {
         { label: 'A5 Printing', path: '/printing/a5' },
         { label: 'Hardcover Printing', path: '/printing/hardcover' },
         { label: "Children's Book Printing", path: '/printing/childrensbooks' },
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-        { label: 'Softcover Printing', path: '/softcoverprinting' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
+        { label: 'Softcover Printing', path: '/book-printing' },
         { label: 'Get a Quote', path: '/getquote' },
       ]} light />
     </div>

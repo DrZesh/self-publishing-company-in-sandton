@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Send, FileText, User, Mail, Calendar, MessageSquare, Shield, Loader2, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function QuickSendModal({ templates, contacts, onClose, onSent }) {
+export default function QuickSendModal({ templates, contacts, allDocuments = [], onClose, onSent }) {
   const [step, setStep] = useState(1); // 1 = choose doc, 2 = recipient details, 3 = done
+  const [sourceTab, setSourceTab] = useState('templates');
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [form, setForm] = useState({
     recipient_name: '',
@@ -30,7 +31,7 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
       const expiresAt = new Date(Date.now() + form.expiry_days * 24 * 60 * 60 * 1000).toISOString();
 
       // Create a new document record from the template
-      const newDoc = await base44.entities.Document.create({
+      const newDoc = await platform.entities.Document.create({
         contact_id: matchedContact?.id || null,
         category: selectedTemplate.category,
         file_name: selectedTemplate.file_name,
@@ -63,7 +64,7 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
         <p>Kind regards,<br/>Creative Books SA Team</p>
       `;
 
-      await base44.integrations.Core.SendEmail({
+      await platform.integrations.Core.SendEmail({
         to: form.recipient_email,
         subject,
         body,
@@ -71,7 +72,7 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
       });
 
       // Update doc status to Sent
-      await base44.entities.Document.update(newDoc.id, {
+      await platform.entities.Document.update(newDoc.id, {
         status: 'Sent to Client',
         sent_at: new Date().toISOString(),
       });
@@ -109,6 +110,12 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
             <p className="text-xs text-gray-400 mt-0.5">
               {step === 1 ? 'Step 1 of 2 — Choose document' : step === 2 ? 'Step 2 of 2 — Recipient details' : 'Sent!'}
             </p>
+            {step === 1 && (
+              <div className="flex gap-2 mt-2">
+                <button onClick={() => setSourceTab('templates')} className={`text-xs px-2.5 py-1 rounded-full font-medium transition-colors ${sourceTab === 'templates' ? 'bg-[#B87333] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Templates</button>
+                <button onClick={() => setSourceTab('all')} className={`text-xs px-2.5 py-1 rounded-full font-medium transition-colors ${sourceTab === 'all' ? 'bg-[#B87333] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>All Documents</button>
+              </div>
+            )}
           </div>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
             <X className="w-5 h-5 text-gray-400" />
@@ -128,33 +135,39 @@ export default function QuickSendModal({ templates, contacts, onClose, onSent })
 
         <div className="p-6">
           {/* Step 1: Choose template */}
-          {step === 1 && (
-            <div className="space-y-3">
-              <p className="text-sm text-gray-600 mb-4">Select a reusable document from your Template Library to send:</p>
-              {templates.filter(t => !t.template_status || t.template_status === 'Active').length === 0 ? (
-                <div className="text-center py-8 text-gray-400">
-                  <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">No active templates available.</p>
-                  <p className="text-xs mt-1">Upload a template and set its status to "Active" to send it.</p>
-                </div>
-              ) : (
-                templates.filter(t => !t.template_status || t.template_status === 'Active').map(t => (
-                  <button
-                    key={t.id}
-                    onClick={() => { setSelectedTemplate(t); setForm(f => ({ ...f, requires_signature: t.requires_signature || false, expiry_days: t.default_expiry_days || 14 })); }}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${selectedTemplate?.id === t.id ? 'border-[#B87333] bg-orange-50' : 'border-gray-100 hover:border-gray-300 bg-gray-50'}`}
-                  >
-                    <span className="text-2xl">{TEMPLATE_ICONS[t.category] || TEMPLATE_ICONS[t.template_label] || '📄'}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm">{t.template_label || t.file_name}</p>
-                      <p className="text-xs text-gray-400">{t.category} {t.requires_signature ? '· Requires signature' : ''}</p>
-                    </div>
-                    {selectedTemplate?.id === t.id && <CheckCircle className="w-5 h-5 text-[#B87333] flex-shrink-0" />}
-                  </button>
-                ))
-              )}
-            </div>
-          )}
+          {step === 1 && (() => {
+            const docsToShow = sourceTab === 'templates'
+              ? templates.filter(t => !t.template_status || t.template_status === 'Active')
+              : (allDocuments.length > 0 ? allDocuments : templates).filter(d => d.file_url && !d.is_template);
+            return (
+              <div className="space-y-3">
+                <p className="text-sm text-gray-600 mb-2">
+                  {sourceTab === 'templates' ? 'Select a reusable template to send:' : 'Select an existing document from the system:'}
+                </p>
+                {docsToShow.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400">
+                    <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p className="text-sm">{sourceTab === 'templates' ? 'No active templates available.' : 'No documents with files found.'}</p>
+                  </div>
+                ) : (
+                  docsToShow.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => { setSelectedTemplate(t); setForm(f => ({ ...f, requires_signature: t.requires_signature || false, expiry_days: t.default_expiry_days || 14 })); }}
+                      className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${selectedTemplate?.id === t.id ? 'border-[#B87333] bg-orange-50' : 'border-gray-100 hover:border-gray-300 bg-gray-50'}`}
+                    >
+                      <span className="text-2xl">{TEMPLATE_ICONS[t.category] || '📄'}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 text-sm">{t.template_label || t.file_name}</p>
+                        <p className="text-xs text-gray-400">{t.category}{t.requires_signature ? ' · Requires signature' : ''}{t.book_title ? ` · ${t.book_title}` : ''}</p>
+                      </div>
+                      {selectedTemplate?.id === t.id && <CheckCircle className="w-5 h-5 text-[#B87333] flex-shrink-0" />}
+                    </button>
+                  ))
+                )}
+              </div>
+            );
+          })()}
 
           {/* Step 2: Recipient */}
           {step === 2 && selectedTemplate && (

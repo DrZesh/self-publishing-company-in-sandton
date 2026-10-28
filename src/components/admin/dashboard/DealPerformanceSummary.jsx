@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
@@ -56,17 +56,17 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function DealPerformanceSummary() {
   const { data: pipelines = [] } = useQuery({
     queryKey: ['sales-pipelines'],
-    queryFn: () => base44.entities.SalesPipeline.list('-created_date', 50),
+    queryFn: () => platform.entities.SalesPipeline.list('-created_date', 50),
     staleTime: 30000,
   });
 
   const { data: allDeals = [], isLoading } = useQuery({
     queryKey: ['deal-performance-all'],
     queryFn: async () => {
-      const ps = await base44.entities.SalesPipeline.list('-created_date', 50);
+      const ps = await platform.entities.SalesPipeline.list('-created_date', 50);
       if (!ps.length) return [];
       const results = await Promise.all(
-        ps.map(p => base44.entities.PipelineDeal.filter({ pipeline_id: p.id }, '-updated_date', 500))
+        ps.map(p => platform.entities.PipelineDeal.filter({ pipeline_id: p.id }, '-updated_date', 500))
       );
       return results.flat();
     },

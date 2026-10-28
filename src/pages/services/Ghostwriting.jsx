@@ -81,10 +81,9 @@ export default function Ghostwriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Ghostwriting Services"
-        description="Professional ghostwriting services in South Africa for memoirs, business books, Christian titles and other manuscripts. NDA-protected."
-        description="Discreet professional ghostwriters in South Africa — memoirs, business books, fiction and non-fiction. NDA-protected. Free consultation, transparent pricing."
-        canonical="https://www.creativebooks.co.za/ghostwriting"
+        title="Ghostwriting Services in South Africa | Creative Books SA"
+        description="Confidential ghostwriting services in South Africa - memoirs, business books & more, written in your voice. Your story, your name, our pen. Get a free consult."
+        canonical="https://creativebooks.co.za/ghostwriting"
         schema={{
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
@@ -101,7 +100,7 @@ export default function Ghostwriting() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Ghost Writing · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Ghostwriting Services
+              Ghostwriting Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Ghostwriters for Books, Memoirs, Christian Titles and Business Manuscripts</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-5 max-w-2xl">
@@ -273,7 +272,7 @@ export default function Ghostwriting() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request a Ghostwriting Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+              <Link to="/publishingpackages/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
               </Link>
             </div>
@@ -285,8 +284,8 @@ export default function Ghostwriting() {
         { label: 'Memoir Writing Services', path: '/memoirwriting' },
         { label: 'Biography Writing Services', path: '/biographywriting' },
         { label: 'Christian Book Writing', path: '/christianbookwriting' },
-        { label: 'Book Editing Services', path: '/bookediting' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'Book Editing Services', path: '/book-editing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

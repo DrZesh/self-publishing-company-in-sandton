@@ -23,8 +23,18 @@ export default function ResourcesMegaPanel() {
             </Link>
           </li>
           <li>
+            <Link to="/barcode-generator" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+              ISBN Barcode Generator
+            </Link>
+          </li>
+          <li>
             <Link to="/isbn" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               ISBN Registration Guide
+            </Link>
+          </li>
+          <li>
+            <Link to="/resources/documents" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+              Documents
             </Link>
           </li>
         </ul>
@@ -45,7 +55,7 @@ export default function ResourcesMegaPanel() {
             </Link>
           </li>
           <li>
-            <Link to="/howtogetanisbnforyourbook" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/how-to-get-an-isbn-for-your-book" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               How to Get an ISBN
             </Link>
           </li>

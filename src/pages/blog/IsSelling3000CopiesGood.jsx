@@ -21,8 +21,8 @@ const article = {
     { q: 'How much would a self-published author earn from 3,000 sales?', a: 'At R250 per copy, 3,000 sales = R750,000 in total revenue — all retained by the author after the once-off Creative Books SA production fee.' },
   ],
   relatedLinks: [
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'How to Market Your Book', path: '/howtomarketandsellyourselfpublishedbookinsouthafrica' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

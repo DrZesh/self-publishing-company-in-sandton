@@ -19,7 +19,7 @@ const articleData = {
       { heading: 'Publishing Packages', text: 'At Creative Books SA, our packages bundle these services for better value. Mini Package from R4,999, Standard from R12,999, and Premium from R24,999. Each package is designed to provide complete publishing solutions at different investment levels.' },
     ],
   },
-  '/howtogetanisbn': {
+  '/how-to-get-an-isbn-for-your-book': {
     title: 'How to Get an ISBN in South Africa',
     category: 'Publishing Tips',
     readTime: '5 min read',
@@ -107,7 +107,7 @@ export default function BlogArticle() {
       title: 'How Much Does It Cost to Publish a Book?',
       description: 'Complete breakdown of book publishing costs in South Africa — editing, design, printing, ISBN, distribution and marketing.',
     },
-    '/howtogetanisbn': {
+    '/how-to-get-an-isbn-for-your-book': {
       title: 'How to Get an ISBN for Your Book | South Africa Guide',
       description: 'Step-by-step guide to getting an ISBN in South Africa — free registration via the National Library, plus tips on barcodes.',
     },
@@ -154,10 +154,10 @@ export default function BlogArticle() {
       <InternalLinks
         title="Related Articles & Services"
         links={[
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Book Printing', path: '/bookprinting' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Publishing', path: '/book-publishing' },
+          { label: 'Book Printing', path: '/book-printing' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Get a Quote', path: '/getquote' },
           { label: 'Blog', path: '/blog' },
         ]}

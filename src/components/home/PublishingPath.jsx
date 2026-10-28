@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { Printer, FileEdit, Package, MonitorSmartphone, ArrowRight } from 'lucide-react';
 
 const paths = [
-  { icon: Printer,          title: 'I Need to Print My Book',                    desc: 'For authors with a completed manuscript or print-ready files who need professional physical copies.',                          label: 'View Book Printing',          to: '/bookprinting' },
-  { icon: FileEdit,         title: 'I Need Help Preparing My Manuscript',         desc: 'For authors who need editing, proofreading, manuscript evaluation or writing support.',                                        label: 'View Editing Services',       to: '/bookediting' },
-  { icon: Package,          title: 'I Need a Complete Publishing Package',         desc: 'For authors who want editing, cover design, layout and printing support combined.',                                            label: 'View Publishing Packages',    to: '/publishingpackages' },
-  { icon: MonitorSmartphone,title: 'I Need to Publish Online',                    desc: 'For authors who need ebook formatting, Amazon publishing support or an author website.',                                      label: 'View Ebook and Website Services', to: '/ebookpublishing' },
+  { icon: Printer,          title: 'I Need to Print My Book',                    desc: 'For authors with a completed manuscript or print-ready files who need professional physical copies.',                          label: 'View Book Printing',          to: '/book-printing' },
+  { icon: FileEdit,         title: 'I Need Help Preparing My Manuscript',         desc: 'For authors who need editing, proofreading, manuscript evaluation or writing support.',                                        label: 'View Editing Services',       to: '/book-editing' },
+  { icon: Package,          title: 'I Need a Complete Publishing Package',         desc: 'For authors who want editing, cover design, layout and printing support combined.',                                            label: 'View Publishing Packages',    to: '/publishingpackages/a5' },
+  { icon: MonitorSmartphone,title: 'I Need to Publish Online',                    desc: 'For authors who need ebook formatting, Amazon publishing support or an author website.',                                      label: 'View Ebook and Website Services', to: '/ebook-publishing' },
 ];
 
 export default function PublishingPath() {

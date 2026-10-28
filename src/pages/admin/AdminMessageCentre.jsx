@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import TemplateModal from '@/components/messaging/TemplateModal';
 import {
   MessageSquare, Mail, Plus, Edit2, Copy, Trash2, Power, RotateCcw,
@@ -14,6 +12,18 @@ import {
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+
+const GLASS = {
+  background: 'rgba(255,255,255,0.08)',
+  backdropFilter: 'blur(24px)',
+  border: '1px solid rgba(255,255,255,0.15)',
+};
+
+const GLASS_CARD = {
+  background: 'rgba(255,255,255,0.10)',
+  backdropFilter: 'blur(16px)',
+  border: '1px solid rgba(255,255,255,0.18)',
+};
 
 const TABS = [
   { key: 'email_templates', label: 'Email Templates', icon: Mail },
@@ -25,14 +35,16 @@ const TABS = [
 ];
 
 const CAT_COLORS = {
-  welcome: 'bg-green-100 text-green-700',
-  stage_update: 'bg-blue-100 text-blue-700',
-  payment: 'bg-amber-100 text-amber-700',
-  proof: 'bg-purple-100 text-purple-700',
-  completion: 'bg-emerald-100 text-emerald-700',
-  reminder: 'bg-orange-100 text-orange-700',
-  general: 'bg-gray-100 text-gray-600',
+  welcome: 'bg-emerald-500/20 text-emerald-300',
+  stage_update: 'bg-blue-500/20 text-blue-300',
+  payment: 'bg-amber-500/20 text-amber-300',
+  proof: 'bg-purple-500/20 text-purple-300',
+  completion: 'bg-teal-500/20 text-teal-300',
+  reminder: 'bg-orange-500/20 text-orange-300',
+  general: 'bg-white/10 text-white/60',
 };
+
+const inputCls = "w-full px-3 py-2 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-white/30 bg-white/10 border border-white/15";
 
 // ─── Templates Tab ────────────────────────────────────────────────────────────
 function TemplatesTab({ channel }) {
@@ -47,7 +59,7 @@ function TemplatesTab({ channel }) {
 
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ['message-templates', channel],
-    queryFn: () => base44.entities.MessageTemplate.filter({ channel }),
+    queryFn: () => platform.entities.MessageTemplate.filter({ channel }),
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['message-templates', channel] });
@@ -57,21 +69,21 @@ function TemplatesTab({ channel }) {
   ).sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 
   const toggleActive = async (t) => {
-    await base44.entities.MessageTemplate.update(t.id, { is_active: !t.is_active });
+    await platform.entities.MessageTemplate.update(t.id, { is_active: !t.is_active });
     invalidate();
     toast.success(t.is_active ? 'Template deactivated' : 'Template activated');
   };
 
   const duplicate = async (t) => {
     const { id, created_date, updated_date, created_by, ...data } = t;
-    await base44.entities.MessageTemplate.create({ ...data, name: `${t.name} (Copy)`, is_default: false });
+    await platform.entities.MessageTemplate.create({ ...data, name: `${t.name} (Copy)`, is_default: false });
     invalidate();
     toast.success('Template duplicated');
   };
 
   const restoreDefault = async (t) => {
     if (!t.default_content_html) { toast.error('No original content saved'); return; }
-    await base44.entities.MessageTemplate.update(t.id, { content_html: t.default_content_html });
+    await platform.entities.MessageTemplate.update(t.id, { content_html: t.default_content_html });
     invalidate();
     toast.success('Template restored to default');
   };
@@ -79,14 +91,14 @@ function TemplatesTab({ channel }) {
   const deleteTemplate = async (t) => {
     if (t.is_default) { toast.error('Default templates cannot be deleted'); return; }
     if (!confirm(`Delete "${t.name}"?`)) return;
-    await base44.entities.MessageTemplate.delete(t.id);
+    await platform.entities.MessageTemplate.delete(t.id);
     invalidate();
     toast.success('Template deleted');
   };
 
   const handlePreview = async (t) => {
     setPreviewId(t.id);
-    const res = await base44.functions.invoke('renderTemplate', { templateId: t.id, preview: true });
+    const res = await platform.functions.invoke('renderTemplate', { templateId: t.id, preview: true });
     setPreviewId(null);
     if (res.data?.rendered_body) setPreviewHtml(res.data.rendered_body);
     else toast.error(res.data?.error || 'Preview failed');
@@ -96,7 +108,7 @@ function TemplatesTab({ channel }) {
     const email = testEmailMap[t.id];
     if (!email) { toast.error('Enter a test email first'); return; }
     setTestingId(t.id);
-    const res = await base44.functions.invoke('renderTemplate', { templateId: t.id, preview: true, testSendTo: email });
+    const res = await platform.functions.invoke('renderTemplate', { templateId: t.id, preview: true, testSendTo: email });
     setTestingId(null);
     if (res.data?.success) toast.success(`Test sent to ${email}`);
     else toast.error(res.data?.error || 'Send failed');
@@ -105,11 +117,11 @@ function TemplatesTab({ channel }) {
   return (
     <div className="space-y-4">
       {previewHtml && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center overflow-auto p-6">
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-start justify-center overflow-auto p-6">
           <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-semibold">Email Preview</h3>
-              <Button variant="ghost" size="sm" onClick={() => setPreviewHtml('')}>✕</Button>
+              <h3 className="font-semibold text-gray-900">Email Preview</h3>
+              <button onClick={() => setPreviewHtml('')} className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500">✕</button>
             </div>
             <iframe srcDoc={previewHtml} className="w-full border-0" style={{ height: '75vh' }} title="Preview" />
           </div>
@@ -118,80 +130,83 @@ function TemplatesTab({ channel }) {
 
       <div className="flex items-center justify-between gap-3">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search templates..." className="pl-9" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search templates..."
+            className={inputCls + " pl-9"} />
         </div>
-        <Button onClick={() => { setEditTemplate(null); setShowModal(true); }} className="bg-[#B87333] hover:bg-[#A06828] text-white gap-2">
+        <button onClick={() => { setEditTemplate(null); setShowModal(true); }}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
+          style={{ background: 'linear-gradient(135deg, #B87333, #D4A574)', boxShadow: '0 4px 16px rgba(184,115,51,0.4)' }}>
           <Plus className="w-4 h-4" /> New Template
-        </Button>
+        </button>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[#B87333]" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <Mail className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="font-medium">No {channel} templates yet</p>
+        <div className="text-center py-16 text-white/40">
+          <Mail className="w-10 h-10 mx-auto mb-3 opacity-40" />
+          <p className="font-medium text-white/60">No {channel} templates yet</p>
           <p className="text-sm mt-1">Create your first template to get started</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(t => (
-            <div key={t.id} className={`bg-white rounded-xl border p-4 transition-all ${t.is_active ? 'border-gray-100' : 'border-gray-200 opacity-60'}`}>
+            <div key={t.id} className="rounded-xl p-4 transition-all" style={{ ...GLASS_CARD, opacity: t.is_active ? 1 : 0.55 }}>
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-gray-900 text-sm">{t.name}</h3>
-                    {t.is_default && <span className="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full">Default</span>}
-                    {!t.is_active && <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Inactive</span>}
+                    <h3 className="font-semibold text-white text-sm">{t.name}</h3>
+                    {t.is_default && <span className="text-xs bg-blue-500/20 text-blue-300 border border-blue-400/20 px-2 py-0.5 rounded-full">Default</span>}
+                    {!t.is_active && <span className="text-xs bg-white/10 text-white/50 px-2 py-0.5 rounded-full">Inactive</span>}
                     {t.category && (
                       <span className={`text-xs px-2 py-0.5 rounded-full capitalize ${CAT_COLORS[t.category] || CAT_COLORS.general}`}>
                         {t.category.replace('_', ' ')}
                       </span>
                     )}
                   </div>
-                  {t.subject && <p className="text-xs text-gray-500 mt-0.5 truncate">Subject: {t.subject}</p>}
+                  {t.subject && <p className="text-xs text-white/50 mt-0.5 truncate">Subject: {t.subject}</p>}
                 </div>
 
                 <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
-                  <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={() => { setEditTemplate(t); setShowModal(true); }}>
-                    <Edit2 className="w-3 h-3" /> Edit
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={() => handlePreview(t)} disabled={previewId === t.id}>
-                    {previewId === t.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Eye className="w-3 h-3" />} Preview
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={() => duplicate(t)}>
-                    <Copy className="w-3 h-3" /> Duplicate
-                  </Button>
-                  {t.is_default && (
-                    <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs" onClick={() => restoreDefault(t)}>
-                      <RotateCcw className="w-3 h-3" /> Restore
-                    </Button>
-                  )}
-                  <Button variant="ghost" size="sm" className={`h-7 gap-1 text-xs ${t.is_active ? 'text-amber-600' : 'text-green-600'}`} onClick={() => toggleActive(t)}>
+                  {[
+                    { label: 'Edit', icon: Edit2, onClick: () => { setEditTemplate(t); setShowModal(true); } },
+                    { label: 'Preview', icon: previewId === t.id ? Loader2 : Eye, onClick: () => handlePreview(t), spin: previewId === t.id },
+                    { label: 'Duplicate', icon: Copy, onClick: () => duplicate(t) },
+                    ...(t.is_default ? [{ label: 'Restore', icon: RotateCcw, onClick: () => restoreDefault(t) }] : []),
+                  ].map(({ label, icon: Icon, onClick, spin }) => (
+                    <button key={label} onClick={onClick}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                      <Icon className={`w-3 h-3 ${spin ? 'animate-spin' : ''}`} /> {label}
+                    </button>
+                  ))}
+                  <button onClick={() => toggleActive(t)}
+                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${t.is_active ? 'text-amber-400 hover:bg-amber-500/10' : 'text-emerald-400 hover:bg-emerald-500/10'}`}>
                     <Power className="w-3 h-3" /> {t.is_active ? 'Deactivate' : 'Activate'}
-                  </Button>
+                  </button>
                   {!t.is_default && (
-                    <Button variant="ghost" size="sm" className="h-7 text-red-400 hover:text-red-600" onClick={() => deleteTemplate(t)}>
+                    <button onClick={() => deleteTemplate(t)}
+                      className="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-all">
                       <Trash2 className="w-3 h-3" />
-                    </Button>
+                    </button>
                   )}
                 </div>
               </div>
 
-              {/* Quick test send row */}
               {channel === 'email' && (
-                <div className="mt-3 pt-3 border-t border-gray-50 flex gap-2">
-                  <Input
+                <div className="mt-3 pt-3 border-t border-white/10 flex gap-2">
+                  <input
                     type="email"
                     placeholder="test@email.com"
                     value={testEmailMap[t.id] || ''}
                     onChange={e => setTestEmailMap(m => ({ ...m, [t.id]: e.target.value }))}
-                    className="flex-1 h-7 text-xs"
+                    className="flex-1 px-3 py-1.5 rounded-lg text-xs text-white placeholder-white/30 bg-white/10 border border-white/15 focus:outline-none focus:ring-1 focus:ring-white/30"
                   />
-                  <Button size="sm" className="h-7 gap-1 text-xs bg-[#B87333] hover:bg-[#A06828] text-white" onClick={() => handleTestSend(t)} disabled={testingId === t.id}>
+                  <button onClick={() => handleTestSend(t)} disabled={testingId === t.id}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-white disabled:opacity-50 transition-all"
+                    style={{ background: 'rgba(184,115,51,0.5)', border: '1px solid rgba(184,115,51,0.4)' }}>
                     {testingId === t.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />} Send Test
-                  </Button>
+                  </button>
                 </div>
               )}
             </div>
@@ -218,7 +233,7 @@ function LogsTab({ filter }) {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['message-logs', filter],
     queryFn: async () => {
-      const all = await base44.entities.MessageLog.list('-sent_at', 200);
+      const all = await platform.entities.MessageLog.list('-sent_at', 200);
       if (filter === 'sent') return all.filter(l => l.success);
       if (filter === 'failed') return all.filter(l => !l.success);
       return all;
@@ -240,66 +255,67 @@ function LogsTab({ filter }) {
     <div className="space-y-4">
       <div className="flex gap-3 items-center flex-wrap">
         <div className="relative flex-1 min-w-0 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by client, email, subject..." className="pl-9" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by client, email, subject..."
+            className={inputCls + " pl-9"} />
         </div>
-        <select value={channelFilter} onChange={e => setChannelFilter(e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white">
-          <option value="all">All Channels</option>
-          <option value="email">Email</option>
-          <option value="whatsapp">WhatsApp</option>
+        <select value={channelFilter} onChange={e => setChannelFilter(e.target.value)}
+          className="px-3 py-2 rounded-xl text-sm text-white bg-white/10 border border-white/15 focus:outline-none">
+          <option value="all" className="bg-gray-900">All Channels</option>
+          <option value="email" className="bg-gray-900">Email</option>
+          <option value="whatsapp" className="bg-gray-900">WhatsApp</option>
         </select>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[#B87333]" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <MessageSquare className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="font-medium">No messages {filter === 'failed' ? 'failed' : filter === 'sent' ? 'sent' : 'logged'} yet</p>
+        <div className="text-center py-16">
+          <MessageSquare className="w-10 h-10 mx-auto mb-3 text-white/20" />
+          <p className="font-medium text-white/60">No messages {filter === 'failed' ? 'failed' : filter === 'sent' ? 'sent' : 'logged'} yet</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="rounded-2xl overflow-hidden" style={GLASS}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Client</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Channel</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Subject / Template</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Trigger</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Sent At</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
+              <tr style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                {['Client', 'Channel', 'Subject / Template', 'Trigger', 'Sent At', 'Status'].map(h => (
+                  <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-white/50 uppercase tracking-wide">{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(log => (
-                <tr key={log.id} className="border-b hover:bg-gray-50">
-                  <td className="py-2 px-3">
-                    <p className="font-medium text-gray-900">{log.client_name || log.recipient}</p>
-                    <p className="text-xs text-gray-400">{log.project_name || ''}</p>
+                <tr key={log.id} className="transition-colors" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                  onMouseLeave={e => e.currentTarget.style.background = ''}>
+                  <td className="py-3 px-4">
+                    <p className="font-semibold text-white">{log.client_name || log.recipient}</p>
+                    <p className="text-xs text-white/40">{log.project_name || ''}</p>
                   </td>
-                  <td className="py-2 px-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${log.channel === 'email' ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'}`}>
+                  <td className="py-3 px-4">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${log.channel === 'email' ? 'bg-blue-500/20 text-blue-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
                       {log.channel}
                     </span>
                   </td>
-                  <td className="py-2 px-3 max-w-xs">
-                    <p className="truncate text-gray-900">{log.subject || log.template_used}</p>
-                    <p className="text-xs text-gray-400 truncate">{log.template_used}</p>
+                  <td className="py-3 px-4 max-w-xs">
+                    <p className="truncate text-white/80">{log.subject || log.template_used}</p>
+                    <p className="text-xs text-white/40 truncate">{log.template_used}</p>
                   </td>
-                  <td className="py-2 px-3">
-                    <span className="text-xs text-gray-500 capitalize">{(log.trigger || log.triggered_by || '—').replace('_', ' ')}</span>
+                  <td className="py-3 px-4">
+                    <span className="text-xs text-white/50 capitalize">{(log.trigger || log.triggered_by || '—').replace('_', ' ')}</span>
                   </td>
-                  <td className="py-2 px-3 text-xs text-gray-500 whitespace-nowrap">
+                  <td className="py-3 px-4 text-xs text-white/50 whitespace-nowrap">
                     {log.sent_at ? format(new Date(log.sent_at), 'dd MMM yy HH:mm') : '—'}
                   </td>
-                  <td className="py-2 px-3">
+                  <td className="py-3 px-4">
                     {log.success ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full">
                         <CheckCircle className="w-3 h-3" /> Sent
                       </span>
                     ) : (
                       <div>
-                        <span className="inline-flex items-center gap-1 text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-xs text-red-300 bg-red-500/15 px-2 py-0.5 rounded-full">
                           <XCircle className="w-3 h-3" /> Failed
                         </span>
                         {log.error_message && <p className="text-xs text-red-400 mt-0.5 max-w-[150px] truncate">{log.error_message}</p>}
@@ -320,34 +336,33 @@ function LogsTab({ filter }) {
 function SettingsTab() {
   return (
     <div className="space-y-4 max-w-lg">
-      <div className="bg-white rounded-xl border border-gray-100 p-5">
-        <h3 className="font-semibold text-gray-900 mb-3">Communication Settings</h3>
-        <div className="space-y-3">
-          <Link to="/admin/email-settings" className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+      <div className="rounded-xl p-5 space-y-3" style={GLASS_CARD}>
+        <h3 className="font-semibold text-white mb-1">Communication Settings</h3>
+        {[
+          { to: '/admin/email-settings', icon: Mail, label: 'Email Settings', desc: 'Configure Resend, sender name, test email' },
+          { to: '/admin/automations', icon: RefreshCw, label: 'Automation Centre', desc: 'Rules, triggers, approval queue, engine' },
+        ].map(({ to, icon: Icon, label, desc }) => (
+          <Link key={to} to={to}
+            className="flex items-center justify-between p-3 rounded-xl transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}>
             <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-[#B87333]" />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(184,115,51,0.2)' }}>
+                <Icon className="w-4 h-4 text-[#D4A574]" />
+              </div>
               <div>
-                <p className="font-medium text-sm text-gray-900">Email Settings</p>
-                <p className="text-xs text-gray-500">Configure Resend, sender name, test email</p>
+                <p className="font-medium text-sm text-white">{label}</p>
+                <p className="text-xs text-white/50">{desc}</p>
               </div>
             </div>
-            <span className="text-gray-400">→</span>
+            <span className="text-white/30">→</span>
           </Link>
-          <Link to="/admin/automations" className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <RefreshCw className="w-5 h-5 text-[#B87333]" />
-              <div>
-                <p className="font-medium text-sm text-gray-900">Automation Centre</p>
-                <p className="text-xs text-gray-500">Rules, triggers, approval queue, engine</p>
-              </div>
-            </div>
-            <span className="text-gray-400">→</span>
-          </Link>
-        </div>
+        ))}
       </div>
-      <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-        <p className="text-sm font-semibold text-amber-800 mb-1">POPIA Compliance</p>
-        <p className="text-xs text-amber-700">Every automated email includes an unsubscribe link. Clients marked as <strong>Do Not Contact</strong> or <strong>Unsubscribed</strong> are automatically skipped by the automation engine.</p>
+      <div className="rounded-xl p-4" style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
+        <p className="text-sm font-semibold text-amber-300 mb-1">POPIA Compliance</p>
+        <p className="text-xs text-amber-200/80">Every automated email includes an unsubscribe link. Clients marked as <strong>Do Not Contact</strong> or <strong>Unsubscribed</strong> are automatically skipped by the automation engine.</p>
       </div>
     </div>
   );
@@ -359,40 +374,47 @@ export default function AdminMessageCentre() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <MessageSquare className="w-6 h-6 text-[#B87333]" /> Message Centre
-          </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage templates, review communication history, and configure messaging settings</p>
-        </div>
+      <div className="min-h-screen -m-6 lg:-m-7 p-6 lg:p-7 relative"
+        style={{ backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(20,30,80,0.85) 0%, rgba(60,20,80,0.80) 50%, rgba(10,40,80,0.85) 100%)' }} />
 
-        {/* Tabs */}
-        <div className="flex gap-1 border-b overflow-x-auto">
-          {TABS.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => setActiveTab(key)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === key
-                  ? 'border-[#B87333] text-[#B87333]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-            </button>
-          ))}
-        </div>
+        <div className="relative z-10 space-y-6">
+          {/* Header */}
+          <div>
+            <h1 className="text-2xl font-bold text-white drop-shadow flex items-center gap-2">
+              <MessageSquare className="w-6 h-6 text-[#D4A574]" /> Message Centre
+            </h1>
+            <p className="text-sm text-white/60 mt-0.5">Manage templates, review communication history, and configure messaging settings</p>
+          </div>
 
-        {/* Tab Content */}
-        <div>
-          {activeTab === 'email_templates' && <TemplatesTab channel="email" />}
-          {activeTab === 'whatsapp_templates' && <TemplatesTab channel="whatsapp" />}
-          {activeTab === 'sent' && <LogsTab filter="sent" />}
-          {activeTab === 'logs' && <LogsTab filter="all" />}
-          {activeTab === 'failed' && <LogsTab filter="failed" />}
-          {activeTab === 'settings' && <SettingsTab />}
+          {/* Tabs */}
+          <div className="flex gap-1 overflow-x-auto rounded-2xl p-1.5" style={GLASS}>
+            {TABS.map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-xl transition-all"
+                style={activeTab === key
+                  ? { background: 'linear-gradient(135deg, #B87333, #D4A574)', color: '#fff', boxShadow: '0 4px 12px rgba(184,115,51,0.35)' }
+                  : { color: 'rgba(255,255,255,0.6)' }}
+                onMouseEnter={e => { if (activeTab !== key) e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+                onMouseLeave={e => { if (activeTab !== key) e.currentTarget.style.background = ''; }}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div>
+            {activeTab === 'email_templates' && <TemplatesTab channel="email" />}
+            {activeTab === 'whatsapp_templates' && <TemplatesTab channel="whatsapp" />}
+            {activeTab === 'sent' && <LogsTab filter="sent" />}
+            {activeTab === 'logs' && <LogsTab filter="all" />}
+            {activeTab === 'failed' && <LogsTab filter="failed" />}
+            {activeTab === 'settings' && <SettingsTab />}
+          </div>
         </div>
       </div>
     </AdminLayout>

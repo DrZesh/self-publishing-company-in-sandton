@@ -11,7 +11,7 @@ const article = {
   sections: [
     { heading: null, text: "Most debut authors feel they are negotiating from a position of weakness. But there are real ways to strengthen your hand — or to decide that self-publishing gives you a better deal altogether." },
     { heading: 'Build Your Platform Before You Submit', text: "Publishers increasingly value authors who already have an audience. A debut South African author with an engaged social media following and a growing email list is far more attractive than an equally talented author with no platform. Start building your presence before your manuscript is finished." },
-    { heading: 'The Self-Publishing Alternative to Negotiating', text: "Consider this: rather than negotiating from a position of weakness for a traditional deal, self-publishing through Creative Books SA gives you the 'best deal' automatically — you retain 100% of revenue, all rights, and full creative control, with professional production at a transparent once-off price. For many South African authors, this is simply a better business decision. Explore <a href='/selfpublishingpackagesinsouthafrica'>the numbers</a>." },
+    { heading: 'The Self-Publishing Alternative to Negotiating', text: "Consider this: rather than negotiating from a position of weakness for a traditional deal, self-publishing through Creative Books SA gives you the 'best deal' automatically — you retain 100% of revenue, all rights, and full creative control, with professional production at a transparent once-off price. For many South African authors, this is simply a better business decision. Explore <a href='/self-publishing-packages-in-south-africa'>the numbers</a>." },
     { heading: 'Win or Be Shortlisted for Awards', text: "Award recognition in South African literary competitions signals quality to publishers and gives you concrete credibility. Enter competitions such as the UJ Prize, the Sunday Times Literary Awards, and Writivism." },
     { heading: 'Understand Your Leverage', text: "Leverage comes from: market demand for your topic, a demonstrable audience, existing publishing credits, media presence, and commercial potential. Be prepared to articulate these clearly in negotiations. Or, skip the negotiations entirely and take your book directly to market with Creative Books SA." },
   ],
@@ -23,7 +23,7 @@ const article = {
   relatedLinks: [
     { label: 'How to Choose Between Publishing Offers', path: '/howtochoosebetweenmultiplebookpublishingoffers' },
     { label: 'What is a Fair Book Deal', path: '/whatisafairbookdealforsouthafricanauthors' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

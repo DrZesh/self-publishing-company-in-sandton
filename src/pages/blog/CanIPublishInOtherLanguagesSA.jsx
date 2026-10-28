@@ -11,7 +11,7 @@ const article = {
   sections: [
     { heading: null, text: "South Africa is a country of 11 official languages. If you're writing in Zulu, Xhosa, Sotho, Afrikaans, or in English as your second language, here is what the publishing landscape looks like for you." },
     { heading: "Publishing in South Africa's Indigenous Languages", text: "There is genuine demand for books in South African indigenous languages. The school market, driven by the Department of Basic Education's language policy, has strong demand for age-appropriate readers and learning materials in all official languages." },
-    { heading: 'Writing in English as a Second Language', text: "What matters most is a compelling story or argument. If your English needs support, professional copy editing ensures the language is polished for publication. Creative Books SA's copy editing service at R0.30 per word is designed to correct and enhance language while preserving your authentic voice. Learn more about <a href='/bookediting'>book editing services</a>." },
+    { heading: 'Writing in English as a Second Language', text: "What matters most is a compelling story or argument. If your English needs support, professional copy editing ensures the language is polished for publication. Creative Books SA's copy editing service at R0.30 per word is designed to correct and enhance language while preserving your authentic voice. Learn more about <a href='/book-editing'>book editing services</a>." },
     { heading: 'Creative Books SA and Multilingual Authors', text: "Creative Books SA works with South African authors writing in all languages and at all language proficiency levels. Their editing team can help prepare your manuscript regardless of your first language." },
     { heading: 'Ghost Writing as an Option', text: "If you have a powerful story or knowledge to share but are not confident in your writing ability, ghostwriting may be an option — where a professional writer captures your ideas and voice in polished prose. Learn more about <a href='/ghostwriting'>ghostwriting services</a>." },
   ],
@@ -23,8 +23,8 @@ const article = {
   ],
   relatedLinks: [
     { label: 'Ghostwriting Services', path: '/ghostwriting' },
-    { label: 'Book Editing Services', path: '/bookediting' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Book Editing Services', path: '/book-editing' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

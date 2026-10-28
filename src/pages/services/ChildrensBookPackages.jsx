@@ -75,10 +75,9 @@ export default function ChildrensBookPackages() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Affordable Children's Book Publishing Packages"
-        description="Affordable children's book publishing packages for authors who need illustration, design and print-ready files."
-        description="Children's book publishing packages for SA authors — illustration coordination, full-colour printing in 15×15, 20×20, 21×21cm formats. Free quote."
-        canonical="https://www.creativebooks.co.za/childrensbookpackages"
+        title="Children's Book Illustration Packages in South Africa | Creative Books"
+        description="Children's book illustration & publishing packages for SA authors - character design, full-colour spreads & print-ready files from R15,000. Get a free quote."
+        canonical="https://creativebooks.co.za/childrensbookpackages"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -93,7 +92,7 @@ export default function ChildrensBookPackages() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Children's Book Illustration · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Affordable Children's Book Publishing Packages
+              Children's Book Illustration Packages in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Children's Book Illustration, Character Development and Print-Ready Files</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -236,7 +235,7 @@ export default function ChildrensBookPackages() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request an Illustration Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+              <Link to="/publishingpackages/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
               </Link>
             </div>
@@ -245,10 +244,10 @@ export default function ChildrensBookPackages() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Book Layout & Typesetting', path: '/typesetting' },
-        { label: 'eBook Formatting', path: '/ebookpublishing' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'eBook Formatting', path: '/ebook-publishing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

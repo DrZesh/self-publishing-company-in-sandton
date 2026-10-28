@@ -17,14 +17,14 @@ const schema = {
     serviceSchema({
       name: 'Proofreading Services South Africa',
       description: 'Professional proofreading services in South Africa. Expert proofreaders for books, academic work, theses and business documents based in Johannesburg.',
-      url: '/proofreadingservicessouthafrica',
+      url: '/proofreading',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Book Editing', path: '/bookediting' },
-      { name: 'Proofreading Services South Africa', path: '/proofreadingservicessouthafrica' },
+      { name: 'Book Editing', path: '/book-editing' },
+      { name: 'Proofreading Services South Africa', path: '/proofreading' },
     ]),
   ],
 };
@@ -36,7 +36,7 @@ export default function ProofreadingServicesSouthAfrica() {
         title="Proofreading Services South Africa"
         description="Professional manuscript proofreading services across South Africa from R0.25 per word. Final-stage error checking before your book goes to print or upload."
         keywords="proofreading services South Africa, proofreading South Africa, book proofreading South Africa, academic proofreading South Africa, proofreader Johannesburg"
-        canonical="https://www.creativebooks.co.za/proofreadingservicessouthafrica"
+        canonical="https://creativebooks.co.za/proofreadingservicessouthafrica"
         schema={schema}
       />
       <ServicePageTemplate
@@ -60,13 +60,13 @@ export default function ProofreadingServicesSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Copy Editing', path: '/copyediting' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Copy Editing', path: '/book-editing' },
           { label: 'Academic Editing', path: '/academicediting' },
           { label: 'Thesis Editing', path: '/thesisediting' },
-          { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
+          { label: 'Manuscript Evaluation', path: '/book-editing' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Book Publishing', path: '/book-publishing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Get a Proofreading Quote in South Africa"

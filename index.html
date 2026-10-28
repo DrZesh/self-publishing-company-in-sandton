@@ -2,7 +2,7 @@
 <html lang="en-ZA">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" />
+    <link rel="icon" type="image/png" href="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/b99b16a41_PublisherinSandton.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
 
@@ -12,7 +12,7 @@
     <meta name="keywords" content="publishing company South Africa, book publishers South Africa, self publishing South Africa, book printing Johannesburg, book editing South Africa, book cover design" />
     <meta name="author" content="Creative Books SA" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href="https://www.creativebooks.co.za/" />
+    <link rel="canonical" href="https://creativebooks.co.za/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -23,7 +23,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Creative Books SA — Professional Publishing Company South Africa" />
-    <meta property="og:url" content="https://www.creativebooks.co.za/" />
+    <meta property="og:url" content="https://creativebooks.co.za/" />
     <meta property="og:locale" content="en_ZA" />
 
     <!-- Twitter Cards -->
@@ -45,6 +45,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Creative Books SA" />
+
+    <!-- Google Tag Manager & Meta Pixel load only after cookie consent — see src/components/legal/CookieConsent.jsx -->
+
+    <!-- Google Analytics 4 (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NM0D13TY2G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-NM0D13TY2G');
+    </script>
 
     <!-- Preconnect — top 3 LCP-critical origins only -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,7 +85,61 @@
     </script>
   </head>
   <body>
+    <!-- GTM & Meta Pixel noscript fallbacks intentionally omitted — these trackers load only after cookie consent -->
+
+    <!-- Loader styles — inside <body> so head-management can't strip them -->
+    <style>
+      /* Paint the whole document black immediately so there is never a white flash */
+      html,body{background:#000000!important;margin:0}
+      #root{background:#000000}
+      #cb-loader{position:fixed;inset:0;z-index:2147483647;display:flex;
+        flex-direction:column;align-items:center;justify-content:center;
+        background:#000000;transition:opacity .4s ease}
+      #cb-loader.cb-hide{opacity:0;pointer-events:none}
+      #cb-loader .cb-mark{width:64px;height:64px;border-radius:50%;
+        border:3px solid rgba(184,115,51,.25);border-top-color:#B87333;
+        animation:cb-spin .9s linear infinite}
+      #cb-loader .cb-word{margin-top:18px;color:#B87333;letter-spacing:.18em;
+        text-transform:uppercase;font:600 13px/1 -apple-system,BlinkMacSystemFont,
+        "Segoe UI",Roboto,sans-serif}
+      @keyframes cb-spin{to{transform:rotate(360deg)}}
+    </style>
+
+    <!-- Loader cover — FIRST child of <body>. Background inline too, as insurance. -->
+    <div id="cb-loader" aria-hidden="true"
+         style="position:fixed;inset:0;z-index:2147483647;background:#000000">
+      <div class="cb-mark"></div>
+      <div class="cb-word">Creative Books SA</div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // BuilderBridge iframe detection — only initialize bridge communication if embedded
+      if (window.self !== window.parent) {
+        // Page is in an iframe — allow Builder bridge communication
+        console.info("[BuilderBridge] Running in iframe mode; communication enabled.");
+      } else {
+        // Page is standalone — disable builder-bridge logs/communication
+        console.info("[BuilderBridge] Running in standalone mode; communication disabled.");
+        // Suppress BuilderBridge debug logs in standalone mode
+        window.BUILDER_BRIDGE_DISABLED = true;
+      }
+    </script>
+    <!-- Loader remover — waits for REAL content, not an empty provider wrapper -->
+    <script id="cb-loader-boot">
+      (function(){
+        var el=document.getElementById('cb-loader'),root=document.getElementById('root');
+        if(!el||!root)return; var done=false;
+        function real(){var t=(root.innerText||'').trim();
+          return t.length>10||!!root.querySelector('img,svg,h1,h2,h3,button,a[href]');}
+        function hide(){if(done)return;done=true;el.classList.add('cb-hide');
+          setTimeout(function(){el.remove();},450);o.disconnect();}
+        function chk(){if(real())requestAnimationFrame(function(){requestAnimationFrame(hide);});}
+        var o=new MutationObserver(chk);
+        o.observe(root,{childList:true,subtree:true,characterData:true});
+        chk(); setTimeout(hide,6000);
+      })();
+    </script>
   </body>
 </html>

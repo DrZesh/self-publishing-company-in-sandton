@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,32 +37,32 @@ export default function AdminSigningWorkflow() {
 
   const { data: contracts = [], isLoading } = useQuery({
     queryKey: ['contracts'],
-    queryFn: () => base44.entities.Contract.list('-created_date', 200),
+    queryFn: () => platform.entities.Contract.list('-created_date', 200),
   });
 
   const { data: documents = [] } = useQuery({
     queryKey: ['signing-docs'],
-    queryFn: () => base44.entities.Document.filter({ category: 'Signed Contract' }, '-created_date', 200).catch(() =>
-      base44.entities.Document.list('-created_date', 200)
+    queryFn: () => platform.entities.Document.filter({ category: 'Signed Contract' }, '-created_date', 200).catch(() =>
+      platform.entities.Document.list('-created_date', 200)
     ),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
 
   const updateContract = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Contract.update(id, data),
+    mutationFn: ({ id, data }) => platform.entities.Contract.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contracts'] }),
   });
 
   const handleManualUpload = async (contractId, file) => {
     setUploadingId(contractId);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await platform.integrations.Core.UploadFile({ file });
       await updateContract.mutateAsync({ id: contractId, data: { signed_file_url: file_url, status: 'Signed', signed_at: new Date().toISOString() } });
       toast.success('Signed PDF uploaded and contract marked as Signed');
     } catch (err) {
@@ -78,7 +78,7 @@ export default function AdminSigningWorkflow() {
     await updateContract.mutateAsync({ id: contract.id, data: { status: 'Sent', sent_at: new Date().toISOString() } });
     const contact = contactMap[contract.contact_id];
     if (contact?.email) {
-      await base44.integrations.Core.SendEmail({
+      await platform.integrations.Core.SendEmail({
         to: contact.email,
         subject: `Please sign: ${contract.title}`,
         body: `<p>Dear ${contact.full_name},</p><p>Please review and sign the document <strong>${contract.title}</strong>.</p><p>You can view and sign it securely via your client portal.</p><p>Regards,<br/>Creative Books SA</p>`,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { CheckCircle, AlertCircle, RefreshCw, Send } from 'lucide-react';
 
 const DEFAULT_SITEMAP = 'https://www.creativebooks.co.za/sitemap.xml';
@@ -16,7 +16,7 @@ export default function SitemapManager() {
     setLoading(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke('searchConsoleData', { action: 'sitemaps' });
+      const res = await platform.functions.invoke('searchConsoleData', { action: 'sitemaps' });
       setSitemaps(res.data.sitemaps || []);
     } catch (e) {
       setError(e.message);
@@ -30,7 +30,7 @@ export default function SitemapManager() {
     setError(null);
     setSuccessMsg(null);
     try {
-      await base44.functions.invoke('searchConsoleData', { action: 'submitSitemap', sitemapUrl: customUrl });
+      await platform.functions.invoke('searchConsoleData', { action: 'submitSitemap', sitemapUrl: customUrl });
       setSuccessMsg(`Sitemap submitted: ${customUrl}`);
       fetchSitemaps();
     } catch (e) {

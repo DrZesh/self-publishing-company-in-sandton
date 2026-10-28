@@ -22,8 +22,8 @@ const article = {
   ],
   relatedLinks: [
     { label: 'How Much Will I Earn', path: '/howmuchwilliearnfrommyfirstbook' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

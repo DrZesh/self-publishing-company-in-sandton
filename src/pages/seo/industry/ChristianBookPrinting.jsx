@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Christian Book Printing Johannesburg', description: 'Christian book printing services for South African ministries and authors.', url: '/christianbookprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Christian Book Printing', path: '/christianbookprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Christian Book Printing', path: '/christianbookprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function ChristianBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Christian Book Printing"
-        description="Christian book printing in Johannesburg for ministries, pastors and faith-based authors — devotionals, Bible studies, sermon collections and testimonies."
+        title="Christian Book Printing in Johannesburg | Creative Books SA"
+        description="Christian book printing in Johannesburg for ministries, pastors and faith-based authors - devotionals, Bible studies, sermon collections and testimonies."
         keywords="Christian book printing Johannesburg, devotional printing South Africa, ministry book printing, Christian publishing South Africa, church book printing"
-        canonical="https://www.creativebooks.co.za/christianbookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/christianbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,11 +50,11 @@ export default function ChristianBookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
+          { label: 'Christian Book Publishing', path: '/book-publishing' },
           { label: 'Christian Book Writing', path: '/christianbookwriting' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: 'Hardcover Printing', path: '/printing/hardcover' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Christian Book"

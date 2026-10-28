@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Search, CheckCircle, AlertCircle, Clock, ExternalLink } from 'lucide-react';
 
 const QUICK_URLS = [
   'https://www.creativebooks.co.za/',
-  'https://www.creativebooks.co.za/bookprinting',
-  'https://www.creativebooks.co.za/bookcoverdesign',
-  'https://www.creativebooks.co.za/bookediting',
-  'https://www.creativebooks.co.za/bookpublishing',
+  'https://www.creativebooks.co.za/book-printing',
+  'https://www.creativebooks.co.za/book-cover-design',
+  'https://www.creativebooks.co.za/book-editing',
+  'https://www.creativebooks.co.za/book-publishing',
   'https://www.creativebooks.co.za/ghostwriting',
   'https://www.creativebooks.co.za/typesetting',
   'https://www.creativebooks.co.za/calculator',
@@ -52,7 +52,7 @@ export default function UrlInspector() {
     setError(null);
     setResult(null);
     try {
-      const res = await base44.functions.invoke('searchConsoleData', { action: 'inspectUrl', url: u });
+      const res = await platform.functions.invoke('searchConsoleData', { action: 'inspectUrl', url: u });
       setResult(res.data.result);
       setUrl(u);
     } catch (e) {

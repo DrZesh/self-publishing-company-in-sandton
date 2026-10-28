@@ -28,11 +28,10 @@ export default function BookPrintingCenturion() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Centurion"
-        description="Professional book printing for Centurion authors — A5, 6×9 and hardcover formats. Competitive pricing with same-week Gauteng delivery available."
-        description="Professional book printing for Centurion authors — A5, 6×9 and hardcover formats. Competitive pricing with same-week Gauteng delivery available."
+        title="Book Printing in Centurion | Creative Books SA"
+        description="Professional book printing for Centurion authors - A5, 6×9 & hardcover formats. Competitive pricing with same-week Gauteng delivery available. Get a free quote."
         keywords="book printing Centurion, book printers Centurion, Centurion book printing, printing services Centurion, book publishing Centurion"
-        canonical="https://www.creativebooks.co.za/bookprintingcenturion"
+        canonical="https://creativebooks.co.za/bookprintingcenturion"
         schema={{ '@graph': [schema] }}
       />
 

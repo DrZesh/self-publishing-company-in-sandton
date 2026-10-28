@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, BarChart2, ExternalLink } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import GscKpiCards from './GscKpiCards';
 import GscTrendChart from './GscTrendChart';
@@ -41,10 +41,10 @@ export default function GscDashboardSection() {
     setError(null);
     try {
       const [trendRes, queriesRes, pagesRes, insightsRes] = await Promise.all([
-        base44.functions.invoke('searchConsoleData', { action: 'performance_compare', days, dimensions: ['date'], rowLimit: 500, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'top_queries', days, rowLimit: 10, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'top_pages', days, rowLimit: 10, forceRefresh }),
-        base44.functions.invoke('searchConsoleData', { action: 'smart_insights', days, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'performance_compare', days, dimensions: ['date'], rowLimit: 500, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'top_queries', days, rowLimit: 10, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'top_pages', days, rowLimit: 10, forceRefresh }),
+        platform.functions.invoke('searchConsoleData', { action: 'smart_insights', days, forceRefresh }),
       ]);
 
       const trendData = trendRes.data;

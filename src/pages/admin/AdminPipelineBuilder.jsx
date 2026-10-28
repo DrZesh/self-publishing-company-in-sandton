@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -97,7 +97,7 @@ export default function AdminPipelineBuilder() {
 
   const { data: pipelines = [], isLoading } = useQuery({
     queryKey: ['pipelines'],
-    queryFn: () => base44.entities.Pipeline.list('-created_date', 100),
+    queryFn: () => platform.entities.Pipeline.list('-created_date', 100),
   });
 
   const [editData, setEditData] = useState(null);
@@ -138,7 +138,7 @@ export default function AdminPipelineBuilder() {
   const handleSave = async () => {
     if (!editData || !selectedId) return;
     setSaving(true);
-    await base44.entities.Pipeline.update(selectedId, editData);
+    await platform.entities.Pipeline.update(selectedId, editData);
     qc.invalidateQueries({ queryKey: ['pipelines'] });
     setSaving(false);
     toast.success('Pipeline saved');
@@ -146,7 +146,7 @@ export default function AdminPipelineBuilder() {
 
   const handleCreate = async (stages = []) => {
     if (!newName.trim()) return;
-    const p = await base44.entities.Pipeline.create({
+    const p = await platform.entities.Pipeline.create({
       name: newName,
       pipeline_type: newType,
       stages: stages.map((s, i) => ({ ...newStage(i), ...s, id: crypto.randomUUID() })),
@@ -161,7 +161,7 @@ export default function AdminPipelineBuilder() {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this pipeline?')) return;
-    await base44.entities.Pipeline.delete(id);
+    await platform.entities.Pipeline.delete(id);
     qc.invalidateQueries({ queryKey: ['pipelines'] });
     if (selectedId === id) { setSelectedId(null); setEditData(null); }
   };

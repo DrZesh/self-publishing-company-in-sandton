@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -9,7 +9,7 @@ export default function RevenueForecast() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.functions.invoke('getRevenueForecast', {})
+    platform.functions.invoke('getRevenueForecast', {})
       .then(res => setData(res.data))
       .finally(() => setLoading(false));
   }, []);
@@ -73,7 +73,7 @@ export default function RevenueForecast() {
               R {data.pipeline_forecast.total_weighted.toLocaleString('en-ZA', { minimumFractionDigits: 0 })}
             </p>
           </div>
-          <Progress value={(data.pipeline_forecast.total_weighted / data.pipeline_forecast.total_pipeline) * 100} className="h-2" />
+          <Progress value={data.pipeline_forecast.total_pipeline ? (data.pipeline_forecast.total_weighted / data.pipeline_forecast.total_pipeline) * 100 : 0} className="h-2" />
           <p className="text-xs text-gray-400 mt-1">
             {data.pipeline_forecast.total_opportunities} opportunities • R {data.pipeline_forecast.total_pipeline.toLocaleString('en-ZA')} total
           </p>

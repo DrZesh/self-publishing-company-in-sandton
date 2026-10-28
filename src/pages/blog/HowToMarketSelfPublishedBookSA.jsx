@@ -12,7 +12,7 @@ const article = {
     { heading: null, text: 'Publishing your book is only half the battle. For self-published authors in South Africa, marketing and distribution are entirely your responsibility — and the authors who sell significant copies treat this side of the process with the same seriousness as the writing itself.' },
     { heading: 'Build Your Author Platform Before You Publish', text: 'Start building your platform months before launch: an author website, a growing email list, a presence on the social platforms where your target readers spend time (Instagram, Facebook, LinkedIn, TikTok), and content that gives people a reason to follow you.' },
     { heading: 'Getting Into South African Bookshops', text: 'Securing placement in bookshops as a self-published author requires a professionally printed and designed book with a barcode and ISBN, a compelling pitch, and a clear returns policy. Creative Books SA produces print-ready, professionally designed books that meet the quality standards required by South African retailers.' },
-    { heading: 'Online Sales Channels', text: 'Takealot.com is South Africa\'s largest online retailer. Creative Books SA can assist with preparing your book for online platforms. Their eBook packages include conversion suitable for Amazon KDP and other digital platforms, giving you both local and global reach. View <a href="/ebookpublishing">eBook options</a>.' },
+    { heading: 'Online Sales Channels', text: 'Takealot.com is South Africa\'s largest online retailer. Creative Books SA can assist with preparing your book for online platforms. Their eBook packages include conversion suitable for Amazon KDP and other digital platforms, giving you both local and global reach. View <a href="/ebook-publishing">eBook options</a>.' },
     { heading: 'Launch Events and Media Coverage', text: 'A well-executed book launch builds momentum and media interest. Partner with a local bookshop or community space, invite media and influencers in your genre or niche, and create shareable content around the launch. The professional book mockups included in Creative Books SA packages are invaluable for social media marketing.' },
   ],
   ctaText: 'Ensure your book is professionally produced and launch-ready. Request a quote from Creative Books SA today.',
@@ -22,10 +22,10 @@ const article = {
     { q: 'Can South African authors sell on Amazon?', a: "Yes. Creative Books SA's eBook packages prepare your book for Amazon KDP, giving you access to international readers through both eBook and print-on-demand channels." },
   ],
   relatedLinks: [
-    { label: 'eBook Publishing', path: '/ebookpublishing' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-    { label: 'Author Websites', path: '/authorwebsites' },
-    { label: 'Book Printing', path: '/bookprinting' },
+    { label: 'eBook Publishing', path: '/ebook-publishing' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
+    { label: 'Author Websites', path: '/author-websites' },
+    { label: 'Book Printing', path: '/book-printing' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

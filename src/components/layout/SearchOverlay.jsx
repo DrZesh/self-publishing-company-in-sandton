@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 
 const popularSearches = [
   { label: 'Book printing prices', path: '/howmuchdoesbookprintingcost' },
-  { label: 'Self-publishing packages', path: '/publishingpackages' },
+  { label: 'Self-publishing packages', path: '/publishingpackages/a5' },
   { label: "Children's book printing", path: '/printing/childrensbooks' },
-  { label: 'Book cover design', path: '/bookcoverdesign' },
-  { label: 'How to get an ISBN', path: '/blog/HowToGetISBN' },
+  { label: 'Book cover design', path: '/book-cover-design' },
+  { label: 'How to get an ISBN', path: '/how-to-get-an-isbn-for-your-book' },
   { label: 'Complete self-publishing guide', path: '/publishingguide' },
 ];
 

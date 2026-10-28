@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -158,10 +158,10 @@ export default function AdminContractPrepareContract() {
 
   useEffect(() => {
     const load = async () => {
-      const user = await base44.auth.me().catch(() => null);
+      const user = await platform.auth.me().catch(() => null);
       if (user) setAdminName(user.full_name || user.email || '');
 
-      const cs = await base44.entities.Contract.filter({ id });
+      const cs = await platform.entities.Contract.filter({ id });
       if (!cs.length) { toast.error('Contract not found'); navigate('/admin/contracts'); return; }
       const c = cs[0];
       setContract(c);
@@ -176,7 +176,7 @@ export default function AdminContractPrepareContract() {
         // Auto-fill from contact
         const autoVals = {};
         if (c.contact_id) {
-          const contacts = await base44.entities.Contact.filter({ id: c.contact_id }).catch(() => []);
+          const contacts = await platform.entities.Contact.filter({ id: c.contact_id }).catch(() => []);
           if (contacts.length) {
             const ct = contacts[0];
             setContact(ct);
@@ -236,7 +236,7 @@ export default function AdminContractPrepareContract() {
       try {
         const blob = await fetch(adminSignature.dataUrl).then(r => r.blob());
         const file = new File([blob], 'admin_signature.png', { type: 'image/png' });
-        const uploaded = await base44.integrations.Core.UploadFile({ file });
+        const uploaded = await platform.integrations.Core.UploadFile({ file });
         if (uploaded?.file_url) sigUrl = uploaded.file_url;
       } catch { /* fallback */ }
 
@@ -246,7 +246,7 @@ export default function AdminContractPrepareContract() {
         ...adminValues,
       };
 
-      const res = await base44.functions.invoke('contractSignature', {
+      const res = await platform.functions.invoke('contractSignature', {
         action: 'admin_sign',
         contract_id: id,
         admin_signature_url: sigUrl,
@@ -260,7 +260,7 @@ export default function AdminContractPrepareContract() {
         setMerging(true);
         try {
           const filledUrl = await mergePdfFields(contract.contract_file_url, fields, adminValues);
-          await base44.entities.Contract.update(id, { contract_file_url: filledUrl });
+          await platform.entities.Contract.update(id, { contract_file_url: filledUrl });
         } catch (mergeErr) {
           console.warn('PDF merge skipped:', mergeErr.message);
           toast.warning('PDF field merge skipped — contract sent as-is');
@@ -269,7 +269,7 @@ export default function AdminContractPrepareContract() {
         }
       }
 
-      const updated = await base44.entities.Contract.filter({ id });
+      const updated = await platform.entities.Contract.filter({ id });
       setContract(updated[0]);
       setStep(2);
       toast.success('Admin signature saved & PDF generated');
@@ -283,7 +283,7 @@ export default function AdminContractPrepareContract() {
   const handleSendToClient = async () => {
     setSending(true);
     try {
-      const res = await base44.functions.invoke('contractSignature', { action: 'send', contract_id: id });
+      const res = await platform.functions.invoke('contractSignature', { action: 'send', contract_id: id });
       if (res.data?.success) {
         toast.success('Contract sent to client for countersignature!');
         navigate('/admin/contracts');

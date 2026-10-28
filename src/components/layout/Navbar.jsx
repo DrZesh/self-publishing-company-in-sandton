@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { prefetchRoute } from '@/lib/prefetch';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -14,10 +15,9 @@ const navItems = [
           { label: 'Full Packages (6x9)', path: '/publishingpackages/6x9' },
         ]
       },
-      { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+      { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
       { label: "Children's Book Publishing", path: '/printing/childrensbooks' },
-      { label: 'eBook Publishing', path: '/ebookpublishing' },
-      { label: 'Amazon KDP', path: '/amazonkdp' },
+      { label: 'Amazon KDP', path: '/ebook-publishing' },
     ]
   },
   {
@@ -31,8 +31,9 @@ const navItems = [
   {
     label: 'Editing', children: [
       { label: 'Proofreading', path: '/proofreading' },
-      { label: 'Copy Editing', path: '/copyediting' },
-      { label: 'Manuscript Evaluation', path: '/manuscriptevaluation' },
+      { label: 'Book Editing', path: '/book-editing' },
+      { label: 'AI Generated Books', path: '/ai-generated-book-editing' },
+      { label: 'Manuscript Evaluation', path: '/book-editing' },
       { label: 'Academic Editing', path: '/academicediting' },
       { label: 'Thesis Editing', path: '/thesisediting' },
       { label: 'Dissertation Editing', path: '/dissertationediting' },
@@ -40,11 +41,11 @@ const navItems = [
   },
   {
     label: 'Design & Writing', children: [
-      { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Book Cover Design', path: '/book-cover-design' },
       { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
       { label: 'eBook Formatting', path: '/ebookformatting' },
-      { label: 'Author Websites', path: '/authorwebsites' },
+      { label: 'Author Websites', path: '/author-websites' },
       { label: 'Ghostwriting', path: '/ghostwriting' },
       { label: 'Memoir Writing', path: '/memoirwriting' },
       { label: 'Biography Writing', path: '/biographywriting' },
@@ -53,10 +54,10 @@ const navItems = [
   },
   {
     label: 'Resources', children: [
-      { label: 'Publishing Roadmap', path: '/publishingroadmap' },
-      { label: '🧮 Cost Calculator', path: '/calculator' },
       { label: 'Cover Size Calculator', path: '/resources/CoverSizeCalculator' },
-      { label: 'ISBN Registration', path: '/isbnregistration' },
+      { label: 'ISBN Barcode Generator', path: '/barcode-generator' },
+      { label: 'Documents', path: '/resources/documents' },
+      { label: 'ISBN Registration', path: '/isbn' },
       { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Portfolio', path: '/portfolio' },
       { label: 'Blog', path: '/blog' },
@@ -130,7 +131,7 @@ export default function Navbar() {
                     <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
                   </button>
                 ) : (
-                  <Link to={item.path} className="px-3 py-2 text-sm text-white/80 hover:text-copper transition-colors font-body relative group">
+                  <Link to={item.path} onMouseEnter={() => prefetchRoute(item.path)} className="px-3 py-2 text-sm text-white/80 hover:text-copper transition-colors font-body relative group">
                     {item.label}
                     <span className="absolute bottom-0 left-3 right-3 h-px bg-copper scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                   </Link>
@@ -179,6 +180,7 @@ export default function Navbar() {
                                   <Link
                                     key={grandchild.path}
                                     to={grandchild.path}
+                                    onMouseEnter={() => prefetchRoute(grandchild.path)}
                                     className="block px-4 py-3 text-sm text-white/70 hover:text-copper hover:bg-copper/10 transition-all"
                                   >
                                     {grandchild.label}
@@ -189,6 +191,7 @@ export default function Navbar() {
                           ) : (
                             <Link
                               to={child.path}
+                              onMouseEnter={() => prefetchRoute(child.path)}
                               className={`block px-4 py-3 text-sm transition-all hover:bg-copper/10 hover:pl-5 ${
                                 child.label === 'Get a Quote'
                                   ? 'text-copper font-medium'

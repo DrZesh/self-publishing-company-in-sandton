@@ -21,10 +21,10 @@ const article = {
     { q: 'Do I need a publishing degree to work in South African publishing?', a: 'Not necessarily. Many publishing professionals entered through English literature degrees, journalism, or internships. A portfolio and practical skills often matter more than a formal publishing qualification.' },
   ],
   relatedLinks: [
-    { label: 'Book Editing Services', path: '/bookediting' },
+    { label: 'Book Editing Services', path: '/book-editing' },
     { label: 'Book Typesetting', path: '/typesetting' },
-    { label: 'Book Cover Design', path: '/bookcoverdesign' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Book Cover Design', path: '/book-cover-design' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
   ],
 };
 

@@ -66,28 +66,64 @@ export default function PipelineCard({ contact, isDragging }) {
   return (
     <div
       onClick={handleClick}
-      className={`bg-white rounded-xl border border-black/8 p-3 cursor-pointer hover:shadow-md hover:border-[#B87333]/30 transition-all select-none ${isDragging ? 'shadow-xl rotate-1 opacity-90 scale-105' : ''}`}
+      className={`rounded-xl border p-3 cursor-pointer select-none transition-all backdrop-blur-sm ${
+        isDragging 
+          ? 'shadow-2xl rotate-2 opacity-90 scale-105' 
+          : 'hover:shadow-lg hover:border-cyan-500/40'
+      }`}
+      style={{
+        background: 'rgba(15, 23, 42, 0.65)',
+        borderColor: 'rgba(34, 211, 238, 0.2)',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.03)',
+      }}
     >
       {/* Top row: name + health dot */}
-      <div className="flex items-start justify-between gap-2 mb-1">
-        <p className="text-sm font-bold text-[#1A1208] leading-tight">{contact.full_name}</p>
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${healthCfg.dot}`} title={health} />
+      <div className="flex items-start justify-between gap-2 mb-1.5">
+        <p className="text-sm font-bold leading-tight" style={{ color: '#e0f2fe' }}>{contact.full_name}</p>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div 
+            className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+            style={{ 
+              background: healthCfg.dot.replace('bg-', 'var(--color-'),
+              boxShadow: `0 0 10px ${health === 'On Track' ? '#10b981' : health === 'Needs Attention' ? '#f59e0b' : '#ef4444'}`
+            }} 
+            title={health} 
+          />
         </div>
       </div>
 
       {/* Book title */}
       {contact.book_title && (
-        <p className="text-xs text-black/50 mb-1.5 truncate">📖 {contact.book_title}</p>
+        <p className="text-xs mb-1.5 truncate" style={{ color: 'rgba(165, 180, 200, 0.7)' }}>
+          📖 {contact.book_title}
+        </p>
       )}
 
       {/* Days in stage */}
       <div className="flex items-center gap-1.5 mb-2">
-        <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${healthCfg.bg} ${healthCfg.text}`}>
+        <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{
+          background: health === 'On Track' ? 'rgba(16, 185, 129, 0.15)' : 
+                     health === 'Needs Attention' ? 'rgba(245, 158, 11, 0.15)' : 
+                     'rgba(239, 68, 68, 0.15)',
+          color: health === 'On Track' ? '#34d399' : 
+                 health === 'Needs Attention' ? '#fbbf24' : 
+                 '#f87171',
+          border: `1px solid ${health === 'On Track' ? 'rgba(16, 185, 129, 0.3)' : 
+                           health === 'Needs Attention' ? 'rgba(245, 158, 11, 0.3)' : 
+                           'rgba(239, 68, 68, 0.3)'}`,
+        }}>
           {daysInStage}d · {health}
         </span>
         {lifecycleBadge && (
-          <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${lifecycleBadge.style}`}>{lifecycleBadge.label}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{
+            background: lifecycleBadge.style.includes('green') ? 'rgba(52, 211, 153, 0.15)' :
+                       lifecycleBadge.style.includes('amber') ? 'rgba(251, 191, 36, 0.15)' :
+                       'rgba(148, 163, 184, 0.15)',
+            color: lifecycleBadge.style.includes('green') ? '#34d399' :
+                   lifecycleBadge.style.includes('amber') ? '#fbbf24' :
+                   '#94a3b8',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}>{lifecycleBadge.label}</span>
         )}
       </div>
 
@@ -95,7 +131,15 @@ export default function PipelineCard({ contact, isDragging }) {
       {badges.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
           {badges.map((b, i) => (
-            <span key={i} className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${b.style}`}>{b.label}</span>
+            <span key={i} className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{
+              background: b.style.includes('red') ? 'rgba(239, 68, 68, 0.15)' :
+                         b.style.includes('amber') ? 'rgba(251, 191, 36, 0.15)' :
+                         'rgba(249, 115, 22, 0.15)',
+              color: b.style.includes('red') ? '#f87171' :
+                     b.style.includes('amber') ? '#fbbf24' :
+                     '#fb923c',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}>{b.label}</span>
           ))}
         </div>
       )}
@@ -103,12 +147,23 @@ export default function PipelineCard({ contact, isDragging }) {
       {/* Bottom row: value + owner */}
       <div className="flex items-center justify-between mt-1">
         {contact.pipeline_value ? (
-          <span className="text-xs font-bold text-emerald-700">R {contact.pipeline_value.toLocaleString('en-ZA')}</span>
+          <span className="text-xs font-bold font-mono" style={{ 
+            color: '#34d399',
+            textShadow: '0 0 10px rgba(52, 211, 153, 0.4)'
+          }}>
+            R {contact.pipeline_value.toLocaleString('en-ZA')}
+          </span>
         ) : (
-          <span className="text-xs text-black/20">—</span>
+          <span className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.3)' }}>—</span>
         )}
         {contact.pipeline_owner && (
-          <div className="w-6 h-6 rounded-full bg-[#B87333] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" title={contact.pipeline_owner}>
+          <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" 
+            style={{
+              background: 'linear-gradient(135deg, #B87333, #d4a574)',
+              boxShadow: '0 2px 8px rgba(184, 115, 51, 0.5)',
+            }} 
+            title={contact.pipeline_owner}
+          >
             {contact.pipeline_owner[0].toUpperCase()}
           </div>
         )}

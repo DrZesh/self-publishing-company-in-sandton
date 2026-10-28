@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { CheckCircle, AlertTriangle, MessageSquare, Mail, Clock, Search, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,7 @@ export default function AutomationLogs({ contacts }) {
 
   const { data: logs = [], isLoading, refetch } = useQuery({
     queryKey: ['activitylog-full'],
-    queryFn: () => base44.entities.ActivityLog.list('-created_date', 500),
+    queryFn: () => platform.entities.ActivityLog.list('-created_date', 500),
   });
 
   const contactMap = Object.fromEntries((contacts || []).map(c => [c.id, c]));

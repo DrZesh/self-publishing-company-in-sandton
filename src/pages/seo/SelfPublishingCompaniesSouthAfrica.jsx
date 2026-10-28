@@ -28,7 +28,7 @@ export default function SelfPublishingCompaniesSouthAfrica() {
         title="Self Publishing Companies in South Africa"
         description="Self-publishing companies in South Africa for first-time and experienced authors. Bronze, Silver, Gold packages from R21,000 — editing, design, printing."
         keywords="self-publishing companies in South Africa, self publishing services, self publish a book South Africa"
-        canonical="https://www.creativebooks.co.za/selfpublishingcompaniesinsouthafrica"
+        canonical="https://creativebooks.co.za/selfpublishingcompaniesinsouthafrica"
         schema={schema}
       />
       
@@ -118,11 +118,11 @@ export default function SelfPublishingCompaniesSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-            { label: 'Book Publishing', path: '/bookpublishing' },
-            { label: 'Book Editing', path: '/bookediting' },
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
-            { label: 'Book Printing', path: '/bookprinting' },
+            { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+            { label: 'Book Publishing', path: '/book-publishing' },
+            { label: 'Book Editing', path: '/book-editing' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
+            { label: 'Book Printing', path: '/book-printing' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

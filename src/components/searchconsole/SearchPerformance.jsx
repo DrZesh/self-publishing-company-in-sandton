@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { TrendingUp, MousePointer, Eye, Percent } from 'lucide-react';
 
@@ -31,7 +31,7 @@ export default function SearchPerformance({ mode }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke('searchConsoleData', {
+      const res = await platform.functions.invoke('searchConsoleData', {
         action: 'performance',
         days,
         dimensions,

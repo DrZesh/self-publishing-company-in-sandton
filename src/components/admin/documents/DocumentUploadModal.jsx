@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Upload, Loader2, Sparkles, Tag } from 'lucide-react';
@@ -47,7 +47,7 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
   const generateAISummary = async () => {
     if (!form.template_label && !form.category) return;
     setGeneratingSummary(true);
-    const result = await base44.integrations.Core.InvokeLLM({
+    const result = await platform.integrations.Core.InvokeLLM({
       prompt: `Write a brief 1-2 sentence summary explaining what this document type is and when it is used in a self-publishing or book printing company context. Document type: "${form.template_label || form.category}". Keep it practical and clear for staff.`,
     });
     setForm(f => ({ ...f, ai_summary: result }));
@@ -68,7 +68,7 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
 
     if (file) {
       setUploading(true);
-      const result = await base44.integrations.Core.UploadFile({ file });
+      const result = await platform.integrations.Core.UploadFile({ file });
       file_url = result.file_url;
       file_name = file.name;
       file_type = file.type;
@@ -78,12 +78,12 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
 
     if (!file_url && !document) { setSaving(false); return; }
 
-    const data = { ...form, file_url, file_name, file_type, file_size_kb, uploaded_by: (await base44.auth.me())?.email || '' };
+    const data = { ...form, file_url, file_name, file_type, file_size_kb, uploaded_by: (await platform.auth.me())?.email || '' };
     // Templates don't require contact_id
     if (form.is_template) delete data.contact_id;
 
-    if (document) await base44.entities.Document.update(document.id, data);
-    else await base44.entities.Document.create(data);
+    if (document) await platform.entities.Document.update(document.id, data);
+    else await platform.entities.Document.create(data);
 
     setSaving(false);
     onSaved();

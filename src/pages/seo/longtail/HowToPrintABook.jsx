@@ -22,10 +22,10 @@ export default function HowToPrintABook() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How to Print a Book"
-      metaDescription="How to print a book in South Africa — file preparation, paper types, binding options, costs and turnaround times. Free quote within 24 hours."
+      metaTitle="How to Print a Book in South Africa | Creative Books SA"
+      metaDescription="How to print a book in South Africa - file preparation, paper types, binding options, costs and turnaround times. Get a free quote from our team within 24 hours."
       metaKeywords="how to print a book South Africa, book printing guide, book printing process, print ready PDF book, book printing steps"
-      canonical="https://www.creativebooks.co.za/howtoprintabookinsouthafrica"
+      canonical="https://creativebooks.co.za/howtoprintabookinsouthafrica"
       schema={schema}
       subtitle="Book Printing Guide"
       h1="How to Print a Book"
@@ -116,14 +116,14 @@ export default function HowToPrintABook() {
       ]}
       faqs={faqs}
       relatedLinks={[
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
         { label: 'A5 Book Printing', path: '/printing/a5' },
         { label: '6×9 Book Printing', path: '/printing/6x9' },
         { label: 'Hardcover Printing', path: '/printing/hardcover' },
         { label: 'Book Printing Costs', path: '/howmuchdoesbookprintingcost' },
         { label: 'A5 vs 6×9 Comparison', path: '/a5vs6x9bookprinting' },
         { label: 'Typesetting Services', path: '/typesetting' },
-        { label: 'ISBN Registration', path: '/isbnregistration' },
+        { label: 'ISBN Registration', path: '/isbn' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Ready to Print Your Book?"

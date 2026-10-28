@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, ExternalLink, Download } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 function badge(row, prevRow) {
   const url = row.keys[0] || '';
@@ -21,7 +21,7 @@ function ExpandedPageRow({ page, days }) {
 
   React.useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('searchConsoleData', { action: 'page_queries', page, days })
+    platform.functions.invoke('searchConsoleData', { action: 'page_queries', page, days })
       .then(r => setData(r.data?.rows || []))
       .catch(() => setData([]))
       .finally(() => setLoading(false));
@@ -30,28 +30,28 @@ function ExpandedPageRow({ page, days }) {
   const shortPage = page.replace('https://www.creativebooks.co.za', '') || '/';
 
   return (
-    <tr><td colSpan={6} className="px-4 py-2 bg-[#fdf9f4] border-b border-black/5">
+    <tr><td colSpan={6} className="px-4 py-2 border-b border-white/5" style={{ background: 'rgba(255,255,255,0.04)' }}>
       <div className="flex items-center gap-3 mb-2">
         <a href={page} target="_blank" rel="noopener noreferrer" className="text-xs text-[#B87333] hover:underline flex items-center gap-1">
           Open page <ExternalLink className="w-3 h-3" />
         </a>
-        <a href={`https://search.google.com/search-console/performance/search-analytics?resource_id=https%3A%2F%2Fwww.creativebooks.co.za%2F&page=${encodeURIComponent(shortPage)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+        <a href={`https://search.google.com/search-console/performance/search-analytics?resource_id=https%3A%2F%2Fwww.creativebooks.co.za%2F&page=${encodeURIComponent(shortPage)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:underline flex items-center gap-1">
           Open in GSC <ExternalLink className="w-3 h-3" />
         </a>
       </div>
-      <div className="text-xs font-semibold text-black/50 mb-2 uppercase tracking-wide">Top queries for this page:</div>
+      <div className="text-xs font-semibold text-white/40 mb-2 uppercase tracking-wide">Top queries for this page:</div>
       {loading ? (
-        <div className="flex items-center gap-2 text-xs text-black/40"><div className="w-3 h-3 border-2 border-[#B87333]/30 border-t-[#B87333] rounded-full animate-spin" />Loading…</div>
+        <div className="flex items-center gap-2 text-xs text-white/40"><div className="w-3 h-3 border-2 border-[#B87333]/30 border-t-[#B87333] rounded-full animate-spin" />Loading…</div>
       ) : (data || []).length === 0 ? (
-        <div className="text-xs text-black/30 py-1">No query data available</div>
+        <div className="text-xs text-white/30 py-1">No query data available</div>
       ) : (
         <div className="space-y-1">
           {data.map((r, i) => (
             <div key={i} className="flex items-center gap-3 text-xs py-0.5">
-              <span className="font-medium text-[#1A1208] truncate max-w-xs">{r.keys[0]}</span>
+              <span className="font-medium text-white truncate max-w-xs">{r.keys[0]}</span>
               <span className="text-[#B87333]">{r.clicks} clicks</span>
-              <span className="text-black/40">{r.impressions} impr.</span>
-              <span className="text-black/40">#{r.position.toFixed(0)}</span>
+              <span className="text-white/40">{r.impressions} impr.</span>
+              <span className="text-white/40">#{r.position.toFixed(0)}</span>
             </div>
           ))}
         </div>
@@ -88,7 +88,7 @@ export default function GscPagesTable({ rows = [], prevRows = [], days, limit })
   };
 
   const SortHeader = ({ label, k }) => (
-    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold text-black/50 uppercase tracking-wide cursor-pointer hover:text-[#B87333] select-none">
+    <th onClick={() => toggleSort(k)} className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide cursor-pointer hover:text-[#B87333] select-none">
       {label} {sortKey === k ? (sortDir === 'asc' ? '↑' : '↓') : ''}
     </th>
   );
@@ -97,15 +97,16 @@ export default function GscPagesTable({ rows = [], prevRows = [], days, limit })
     <div>
       {!limit && (
         <div className="flex justify-end mb-3">
-          <button onClick={exportCsv} className="flex items-center gap-1.5 px-3 py-1.5 border border-black/10 rounded-lg text-sm text-black/60 hover:border-[#B87333] hover:text-[#B87333] transition-colors">
+          <button onClick={exportCsv} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white/60 hover:text-[#B87333] transition-colors"
+            style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
             <Download className="w-3.5 h-3.5" /> Export CSV
           </button>
         </div>
       )}
-      <div className="bg-white rounded-2xl border border-black/8 shadow-sm overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[560px]">
-            <thead className="bg-[#F9F7F2]">
+            <thead style={{ background: 'rgba(255,255,255,0.06)' }}>
               <tr>
                 <th className="px-4 py-3 w-8" />
                 <SortHeader label="Page" k="page" />
@@ -117,7 +118,7 @@ export default function GscPagesTable({ rows = [], prevRows = [], days, limit })
             </thead>
             <tbody>
               {displayed.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-black/30 text-sm">No data available</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-white/30 text-sm">No data available</td></tr>
               )}
               {displayed.map((r, i) => {
                 const short = r.keys[0]?.replace('https://www.creativebooks.co.za', '') || '/';
@@ -125,21 +126,21 @@ export default function GscPagesTable({ rows = [], prevRows = [], days, limit })
                 return (
                   <React.Fragment key={i}>
                     <tr onClick={() => setExpanded(expanded === i ? null : i)}
-                      className="border-t border-black/5 hover:bg-[#F9F7F2] transition-colors cursor-pointer">
-                      <td className="px-4 py-3 text-black/30">
+                      className="border-t border-white/5 hover:bg-white/5 transition-colors cursor-pointer">
+                      <td className="px-4 py-3 text-white/30">
                         {expanded === i ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                       </td>
-                      <td className="px-4 py-3 font-medium text-[#1A1208] max-w-[240px]">
+                      <td className="px-4 py-3 font-medium text-white max-w-[240px]">
                         <span className="truncate block text-xs" title={r.keys[0]}>{short}</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {badges2.map((b, bi) => <span key={bi} className={`text-xs px-1.5 py-0.5 rounded-full ${b.cls}`}>{b.label}</span>)}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-[#B87333] font-semibold">{r.clicks.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-black/60">{r.impressions.toLocaleString()}</td>
-                      <td className="px-4 py-3 text-black/60">{(r.ctr * 100).toFixed(1)}%</td>
+                      <td className="px-4 py-3 text-white/60">{r.impressions.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-white/60">{(r.ctr * 100).toFixed(1)}%</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.position <= 3 ? 'bg-emerald-100 text-emerald-700' : r.position <= 10 ? 'bg-blue-100 text-blue-700' : r.position <= 20 ? 'bg-amber-100 text-amber-700' : 'bg-black/5 text-black/50'}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.position <= 3 ? 'bg-emerald-500/20 text-emerald-300' : r.position <= 10 ? 'bg-blue-500/20 text-blue-300' : r.position <= 20 ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/40'}`}>
                           #{r.position.toFixed(0)}
                         </span>
                       </td>

@@ -3,7 +3,7 @@ import PageMeta from '../components/shared/PageMeta';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle, Home, MessageCircle, Loader2, Sparkles, BookOpen, Star, Shield, Clock, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import QuoteStep1 from '../components/quote/QuoteStep1';
 import QuoteStep2 from '../components/quote/QuoteStep2';
 import QuoteStep3 from '../components/quote/QuoteStep3';
@@ -170,7 +170,7 @@ export default function GetQuote() {
       ].filter(Boolean).join(', ') || 'General Publishing';
 
       // Capture to admin database (non-blocking)
-      base44.functions.invoke('captureFormSubmission', {
+      platform.functions.invoke('captureFormSubmission', {
         formType: 'quote',
         fullName: `${data.firstName} ${data.lastName}`.trim(),
         email: data.email,
@@ -202,14 +202,14 @@ export default function GetQuote() {
       }).catch(err => console.error('Form capture failed:', err));
 
       // Send confirmation emails (primary action)
-      await base44.functions.invoke('sendFormEmailResend', {
+      await platform.functions.invoke('sendFormEmailResend', {
         formType: 'Quote Request',
         submitterName: `${data.firstName} ${data.lastName}`.trim(),
         submitterEmail: data.email,
         businessSubject: `New Quote Request from ${data.firstName} ${data.lastName} — ${serviceSummary}`,
         userSubject: "We've received your quote request — Creative Books SA",
         fields,
-        pageUrl: 'https://www.creativebooks.co.za/getquote',
+        pageUrl: 'https://creativebooks.co.za/getquote',
         honeypot: '',
         loadedAt: null,
       });
@@ -241,7 +241,7 @@ export default function GetQuote() {
         <PageMeta
           title="Get a Free Book Publishing Quote | Creative Books SA"
           description="Affordable book publishing, printing, editing or cover design. Tell us about your project — we'll respond with options and pricing."
-          canonical="https://www.creativebooks.co.za/getquote"
+          canonical="https://creativebooks.co.za/getquote"
         />
         <div className="min-h-screen bg-[#060504] flex items-center justify-center px-4 pt-24 pb-16">
           {/* Background glow */}
@@ -283,7 +283,7 @@ export default function GetQuote() {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all text-white bg-copper hover:bg-copper/90">
                 <Home className="w-4 h-4" /> Back to Home
               </Link>
-              <Link to="/selfpublishingpackagesinsouthafrica"
+              <Link to="/self-publishing-packages-in-south-africa"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm transition-all text-white/70 hover:text-white"
                 style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
                 Explore Our Services <ArrowRight className="w-4 h-4" />
@@ -300,11 +300,21 @@ export default function GetQuote() {
       <PageMeta
         title="Get a Free Book Publishing Quote | Creative Books SA"
         description="Affordable book publishing, printing, editing or cover design. Tell us about your project — we'll respond with options and pricing."
-        canonical="https://www.creativebooks.co.za/getquote"
+        canonical="https://creativebooks.co.za/getquote"
       />
 
       {/* ── HERO ── */}
       <section className="relative min-h-[60vh] flex flex-col items-center justify-center overflow-hidden bg-[#060504] pt-24 pb-16 px-4">
+        {/* Background image at 40% opacity */}
+        <div className="absolute inset-0 pointer-events-none">
+          <img
+            src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/6b24dd303_Slider1.png"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.4 }}
+          />
+        </div>
         {/* Ambient glows */}
         <div className="absolute inset-0 pointer-events-none">
           <motion.div

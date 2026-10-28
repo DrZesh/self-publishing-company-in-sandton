@@ -29,3 +29,8 @@ dist-ssr
 
 .env
 .vite
+base44/.app.jsonc
+
+!.env.example
+!supabase/.env.example
+supabase/.temp/

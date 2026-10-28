@@ -28,7 +28,7 @@ export default function BookDistributionSouthAfrica() {
         title="Book Distribution South Africa"
         description="A practical guide to book distribution in South Africa — bookshops, online retailers, direct sales and what authors realistically need to consider before printing."
         keywords="book distribution South Africa, book distribution companies, sell self-published books, book marketing for authors"
-        canonical="https://www.creativebooks.co.za/bookdistributioninsouthafrica"
+        canonical="https://creativebooks.co.za/bookdistributioninsouthafrica"
         schema={schema}
       />
       
@@ -132,11 +132,11 @@ export default function BookDistributionSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'Book Printing', path: '/bookprinting' },
-            { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-            { label: 'Author Websites', path: '/authorwebsites' },
+            { label: 'Book Printing', path: '/book-printing' },
+            { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+            { label: 'Author Websites', path: '/author-websites' },
             { label: 'Book Marketing', path: '/blog' },
-            { label: 'Book Publishing', path: '/bookpublishing' },
+            { label: 'Book Publishing', path: '/book-publishing' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

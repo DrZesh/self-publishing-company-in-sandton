@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,16 +25,16 @@ export default function AdminBookLibrary() {
 
   const { data: books = [], isLoading } = useQuery({
     queryKey: ['books'],
-    queryFn: () => base44.entities.BookRecord.list('-created_date', 500),
+    queryFn: () => platform.entities.BookRecord.list('-created_date', 500),
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data) => editing ? base44.entities.BookRecord.update(editing.id, data) : base44.entities.BookRecord.create(data),
+    mutationFn: (data) => editing ? platform.entities.BookRecord.update(editing.id, data) : platform.entities.BookRecord.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['books'] }); setShowModal(false); setEditing(null); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.BookRecord.delete(id),
+    mutationFn: (id) => platform.entities.BookRecord.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'] }),
   });
 

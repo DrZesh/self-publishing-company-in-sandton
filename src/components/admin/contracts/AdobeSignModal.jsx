@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Send, Upload, FileText, ExternalLink, Loader2, CheckCircle, Copy } from 'lucide-react';
@@ -25,7 +25,7 @@ export default function AdobeSignModal({ contract, contact, onClose, onSent }) {
     if (!file) return;
     setUploading(true);
     try {
-      const result = await base44.integrations.Core.UploadFile({ file });
+      const result = await platform.integrations.Core.UploadFile({ file });
       setFileUrl(result.file_url);
       setFileName(file.name);
       toast.success('File uploaded');
@@ -43,7 +43,7 @@ export default function AdobeSignModal({ contract, contact, onClose, onSent }) {
 
     setSending(true);
     try {
-      const res = await base44.functions.invoke('adobeSignActions', {
+      const res = await platform.functions.invoke('adobeSignActions', {
         action: 'send',
         contract_id: contract.id,
         signer_name: signerName,
@@ -70,7 +70,7 @@ export default function AdobeSignModal({ contract, contact, onClose, onSent }) {
   const handleRegisterWebhook = async () => {
     setWebhookRegistering(true);
     try {
-      const res = await base44.functions.invoke('adobeSignActions', {
+      const res = await platform.functions.invoke('adobeSignActions', {
         action: 'register_webhook',
         webhook_url: webhookUrl,
       });

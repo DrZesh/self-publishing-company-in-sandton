@@ -17,14 +17,14 @@ const schema = {
     serviceSchema({
       name: 'Book Publishers Johannesburg',
       description: 'Professional book publishers in Johannesburg. Full-service self-publishing with editing, cover design, printing and distribution. Authors retain all rights.',
-      url: '/bookpublishersjohannesburg',
+      url: '/book-publishers-johannesburg',
       areaServed: 'Johannesburg, Gauteng',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Book Publishers South Africa', path: '/bookpublisherssouthafrica' },
-      { name: 'Book Publishers Johannesburg', path: '/bookpublishersjohannesburg' },
+      { name: 'Book Publishers South Africa', path: '/book-publishers-south-africa' },
+      { name: 'Book Publishers Johannesburg', path: '/book-publishers-johannesburg' },
     ]),
   ],
 };
@@ -36,7 +36,7 @@ export default function BookPublishersJohannesburg() {
         title="Book Publishers Johannesburg"
         description="Johannesburg book publishers offering editing, cover design, printing and ISBN registration. In-person consultations at our Sandton studio. Packages from R21,000."
         keywords="book publishers Johannesburg, book publisher Johannesburg, self publishing Johannesburg, publishing company Johannesburg, book publishing Gauteng"
-        canonical="https://www.creativebooks.co.za/bookpublishersjohannesburg"
+        canonical="https://creativebooks.co.za/book-publishers-johannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -60,13 +60,13 @@ export default function BookPublishersJohannesburg() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Book Publishers SA', path: '/bookpublisherssouthafrica' },
-          { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Publishers SA', path: '/book-publishers-south-africa' },
+          { label: 'Publishing Companies SA', path: '/publishing-companies-south-africa' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Publish Your Book With Johannesburg's Trusted Publishers"

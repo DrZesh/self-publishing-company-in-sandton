@@ -1,33 +1,45 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, TrendingDown, DollarSign, BarChart2, UserPlus, Clock, FileText, Send, CheckCircle2, XCircle, AlertCircle, Star } from 'lucide-react';
+import Live3DKpiCard from './Live3DKpiCard';
 
 function Trend({ current, previous }) {
   if (!previous || previous === 0) return null;
   const pct = Math.round(((current - previous) / previous) * 100);
   const up = pct >= 0;
   return (
-    <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${up ? 'text-emerald-600' : 'text-red-500'}`}>
+    <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${up ? 'text-emerald-400' : 'text-red-400'}`}>
       {up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-      {up ? '+' : ''}{pct}% vs last month
+      {up ? '+' : ''}{pct}%
     </span>
   );
 }
 
-function KpiCard({ icon: Icon, color, title, value, sub, trend, linkTo, badge, badgeColor, children }) {
+function KpiCard({ icon: Icon, gradient, title, value, sub, trend, linkTo, badge, loading }) {
   const inner = (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow h-full">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide leading-tight">{title}</span>
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color}`}>
-          <Icon className="w-4 h-4 text-white" />
+    <div 
+      className="relative rounded-xl border p-5 overflow-hidden backdrop-blur-xl h-full transition-all duration-300 hover:scale-[1.02]"
+      style={{
+        background: 'rgba(15, 23, 42, 0.6)',
+        borderColor: 'rgba(34, 211, 238, 0.2)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(34, 211, 238, 0.1)'
+      }}
+    >
+      <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-15 blur-xl" style={{ background: gradient }} />
+      <div className="relative">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[10px] font-bold text-cyan-200/70 uppercase tracking-widest leading-tight">{title}</span>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: gradient, boxShadow: '0 2px 12px rgba(34, 211, 238, 0.4)' }}>
+            <Icon className="w-4 h-4 text-white" />
+          </div>
         </div>
+        <div className="text-xl font-bold text-cyan-50 mb-1">
+          {loading ? <span className="inline-block w-20 h-5 bg-cyan-900/30 rounded animate-pulse" /> : value}
+        </div>
+        {sub && <p className="text-[10px] text-cyan-200/50 mb-2">{sub}</p>}
+        {badge && <span className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)' }}>{badge}</span>}
+        {trend}
       </div>
-      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
-      {sub && <p className="text-xs text-gray-400 mb-2">{sub}</p>}
-      {badge && <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mb-1 ${badgeColor || 'bg-gray-100 text-gray-600'}`}>{badge}</span>}
-      {trend}
-      {children}
     </div>
   );
   return linkTo ? <Link to={linkTo} className="block h-full">{inner}</Link> : inner;
@@ -60,81 +72,77 @@ export default function KpiCards({ metrics, isOwner, loading }) {
     : 'N/A';
 
   return (
-    <div className="mb-6 space-y-4">
-      {/* Row 1 — Revenue & Pipeline */}
+    <div className="space-y-5">
+      {/* Row 1 — Revenue & Pipeline (3D Live KPIs) */}
       <div>
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Revenue & Pipeline</p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#22d3ee,#06b6d4)', boxShadow: '0 2px 12px rgba(34, 211, 238, 0.5)' }}>
+            <DollarSign className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-xs font-bold text-cyan-200/80 uppercase tracking-widest">Revenue & Pipeline</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {isOwner ? (
-            <KpiCard
-              icon={DollarSign}
-              color="bg-[#B87333]"
+            <Live3DKpiCard
               title="Revenue This Month"
               value={`R${(metrics?.revenueThisMonth || 0).toLocaleString()}`}
-              trend={<Trend current={metrics?.revenueThisMonth || 0} previous={metrics?.revenueLastMonth || 0} />}
-              linkTo="/admin/quotes"
-            >
-              <div className="mt-3">
-                <div className="flex justify-between text-xs text-gray-400 mb-1">
-                  <span>Target: R{revenueTarget.toLocaleString()}</span>
-                  <span>{revenueProgress}%</span>
-                </div>
-                <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#B87333] rounded-full transition-all" style={{ width: `${revenueProgress}%` }} />
-                </div>
-                {revenueProgress >= 100
-                  ? <p className="text-xs text-emerald-600 mt-1">🎉 Target hit!</p>
-                  : <p className="text-xs text-gray-400 mt-1">R{(revenueTarget - (metrics?.revenueThisMonth || 0)).toLocaleString()} to target</p>
-                }
-              </div>
-            </KpiCard>
+              subtitle={`${revenueProgress}% of R${revenueTarget.toLocaleString()} target`}
+              icon={DollarSign}
+              color="#22d3ee"
+              loading={loading}
+            />
           ) : (
-            <KpiCard
-              icon={BarChart2}
-              color="bg-blue-500"
+            <Live3DKpiCard
               title="Active Projects"
               value={metrics?.openLeadsCount ?? 0}
-              sub="Currently in delivery"
-              linkTo="/admin/pipeline"
+              subtitle="Currently in delivery"
+              icon={BarChart2}
+              color="#3b82f6"
+              loading={loading}
             />
           )}
 
-          <KpiCard
-            icon={BarChart2}
-            color="bg-purple-500"
+          <Live3DKpiCard
             title="Open Pipeline"
             value={`R${(metrics?.totalPipelineValue || 0).toLocaleString()}`}
-            sub={`${metrics?.openLeadsCount ?? 0} open leads`}
-            linkTo="/admin/pipeline"
+            subtitle={`${metrics?.openLeadsCount ?? 0} open leads`}
+            icon={BarChart2}
+            color="#8b5cf6"
+            loading={loading}
           />
 
-          <KpiCard
-            icon={DollarSign}
-            color="bg-emerald-600"
+          <Live3DKpiCard
             title="Accepted Quote Value"
             value={`R${(metrics?.acceptedQuoteValue || 0).toLocaleString()}`}
-            sub={`${metrics?.acceptedQuotes || 0} quotes accepted`}
-            linkTo="/admin/quotes"
+            subtitle={`${metrics?.acceptedQuotes || 0} quotes accepted`}
+            icon={CheckCircle2}
+            color="#10b981"
+            loading={loading}
           />
 
-          <KpiCard
-            icon={Star}
-            color="bg-amber-500"
-            title="Top Requested Service"
+          <Live3DKpiCard
+            title="Top Service"
             value={topServiceLabel}
-            sub="Most requested this month"
-            linkTo="/admin/leads"
+            subtitle="Most requested this month"
+            icon={Star}
+            color="#f59e0b"
+            loading={loading}
           />
         </div>
       </div>
 
       {/* Row 2 — Leads & Enquiries */}
       <div>
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Leads & Enquiries</p>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#10b981,#34d399)', boxShadow: '0 2px 12px rgba(16, 185, 129, 0.5)' }}>
+            <UserPlus className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-xs font-bold text-cyan-200/80 uppercase tracking-widest">Leads & Enquiries</span>
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
             icon={UserPlus}
-            color="bg-emerald-600"
+            gradient="linear-gradient(135deg,#10b981,#34d399)"
             title="New Leads This Month"
             value={metrics?.monthLeads ?? 0}
             sub={`Conversion: ${conversionRate}% of submissions`}
@@ -144,79 +152,77 @@ export default function KpiCards({ metrics, isOwner, loading }) {
 
           <KpiCard
             icon={CheckCircle2}
-            color="bg-teal-600"
+            gradient="linear-gradient(135deg,#059669,#34d399)"
             title="Converted Leads"
             value={metrics?.convertedLeadsThisMonth ?? 0}
             sub="Won this month"
             badge={metrics?.convertedLeadsThisMonth > 0 ? '🏆 Great work!' : undefined}
-            badgeColor="bg-emerald-50 text-emerald-700"
-            linkTo="/admin/leads"
+            loading={loading}
           />
 
           <KpiCard
             icon={XCircle}
-            color="bg-red-400"
+            gradient="linear-gradient(135deg,#ef4444,#f87171)"
             title="Lost Leads"
             value={metrics?.lostLeadsThisMonth ?? 0}
             sub="Lost this month"
-            linkTo="/admin/leads"
+            loading={loading}
           />
 
           <KpiCard
             icon={Clock}
-            color="bg-amber-500"
+            gradient="linear-gradient(135deg,#f59e0b,#fbbf24)"
             title="Avg Response Time"
             value={metrics?.avgResponseHours != null ? `${metrics.avgResponseHours.toFixed(1)}h` : 'N/A'}
             sub="Benchmark: <2 hours"
-            linkTo="/admin/submissions"
-          >
-            {metrics?.avgResponseHours != null && (
-              <p className={`text-xs font-semibold mt-1 ${responseColor}`}>
-                {metrics.avgResponseHours < 2 ? '✓ Excellent' : metrics.avgResponseHours < 8 ? '⚠ Needs improvement' : '✗ Too slow'}
-              </p>
-            )}
-          </KpiCard>
+            loading={loading}
+          />
         </div>
       </div>
 
       {/* Row 3 — Quotes */}
       <div>
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quotes Funnel</p>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#6366f1,#818cf8)', boxShadow: '0 2px 12px rgba(99, 102, 241, 0.5)' }}>
+            <FileText className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-xs font-bold text-cyan-200/80 uppercase tracking-widest">Quotes Funnel</span>
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
             icon={FileText}
-            color="bg-slate-500"
+            gradient="linear-gradient(135deg,#64748b,#94a3b8)"
             title="Pending Quotes"
             value={metrics?.pendingQuotes ?? 0}
             sub="In Draft status"
-            linkTo="/admin/quotes"
+            loading={loading}
           />
 
           <KpiCard
             icon={Send}
-            color="bg-blue-500"
+            gradient="linear-gradient(135deg,#3b82f6,#60a5fa)"
             title="Quotes Sent"
             value={metrics?.sentQuotes ?? 0}
             sub="Awaiting client response"
-            linkTo="/admin/quotes"
+            loading={loading}
           />
 
           <KpiCard
             icon={CheckCircle2}
-            color="bg-emerald-600"
+            gradient="linear-gradient(135deg,#10b981,#34d399)"
             title="Quotes Accepted"
             value={metrics?.acceptedQuotes ?? 0}
             sub={`${metrics?.quoteConversionRate ?? 0}% conversion rate`}
-            linkTo="/admin/quotes"
+            loading={loading}
           />
 
           <KpiCard
             icon={AlertCircle}
-            color="bg-orange-500"
+            gradient="linear-gradient(135deg,#f97316,#fb923c)"
             title="Expired / Declined"
             value={(metrics?.expiredQuotes || 0) + (metrics?.declinedQuotes || 0)}
             sub={`${metrics?.expiredQuotes || 0} expired · ${metrics?.declinedQuotes || 0} declined`}
-            linkTo="/admin/quotes"
+            loading={loading}
           />
         </div>
       </div>

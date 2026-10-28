@@ -22,10 +22,10 @@ export default function HowToSelfPublishABook() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How to Self Publish a Book"
-      metaDescription="Step-by-step guide to self-publishing in South Africa — editing, ISBN, cover design, printing, Amazon KDP and distribution. Keep 100% of your rights."
+      metaTitle="How to Self Publish a Book in SA | Creative Books SA"
+      metaDescription="Step-by-step guide to self-publishing in South Africa - editing, ISBN, cover design, printing, Amazon KDP and distribution. Keep 100% of your rights and royalties."
       metaKeywords="how to self publish a book South Africa, self publishing guide, self publishing steps, self publishing cost South Africa, how to publish a book"
-      canonical="https://www.creativebooks.co.za/howtoselfpublishabook"
+      canonical="https://creativebooks.co.za/howtoselfpublishabook"
       schema={schema}
       subtitle="Self Publishing Guide"
       h1="How to Self Publish a Book"
@@ -110,13 +110,13 @@ export default function HowToSelfPublishABook() {
       ]}
       faqs={faqs}
       relatedLinks={[
-        { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'ISBN Registration', path: '/isbnregistration' },
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+        { label: 'ISBN Registration', path: '/isbn' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Book Typesetting', path: '/typesetting' },
-        { label: 'Book Printing SA', path: '/bookprinting' },
-        { label: 'Amazon KDP', path: '/amazonkdp' },
+        { label: 'Book Printing SA', path: '/book-printing' },
+        { label: 'Amazon KDP', path: '/ebook-publishing' },
         { label: 'Book Printing Costs', path: '/howmuchdoesbookprintingcost' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}

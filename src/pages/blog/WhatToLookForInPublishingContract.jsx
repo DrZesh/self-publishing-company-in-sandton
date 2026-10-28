@@ -26,7 +26,7 @@ const article = {
     { label: 'What is a Fair Book Deal', path: '/whatisafairbookdealforsouthafricanauthors' },
     { label: 'Questions to Ask a Publisher', path: '/questionstoaskapublisher' },
     { label: 'Copyright FAQs for Authors', path: '/copyrightfaqsforauthors' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

@@ -28,7 +28,7 @@ export default function GhostwritersSouthAfrica() {
         title="Ghostwriters South Africa"
         description="Hire a professional ghostwriter in South Africa for memoirs, business books, fiction and non-fiction. Discreet, NDA-protected, transparent project pricing."
         keywords="ghostwriters in South Africa, ghost writer near me, ghostwriting services, book writer South Africa"
-        canonical="https://www.creativebooks.co.za/ghostwritersinsouthafrica"
+        canonical="https://creativebooks.co.za/ghostwritersinsouthafrica"
         schema={schema}
       />
       
@@ -119,8 +119,8 @@ export default function GhostwritersSouthAfrica() {
         <InternalLinks
           links={[
             { label: 'Ghostwriting', path: '/ghostwriting' },
-            { label: 'Book Editing', path: '/bookediting' },
-            { label: 'Book Publishing', path: '/bookpublishing' },
+            { label: 'Book Editing', path: '/book-editing' },
+            { label: 'Book Publishing', path: '/book-publishing' },
             { label: 'Memoir Writing', path: '/memoirwriting' },
             { label: 'Biography Writing', path: '/biographywriting' },
             { label: 'Get a Quote', path: '/getquote' },

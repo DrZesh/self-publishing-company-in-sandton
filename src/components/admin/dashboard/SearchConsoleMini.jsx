@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { TrendingUp, MousePointer, Eye, Percent, BarChart2, ExternalLink } from 'lucide-react';
 
 function MiniKpi({ label, value, icon: Icon }) {
@@ -23,7 +23,7 @@ export default function SearchConsoleMini() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    base44.functions.invoke('searchConsoleData', { action: 'performance_compare', days: 28, dimensions: ['date'], rowLimit: 30 })
+    platform.functions.invoke('searchConsoleData', { action: 'performance_compare', days: 28, dimensions: ['date'], rowLimit: 30 })
       .then(res => {
         const rows = res.data?.current?.rows || [];
         const totalClicks = rows.reduce((s, r) => s + r.clicks, 0);

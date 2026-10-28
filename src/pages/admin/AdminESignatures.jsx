@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,11 +59,11 @@ function NewRequestModal({ contacts, documents, onClose, onCreated }) {
     if (!form.title || !form.recipient_email || !form.file_url) { toast.error('Title, recipient email, and document are required'); return; }
     setSaving(true);
     const expiresAt = new Date(Date.now() + (form.expires_days || 14) * 24 * 3600000).toISOString();
-    const data = await base44.entities.ESignatureRequest.create({
+    const data = await platform.entities.ESignatureRequest.create({
       ...form, expires_at: expiresAt, status: andSend ? 'Sent' : 'Draft',
     });
     if (andSend) {
-      const res = await base44.functions.invoke('eSignatureActions', { action: 'send', request_id: data.id });
+      const res = await platform.functions.invoke('eSignatureActions', { action: 'send', request_id: data.id });
       if (res.data?.success) toast.success('Signing request sent!');
       else toast.error(res.data?.error || 'Saved but failed to send email');
     } else {
@@ -309,19 +309,19 @@ export default function AdminESignatures() {
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['esignature-requests'],
-    queryFn: () => base44.entities.ESignatureRequest.list('-created_date', 300),
+    queryFn: () => platform.entities.ESignatureRequest.list('-created_date', 300),
   });
-  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => base44.entities.Contact.list('-created_date', 500) });
+  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => platform.entities.Contact.list('-created_date', 500) });
   const { data: documents = [] } = useQuery({
     queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 500),
+    queryFn: () => platform.entities.Document.list('-created_date', 500),
   });
 
   const allDocs = documents.filter(d => d.file_url);
 
   const handleSend = async (req) => {
     setSendingId(req.id);
-    const res = await base44.functions.invoke('eSignatureActions', { action: 'send', request_id: req.id });
+    const res = await platform.functions.invoke('eSignatureActions', { action: 'send', request_id: req.id });
     setSendingId(null);
     if (res.data?.success) { toast.success('Signing link sent!'); queryClient.invalidateQueries({ queryKey: ['esignature-requests'] }); }
     else toast.error(res.data?.error || 'Failed to send');
@@ -329,7 +329,7 @@ export default function AdminESignatures() {
 
   const handleResend = async (req) => {
     setSendingId(req.id);
-    const res = await base44.functions.invoke('eSignatureActions', { action: 'resend', request_id: req.id });
+    const res = await platform.functions.invoke('eSignatureActions', { action: 'resend', request_id: req.id });
     setSendingId(null);
     if (res.data?.success) { toast.success('Signing link resent!'); queryClient.invalidateQueries({ queryKey: ['esignature-requests'] }); }
     else toast.error(res.data?.error || 'Failed to resend');
@@ -337,14 +337,14 @@ export default function AdminESignatures() {
 
   const handleCancel = async (req) => {
     if (!window.confirm('Cancel this signing request?')) return;
-    await base44.entities.ESignatureRequest.update(req.id, { status: 'Cancelled' });
+    await platform.entities.ESignatureRequest.update(req.id, { status: 'Cancelled' });
     queryClient.invalidateQueries({ queryKey: ['esignature-requests'] });
     toast.success('Request cancelled');
   };
 
   const handleRetryPdf = async (req) => {
     setSendingId(req.id + '_pdf');
-    const res = await base44.functions.invoke('eSignatureActions', { action: 'generate_pdf', request_id: req.id });
+    const res = await platform.functions.invoke('eSignatureActions', { action: 'generate_pdf', request_id: req.id });
     setSendingId(null);
     if (res.data?.success) { toast.success('Certificate generated!'); queryClient.invalidateQueries({ queryKey: ['esignature-requests'] }); }
     else toast.error(res.data?.error || 'PDF generation failed');

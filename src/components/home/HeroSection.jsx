@@ -58,7 +58,7 @@ export default function HeroSection({ heroImage }) {
               Start Your Publishing Journey
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/publishingpackages"
+            <Link to="/publishingpackages/a5"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white rounded-full hover:border-copper hover:text-copper transition-all text-base">
               <BookOpen className="w-4 h-4" /> View Packages
             </Link>
