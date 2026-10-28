@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
@@ -164,7 +165,7 @@ export default function AdminDashboard() {
   const fetchDashboard = useCallback(async () => {
     try {
       const [meRes, metricsRes] = await Promise.all([
-        base44.auth.me(),
+        getCurrentUser(),
         base44.functions.invoke('getAdminDashboardMetrics', { dateRange }),
       ]);
       setUser(meRes);

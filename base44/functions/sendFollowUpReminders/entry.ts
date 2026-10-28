@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
@@ -7,11 +8,7 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow scheduled (no auth) or admin calls
-    const user = await base44.auth.me().catch(() => null);
-    if (user && user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requireAdmin(req, { allowScheduled: true });
 
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
@@ -144,6 +141,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ success: true, sent: followUps.length, high: highPriority.length, medium: mediumPriority.length });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('sendFollowUpReminders error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }

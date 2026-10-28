@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 import { jsPDF } from 'npm:jspdf@4.0.0';
@@ -94,7 +95,7 @@ Deno.serve(async (req) => {
 
     // ─── SEND DOCUMENT ────────────────────────────────────────────────────────
     if (action === 'send') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id, expires_days = 30 } = body;
@@ -136,7 +137,7 @@ Deno.serve(async (req) => {
 
     // ─── RESEND ───────────────────────────────────────────────────────────────
     if (action === 'resend') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id, expires_days = 30 } = body;
@@ -345,7 +346,7 @@ Deno.serve(async (req) => {
 
     // ─── GET ACTIVITY LOG (admin) ──────────────────────────────────────────────
     if (action === 'get_activity') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id } = body;
@@ -356,7 +357,7 @@ Deno.serve(async (req) => {
 
     // ─── EXTEND EXPIRY ─────────────────────────────────────────────────────────
     if (action === 'extend_expiry') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id, days = 30 } = body;
@@ -377,7 +378,7 @@ Deno.serve(async (req) => {
 
     // ─── CREATE NEW VERSION ────────────────────────────────────────────────────
     if (action === 'create_version') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id, new_file_url, new_file_name } = body;
@@ -416,7 +417,7 @@ Deno.serve(async (req) => {
 
     // ─── VERIFY PAYMENT PROOF (admin only) ─────────────────────────────────────
     if (action === 'verify_payment') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id, verified, rejection_reason, amount_confirmed } = body;
@@ -464,7 +465,7 @@ Deno.serve(async (req) => {
 
     // ─── GENERATE APPROVAL CERTIFICATE ────────────────────────────────────────
     if (action === 'generate_certificate') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id } = body;
@@ -558,7 +559,7 @@ Deno.serve(async (req) => {
 
     // ─── EXPORT AUDIT TRAIL PDF ────────────────────────────────────────────────
     if (action === 'export_audit_trail') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { document_id } = body;
@@ -634,6 +635,7 @@ Deno.serve(async (req) => {
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

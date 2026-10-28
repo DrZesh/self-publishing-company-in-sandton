@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 import { jsPDF } from 'npm:jspdf@4.0.0';
@@ -202,7 +203,7 @@ Deno.serve(async (req) => {
 
     // ── SEND ────────────────────────────────────────────────────────────────────
     if (action === 'send') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { request_id } = body;
@@ -381,7 +382,7 @@ Deno.serve(async (req) => {
 
     // ── GENERATE PDF (separate action, called by admin after signing) ─────────────
     if (action === 'generate_pdf') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { request_id } = body;
@@ -447,7 +448,7 @@ Deno.serve(async (req) => {
 
     // ── RESEND ──────────────────────────────────────────────────────────────────
     if (action === 'resend') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { request_id } = body;
@@ -490,7 +491,7 @@ Deno.serve(async (req) => {
 
     // ── ADMIN SIGN ──────────────────────────────────────────────────────────────
     if (action === 'admin_sign') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { request_id, admin_signature_url, admin_field_values, admin_signer_name } = body;
@@ -519,6 +520,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
   } catch (err) {
+    if (err instanceof AuthError) return Response.json({ error: err.message }, { status: err.status });
     return Response.json({ error: err.message }, { status: 500 });
   }
 });

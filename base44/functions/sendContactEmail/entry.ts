@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 
@@ -17,8 +18,9 @@ function applyMergeFields(text, contact) {
 }
 
 Deno.serve(async (req) => {
+  try {
   const base44 = createClientFromRequest(req);
-  const user = await base44.auth.me();
+  const user = await requireAdmin(req);
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
@@ -47,7 +49,7 @@ Deno.serve(async (req) => {
     const resendId = result?.data?.id || null;
 
     // Log to EmailMessage
-    const msg = await base44.entities.EmailMessage.create({
+    const msg = await base44.asServiceRole.entities.EmailMessage.create({
       contact_id: contact_id || null,
       direction: 'outbound',
       from_address: BUSINESS_EMAIL,
@@ -73,7 +75,7 @@ Deno.serve(async (req) => {
   // ── LIST EMAILS FOR CONTACT ────────────────────────────────────────────
   if (action === 'list') {
     const { contact_id } = body;
-    const emails = await base44.entities.EmailMessage.filter({ contact_id });
+    const emails = await base44.asServiceRole.entities.EmailMessage.filter({ contact_id });
     emails.sort((a, b) => new Date(b.sent_at || b.created_date) - new Date(a.sent_at || a.created_date));
     return Response.json({ emails });
   }
@@ -89,4 +91,8 @@ Deno.serve(async (req) => {
   }
 
   return Response.json({ error: 'Unknown action' }, { status: 400 });
+  } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
+    return Response.json({ error: 'The email request failed' }, { status: 500 });
+  }
 });

@@ -1,9 +1,10 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const user = await requireAdmin(req);
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { to_number, message, type, contact_id } = await req.json();
@@ -55,6 +56,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ success: true, sid: result.sid, to: formattedNumber });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

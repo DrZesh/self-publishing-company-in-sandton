@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 import { jsPDF } from 'npm:jspdf@4.0.0';
@@ -51,7 +52,7 @@ function calcTotals(lineItems, discountAmount, includeVat, vatRate = 15) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const user = await requireAdmin(req);
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
@@ -527,6 +528,7 @@ Deno.serve(async (req) => {
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
@@ -115,7 +116,7 @@ export default function AdminSidebar({ open, onClose }) {
   }, []);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    getCurrentUser().then(setUser).catch(() => {});
     base44.entities.Submission.filter({ status: 'new' }).then(s => setUnreadCount(s.length)).catch(() => {});
     base44.entities.Lead.list('-created_date', 200).then(leads => {
       setOpenLeadCount(leads.filter(l => !['won', 'lost'].includes(l.stage)).length);

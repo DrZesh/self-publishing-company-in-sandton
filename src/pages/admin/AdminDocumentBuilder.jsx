@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -236,7 +237,7 @@ export default function AdminDocumentBuilder() {
       is_template: !contactId,
       template_label: !contactId ? title : undefined,
       status: 'Draft',
-      uploaded_by: (await base44.auth.me())?.email || '',
+      uploaded_by: (await getCurrentUser())?.email || '',
     });
     setSaving(false);
     toast.success('Saved to Document Library!');

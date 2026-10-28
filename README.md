@@ -37,3 +37,7 @@ Open [Base44.com](http://Base44.com) and click on Publish.
 Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
 
 Support: [https://app.base44.com/support](https://app.base44.com/support)
+
+**Supabase authentication**
+
+The identity provider is now Supabase, while existing data and integrations remain in Base44. See [the migration and rollout guide](docs/supabase-auth-migration.md) and [.env.example](.env.example). Frontend and backend changes must be configured and deployed together. The migration remains unverified against live services until an active Supabase project is available.

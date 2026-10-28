@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -116,7 +117,7 @@ Deno.serve(async (req) => {
 
     // Public actions — skip admin auth
     if (action !== 'cancel_by_client' && action !== 'get_by_cancel_token') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user || user.role !== 'admin') {
         return Response.json({ error: 'Forbidden' }, { status: 403 });
       }
@@ -255,6 +256,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ success: true });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

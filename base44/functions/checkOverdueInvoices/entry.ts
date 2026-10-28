@@ -1,17 +1,11 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow scheduled calls (no auth) or admin calls
-    let isScheduled = false;
-    try {
-      const user = await base44.auth.me();
-      if (user && user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
-    } catch {
-      isScheduled = true;
-    }
+    await requireAdmin(req, { allowScheduled: true });
 
     const today = new Date().toISOString().split('T')[0];
     const invoices = await base44.asServiceRole.entities.Invoice.list('-due_date', 500);
@@ -63,6 +57,7 @@ Deno.serve(async (req) => {
       checked_at: new Date().toISOString(),
     });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
