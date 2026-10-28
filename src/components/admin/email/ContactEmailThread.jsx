@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Mail, Reply, CornerUpRight, Forward, ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import EmailCompose from './EmailCompose';
 
@@ -79,8 +79,8 @@ export default function ContactEmailThread({ contact }) {
   const load = () => {
     setLoading(true);
     Promise.all([
-      base44.functions.invoke('sendContactEmail', { action: 'list', contact_id: contact.id }),
-      base44.entities.EmailTemplate.filter({ is_active: true }),
+      platform.functions.invoke('sendContactEmail', { action: 'list', contact_id: contact.id }),
+      platform.entities.EmailTemplate.filter({ is_active: true }),
     ]).then(([res, tpls]) => {
       setEmails(res.data?.emails || []);
       setTemplates(tpls);

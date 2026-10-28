@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Calculator, ArrowRight, AlertCircle, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
 import PageMeta from '../../components/shared/PageMeta';
 import CTASection from '../../components/shared/CTASection';
@@ -104,7 +104,7 @@ export default function UniversalCalculator() {
     setError('');
     try {
       const quoteRef = `CB-${Date.now().toString().slice(-6)}`;
-      await base44.functions.invoke('sendEstimateNotification', { clientInfo, breakdown, total: estimateTotal, quoteNumber: quoteRef });
+      await platform.functions.invoke('sendEstimateNotification', { clientInfo, breakdown, total: estimateTotal, quoteNumber: quoteRef });
       setCurrentStep('confirmation');
     } catch (err) {
       setError(`Error: ${err.message}`);
@@ -128,7 +128,7 @@ export default function UniversalCalculator() {
         title="Book Publishing Cost Calculator"
         description="Use the book publishing cost calculator to estimate costs for printing, editing, cover design and typesetting."
         description="Calculate costs for printing, editing, design, and publishing. Instant estimates based on real Creative Books SA rates."
-        canonical="https://www.creativebooks.co.za/calculator"
+        canonical="https://creativebooks.co.za/calculator"
       />
 
       {/* Hero */}

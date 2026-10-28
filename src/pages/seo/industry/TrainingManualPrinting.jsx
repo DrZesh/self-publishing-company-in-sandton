@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Training Manual Printing Johannesburg', description: 'Professional training manual printing for businesses in Johannesburg.', url: '/trainingmanualprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Training Manual Printing', path: '/trainingmanualprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Training Manual Printing', path: '/trainingmanualprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function TrainingManualPrinting() {
   return (
     <>
       <PageMeta
-        title="Training Manual Printing Services in Johannesburg"
-        description="Training manual printing in Johannesburg for corporate, NGO and education programmes — A4 and A5 with spiral, wire-o or saddle-stitch binding. Bulk pricing."
+        title="Training Manual Printing in Johannesburg | Creative Books SA"
+        description="Training manual printing in Johannesburg for corporate, NGO and education programmes - A4 and A5 with spiral, wire-o or saddle-stitch binding. Bulk pricing."
         keywords="training manual printing Johannesburg, corporate manual printing, workbook printing Johannesburg, training material printing South Africa, A4 book printing"
-        canonical="https://www.creativebooks.co.za/trainingmanualprintingjohannesburg"
+        canonical="https://creativebooks.co.za/trainingmanualprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,9 +50,9 @@ export default function TrainingManualPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Manual Printing', path: '/manualprinting' },
-          { label: 'Workbook Printing', path: '/workbookprinting' },
-          { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+          { label: 'Manual Printing', path: '/book-printing' },
+          { label: 'Workbook Printing', path: '/book-printing' },
+          { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
           { label: 'Book Printing Sandton', path: '/bookprintingsandton' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

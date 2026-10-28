@@ -22,10 +22,10 @@ export default function HowMuchDoesBookPrintingCost() {
 
   return (
     <LongTailArticlePage
-      metaTitle="How Much Does Book Printing Cost?"
-      metaDescription="Real book printing prices for South Africa — A5, 6×9, hardcover and children's books. Detailed cost tables by page count and quantity."
+      metaTitle="How Much Does Book Printing Cost? | Creative Books SA"
+      metaDescription="Real book printing prices for South Africa - A5, 6x9, hardcover and children's books. Detailed cost tables by page count and quantity. Get a free quote today."
       metaKeywords="book printing cost South Africa, how much does book printing cost, book printing prices South Africa, A5 printing cost, hardcover printing cost"
-      canonical="https://www.creativebooks.co.za/howmuchdoesbookprintingcost"
+      canonical="https://creativebooks.co.za/howmuchdoesbookprintingcost"
       schema={schema}
       subtitle="Book Printing Pricing Guide"
       h1="How Much Does Book Printing Cost?"
@@ -125,13 +125,13 @@ export default function HowMuchDoesBookPrintingCost() {
       ]}
       faqs={faqs}
       relatedLinks={[
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
         { label: 'A5 Book Printing', path: '/printing/a5' },
         { label: '6×9 Book Printing', path: '/printing/6x9' },
         { label: 'Hardcover Printing', path: '/printing/hardcover' },
         { label: 'How to Print a Book', path: '/howtoprintabookinsouthafrica' },
         { label: 'Best Book Size Guide', path: '/bestbooksizeforselfpublishing' },
-        { label: 'Book Printing Packages', path: '/bookprintingpackages' },
+        { label: 'Book Printing Packages', path: '/self-publishing-packages-in-south-africa' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Get an Accurate Printing Quote"

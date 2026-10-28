@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Novel Printing Johannesburg', description: 'Professional novel and fiction book printing in Johannesburg.', url: '/novelprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Novel Printing', path: '/novelprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Novel Printing', path: '/novelprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function NovelPrinting() {
   return (
     <>
       <PageMeta
-        title="Novel Printing"
-        description="Novel printing in Johannesburg for South African fiction authors — 6×9 trade paperback and B-format from R4,500 for 100 copies. Cream paper, perfect binding."
+        title="Novel Printing in Johannesburg | Creative Books SA"
+        description="Novel printing in Johannesburg for South African fiction authors - 6x9 trade paperback and B-format from R4,500 for 100 copies. Cream paper, perfect binding."
         keywords="novel printing Johannesburg, fiction book printing South Africa, novel publishing South Africa, print my novel Johannesburg, self publish novel South Africa"
-        canonical="https://www.creativebooks.co.za/novelprintingjohannesburg"
+        canonical="https://creativebooks.co.za/novelprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,11 +50,11 @@ export default function NovelPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Novel"

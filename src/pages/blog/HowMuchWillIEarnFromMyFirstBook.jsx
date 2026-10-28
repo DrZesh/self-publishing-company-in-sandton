@@ -22,9 +22,9 @@ const article = {
     { q: 'What other income can authors earn beyond book sales?', a: 'Speaking engagements, workshops, consulting, and online courses are common income streams for South African authors. A published book is a credibility tool that opens these doors.' },
   ],
   relatedLinks: [
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-    { label: 'eBook Publishing', path: '/ebookpublishing' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+    { label: 'eBook Publishing', path: '/ebook-publishing' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

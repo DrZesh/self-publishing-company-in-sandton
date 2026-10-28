@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, ExternalLink, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 const fallbackReviews = [
   {
@@ -33,7 +33,7 @@ export default function GoogleReviews() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await base44.functions.invoke('fetchGoogleReviews', {});
+        const response = await platform.functions.invoke('fetchGoogleReviews', {});
         if (response.data?.reviews?.length > 0) {
           setReviews(response.data.reviews);
           setAvgRating(response.data.avgRating?.toFixed(1) || '5.0');

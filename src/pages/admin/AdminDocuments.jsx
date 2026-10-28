@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import {
   Plus, Search, FolderOpen, Download, Archive, Trash2, Send, RotateCcw,
   Activity, X, RefreshCw, Clock, Zap, Star, Shield, FileText,
-  Lock, BookOpen, Layers, Tag, Sparkles, Ban, Edit2
+  Lock, Unlock, BookOpen, Layers, Tag, Sparkles, Ban, Edit2
 } from 'lucide-react';
 import DocumentUploadModal from '@/components/admin/documents/DocumentUploadModal';
 import DocumentActivityPanel from '@/components/admin/documents/DocumentActivityPanel';
@@ -98,21 +98,21 @@ export default function AdminDocuments() {
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-created_date', 500),
+    queryFn: () => platform.entities.Document.list('-created_date', 500),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const updateDoc = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Document.update(id, data),
+    mutationFn: ({ id, data }) => platform.entities.Document.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['documents'] }),
   });
 
   const archiveDoc = useMutation({
-    mutationFn: (id) => base44.entities.Document.update(id, { status: 'Archived' }),
+    mutationFn: (id) => platform.entities.Document.update(id, { status: 'Archived' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success('Document archived.');
@@ -120,7 +120,7 @@ export default function AdminDocuments() {
   });
 
   const deleteDoc = useMutation({
-    mutationFn: (id) => base44.entities.Document.delete(id),
+    mutationFn: (id) => platform.entities.Document.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success('Document deleted.');
@@ -135,7 +135,7 @@ export default function AdminDocuments() {
     if (!window.confirm(`Send "${doc.file_name}" to ${contact.email}?`)) return;
     setSendingId(doc.id);
     try {
-      const res = await base44.functions.invoke('documentActions', { action: 'send', document_id: doc.id });
+      const res = await platform.functions.invoke('documentActions', { action: 'send', document_id: doc.id });
       if (res.data?.success) {
         queryClient.invalidateQueries({ queryKey: ['documents'] });
         toast.success(`Sent to ${contact.email}`);
@@ -154,7 +154,7 @@ export default function AdminDocuments() {
     if (!contact?.email) { toast.error('Contact has no email address.'); return; }
     setSendingId(doc.id);
     try {
-      const res = await base44.functions.invoke('documentActions', { action: 'resend', document_id: doc.id });
+      const res = await platform.functions.invoke('documentActions', { action: 'resend', document_id: doc.id });
       if (res.data?.success) {
         queryClient.invalidateQueries({ queryKey: ['documents'] });
         toast.success(`Resent to ${contact.email}`);
@@ -171,7 +171,7 @@ export default function AdminDocuments() {
   const handleExtendExpiry = async (doc) => {
     setSendingId(doc.id);
     try {
-      const res = await base44.functions.invoke('documentActions', { action: 'extend_expiry', document_id: doc.id, days: 30 });
+      const res = await platform.functions.invoke('documentActions', { action: 'extend_expiry', document_id: doc.id, days: 30 });
       if (res.data?.success) {
         queryClient.invalidateQueries({ queryKey: ['documents'] });
         toast.success('Expiry extended by 30 days.');
@@ -195,6 +195,18 @@ export default function AdminDocuments() {
     updateDoc.mutate({ id: doc.id, data: { access_revoked: true, access_revoked_at: new Date().toISOString(), status: 'Archived' } });
     toast.success('Document access revoked.');
   };
+
+  const handleToggleLock = (doc) => {
+    const isLocked = !!doc.internal_notes?.includes('[ADMIN_LOCKED]');
+    const notes = doc.internal_notes || '';
+    const newNotes = isLocked
+      ? notes.replace('[ADMIN_LOCKED]', '').trim()
+      : `[ADMIN_LOCKED] ${notes}`.trim();
+    updateDoc.mutate({ id: doc.id, data: { internal_notes: newNotes } });
+    toast.success(isLocked ? 'Document unlocked.' : 'Document locked — only admins can delete it.');
+  };
+
+  const isDocLocked = (doc) => !!doc.internal_notes?.includes('[ADMIN_LOCKED]');
 
   const handleOpenModal = (doc = null) => {
     setEditingDoc(doc);
@@ -359,7 +371,7 @@ export default function AdminDocuments() {
                 <Lock className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Signed Document Vault</p>
-                  <p className="text-xs text-emerald-600">These documents are signed or approved and protected from deletion.</p>
+                  <p className="text-xs text-emerald-600">Signed and approved documents. Use the lock toggle to protect individual documents, or delete if needed.</p>
                 </div>
               </div>
             )}
@@ -575,17 +587,37 @@ export default function AdminDocuments() {
                                     </Button>
                                   )}
 
-                                  {/* Archive + Delete (not vault docs) */}
+                                  {/* Lock / Unlock */}
+                                  <Button
+                                   variant="ghost" size="sm"
+                                   title={isDocLocked(doc) ? 'Unlock document' : 'Lock document'}
+                                   onClick={() => handleToggleLock(doc)}
+                                  >
+                                   {isDocLocked(doc)
+                                     ? <Lock className="w-4 h-4 text-amber-500" />
+                                     : <Unlock className="w-4 h-4 text-gray-400" />}
+                                  </Button>
+
+                                  {/* Archive (non-vault only) */}
                                   {!isVaultDoc && (
-                                    <>
-                                      <Button variant="ghost" size="sm" title="Archive" onClick={() => { if (window.confirm('Archive this document?')) archiveDoc.mutate(doc.id); }}>
-                                        <Archive className="w-4 h-4 text-gray-400" />
-                                      </Button>
-                                      <Button variant="ghost" size="sm" title="Delete" onClick={() => { if (window.confirm('Permanently delete this document?')) deleteDoc.mutate(doc.id); }}>
-                                        <Trash2 className="w-4 h-4 text-red-400" />
-                                      </Button>
-                                    </>
+                                   <Button variant="ghost" size="sm" title="Archive" onClick={() => { if (window.confirm('Archive this document?')) archiveDoc.mutate(doc.id); }}>
+                                     <Archive className="w-4 h-4 text-gray-400" />
+                                   </Button>
                                   )}
+
+                                  {/* Delete — always available to admin, locked docs require extra confirm */}
+                                  <Button variant="ghost" size="sm" title="Delete permanently" onClick={() => {
+                                   const locked = isDocLocked(doc);
+                                   const signed = isVaultDoc;
+                                   const msg = locked
+                                     ? `⚠️ This document is LOCKED. Are you absolutely sure you want to permanently delete "${doc.file_name}"? This cannot be undone.`
+                                     : signed
+                                     ? `This is a signed document. Permanently delete "${doc.file_name}"? This cannot be undone.`
+                                     : `Permanently delete "${doc.file_name}"?`;
+                                   if (window.confirm(msg)) deleteDoc.mutate(doc.id);
+                                  }}>
+                                   <Trash2 className="w-4 h-4 text-red-400" />
+                                  </Button>
                                 </div>
                               </td>
                             </tr>
@@ -616,6 +648,7 @@ export default function AdminDocuments() {
         <QuickSendModal
           templates={templates}
           contacts={contacts}
+          allDocuments={documents.filter(d => !d.is_template && d.file_url)}
           onClose={() => setShowQuickSend(false)}
           onSent={() => { queryClient.invalidateQueries({ queryKey: ['documents'] }); setShowQuickSend(false); toast.success('Document sent!'); }}
         />
@@ -735,6 +768,23 @@ export default function AdminDocuments() {
                   </Button>
                 </a>
               )}
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => handleToggleLock(selectedDoc)} className={`flex-1 gap-2 ${isDocLocked(selectedDoc) ? 'border-amber-300 text-amber-700' : 'text-gray-600'}`}>
+                  {isDocLocked(selectedDoc) ? <><Unlock className="w-4 h-4" /> Unlock</> : <><Lock className="w-4 h-4" /> Lock</>}
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => {
+                  const locked = isDocLocked(selectedDoc);
+                  const signed = VAULT_STATUSES.includes(selectedDoc.status);
+                  const msg = locked
+                    ? `⚠️ This document is LOCKED. Permanently delete "${selectedDoc.file_name}"?`
+                    : signed
+                    ? `This is a signed document. Permanently delete "${selectedDoc.file_name}"?`
+                    : `Permanently delete "${selectedDoc.file_name}"?`;
+                  if (window.confirm(msg)) { deleteDoc.mutate(selectedDoc.id); setSelectedDoc(null); }
+                }} className="flex-1 gap-2 border-red-200 text-red-600 hover:bg-red-50">
+                  <Trash2 className="w-4 h-4" /> Delete
+                </Button>
+              </div>
             </div>
           </div>
         </div>

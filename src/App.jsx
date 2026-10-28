@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import ResetPassword from './pages/admin/ResetPassword';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -9,244 +9,268 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
-// ─── Lazy-loaded page components (code-split per route) ───────────────────────
+// ─── Page components (static imports) ────────────────────────────────────────
 // Core
-const Home = lazy(() => import('./pages/Home'));
-const About = lazy(() => import('./pages/About'));
-const Contact = lazy(() => import('./pages/Contact'));
-const GetQuote = lazy(() => import('./pages/GetQuote'));
-const FAQ = lazy(() => import('./pages/FAQ'));
-const Blog = lazy(() => import('./pages/Blog'));
-const BlogArticle = lazy(() => import('./pages/BlogArticle'));
-const Portfolio = lazy(() => import('./pages/Portfolio'));
-const AnnualReportDesign = lazy(() => import('./pages/AnnualReportDesign'));
+import Home from './pages/Home';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import GetQuote from './pages/GetQuote';
+import FAQ from './pages/FAQ';
+import Blog from './pages/Blog';
+import BlogArticle from './pages/BlogArticle';
+import Portfolio from './pages/Portfolio';
+import AnnualReportDesign from './pages/AnnualReportDesign';
 
 // Printing
-const PrintingA5 = lazy(() => import('./pages/printing/PrintingA5.jsx'));
-const Printing6x9 = lazy(() => import('./pages/printing/Printing6x9.jsx'));
-const PrintingHardcover = lazy(() => import('./pages/printing/PrintingHardcover.jsx'));
-const PrintingChildrensBooks = lazy(() => import('./pages/printing/PrintingChildrensBooks'));
-const ChildrensBooks15x15 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks15x15.jsx'));
-const ChildrensBooks20x20 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks20x20.jsx'));
-const ChildrensBooks21x21 = lazy(() => import('./pages/printing/childrensbooks/ChildrensBooks21x21.jsx'));
+import PrintingA5 from './pages/printing/PrintingA5.jsx';
+import Printing6x9 from './pages/printing/Printing6x9.jsx';
+import PrintingHardcover from './pages/printing/PrintingHardcover.jsx';
+import PrintingChildrensBooks from './pages/printing/PrintingChildrensBooks';
+import ChildrensBooks15x15 from './pages/printing/childrensbooks/ChildrensBooks15x15.jsx';
+import ChildrensBooks20x20 from './pages/printing/childrensbooks/ChildrensBooks20x20.jsx';
+import ChildrensBooks21x21 from './pages/printing/childrensbooks/ChildrensBooks21x21.jsx';
 
 // Services
-const BookPublishing = lazy(() => import('./pages/services/BookPublishing'));
-const MiniPublishingPackage = lazy(() => import('./pages/services/MiniPublishingPackage'));
-const A5BookPublishing = lazy(() => import('./pages/services/A5BookPublishing'));
-const SixByNinePublishing = lazy(() => import('./pages/services/SixByNinePublishing'));
-const FullPackagesA5 = lazy(() => import('./pages/publishing/FullPackagesA5'));
-const FullPackages6x9 = lazy(() => import('./pages/publishing/FullPackages6x9'));
-const MiniPackages = lazy(() => import('./pages/publishing/MiniPackages'));
-const BookPrinting = lazy(() => import('./pages/services/BookPrinting'));
-const BookEditing = lazy(() => import('./pages/services/BookEditing'));
-const Proofreading = lazy(() => import('./pages/services/Proofreading'));
-const AcademicEditing = lazy(() => import('./pages/services/AcademicEditing'));
-const ThesisEditing = lazy(() => import('./pages/services/ThesisEditing'));
-const DissertationEditing = lazy(() => import('./pages/services/DissertationEditing'));
-const BookCoverDesign = lazy(() => import('./pages/services/BookCoverDesign'));
-const EbookPublishing = lazy(() => import('./pages/services/EbookPublishing'));
-const Ghostwriting = lazy(() => import('./pages/services/Ghostwriting'));
-const BookTypesetting = lazy(() => import('./pages/services/BookTypesetting'));
-const SelfPublishingPackages = lazy(() => import('./pages/services/SelfPublishingPackages'));
-const AuthorWebsites = lazy(() => import('./pages/services/AuthorWebsites'));
-const ChildrensBookPackages = lazy(() => import('./pages/services/ChildrensBookPackages'));
-const MemoirWriting = lazy(() => import('./pages/services/MemoirWriting'));
-const BiographyWriting = lazy(() => import('./pages/services/BiographyWriting'));
-const ChristianBookWriting = lazy(() => import('./pages/services/ChristianBookWriting'));
-const LocationPage = lazy(() => import('./pages/services/LocationPage'));
-const ResourcePage = lazy(() => import('./pages/resources/ResourcePage'));
-const CompletePublishingGuide = lazy(() => import('./pages/resources/CompletePublishingGuide'));
-const ISBNRegistration = lazy(() => import('./pages/resources/ISBNRegistration'));
-const NDA = lazy(() => import('./pages/resources/NDA'));
-const CoverSizeCalculator = lazy(() => import('./pages/resources/CoverSizeCalculator'));
+import BookPublishing from './pages/services/BookPublishing';
+import MiniPublishingPackage from './pages/services/MiniPublishingPackage';
+import A5BookPublishing from './pages/services/A5BookPublishing';
+import SixByNinePublishing from './pages/services/SixByNinePublishing';
+import FullPackagesA5 from './pages/publishing/FullPackagesA5';
+import FullPackages6x9 from './pages/publishing/FullPackages6x9';
+import MiniPackages from './pages/publishing/MiniPackages';
+import BookPrinting from './pages/services/BookPrinting';
+import BookEditing from './pages/services/BookEditing';
+import AIGeneratedBookEditing from './pages/services/AIGeneratedBookEditing';
+import Proofreading from './pages/services/Proofreading';
+import AcademicEditing from './pages/services/AcademicEditing';
+import ThesisEditing from './pages/services/ThesisEditing';
+import DissertationEditing from './pages/services/DissertationEditing';
+import BookCoverDesign from './pages/services/BookCoverDesign';
+import EbookPublishing from './pages/services/EbookPublishing';
+import Ghostwriting from './pages/services/Ghostwriting';
+import BookTypesetting from './pages/services/BookTypesetting';
+import SelfPublishingPackages from './pages/services/SelfPublishingPackages';
+import AuthorWebsites from './pages/services/AuthorWebsites';
+import ChildrensBookPackages from './pages/services/ChildrensBookPackages';
+import MemoirWriting from './pages/services/MemoirWriting';
+import BiographyWriting from './pages/services/BiographyWriting';
+import ChristianBookWriting from './pages/services/ChristianBookWriting';
+import LocationPage from './pages/services/LocationPage';
+import ResourcePage from './pages/resources/ResourcePage';
+import CompletePublishingGuide from './pages/resources/CompletePublishingGuide';
+import ISBNRegistration from './pages/resources/ISBNRegistration';
+import NDA from './pages/resources/NDA';
+import CoverSizeCalculator from './pages/resources/CoverSizeCalculator';
+import Documents from './pages/resources/Documents';
+import CoverCalculator from './pages/Calculator';
+import BarcodeGenerator from './pages/BarcodeGenerator';
+
+// Legal & compliance
+import LegalIndex from './pages/legal/LegalIndex';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import CookiePolicy from './pages/legal/CookiePolicy';
+import TermsAndConditions from './pages/legal/TermsAndConditions';
+import RefundsAndReturns from './pages/legal/RefundsAndReturns';
+import PaiaManual from './pages/legal/PaiaManual';
+import Disclaimer from './pages/legal/Disclaimer';
 
 // SEO landing pages
-const PrintOnDemandSouthAfrica = lazy(() => import('./pages/blog/PrintOnDemandSouthAfrica'));
-const SelfPublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/SelfPublishingCompaniesSouthAfrica'));
-const BookCoverDesignPriceSouthAfrica = lazy(() => import('./pages/seo/BookCoverDesignPriceSouthAfrica'));
-const BookEditorsSouthAfrica = lazy(() => import('./pages/seo/BookEditorsSouthAfrica'));
-const BookLayoutTypesetting = lazy(() => import('./pages/seo/BookLayoutTypesetting'));
-const ISBNNumberSouthAfrica = lazy(() => import('./pages/seo/ISBNNumberSouthAfrica'));
-const BookDistributionSouthAfrica = lazy(() => import('./pages/seo/BookDistributionSouthAfrica'));
-const CostToSelfPublishKindle = lazy(() => import('./pages/blog/CostToSelfPublishKindle'));
-const ProfessionalCopyEditing = lazy(() => import('./pages/blog/ProfessionalCopyEditing'));
-const WhatIsGhostwriting = lazy(() => import('./pages/blog/WhatIsGhostwriting'));
-const WritingBookDedication = lazy(() => import('./pages/blog/WritingBookDedication'));
-const WritingBookAcknowledgment = lazy(() => import('./pages/blog/WritingBookAcknowledgment'));
-const HowToNameYourBook = lazy(() => import('./pages/blog/HowToNameYourBook'));
-const HowToPrintSelfPublishedBook = lazy(() => import('./pages/blog/HowToPrintSelfPublishedBook'));
-const ChildrensBookIllustrations = lazy(() => import('./pages/blog/ChildrensBookIllustrations'));
-const EbookVsPrint = lazy(() => import('./pages/blog/EbookVsPrint'));
-const HowLongSelfPublish = lazy(() => import('./pages/blog/HowLongSelfPublish'));
-const CostToSelfPublishAmazon = lazy(() => import('./pages/blog/CostToSelfPublishAmazon'));
-const BecomeAWriter = lazy(() => import('./pages/blog/BecomeAWriter'));
-const ISBNRegistrationSA = lazy(() => import('./pages/blog/ISBNRegistrationSA'));
-const HowToGetISBN = lazy(() => import('./pages/blog/HowToGetISBN'));
-const BeginnersGuideSelfPublishing = lazy(() => import('./pages/blog/BeginnersGuideSelfPublishing'));
-const SelfPublishChildrensBooks = lazy(() => import('./pages/blog/SelfPublishChildrensBooks'));
-const WhatIsSelfPublishing = lazy(() => import('./pages/blog/WhatIsSelfPublishing'));
-const CopyrightFAQsAuthors = lazy(() => import('./pages/blog/CopyrightFAQsAuthors'));
-const QuestionsToAskPublisher = lazy(() => import('./pages/blog/QuestionsToAskPublisher'));
-const HowDoIGetMyBookPublished = lazy(() => import('./pages/blog/HowDoIGetMyBookPublished'));
-const DoSouthAfricanPublishersChargeAuthors = lazy(() => import('./pages/blog/DoSouthAfricanPublishersChargeAuthors'));
-const HowMuchWillIEarnFromMyFirstBook = lazy(() => import('./pages/blog/HowMuchWillIEarnFromMyFirstBook'));
-const WhatIsAFairBookDeal = lazy(() => import('./pages/blog/WhatIsAFairBookDeal'));
-const DoINeedAnEditorBeforePublishing = lazy(() => import('./pages/blog/DoINeedAnEditorBeforePublishing'));
-const HowToFindALiteraryAgentSA = lazy(() => import('./pages/blog/HowToFindALiteraryAgentSA'));
-const HowToPublishChildrensBookSA = lazy(() => import('./pages/blog/HowToPublishChildrensBookSA'));
-const CanIPublishAComicBookSA = lazy(() => import('./pages/blog/CanIPublishAComicBookSA'));
-const HowToMarketSelfPublishedBookSA = lazy(() => import('./pages/blog/HowToMarketSelfPublishedBookSA'));
-const HowDoPublishersFindAuthors = lazy(() => import('./pages/blog/HowDoPublishersFindAuthors'));
-const WhatFreelanceProfessionalsDoINeed = lazy(() => import('./pages/blog/WhatFreelanceProfessionalsDoINeed'));
-const IsSelling3000CopiesGood = lazy(() => import('./pages/blog/IsSelling3000CopiesGood'));
-const HowDoIKnowIfMyBookIsReady = lazy(() => import('./pages/blog/HowDoIKnowIfMyBookIsReady'));
-const WhatPublishingJobsAreAvailable = lazy(() => import('./pages/blog/WhatPublishingJobsAreAvailable'));
-const HowLongToGetPublishedSA = lazy(() => import('./pages/blog/HowLongToGetPublishedSA'));
-const DoPublishersProvideCoverDesign = lazy(() => import('./pages/blog/DoPublishersProvideCoverDesign'));
-const WhatIs9010RuleAuthors = lazy(() => import('./pages/blog/WhatIs9010RuleAuthors'));
-const HowToChooseBetweenPublishingOffers = lazy(() => import('./pages/blog/HowToChooseBetweenPublishingOffers'));
-const CanYouMakeALivingAsAuthorSA = lazy(() => import('./pages/blog/CanYouMakeALivingAsAuthorSA'));
-const WhatToLookForInPublishingContract = lazy(() => import('./pages/blog/WhatToLookForInPublishingContract'));
-const HowToProtectBookIdeaSA = lazy(() => import('./pages/blog/HowToProtectBookIdeaSA'));
-const DoAuthorsNeedInternationalDistribution = lazy(() => import('./pages/blog/DoAuthorsNeedInternationalDistribution'));
-const HowMuchToSpendOnCoverDesign = lazy(() => import('./pages/blog/HowMuchToSpendOnCoverDesign'));
-const BestPlatformsToSelfPublishSA = lazy(() => import('./pages/blog/BestPlatformsToSelfPublishSA'));
-const HowToBuildAuthorPlatform = lazy(() => import('./pages/blog/HowToBuildAuthorPlatform'));
-const TraditionalVsSelfPublishingRoyalties = lazy(() => import('./pages/blog/TraditionalVsSelfPublishingRoyalties'));
-const CanIPublishInOtherLanguagesSA = lazy(() => import('./pages/blog/CanIPublishInOtherLanguagesSA'));
-const HowToFindBetaReadersSA = lazy(() => import('./pages/blog/HowToFindBetaReadersSA'));
-const WhatTaxesDoAuthorsPaySA = lazy(() => import('./pages/blog/WhatTaxesDoAuthorsPaySA'));
-const HowToGetBookReviewedSA = lazy(() => import('./pages/blog/HowToGetBookReviewedSA'));
-const ShouldIHirePublishingCoachSA = lazy(() => import('./pages/blog/ShouldIHirePublishingCoachSA'));
-const CommonPublishingMistakesSA = lazy(() => import('./pages/blog/CommonPublishingMistakesSA'));
-const HowToLaunchYourBookSA = lazy(() => import('./pages/blog/HowToLaunchYourBookSA'));
-const CanIPublishMultipleGenresSA = lazy(() => import('./pages/blog/CanIPublishMultipleGenresSA'));
-const HowDebutAuthorsGetBetterDeals = lazy(() => import('./pages/blog/HowDebutAuthorsGetBetterDeals'));
-const RoleLiteraryAgentSA = lazy(() => import('./pages/blog/RoleLiteraryAgentSA'));
-const HowToStartPublishingCareerSA = lazy(() => import('./pages/blog/HowToStartPublishingCareerSA'));
+import PrintOnDemandSouthAfrica from './pages/blog/PrintOnDemandSouthAfrica';
+import SelfPublishingCompaniesSouthAfrica from './pages/seo/SelfPublishingCompaniesSouthAfrica';
+import BookCoverDesignPriceSouthAfrica from './pages/seo/BookCoverDesignPriceSouthAfrica';
+import ISBNNumberSouthAfrica from './pages/seo/ISBNNumberSouthAfrica';
+import BookDistributionSouthAfrica from './pages/seo/BookDistributionSouthAfrica';
+import CostToSelfPublishKindle from './pages/blog/CostToSelfPublishKindle';
+import ProfessionalCopyEditing from './pages/blog/ProfessionalCopyEditing';
+import WhatIsGhostwriting from './pages/blog/WhatIsGhostwriting';
+import WritingBookDedication from './pages/blog/WritingBookDedication';
+import WritingBookAcknowledgment from './pages/blog/WritingBookAcknowledgment';
+import HowToNameYourBook from './pages/blog/HowToNameYourBook';
+import HowToPrintSelfPublishedBook from './pages/blog/HowToPrintSelfPublishedBook';
+import ChildrensBookIllustrations from './pages/blog/ChildrensBookIllustrations';
+import EbookVsPrint from './pages/blog/EbookVsPrint';
+import HowLongSelfPublish from './pages/blog/HowLongSelfPublish';
+import CostToSelfPublishAmazon from './pages/blog/CostToSelfPublishAmazon';
+import BecomeAWriter from './pages/blog/BecomeAWriter';
+import ISBNRegistrationSA from './pages/blog/ISBNRegistrationSA';
+import HowToGetISBN from './pages/blog/HowToGetISBN';
+import BeginnersGuideSelfPublishing from './pages/blog/BeginnersGuideSelfPublishing';
+import SelfPublishChildrensBooks from './pages/blog/SelfPublishChildrensBooks';
+import WhatIsSelfPublishing from './pages/blog/WhatIsSelfPublishing';
+import CopyrightFAQsAuthors from './pages/blog/CopyrightFAQsAuthors';
+import QuestionsToAskPublisher from './pages/blog/QuestionsToAskPublisher';
+import HowDoIGetMyBookPublished from './pages/blog/HowDoIGetMyBookPublished';
+import DoSouthAfricanPublishersChargeAuthors from './pages/blog/DoSouthAfricanPublishersChargeAuthors';
+import HowMuchWillIEarnFromMyFirstBook from './pages/blog/HowMuchWillIEarnFromMyFirstBook';
+import WhatIsAFairBookDeal from './pages/blog/WhatIsAFairBookDeal';
+import DoINeedAnEditorBeforePublishing from './pages/blog/DoINeedAnEditorBeforePublishing';
+import HowToFindALiteraryAgentSA from './pages/blog/HowToFindALiteraryAgentSA';
+import HowToPublishChildrensBookSA from './pages/blog/HowToPublishChildrensBookSA';
+import CanIPublishAComicBookSA from './pages/blog/CanIPublishAComicBookSA';
+import HowToMarketSelfPublishedBookSA from './pages/blog/HowToMarketSelfPublishedBookSA';
+import HowDoPublishersFindAuthors from './pages/blog/HowDoPublishersFindAuthors';
+import WhatFreelanceProfessionalsDoINeed from './pages/blog/WhatFreelanceProfessionalsDoINeed';
+import IsSelling3000CopiesGood from './pages/blog/IsSelling3000CopiesGood';
+import HowDoIKnowIfMyBookIsReady from './pages/blog/HowDoIKnowIfMyBookIsReady';
+import WhatPublishingJobsAreAvailable from './pages/blog/WhatPublishingJobsAreAvailable';
+import HowLongToGetPublishedSA from './pages/blog/HowLongToGetPublishedSA';
+import DoPublishersProvideCoverDesign from './pages/blog/DoPublishersProvideCoverDesign';
+import WhatIs9010RuleAuthors from './pages/blog/WhatIs9010RuleAuthors';
+import HowToChooseBetweenPublishingOffers from './pages/blog/HowToChooseBetweenPublishingOffers';
+import CanYouMakeALivingAsAuthorSA from './pages/blog/CanYouMakeALivingAsAuthorSA';
+import WhatToLookForInPublishingContract from './pages/blog/WhatToLookForInPublishingContract';
+import HowToProtectBookIdeaSA from './pages/blog/HowToProtectBookIdeaSA';
+import DoAuthorsNeedInternationalDistribution from './pages/blog/DoAuthorsNeedInternationalDistribution';
+import HowMuchToSpendOnCoverDesign from './pages/blog/HowMuchToSpendOnCoverDesign';
+import BestPlatformsToSelfPublishSA from './pages/blog/BestPlatformsToSelfPublishSA';
+import HowToBuildAuthorPlatform from './pages/blog/HowToBuildAuthorPlatform';
+import TraditionalVsSelfPublishingRoyalties from './pages/blog/TraditionalVsSelfPublishingRoyalties';
+import CanIPublishInOtherLanguagesSA from './pages/blog/CanIPublishInOtherLanguagesSA';
+import HowToFindBetaReadersSA from './pages/blog/HowToFindBetaReadersSA';
+import WhatTaxesDoAuthorsPaySA from './pages/blog/WhatTaxesDoAuthorsPaySA';
+import HowToGetBookReviewedSA from './pages/blog/HowToGetBookReviewedSA';
+import ShouldIHirePublishingCoachSA from './pages/blog/ShouldIHirePublishingCoachSA';
+import CommonPublishingMistakesSA from './pages/blog/CommonPublishingMistakesSA';
+import HowToLaunchYourBookSA from './pages/blog/HowToLaunchYourBookSA';
+import CanIPublishMultipleGenresSA from './pages/blog/CanIPublishMultipleGenresSA';
+import HowDebutAuthorsGetBetterDeals from './pages/blog/HowDebutAuthorsGetBetterDeals';
+import RoleLiteraryAgentSA from './pages/blog/RoleLiteraryAgentSA';
+import HowToStartPublishingCareerSA from './pages/blog/HowToStartPublishingCareerSA';
 
 // Existing SEO pages
-const PublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/PublishingCompaniesSouthAfrica'));
-const BookPublishersSouthAfrica = lazy(() => import('./pages/seo/BookPublishersSouthAfrica'));
-const BookPublishersJohannesburg = lazy(() => import('./pages/seo/BookPublishersJohannesburg'));
-const BookPrintingJohannesburg = lazy(() => import('./pages/seo/BookPrintingJohannesburg'));
-const SelfPublishingSouthAfrica = lazy(() => import('./pages/seo/SelfPublishingSouthAfrica'));
-const BookCoverDesignSouthAfrica = lazy(() => import('./pages/seo/BookCoverDesignSouthAfrica'));
-const ProofreadingServicesSouthAfrica = lazy(() => import('./pages/seo/ProofreadingServicesSouthAfrica'));
-const GhostwritersSouthAfrica = lazy(() => import('./pages/seo/GhostwritersSouthAfrica'));
-const BestPublishingCompaniesSouthAfrica = lazy(() => import('./pages/seo/BestPublishingCompaniesSouthAfrica'));
+import PublishingCompaniesSouthAfrica from './pages/seo/PublishingCompaniesSouthAfrica';
+import BookPublishersSouthAfrica from './pages/seo/BookPublishersSouthAfrica';
+import BookPublishersJohannesburg from './pages/seo/BookPublishersJohannesburg';
+import BookPrintingJohannesburg from './pages/seo/BookPrintingJohannesburg';
+import SelfPublishingSouthAfrica from './pages/seo/SelfPublishingSouthAfrica';
+import BestPublishingCompaniesSouthAfrica from './pages/seo/BestPublishingCompaniesSouthAfrica';
 
 // Location pages
-const BookPrintingSandton = lazy(() => import('./pages/seo/location/BookPrintingSandton.jsx'));
-const BookEditingSandton = lazy(() => import('./pages/seo/location/BookEditingSandton.jsx'));
-const BookPrintingRandburg = lazy(() => import('./pages/seo/location/BookPrintingRandburg.jsx'));
-const BookPrintingMidrand = lazy(() => import('./pages/seo/location/BookPrintingMidrand.jsx'));
-const BookPrintingPretoria = lazy(() => import('./pages/seo/location/BookPrintingPretoria.jsx'));
-const BookPrintingCenturion = lazy(() => import('./pages/seo/location/BookPrintingCenturion.jsx'));
-const BookPrintingRoodepoort = lazy(() => import('./pages/seo/location/BookPrintingRoodepoort.jsx'));
-const BookCoverDesignSandton = lazy(() => import('./pages/seo/location/BookCoverDesignSandton'));
-const BookCoverDesignRandburg = lazy(() => import('./pages/seo/location/BookCoverDesignRandburg'));
-const BookCoverDesignMidrand = lazy(() => import('./pages/seo/location/BookCoverDesignMidrand'));
-const BookCoverDesignPretoria = lazy(() => import('./pages/seo/location/BookCoverDesignPretoria'));
-const BookCoverDesignCenturion = lazy(() => import('./pages/seo/location/BookCoverDesignCenturion'));
-const BookCoverDesignRoodepoort = lazy(() => import('./pages/seo/location/BookCoverDesignRoodepoort'));
-const BookCoverDesignCapeTown = lazy(() => import('./pages/seo/location/BookCoverDesignCapeTown'));
-const BookCoverDesignDurban = lazy(() => import('./pages/seo/location/BookCoverDesignDurban'));
-const LocationsHub = lazy(() => import('./pages/seo/LocationsHub'));
+import BookPrintingSandton from './pages/seo/location/BookPrintingSandton.jsx';
+import BookEditingSandton from './pages/seo/location/BookEditingSandton.jsx';
+import BookPrintingRandburg from './pages/seo/location/BookPrintingRandburg.jsx';
+import BookPrintingMidrand from './pages/seo/location/BookPrintingMidrand.jsx';
+import BookPrintingPretoria from './pages/seo/location/BookPrintingPretoria.jsx';
+import BookPrintingCenturion from './pages/seo/location/BookPrintingCenturion.jsx';
+import BookPrintingRoodepoort from './pages/seo/location/BookPrintingRoodepoort.jsx';
+import BookCoverDesignSandton from './pages/seo/location/BookCoverDesignSandton';
+import BookCoverDesignRandburg from './pages/seo/location/BookCoverDesignRandburg';
+import BookCoverDesignMidrand from './pages/seo/location/BookCoverDesignMidrand';
+import BookCoverDesignPretoria from './pages/seo/location/BookCoverDesignPretoria';
+import BookCoverDesignCenturion from './pages/seo/location/BookCoverDesignCenturion';
+import BookCoverDesignRoodepoort from './pages/seo/location/BookCoverDesignRoodepoort';
+import BookCoverDesignCapeTown from './pages/seo/location/BookCoverDesignCapeTown';
+import BookCoverDesignDurban from './pages/seo/location/BookCoverDesignDurban';
+import LocationsHub from './pages/seo/LocationsHub';
 
 // Industry pages
-const PoetryBookPrinting = lazy(() => import('./pages/seo/industry/PoetryBookPrinting.jsx'));
-const MemoirBookPrinting = lazy(() => import('./pages/seo/industry/MemoirBookPrinting.jsx'));
-const ChristianBookPrinting = lazy(() => import('./pages/seo/industry/ChristianBookPrinting.jsx'));
-const BusinessBookPrinting = lazy(() => import('./pages/seo/industry/BusinessBookPrinting.jsx'));
-const TrainingManualPrinting = lazy(() => import('./pages/seo/industry/TrainingManualPrinting.jsx'));
-const SchoolBookPrinting = lazy(() => import('./pages/seo/industry/SchoolBookPrinting.jsx'));
-const NovelPrinting = lazy(() => import('./pages/seo/industry/NovelPrinting.jsx'));
-const EducationalBookPrinting = lazy(() => import('./pages/seo/industry/EducationalBookPrinting.jsx'));
+import PoetryBookPrinting from './pages/seo/industry/PoetryBookPrinting.jsx';
+import MemoirBookPrinting from './pages/seo/industry/MemoirBookPrinting.jsx';
+import ChristianBookPrinting from './pages/seo/industry/ChristianBookPrinting.jsx';
+import BusinessBookPrinting from './pages/seo/industry/BusinessBookPrinting.jsx';
+import TrainingManualPrinting from './pages/seo/industry/TrainingManualPrinting.jsx';
+import SchoolBookPrinting from './pages/seo/industry/SchoolBookPrinting.jsx';
+import NovelPrinting from './pages/seo/industry/NovelPrinting.jsx';
+import EducationalBookPrinting from './pages/seo/industry/EducationalBookPrinting.jsx';
 
 // Long-tail pages
-const HowToPrintABook = lazy(() => import('./pages/seo/longtail/HowToPrintABook.jsx'));
-const HowMuchDoesBookPrintingCost = lazy(() => import('./pages/seo/longtail/HowMuchDoesBookPrintingCost.jsx'));
-const BestBookSizeForSelfPublishing = lazy(() => import('./pages/seo/longtail/BestBookSizeForSelfPublishing.jsx'));
-const A5vs6x9BookPrinting = lazy(() => import('./pages/seo/longtail/A5vs6x9BookPrinting.jsx'));
-const HardcoverVsPaperback = lazy(() => import('./pages/seo/longtail/HardcoverVsPaperback.jsx'));
-const HowToSelfPublishABook = lazy(() => import('./pages/seo/longtail/HowToSelfPublishABook.jsx'));
+import HowToPrintABook from './pages/seo/longtail/HowToPrintABook.jsx';
+import HowMuchDoesBookPrintingCost from './pages/seo/longtail/HowMuchDoesBookPrintingCost.jsx';
+import BestBookSizeForSelfPublishing from './pages/seo/longtail/BestBookSizeForSelfPublishing.jsx';
+import A5vs6x9BookPrinting from './pages/seo/longtail/A5vs6x9BookPrinting.jsx';
+import HardcoverVsPaperback from './pages/seo/longtail/HardcoverVsPaperback.jsx';
+import HowToSelfPublishABook from './pages/seo/longtail/HowToSelfPublishABook.jsx';
 
 // Tools & calculators
-const BookPrintingCalculator = lazy(() => import('./pages/tools/BookPrintingCalculator.jsx'));
-const PublishingRoadmap = lazy(() => import('./pages/tools/PublishingRoadmap.jsx'));
-const UniversalCalculator = lazy(() => import('./pages/tools/UniversalCalculator.jsx'));
-const NewCalculator = lazy(() => import('./pages/calculator/index.jsx'));
+import BookPrintingCalculator from './pages/tools/BookPrintingCalculator.jsx';
+import PublishingRoadmap from './pages/tools/PublishingRoadmap.jsx';
+import UniversalCalculator from './pages/tools/UniversalCalculator.jsx';
+import NewCalculator from './pages/calculator/index.jsx';
 
 // Admin pages
-const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
-const AdminInbox = lazy(() => import('./pages/admin/AdminInbox'));
-const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
-const AdminContacts = lazy(() => import('./pages/admin/AdminContacts'));
-const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
-const AdminServices = lazy(() => import('./pages/admin/AdminServices'));
-const SearchConsoleDashboard = lazy(() => import('./pages/admin/SearchConsoleDashboard'));
-const SeoAnalytics = lazy(() => import('./pages/admin/SeoAnalytics'));
-const AdminPipeline = lazy(() => import('./pages/admin/AdminPipeline'));
-const AdminQuotes = lazy(() => import('./pages/admin/AdminQuotes'));
-const AdminQuoteBuilder = lazy(() => import('./pages/admin/AdminQuoteBuilder.jsx'));
-const AdminEmailTemplates = lazy(() => import('./pages/admin/AdminEmailTemplates'));
-const AdminEmailSettingsPage = lazy(() => import('./pages/admin/AdminEmailSettings'));
-const AdminMessageCentre = lazy(() => import('./pages/admin/AdminMessageCentre'));
-const AdminAutomationCentre = lazy(() => import('./pages/admin/AdminAutomationCentre'));
-const AdminContactDetail = lazy(() => import('./pages/admin/AdminContactDetail'));
-const AdminSignatures = lazy(() => import('./pages/admin/AdminSignatures'));
-const AdminSigningWorkflow = lazy(() => import('./pages/admin/AdminSigningWorkflow'));
-const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
-const AdminInvoices = lazy(() => import('./pages/admin/AdminInvoices'));
-const AdminPayments = lazy(() => import('./pages/admin/AdminPayments'));
-const AdminTasks = lazy(() => import('./pages/admin/AdminTasks'));
-const AdminDocuments = lazy(() => import('./pages/admin/AdminDocuments'));
-const AdminContracts = lazy(() => import('./pages/admin/AdminContracts'));
-const AdminCalendar = lazy(() => import('./pages/admin/AdminCalendar'));
-const AdminReports = lazy(() => import('./pages/admin/AdminReports'));
-const AdminClientPortal = lazy(() => import('./pages/admin/AdminClientPortal'));
-const AdminClientServiceUpdates = lazy(() => import('./pages/admin/AdminClientServiceUpdates'));
-const ClientPortal = lazy(() => import('./pages/ClientPortal'));
-const AdminAutomations = lazy(() => import('./pages/admin/AdminAutomations'));
-const QuoteView = lazy(() => import('./pages/QuoteView'));
-const DocumentView = lazy(() => import('./pages/DocumentView'));
-const AdminDocumentDashboard = lazy(() => import('./pages/admin/AdminDocumentDashboard'));
-const ProductionBoard = lazy(() => import('./pages/admin/ProductionBoard'));
-const RevenueForecast = lazy(() => import('./pages/admin/RevenueForecast'));
-const WalkInCheckin = lazy(() => import('./pages/WalkInCheckin'));
-const AdminBookLibrary = lazy(() => import('./pages/admin/AdminBookLibrary'));
-const AdminBookingSettings = lazy(() => import('./pages/admin/AdminBookingSettings'));
-const AdminAppointments = lazy(() => import('./pages/admin/AdminAppointments'));
-const BookAppointment = lazy(() => import('./pages/BookAppointment'));
-const AppointmentCancel = lazy(() => import('./pages/AppointmentCancel'));
-const AdminAuthors = lazy(() => import('./pages/admin/AdminAuthors'));
-const AdminCollections = lazy(() => import('./pages/admin/AdminCollections'));
-const ContractSign = lazy(() => import('./pages/ContractSign'));
-const AdminPipelineBuilder = lazy(() => import('./pages/admin/AdminPipelineBuilder'));
-const AdminClauseLibrary = lazy(() => import('./pages/admin/AdminClauseLibrary'));
-const AdminDocumentBuilder = lazy(() => import('./pages/admin/AdminDocumentBuilder'));
-const AdminFinance = lazy(() => import('./pages/admin/AdminFinance'));
-const AdminCommunication = lazy(() => import('./pages/admin/AdminCommunication'));
-const AdminESignatures = lazy(() => import('./pages/admin/AdminESignatures'));
-const EmailPreview = lazy(() => import('./pages/admin/EmailPreview'));
-const AdminContractPrepare = lazy(() => import('./pages/admin/AdminContractPrepare'));
-const AdminContractPrepareContract = lazy(() => import('./pages/admin/AdminContractPrepareContract'));
-const AnalyticsDashboard = lazy(() => import('./pages/admin/AnalyticsDashboard'));
-const ESignatureSigning = lazy(() => import('./pages/ESignatureSigning'));
-const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminInbox from './pages/admin/AdminInbox';
+import AdminLeads from './pages/admin/AdminLeads';
+import AdminContacts from './pages/admin/AdminContacts';
+import AdminSettings from './pages/admin/AdminSettings';
+import UserManagement from './components/admin/settings/UserManagement';
+import AdminCompanySettings from './pages/admin/AdminCompanySettings';
+import AdminServices from './pages/admin/AdminServices';
+import AdminResourceDocuments from './pages/admin/AdminResourceDocuments';
+import SearchConsoleDashboard from './pages/admin/SearchConsoleDashboard';
+import SeoAnalytics from './pages/admin/SeoAnalytics';
+import AdminPipeline from './pages/admin/AdminPipeline';
+import AdminQuotes from './pages/admin/AdminQuotes';
+import AdminQuoteBuilder from './pages/admin/AdminQuoteBuilder.jsx';
+import AdminEmailTemplates from './pages/admin/AdminEmailTemplates';
+import AdminEmailSettingsPage from './pages/admin/AdminEmailSettings';
+import AdminMessageCentre from './pages/admin/AdminMessageCentre';
+import AdminAutomationCentre from './pages/admin/AdminAutomationCentre';
+import AdminContactDetail from './pages/admin/AdminContactDetail';
+import AdminSignatures from './pages/admin/AdminSignatures';
+import AdminSigningWorkflow from './pages/admin/AdminSigningWorkflow';
+import AdminProjects from './pages/admin/AdminProjects';
+import AdminInvoices from './pages/admin/AdminInvoices';
+import AdminInvoiceBuilder from './pages/admin/AdminInvoiceBuilder';
+import AdminPayments from './pages/admin/AdminPayments';
+import AdminTasks from './pages/admin/AdminTasks';
+import AdminDocuments from './pages/admin/AdminDocuments';
+import AdminContracts from './pages/admin/AdminContracts';
+import AdminCalendar from './pages/admin/AdminCalendar';
+import AdminReports from './pages/admin/AdminReports';
+import AdminClientPortal from './pages/admin/AdminClientPortal';
+import AdminClientServiceUpdates from './pages/admin/AdminClientServiceUpdates';
+import ClientPortal from './pages/ClientPortal';
+import AdminAutomations from './pages/admin/AdminAutomations';
+import QuoteView from './pages/QuoteView';
+import InvoiceView from './pages/InvoiceView';
+import DocumentView from './pages/DocumentView';
+import AdminDocumentDashboard from './pages/admin/AdminDocumentDashboard';
+import ProductionBoard from './pages/admin/ProductionBoard';
+import RevenueForecast from './pages/admin/RevenueForecast';
+import WalkInCheckin from './pages/WalkInCheckin';
+import AdminBookLibrary from './pages/admin/AdminBookLibrary';
+import AdminBookingSettings from './pages/admin/AdminBookingSettings';
+import AdminAppointments from './pages/admin/AdminAppointments';
+import BookAppointment from './pages/BookAppointment';
+import AppointmentCancel from './pages/AppointmentCancel';
+import AdminAuthors from './pages/admin/AdminAuthors';
+import AdminCollections from './pages/admin/AdminCollections';
+import ContractSign from './pages/ContractSign';
+import AdminPipelineBuilder from './pages/admin/AdminPipelineBuilder';
+import AdminClauseLibrary from './pages/admin/AdminClauseLibrary';
+import AdminDocumentBuilder from './pages/admin/AdminDocumentBuilder';
+import AdminFinance from './pages/admin/AdminFinance';
+import AdminCommunication from './pages/admin/AdminCommunication';
+import AdminChat from './pages/admin/AdminChat';
+import AdminESignatures from './pages/admin/AdminESignatures';
+import EmailPreview from './pages/admin/EmailPreview';
+import AdminContractPrepare from './pages/admin/AdminContractPrepare';
+import AdminContractPrepareContract from './pages/admin/AdminContractPrepareContract';
+import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
+import ESignatureSigning from './pages/ESignatureSigning';
+import Unsubscribe from './pages/Unsubscribe';
+import MyPortal from './pages/MyPortal';
+import AdminExportData from './pages/admin/AdminExportData';
+import AdminZohoBooks from './pages/admin/AdminZohoBooks';
+import AdminProduction from './pages/admin/AdminProduction';
+import AdminWorkflows from './pages/admin/AdminWorkflows';
+import AdminMarketing from './pages/admin/AdminMarketing';
+import AdminBusinessIntelligence from './pages/admin/AdminBusinessIntelligence';
+import AdminOnboarding from './pages/admin/AdminOnboarding';
+import AdminNotifications from './pages/admin/AdminNotifications';
+import AdminBulkEmail from './pages/admin/AdminBulkEmail';
+import AdminWhatsAppLog from './pages/admin/AdminWhatsAppLog';
+import AdminFollowUps from './pages/admin/AdminFollowUps';
+import AdminLeadScoring from './pages/admin/AdminLeadScoring';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const ready = !isLoadingPublicSettings && !isLoadingAuth;
 
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-obsidian">
-        <div className="w-8 h-8 border-4 border-white/10 border-t-copper rounded-full animate-spin"></div>
-      </div>
-    );
+  if (!ready) {
+    return null;
   }
 
   if (authError) {
@@ -259,12 +283,8 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <Suspense fallback={
-      <div className="fixed inset-0 flex items-center justify-center bg-obsidian">
-        <div className="w-8 h-8 border-4 border-white/10 border-t-copper rounded-full animate-spin" />
-      </div>
-    }>
     <Routes>
+      <Route path="/admin/reset-password" element={<ResetPassword />} />
       <Route element={<MainLayout />}>
         {/* Core */}
         <Route path="/" element={<Home />} />
@@ -274,20 +294,22 @@ const AuthenticatedApp = () => {
         <Route path="/faq" element={<FAQ />} />
 
         {/* Publishing Silo */}
-        <Route path="/bookpublishing" element={<BookPublishing />} />
-        <Route path="/selfpublishing" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/book-publishing" element={<BookPublishing />} />
+        <Route path="/bookpublishing" element={<Navigate to="/book-publishing" replace />} />
+        <Route path="/selfpublishing" element={<Navigate to="/self-publishing-south-africa" replace />} />
         <Route path="/publishingpackages" element={<Navigate to="/publishingpackages/a5" replace />} />
         <Route path="/publishingpackages/mini" element={<MiniPackages />} />
         <Route path="/publishingpackages/a5" element={<FullPackagesA5 />} />
         <Route path="/publishingpackages/6x9" element={<FullPackages6x9 />} />
         <Route path="/premiumpublishingpackage" element={<Navigate to="/publishingpackages/a5" replace />} />
-        <Route path="/christianbookpublishing" element={<Navigate to="/bookpublishing" replace />} />
+        <Route path="/christianbookpublishing" element={<Navigate to="/book-publishing" replace />} />
         <Route path="/childrensbookpublishing" element={<Navigate to="/childrensbookpackages" replace />} />
         <Route path="/memoirpublishing" element={<Navigate to="/memoirwriting" replace />} />
-        <Route path="/poetrypublishing" element={<Navigate to="/bookpublishing" replace />} />
-        <Route path="/businessbookpublishing" element={<Navigate to="/bookpublishing" replace />} />
+        <Route path="/poetrypublishing" element={<Navigate to="/book-publishing" replace />} />
+        <Route path="/businessbookpublishing" element={<Navigate to="/book-publishing" replace />} />
 
-        <Route path="/selfpublishingpackagesinsouthafrica" element={<SelfPublishingPackages />} />
+        <Route path="/self-publishing-packages-in-south-africa" element={<SelfPublishingPackages />} />
+        <Route path="/selfpublishingpackagesinsouthafrica" element={<Navigate to="/self-publishing-packages-in-south-africa" replace />} />
 
         {/* Printing Sub-Pages (full content) */}
         <Route path="/printing/a5" element={<PrintingA5 />} />
@@ -302,42 +324,48 @@ const AuthenticatedApp = () => {
         <Route path="/printing/childrensbooks/ChildrensBooks21x21" element={<ChildrensBooks21x21 />} />
 
         {/* Printing Silo (GenericServicePage) */}
-        <Route path="/bookprinting" element={<BookPrinting />} />
+        <Route path="/book-printing" element={<BookPrinting />} />
         <Route path="/a5bookprinting" element={<Navigate to="/printing/a5" replace />} />
         <Route path="/6x9bookprinting" element={<Navigate to="/printing/6x9" replace />} />
         <Route path="/hardcoverprinting" element={<Navigate to="/printing/hardcover" replace />} />
-        <Route path="/softcoverprinting" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/creampaperprinting" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/whitepaperprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/softcoverprinting" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/creampaperprinting" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/whitepaperprinting" element={<Navigate to="/book-printing" replace />} />
         <Route path="/childrensbookprinting" element={<Navigate to="/printing/childrensbooks" replace />} />
-        <Route path="/comicbookprinting" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/workbookprinting" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/manualprinting" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/comicbookprinting" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/workbookprinting" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/manualprinting" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprinting" element={<Navigate to="/book-printing" replace />} />
 
         {/* Editing Silo */}
-        <Route path="/bookediting" element={<BookEditing />} />
+        <Route path="/book-editing" element={<BookEditing />} />
+        <Route path="/ai-generated-book-editing" element={<AIGeneratedBookEditing />} />
         <Route path="/proofreading" element={<Proofreading />} />
-        <Route path="/copyediting" element={<Navigate to="/bookediting" replace />} />
-        <Route path="/manuscriptevaluation" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/copyediting" element={<Navigate to="/book-editing" replace />} />
+        <Route path="/manuscriptevaluation" element={<Navigate to="/book-editing" replace />} />
         <Route path="/academicediting" element={<AcademicEditing />} />
         <Route path="/thesisediting" element={<ThesisEditing />} />
         <Route path="/dissertationediting" element={<DissertationEditing />} />
-        <Route path="/technicalediting" element={<Navigate to="/bookediting" replace />} />
-        <Route path="/languageediting" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/technicalediting" element={<Navigate to="/book-editing" replace />} />
+        <Route path="/languageediting" element={<Navigate to="/book-editing" replace />} />
+        <Route path="/bookediting" element={<Navigate to="/book-editing" replace />} />
 
         {/* Design Silo */}
-        <Route path="/bookcoverdesign" element={<BookCoverDesign />} />
+        <Route path="/book-cover-design" element={<BookCoverDesign />} />
         <Route path="/annualreportdesignsandton" element={<AnnualReportDesign />} />
         <Route path="/typesetting" element={<BookTypesetting />} />
         <Route path="/booklayoutdesign" element={<BookTypesetting />} />
-        <Route path="/authorwebsites" element={<AuthorWebsites />} />
+        <Route path="/author-websites" element={<AuthorWebsites />} />
+        <Route path="/authorwebsites" element={<Navigate to="/author-websites" replace />} />
 
         {/* Digital Silo */}
+        <Route path="/bookcoverdesign" element={<Navigate to="/book-cover-design" replace />} />
+        <Route path="/ebookpublishing" element={<Navigate to="/ebook-publishing" replace />} />
         <Route path="/ebookformatting" element={<EbookPublishing />} />
-        <Route path="/ebookpublishing" element={<EbookPublishing />} />
-        <Route path="/amazonkdp" element={<Navigate to="/ebookpublishing" replace />} />
-        <Route path="/kindlepublishing" element={<Navigate to="/ebookpublishing" replace />} />
-        <Route path="/ebook-packages" element={<Navigate to="/ebookpublishing" replace />} />
+        <Route path="/ebook-publishing" element={<EbookPublishing />} />
+        <Route path="/amazonkdp" element={<Navigate to="/ebook-publishing" replace />} />
+        <Route path="/kindlepublishing" element={<Navigate to="/ebook-publishing" replace />} />
+        <Route path="/ebook-packages" element={<Navigate to="/ebook-publishing" replace />} />
 
         {/* Writing Silo */}
         <Route path="/ghostwriting" element={<Ghostwriting />} />
@@ -348,15 +376,21 @@ const AuthenticatedApp = () => {
 
         {/* Existing SEO Landing Pages */}
         <Route path="/publishingcompaniesinsouthafrica" element={<PublishingCompaniesSouthAfrica />} />
-        <Route path="/publishingcompaniessouthafrica" element={<PublishingCompaniesSouthAfrica />} />
-        <Route path="/bookpublisherssouthafrica" element={<BookPublishersSouthAfrica />} />
-        <Route path="/bookpublishersjohannesburg" element={<BookPublishersJohannesburg />} />
-        <Route path="/bookprintingjohannesburg" element={<BookPrintingJohannesburg />} />
-        <Route path="/selfpublishingsouthafrica" element={<SelfPublishingSouthAfrica />} />
-        <Route path="/bookcoverdesignsouthafrica" element={<BookCoverDesignSouthAfrica />} />
-        <Route path="/proofreadingservicessouthafrica" element={<ProofreadingServicesSouthAfrica />} />
-        <Route path="/ghostwriterssouthafrica" element={<GhostwritersSouthAfrica />} />
-        <Route path="/bestpublishingcompaniesinsouthafrica" element={<BestPublishingCompaniesSouthAfrica />} />
+        <Route path="/publishing-companies-south-africa" element={<PublishingCompaniesSouthAfrica />} />
+        <Route path="/publishingcompaniessouthafrica" element={<Navigate to="/publishing-companies-south-africa" replace />} />
+        <Route path="/book-publishers-south-africa" element={<BookPublishersSouthAfrica />} />
+        <Route path="/book-publishers-johannesburg" element={<BookPublishersJohannesburg />} />
+        <Route path="/bookpublishersjohannesburg" element={<Navigate to="/book-publishers-johannesburg" replace />} />
+        <Route path="/book-printing-johannesburg" element={<BookPrintingJohannesburg />} />
+        <Route path="/self-publishing-south-africa" element={<SelfPublishingSouthAfrica />} />
+        <Route path="/bookcoverdesignsouthafrica" element={<Navigate to="/book-cover-design" replace />} />
+        <Route path="/bookpublisherssouthafrica" element={<Navigate to="/book-publishers-south-africa" replace />} />
+        <Route path="/selfpublishingsouthafrica" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/bookprintingjohannesburg" element={<Navigate to="/book-printing-johannesburg" replace />} />
+        <Route path="/proofreadingservicessouthafrica" element={<Navigate to="/proofreading" replace />} />
+        <Route path="/ghostwriterssouthafrica" element={<Navigate to="/ghostwriting" replace />} />
+        <Route path="/best-publishing-companies-in-south-africa" element={<BestPublishingCompaniesSouthAfrica />} />
+        <Route path="/bestpublishingcompaniesinsouthafrica" element={<Navigate to="/best-publishing-companies-in-south-africa" replace />} />
 
         {/* Locations Hub */}
         <Route path="/locations" element={<LocationsHub />} />
@@ -381,67 +415,67 @@ const AuthenticatedApp = () => {
         <Route path="/bookcoverdesigndurban" element={<BookCoverDesignDurban />} />
 
         {/* National City Printing Pages — redirect to main printing page */}
-        <Route path="/bookprintingcapetown" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingdurban" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingbloemfontein" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingpolokwane" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingnelspruit" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingportelizabeth" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingeastlondon" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingkimberley" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingpietermaritzburg" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingrustenburg" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingboksburg" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingbenoni" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintinggermiston" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingkemptonpark" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingfourways" element={<Navigate to="/bookprinting" replace />} />
-        <Route path="/bookprintingbryanston" element={<Navigate to="/bookprinting" replace />} />
+        <Route path="/bookprintingcapetown" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingdurban" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingbloemfontein" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingpolokwane" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingnelspruit" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingportelizabeth" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingeastlondon" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingkimberley" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingpietermaritzburg" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingrustenburg" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingboksburg" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingbenoni" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintinggermiston" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingkemptonpark" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingfourways" element={<Navigate to="/book-printing" replace />} />
+        <Route path="/bookprintingbryanston" element={<Navigate to="/book-printing" replace />} />
 
         {/* Self Publishing City Pages — all redirect to canonical */}
-        <Route path="/selfpublishingjohannesburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingsandton" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingmidrand" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingrandburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingroodepoort" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingcenturion" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingpretoria" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingboksburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingbenoni" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingkemptonpark" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishinggermiston" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingfourways" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingbryanston" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingsoweto" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingalberton" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingcapetown" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingstellenbosch" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingpaarl" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishinggeorge" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingsomersetwest" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingbellville" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingdurban" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingumhlanga" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingpietermaritzburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingnewcastle" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingrichardsbay" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingportelizabeth" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingeastlondon" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishinggrahamstown" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishinguitenhage" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingbloemfontein" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingwelkom" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingpolokwane" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingtzaneen" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingthohoyandou" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingnelspruit" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingwitbank" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingmiddelburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingrustenburg" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingklerksdorp" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingpotchefstroom" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingkimberley" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/selfpublishingupington" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
+        <Route path="/selfpublishingjohannesburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingsandton" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingmidrand" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingrandburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingroodepoort" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingcenturion" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingpretoria" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingboksburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingbenoni" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingkemptonpark" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishinggermiston" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingfourways" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingbryanston" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingsoweto" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingalberton" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingcapetown" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingstellenbosch" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingpaarl" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishinggeorge" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingsomersetwest" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingbellville" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingdurban" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingumhlanga" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingpietermaritzburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingnewcastle" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingrichardsbay" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingportelizabeth" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingeastlondon" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishinggrahamstown" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishinguitenhage" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingbloemfontein" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingwelkom" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingpolokwane" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingtzaneen" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingthohoyandou" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingnelspruit" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingwitbank" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingmiddelburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingrustenburg" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingklerksdorp" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingpotchefstroom" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingkimberley" element={<Navigate to="/self-publishing-south-africa" replace />} />
+        <Route path="/selfpublishingupington" element={<Navigate to="/self-publishing-south-africa" replace />} />
 
         {/* Location SEO (legacy - keep for backward compat) */}
         <Route path="/editingservicesjohannesburg" element={<LocationPage locationKey="editingservicesjohannesburg" />} />
@@ -466,7 +500,6 @@ const AuthenticatedApp = () => {
         <Route path="/howtoselfpublishabook" element={<HowToSelfPublishABook />} />
 
         {/* Interactive Tools */}
-        <Route path="/calculator" element={<NewCalculator />} />
         <Route path="/bookprintingcalculator" element={<NewCalculator />} />
         <Route path="/tools/BookPrintingCalculator" element={<NewCalculator />} />
         <Route path="/tools/UniversalCalculator" element={<NewCalculator />} />
@@ -483,9 +516,23 @@ const AuthenticatedApp = () => {
         <Route path="/book" element={<BookAppointment />} />
         <Route path="/appointment/cancel/:token" element={<AppointmentCancel />} />
         <Route path="/nda" element={<NDA />} />
-        <Route path="/covercalculator" element={<CoverSizeCalculator />} />
+        <Route path="/covercalculator" element={<CoverCalculator />} />
+        <Route path="/covertemplatecalculator" element={<CoverCalculator />} />
         <Route path="/resources/CoverSizeCalculator" element={<CoverSizeCalculator />} />
+        <Route path="/resources/documents" element={<Documents />} />
+        <Route path="/resources/Documents" element={<Navigate to="/resources/documents" replace />} />
+        <Route path="/calculator" element={<Navigate to="/resources/CoverSizeCalculator" replace />} />
+        <Route path="/barcode-generator" element={<BarcodeGenerator />} />
         <Route path="/portfolio" element={<Portfolio />} />
+
+        {/* Legal & Compliance */}
+        <Route path="/legal" element={<LegalIndex />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/refunds-and-returns" element={<RefundsAndReturns />} />
+        <Route path="/paia-manual" element={<PaiaManual />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
 
         {/* Blog */}
         <Route path="/blog" element={<Blog />} />
@@ -497,7 +544,7 @@ const AuthenticatedApp = () => {
 
         {/* Blog Articles */}
         <Route path="/howmuchdoesitcosttopublishabook" element={<BlogArticle />} />
-        <Route path="/howtogetanisbn" element={<BlogArticle />} />
+
         <Route path="/howtowriteabook" element={<BlogArticle />} />
         <Route path="/bookprintingcosts" element={<BlogArticle />} />
         <Route path="/bestpublishingcompanyinsouthafrica" element={<BlogArticle />} />
@@ -521,7 +568,9 @@ const AuthenticatedApp = () => {
         <Route path="/howmuchdoesitcosttoselfpublishonamazon" element={<CostToSelfPublishAmazon />} />
         <Route path="/howtobecomeawriterinsouthafrica" element={<BecomeAWriter />} />
         <Route path="/isbnregistrationsouthafrica" element={<ISBNRegistrationSA />} />
-        <Route path="/howtogetanisbnforyourbook" element={<HowToGetISBN />} />
+        <Route path="/how-to-get-an-isbn-for-your-book" element={<HowToGetISBN />} />
+        <Route path="/howtogetanisbnforyourbook" element={<Navigate to="/how-to-get-an-isbn-for-your-book" replace />} />
+        <Route path="/howtogetanisbn" element={<Navigate to="/how-to-get-an-isbn-for-your-book" replace />} />
         <Route path="/abeginnersguide" element={<BeginnersGuideSelfPublishing />} />
         <Route path="/howtoselfpublishchildrensbooks" element={<SelfPublishChildrensBooks />} />
         <Route path="/whatisselfpublishing" element={<WhatIsSelfPublishing />} />
@@ -589,40 +638,44 @@ const AuthenticatedApp = () => {
         <Route path="/6x9-book-size-printing-johannesburg" element={<Navigate to="/printing/6x9" replace />} />
         <Route path="/a5-book-size-johannesburg" element={<Navigate to="/printing/a5" replace />} />
         <Route path="/childrens-books" element={<Navigate to="/printing/childrensbooks" replace />} />
-        <Route path="/ebook-cover-design" element={<Navigate to="/ebookpublishing" replace />} />
-        <Route path="/book-printing-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
-        <Route path="/book-printing-in-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
-        <Route path="/book-publishing-south-africa" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
-        <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/book-cover-design-south-africa" element={<Navigate to="/bookcoverdesignsouthafrica" replace />} />
-        <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
+        <Route path="/ebook-cover-design" element={<Navigate to="/ebook-publishing" replace />} />
+        <Route path="/book-printing-in-johannesburg" element={<Navigate to="/book-printing-johannesburg" replace />} />
+        <Route path="/book-publishing-south-africa" element={<Navigate to="/book-publishers-south-africa" replace />} />
+        <Route path="/book-cover-design-south-africa" element={<Navigate to="/book-cover-design" replace />} />
+        <Route path="/book-editing-south-africa" element={<Navigate to="/book-editing" replace />} />
         <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
         <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
         {/* Legacy WordPress-style URL redirects */}
         <Route path="/product/reflections-of-a-convoluted-mind-dr-samke-j-ngcobo" element={<Navigate to="/portfolio" replace />} />
-        <Route path="/website-design" element={<Navigate to="/authorwebsites" replace />} />
-        <Route path="/website-design-sandton" element={<Navigate to="/authorwebsites" replace />} />
+        <Route path="/website-design" element={<Navigate to="/author-websites" replace />} />
+        <Route path="/website-design-sandton" element={<Navigate to="/author-websites" replace />} />
         <Route path="/product/typesetting" element={<Navigate to="/typesetting" replace />} />
         <Route path="/get-quote" element={<Navigate to="/getquote" replace />} />
         <Route path="/self-publishing-quote" element={<Navigate to="/getquote" replace />} />
-        <Route path="/self-publishing-south-africa" element={<Navigate to="/selfpublishingsouthafrica" replace />} />
-        <Route path="/book-cover-design-south-africa" element={<Navigate to="/bookcoverdesignsouthafrica" replace />} />
-        <Route path="/book-editing-south-africa" element={<Navigate to="/bookediting" replace />} />
-        <Route path="/ghost-writing-south-africa" element={<Navigate to="/ghostwriting" replace />} />
-        <Route path="/ghostwriting-south-africa" element={<Navigate to="/ghostwriting" replace />} />
-        <Route path="/isbn-registration-south-africa" element={<Navigate to="/isbn" replace />} />
-        {/* Legacy URLs with trailing slashes */}
-        <Route path="/book-printing-in-johannesburg" element={<Navigate to="/bookprintingjohannesburg" replace />} />
-        <Route path="/book-printing-in-johannesburg/" element={<Navigate to="/bookprintingjohannesburg" replace />} />
+        <Route path="/request-a-self-publishing-quote" element={<Navigate to="/getquote" replace />} />
+        <Route path="/contact-us" element={<Navigate to="/contact" replace />} />
+        <Route path="/about-us" element={<Navigate to="/aboutus" replace />} />
+        <Route path="/self-publishing-packages-south-africa" element={<Navigate to="/self-publishing-packages-in-south-africa" replace />} />
+        <Route path="/self-publishing-packages" element={<Navigate to="/publishingpackages/a5" replace />} />
+        <Route path="/publishers-of-johannesburg" element={<Navigate to="/book-publishers-johannesburg" replace />} />
+        <Route path="/publishing-companies-in-south-africa" element={<Navigate to="/publishing-companies-south-africa" replace />} />
+        <Route path="/proofreading-services" element={<Navigate to="/proofreading" replace />} />
+        <Route path="/book-typesetting" element={<Navigate to="/typesetting" replace />} />
+        <Route path="/shop" element={<Navigate to="/portfolio" replace />} />
+        <Route path="/my-account" element={<Navigate to="/" replace />} />
+        <Route path="/cart" element={<Navigate to="/" replace />} />
+        <Route path="/checkout" element={<Navigate to="/getquote" replace />} />
+        <Route path="/product-category/books" element={<Navigate to="/portfolio" replace />} />
+        <Route path="/ghost-writing" element={<Navigate to="/ghostwriting" replace />} />
 
         {/* 301 Redirects for deleted "New" SEO pages */}
-        <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/bookpublisherssouthafrica" replace />} />
+        <Route path="/bookpublishersinsouthafrica" element={<Navigate to="/book-publishers-south-africa" replace />} />
         <Route path="/selfpublishingcompaniesinsouthafrica" element={<SelfPublishingCompaniesSouthAfrica />} />
-        <Route path="/bookprintingjohannesburgnew" element={<Navigate to="/bookprintingjohannesburg" replace />} />
+        <Route path="/bookprintingjohannesburgnew" element={<Navigate to="/book-printing-johannesburg" replace />} />
         <Route path="/bookcoverdesignpricesouthafrica" element={<BookCoverDesignPriceSouthAfrica />} />
-        <Route path="/bookeditorsinsouthafrica" element={<BookEditorsSouthAfrica />} />
-        <Route path="/booklayoutandtypesetting" element={<BookLayoutTypesetting />} />
+        <Route path="/bookeditorsinsouthafrica" element={<Navigate to="/book-editing" replace />} />
+        <Route path="/booklayoutandtypesetting" element={<Navigate to="/typesetting" replace />} />
         <Route path="/isbnnumbersouthafrica" element={<ISBNNumberSouthAfrica />} />
         <Route path="/bookdistributioninsouthafrica" element={<BookDistributionSouthAfrica />} />
         <Route path="/howdebutauthorsgetbetterbookdealsinsouthafrica" element={<HowDebutAuthorsGetBetterDeals />} />
@@ -639,7 +692,10 @@ const AuthenticatedApp = () => {
       <Route path="/admin/leads" element={<ProtectedAdminRoute><AdminLeads /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts" element={<ProtectedAdminRoute><AdminContacts /></ProtectedAdminRoute>} />
       <Route path="/admin/services" element={<ProtectedAdminRoute><AdminServices /></ProtectedAdminRoute>} />
+      <Route path="/admin/resource-documents" element={<ProtectedAdminRoute><AdminResourceDocuments /></ProtectedAdminRoute>} />
       <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
+      <Route path="/admin/settings/users" element={<ProtectedAdminRoute><UserManagement /></ProtectedAdminRoute>} />
+      <Route path="/admin/company-settings" element={<ProtectedAdminRoute><AdminCompanySettings /></ProtectedAdminRoute>} />
       <Route path="/admin/pipeline" element={<ProtectedAdminRoute><AdminPipeline /></ProtectedAdminRoute>} />
       <Route path="/admin/quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
       <Route path="/admin/quotes/new" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
@@ -650,6 +706,8 @@ const AuthenticatedApp = () => {
       <Route path="/admin/signing" element={<ProtectedAdminRoute><AdminSigningWorkflow /></ProtectedAdminRoute>} />
       <Route path="/admin/projects" element={<ProtectedAdminRoute><AdminProjects /></ProtectedAdminRoute>} />
       <Route path="/admin/invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
+      <Route path="/admin/invoices/new" element={<ProtectedAdminRoute><AdminInvoiceBuilder /></ProtectedAdminRoute>} />
+      <Route path="/admin/invoices/:id" element={<ProtectedAdminRoute><AdminInvoiceBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/payments" element={<ProtectedAdminRoute><AdminPayments /></ProtectedAdminRoute>} />
       <Route path="/admin/tasks" element={<ProtectedAdminRoute><AdminTasks /></ProtectedAdminRoute>} />
       <Route path="/admin/documents" element={<ProtectedAdminRoute><AdminDocuments /></ProtectedAdminRoute>} />
@@ -662,6 +720,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/search-console" element={<ProtectedAdminRoute><SearchConsoleDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/seo" element={<ProtectedAdminRoute><SeoAnalytics /></ProtectedAdminRoute>} />
       <Route path="/quote/view/:id/:token" element={<QuoteView />} />
+      <Route path="/invoice/view/:id/:token" element={<InvoiceView />} />
       <Route path="/doc/view/:id/:token" element={<DocumentView />} />
       <Route path="/admin/document-dashboard" element={<ProtectedAdminRoute><AdminDocumentDashboard /></ProtectedAdminRoute>} />
       <Route path="/admin/production-board" element={<ProtectedAdminRoute><ProductionBoard /></ProtectedAdminRoute>} />
@@ -679,6 +738,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/document-builder" element={<ProtectedAdminRoute><AdminDocumentBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/finance" element={<ProtectedAdminRoute><AdminFinance /></ProtectedAdminRoute>} />
       <Route path="/admin/communication" element={<ProtectedAdminRoute><AdminCommunication /></ProtectedAdminRoute>} />
+      <Route path="/admin/chat" element={<ProtectedAdminRoute><AdminChat /></ProtectedAdminRoute>} />
       <Route path="/admin/esignatures" element={<ProtectedAdminRoute><AdminESignatures /></ProtectedAdminRoute>} />
       <Route path="/admin/esignatures/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepare /></ProtectedAdminRoute>} />
       <Route path="/admin/contracts/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepareContract /></ProtectedAdminRoute>} />
@@ -689,8 +749,20 @@ const AuthenticatedApp = () => {
       <Route path="/admin/automation-centre" element={<ProtectedAdminRoute><AdminAutomationCentre /></ProtectedAdminRoute>} />
       <Route path="/sign/esig/:requestId/:token" element={<ESignatureSigning />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
+      <Route path="/my-portal" element={<MyPortal />} />
+      <Route path="/admin/export" element={<ProtectedAdminRoute><AdminExportData /></ProtectedAdminRoute>} />
+      <Route path="/admin/production" element={<ProtectedAdminRoute><AdminProduction /></ProtectedAdminRoute>} />
+      <Route path="/admin/workflows" element={<ProtectedAdminRoute><AdminWorkflows /></ProtectedAdminRoute>} />
+      <Route path="/admin/marketing" element={<ProtectedAdminRoute><AdminMarketing /></ProtectedAdminRoute>} />
+      <Route path="/admin/bi" element={<ProtectedAdminRoute><AdminBusinessIntelligence /></ProtectedAdminRoute>} />
+      <Route path="/admin/onboarding" element={<ProtectedAdminRoute><AdminOnboarding /></ProtectedAdminRoute>} />
+      <Route path="/admin/notifications" element={<ProtectedAdminRoute><AdminNotifications /></ProtectedAdminRoute>} />
+      <Route path="/admin/bulk-email" element={<ProtectedAdminRoute><AdminBulkEmail /></ProtectedAdminRoute>} />
+      <Route path="/admin/whatsapp-log" element={<ProtectedAdminRoute><AdminWhatsAppLog /></ProtectedAdminRoute>} />
+      <Route path="/admin/zoho-books" element={<ProtectedAdminRoute><AdminZohoBooks /></ProtectedAdminRoute>} />
+      <Route path="/admin/follow-ups" element={<ProtectedAdminRoute><AdminFollowUps /></ProtectedAdminRoute>} />
+      <Route path="/admin/lead-scoring" element={<ProtectedAdminRoute><AdminLeadScoring /></ProtectedAdminRoute>} />
     </Routes>
-    </Suspense>
   );
 };
 

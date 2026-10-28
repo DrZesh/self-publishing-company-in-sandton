@@ -226,10 +226,9 @@ export default function DissertationEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Dissertation Editing Services"
-        description="Professional dissertation editing services for postgraduate students in South Africa. Grammar, clarity and academic tone improved before submission."
-        description="Dissertation editing aligned to South African university standards. Improve clarity, structure and academic language. Confidential, submission-ready service."
-        canonical="https://www.creativebooks.co.za/dissertationediting"
+        title="Dissertation Editing Services in South Africa | Creative Books"
+        description="Dissertation editing aligned to South African university standards - improve clarity, structure & academic language. Confidential & submission-ready. Get a quote."
+        canonical="https://creativebooks.co.za/dissertationediting"
       />
 
       {/* FAQ Schema */}
@@ -253,7 +252,7 @@ export default function DissertationEditing() {
               Dissertation Editing Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Dissertation Editing Services
+              Dissertation Editing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">
               Professional Dissertation Editing and Proofreading for Postgraduate Students in South Africa
@@ -677,10 +676,10 @@ export default function DissertationEditing() {
       <InternalLinks links={[
         { label: 'Thesis Editing Services',        path: '/thesisediting' },
         { label: 'Proofreading Services',          path: '/proofreading' },
-        { label: 'Book Editing Services',          path: '/bookediting' },
+        { label: 'Book Editing Services',          path: '/book-editing' },
         { label: 'Academic Editing Services',      path: '/academicediting' },
-        { label: 'Self Publishing South Africa',   path: '/selfpublishingsouthafrica' },
-        { label: 'Book Printing Johannesburg',     path: '/bookprintingjohannesburg' },
+        { label: 'Self Publishing South Africa',   path: '/self-publishing-south-africa' },
+        { label: 'Book Printing Johannesburg',     path: '/book-printing-johannesburg' },
         { label: 'Request a Quote',                path: '/getquote' },
       ]} light />
     </div>

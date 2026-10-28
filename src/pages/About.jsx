@@ -19,7 +19,7 @@ export default function About() {
       <PageMeta
         title="About Creative Books SA | Sandton Book Publishers"
         description="Meet the team behind Creative Books SA — a Sandton-based book publishing and printing studio working with South African authors on self-publishing projects."
-        canonical="https://www.creativebooks.co.za/aboutus"
+        canonical="https://creativebooks.co.za/aboutus"
       />
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center pt-20">

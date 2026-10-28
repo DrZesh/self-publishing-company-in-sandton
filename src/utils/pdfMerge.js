@@ -1,5 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 /**
  * Fills AcroForm fields in a PDF (if they exist) and prepends a
@@ -100,7 +100,7 @@ export async function mergePdfFields(originalPdfUrl, fieldDefs, fieldValues) {
   const blob = new Blob([mergedBytes], { type: 'application/pdf' });
   const file = new File([blob], 'contract_filled.pdf', { type: 'application/pdf' });
 
-  const uploaded = await base44.integrations.Core.UploadFile({ file });
+  const uploaded = await platform.integrations.Core.UploadFile({ file });
   return uploaded.file_url;
 }
 
@@ -202,6 +202,6 @@ export async function generateSignedPdf(
   const signedBytes = await pdfDoc.save();
   const blob = new Blob([signedBytes], { type: 'application/pdf' });
   const file = new File([blob], 'contract_signed.pdf', { type: 'application/pdf' });
-  const uploaded = await base44.integrations.Core.UploadFile({ file });
+  const uploaded = await platform.integrations.Core.UploadFile({ file });
   return uploaded.file_url;
 }

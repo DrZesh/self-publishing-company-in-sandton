@@ -22,8 +22,8 @@ const article = {
   ],
   relatedLinks: [
     { label: 'How to Build an Author Platform', path: '/howtobuildanauthorplatformbeforepublishing' },
-    { label: 'Author Websites', path: '/authorwebsites' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Author Websites', path: '/author-websites' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

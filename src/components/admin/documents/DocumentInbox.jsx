@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Link } from 'react-router-dom';
 import {
   Clock, AlertTriangle, Eye, Upload, MessageSquare, Mail,
@@ -94,7 +94,7 @@ function DocItem({ doc, contacts }) {
 export default function DocumentInbox({ contacts = [] }) {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-updated_date', 500),
+    queryFn: () => platform.entities.Document.list('-updated_date', 500),
   });
 
   const totalActions = SECTIONS.reduce((acc, s) => acc + documents.filter(s.filter).length, 0);

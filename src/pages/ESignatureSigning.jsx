@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import SignatureCanvas from '@/components/signature/SignatureCanvas';
 import {
@@ -8,6 +8,7 @@ import {
   ChevronRight, Download, Eye, PenTool, Loader2, XCircle, Lock
 } from 'lucide-react';
 import { toast } from 'sonner';
+import NoIndexMeta from '@/components/shared/NoIndexMeta';
 
 const STEPS = ['Review Document', 'Your Signature', 'Legal Consent', 'Complete'];
 
@@ -27,7 +28,7 @@ export default function ESignatureSigning() {
 
   useEffect(() => {
     if (!requestId || !token) { setError('Invalid signing link.'); setLoading(false); return; }
-    base44.functions.invoke('eSignatureActions', { action: 'track_open', request_id: requestId, token }).then(res => {
+    platform.functions.invoke('eSignatureActions', { action: 'track_open', request_id: requestId, token }).then(res => {
       if (res.data?.expired) { setError('This signing link has expired. Please contact the sender.'); }
       else if (res.data?.error) { setError(res.data.error); }
       else if (res.data?.already_signed) { setRequest(res.data.doc); setSubmitted(true); }
@@ -43,7 +44,7 @@ export default function ESignatureSigning() {
   }, [requestId, token]);
 
   const handleStartSigning = async () => {
-    await base44.functions.invoke('eSignatureActions', { action: 'signing_started', request_id: requestId, token }).catch(() => {});
+    await platform.functions.invoke('eSignatureActions', { action: 'signing_started', request_id: requestId, token }).catch(() => {});
     setStep(1);
   };
 
@@ -61,11 +62,11 @@ export default function ESignatureSigning() {
       try {
         const sigBlob = await fetch(signature.dataUrl).then(r => r.blob());
         const sigFile = new File([sigBlob], 'signature.png', { type: 'image/png' });
-        const uploaded = await base44.integrations.Core.UploadFile({ file: sigFile });
+        const uploaded = await platform.integrations.Core.UploadFile({ file: sigFile });
         signatureUrl = uploaded.file_url;
       } catch { /* use dataUrl fallback */ }
 
-      const invokePromise = base44.functions.invoke('eSignatureActions', {
+      const invokePromise = platform.functions.invoke('eSignatureActions', {
         action: 'submit_signature',
         request_id: requestId,
         token,
@@ -100,7 +101,7 @@ export default function ESignatureSigning() {
   const handleDecline = async () => {
     if (!declineReason.trim()) { toast.error('Please provide a reason for declining'); return; }
     setDeclining(true);
-    await base44.functions.invoke('eSignatureActions', { action: 'decline', request_id: requestId, token, reason: declineReason });
+    await platform.functions.invoke('eSignatureActions', { action: 'decline', request_id: requestId, token, reason: declineReason });
     setDeclining(false);
     setDeclineMode(false);
     setError('You have declined to sign this document. The sender has been notified.');
@@ -114,6 +115,7 @@ export default function ESignatureSigning() {
   // ── LOADING ───────────────────────────────────────────────────────────────
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <NoIndexMeta title="Sign Document | Creative Books SA" />
       <div className="text-center">
         <Loader2 className="w-10 h-10 animate-spin text-[#B87333] mx-auto mb-4" />
         <p className="text-gray-500">Loading signing request...</p>

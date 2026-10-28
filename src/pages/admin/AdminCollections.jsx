@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,17 +18,17 @@ export default function AdminCollections() {
 
   const { data: collections = [], isLoading } = useQuery({
     queryKey: ['collections'],
-    queryFn: () => base44.entities.CollectionSignature.list('-created_date', 200),
+    queryFn: () => platform.entities.CollectionSignature.list('-created_date', 200),
   });
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
-    queryFn: () => base44.entities.Project.list('-created_date', 200),
+    queryFn: () => platform.entities.Project.list('-created_date', 200),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const saveMutation = useMutation({
@@ -40,16 +40,16 @@ export default function AdminCollections() {
         // Upload signature
         const blob = await (await fetch(sigUrl)).blob();
         const file = new File([blob], 'signature.png', { type: 'image/png' });
-        const res = await base44.integrations.Core.UploadFile({ file });
+        const res = await platform.integrations.Core.UploadFile({ file });
         sigUrl = res.file_url || sigUrl;
       }
-      return base44.entities.CollectionSignature.create({ ...data, signature_image_url: sigUrl, collection_date: new Date().toISOString() });
+      return platform.entities.CollectionSignature.create({ ...data, signature_image_url: sigUrl, collection_date: new Date().toISOString() });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] });
       // Update project stage
       if (form.project_id) {
-        base44.entities.Project.update(form.project_id, { stage: 'Delivered' });
+        platform.entities.Project.update(form.project_id, { stage: 'Delivered' });
       }
       setShowModal(false);
       setForm({ project_id: '', contact_id: '', book_title: '', collected_by: '', quantity_collected: 1, staff_member: '', collection_notes: '', fully_paid_at_collection: false });

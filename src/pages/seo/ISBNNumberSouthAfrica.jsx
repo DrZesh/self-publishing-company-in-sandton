@@ -28,7 +28,7 @@ export default function ISBNNumberSouthAfrica() {
         title="ISBN Number South Africa"
         description="How to register a free ISBN with the National Library of South Africa. Step-by-step guide for self-published authors with forms, timelines and requirements."
         keywords="ISBN number South Africa, how to get ISBN South Africa, ISBN registration South Africa, ISBN for self-published book"
-        canonical="https://www.creativebooks.co.za/isbnnumbersouthafrica"
+        canonical="https://creativebooks.co.za/isbnnumbersouthafrica"
         schema={schema}
       />
       
@@ -118,11 +118,11 @@ export default function ISBNNumberSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'ISBN Registration', path: '/isbnregistration' },
-            { label: 'Book Publishing', path: '/bookpublishing' },
+            { label: 'ISBN Registration', path: '/isbn' },
+            { label: 'Book Publishing', path: '/book-publishing' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
-            { label: 'Book Printing', path: '/bookprinting' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
+            { label: 'Book Printing', path: '/book-printing' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

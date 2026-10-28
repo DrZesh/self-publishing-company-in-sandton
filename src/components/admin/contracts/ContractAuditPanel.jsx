@@ -1,6 +1,6 @@
 import { X, Clock, Send, Eye, PenLine, CheckCircle, AlertTriangle, RefreshCw, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -23,7 +23,7 @@ export default function ContractAuditPanel({ contract, onClose, onUpdated }) {
 
   const handleResend = async () => {
     setSending(true);
-    const res = await base44.functions.invoke('contractSignature', { action: 'resend', contract_id: contract.id });
+    const res = await platform.functions.invoke('contractSignature', { action: 'resend', contract_id: contract.id });
     setSending(false);
     if (res.data?.success) { toast.success('Signing link resent'); onUpdated(); }
     else toast.error(res.data?.error || 'Failed to resend');

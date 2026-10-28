@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
@@ -82,19 +82,19 @@ export default function ProductionBoard() {
 
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ['projects-production'],
-    queryFn: () => base44.entities.Project.list('-stage_changed_at', 500),
+    queryFn: () => platform.entities.Project.list('-stage_changed_at', 500),
     refetchInterval: autoRefresh ? 30000 : false,
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
 
   const updateStage = useMutation({
-    mutationFn: ({ id, stage }) => base44.entities.Project.update(id, { stage, stage_changed_at: new Date().toISOString() }),
+    mutationFn: ({ id, stage }) => platform.entities.Project.update(id, { stage, stage_changed_at: new Date().toISOString() }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['projects-production'] }),
   });
 

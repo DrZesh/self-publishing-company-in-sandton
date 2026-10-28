@@ -1,0 +1,7247 @@
+{
+  "Invoice": {
+    "name": "Invoice",
+    "type": "object",
+    "properties": {
+      "invoice_number": {
+        "type": "string",
+        "description": "Auto-generated, e.g. INV-0001"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "Originating Quote ID (optional)"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Sent",
+          "Partially Paid",
+          "Paid",
+          "Overdue",
+          "Voided"
+        ],
+        "default": "Draft"
+      },
+      "issue_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "due_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "line_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "number"
+            },
+            "unit_price": {
+              "type": "number",
+              "description": "VAT-exclusive unit price in ZAR"
+            },
+            "line_total": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "subtotal": {
+        "type": "number",
+        "default": 0
+      },
+      "vat_rate": {
+        "type": "number",
+        "default": 15
+      },
+      "vat_amount": {
+        "type": "number",
+        "default": 0
+      },
+      "include_vat": {
+        "type": "boolean",
+        "default": true
+      },
+      "total": {
+        "type": "number",
+        "default": 0
+      },
+      "amount_paid": {
+        "type": "number",
+        "default": 0,
+        "description": "Simple running total of payments recorded"
+      },
+      "balance_due": {
+        "type": "number",
+        "default": 0,
+        "description": "total minus amount_paid"
+      },
+      "payment_terms": {
+        "type": "string",
+        "default": "Payment due within 7 days of invoice date."
+      },
+      "banking_details": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "contact_snapshot": {
+        "type": "object",
+        "description": "Snapshot of contact details at time of invoice"
+      },
+      "view_token": {
+        "type": "string",
+        "description": "Token for public invoice view link"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "paid_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "invoice_email_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the invoice email has been sent to the client"
+      },
+      "invoice_confirmed_by_admin": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether admin has clicked Confirm Invoice and Continue"
+      },
+      "invoice_confirmed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When admin confirmed the invoice"
+      },
+      "invoice_confirmed_by": {
+        "type": "string",
+        "description": "Admin user ID who confirmed"
+      },
+      "automation_state": {
+        "type": "string",
+        "enum": [
+          "Invoice Generated",
+          "Invoice Sent",
+          "Awaiting Admin Confirmation",
+          "Admin Confirmed",
+          "NDA Sent",
+          "Portal Login Sent",
+          "Project Active"
+        ],
+        "default": "Invoice Generated",
+        "description": "Current automation state in the workflow"
+      },
+      "nda_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether NDA has been sent"
+      },
+      "nda_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "portal_login_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether portal login details have been sent"
+      },
+      "portal_login_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "acceptance_email_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the quote acceptance thank-you email was sent"
+      }
+    },
+    "required": [
+      "contact_id",
+      "invoice_number"
+    ]
+  },
+  "CampaignRecipient": {
+    "name": "CampaignRecipient",
+    "type": "object",
+    "properties": {
+      "campaign_id": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "full_name": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "sent",
+          "delivered",
+          "opened",
+          "clicked",
+          "bounced",
+          "unsubscribed",
+          "failed"
+        ],
+        "default": "pending"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "clicked_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "error_message": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "campaign_id",
+      "contact_id",
+      "email"
+    ]
+  },
+  "BookingService": {
+    "name": "BookingService",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Service name e.g. Consultation"
+      },
+      "description": {
+        "type": "string"
+      },
+      "duration_minutes": {
+        "type": "number",
+        "default": 30
+      },
+      "buffer_minutes": {
+        "type": "number",
+        "default": 15,
+        "description": "Gap after each appointment"
+      },
+      "allowed_modes": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "on_site",
+            "zoom"
+          ]
+        },
+        "description": "Which meeting modes are available for this service"
+      },
+      "prep_tips": {
+        "type": "string",
+        "description": "Tips shown to client after booking, e.g. bring your manuscript"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "name",
+      "duration_minutes"
+    ]
+  },
+  "Author": {
+    "name": "Author",
+    "type": "object",
+    "properties": {
+      "full_name": {
+        "type": "string"
+      },
+      "pen_name": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "email": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "books_published": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of book titles"
+      },
+      "services_used": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "preferred_book_size": {
+        "type": "string"
+      },
+      "author_website": {
+        "type": "string"
+      },
+      "author_bio": {
+        "type": "string"
+      },
+      "profile_photo_url": {
+        "type": "string"
+      },
+      "marketing_permissions": {
+        "type": "boolean",
+        "default": false,
+        "description": "Consented to marketing"
+      },
+      "testimonial": {
+        "type": "string"
+      },
+      "testimonial_approved": {
+        "type": "boolean",
+        "default": false
+      },
+      "is_vip": {
+        "type": "boolean",
+        "default": false
+      },
+      "vip_reason": {
+        "type": "string"
+      },
+      "reprint_history": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "total_books_printed": {
+        "type": "number",
+        "default": 0
+      },
+      "notes": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "full_name"
+    ]
+  },
+  "Note": {
+    "name": "Note",
+    "type": "object",
+    "properties": {
+      "entity_type": {
+        "type": "string",
+        "enum": [
+          "submission",
+          "contact",
+          "lead"
+        ],
+        "description": "Type of entity this note is attached to"
+      },
+      "entity_id": {
+        "type": "string",
+        "description": "ID of the entity"
+      },
+      "content": {
+        "type": "string",
+        "description": "Note content"
+      }
+    },
+    "required": [
+      "entity_type",
+      "entity_id",
+      "content"
+    ],
+    "rls": {
+      "create": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "read": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "update": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "Appointment": {
+    "name": "Appointment",
+    "type": "object",
+    "properties": {
+      "client_name": {
+        "type": "string"
+      },
+      "client_email": {
+        "type": "string"
+      },
+      "client_phone": {
+        "type": "string"
+      },
+      "service_id": {
+        "type": "string",
+        "description": "Linked BookingService ID"
+      },
+      "service_name": {
+        "type": "string",
+        "description": "Denormalized service name"
+      },
+      "service_duration_minutes": {
+        "type": "number"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "on_site",
+          "zoom"
+        ]
+      },
+      "date": {
+        "type": "string",
+        "format": "date",
+        "description": "YYYY-MM-DD in SAST"
+      },
+      "start_time": {
+        "type": "string",
+        "description": "HH:MM in SAST"
+      },
+      "end_time": {
+        "type": "string",
+        "description": "HH:MM in SAST"
+      },
+      "client_note": {
+        "type": "string",
+        "description": "What the client wants to discuss"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "approved",
+          "declined",
+          "cancelled",
+          "completed",
+          "no_show"
+        ],
+        "default": "pending"
+      },
+      "zoom_link": {
+        "type": "string"
+      },
+      "zoom_meeting_id": {
+        "type": "string"
+      },
+      "decline_reason": {
+        "type": "string"
+      },
+      "proposed_date": {
+        "type": "string",
+        "format": "date",
+        "description": "Admin-proposed alternative date"
+      },
+      "proposed_start_time": {
+        "type": "string",
+        "description": "Admin-proposed alternative time HH:MM"
+      },
+      "proposed_end_time": {
+        "type": "string"
+      },
+      "linked_lead_id": {
+        "type": "string"
+      },
+      "linked_client_id": {
+        "type": "string"
+      },
+      "google_event_id": {
+        "type": "string",
+        "description": "Google Calendar event ID for sync"
+      },
+      "reminder_24h_sent": {
+        "type": "boolean",
+        "default": false
+      },
+      "reminder_5h_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the 5-hour pre-appointment reminder has been sent"
+      },
+      "reminder_5h_sent_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the 5h reminder was sent"
+      },
+      "reminder_1h_sent": {
+        "type": "boolean",
+        "default": false
+      },
+      "approved_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "cancelled_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "cancel_token": {
+        "type": "string",
+        "description": "Secure token for client self-cancel"
+      },
+      "reschedule_token": {
+        "type": "string",
+        "description": "Secure token for client reschedule"
+      }
+    },
+    "required": [
+      "client_name",
+      "client_email",
+      "service_id",
+      "date",
+      "start_time"
+    ]
+  },
+  "WorkflowExecution": {
+    "name": "WorkflowExecution",
+    "type": "object",
+    "properties": {
+      "execution_id": {
+        "type": "string"
+      },
+      "workflow_template_id": {
+        "type": "string"
+      },
+      "workflow_name": {
+        "type": "string"
+      },
+      "trigger_type": {
+        "type": "string"
+      },
+      "trigger_entity_name": {
+        "type": "string"
+      },
+      "trigger_entity_id": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Pending",
+          "Running",
+          "Completed",
+          "Failed",
+          "Paused",
+          "Cancelled"
+        ],
+        "default": "Pending"
+      },
+      "current_step": {
+        "type": "number",
+        "default": 0
+      },
+      "total_steps": {
+        "type": "number"
+      },
+      "started_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "completed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "duration_seconds": {
+        "type": "number"
+      },
+      "steps_log": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "step_number": {
+              "type": "number"
+            },
+            "step_name": {
+              "type": "string"
+            },
+            "step_type": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "Pending",
+                "Running",
+                "Completed",
+                "Failed",
+                "Skipped"
+              ]
+            },
+            "started_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "result": {
+              "type": "string"
+            },
+            "error_message": {
+              "type": "string"
+            },
+            "retry_count": {
+              "type": "number",
+              "default": 0
+            }
+          }
+        }
+      },
+      "error_message": {
+        "type": "string"
+      },
+      "error_details": {
+        "type": "object"
+      },
+      "variables": {
+        "type": "object",
+        "description": "Runtime variables and data"
+      },
+      "created_by": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "execution_id",
+      "workflow_template_id",
+      "trigger_entity_id"
+    ]
+  },
+  "Document": {
+    "name": "Document",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "Linked Quote ID"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "is_template": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether this document is a reusable template"
+      },
+      "is_favourite": {
+        "type": "boolean",
+        "default": false,
+        "description": "Pinned/favourite template"
+      },
+      "template_label": {
+        "type": "string",
+        "description": "Display label for template (e.g. NDA, Publishing Agreement)"
+      },
+      "template_status": {
+        "type": "string",
+        "enum": [
+          "Draft Template",
+          "Pending Approval",
+          "Active",
+          "Archived Template"
+        ],
+        "default": "Draft Template",
+        "description": "Approval status for reusable templates"
+      },
+      "requires_signature": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether a signature is required"
+      },
+      "default_expiry_days": {
+        "type": "number",
+        "description": "Default days until link expires"
+      },
+      "labels": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Document labels e.g. Legal, Finance, Urgent"
+      },
+      "ai_summary": {
+        "type": "string",
+        "description": "AI-generated summary of what this document is and its purpose"
+      },
+      "access_revoked": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether document access has been revoked"
+      },
+      "access_revoked_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When access was revoked"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "Signed Contract",
+          "Unsigned Contract",
+          "Quotation",
+          "Invoice",
+          "Payment Proof",
+          "Manuscript",
+          "Book Cover File",
+          "Typesetting File",
+          "Final Print File",
+          "Proof Approval",
+          "ISBN Document",
+          "Copyright Page",
+          "Printing Spec",
+          "Courier Document",
+          "Client Supplied",
+          "Internal Admin",
+          "NDA",
+          "Publishing Agreement",
+          "Printing Terms",
+          "Supplier Agreement",
+          "Payment Agreement",
+          "Manuscript Submission Form",
+          "Cover Design Brief"
+        ],
+        "default": "Client Supplied"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Sent to Client",
+          "Opened",
+          "Viewed",
+          "Downloaded",
+          "Awaiting Signature",
+          "Signed",
+          "Awaiting Approval",
+          "Approved",
+          "Rejected",
+          "Changes Requested",
+          "Payment Proof Uploaded",
+          "Expired",
+          "Archived"
+        ],
+        "default": "Draft"
+      },
+      "file_name": {
+        "type": "string"
+      },
+      "file_url": {
+        "type": "string"
+      },
+      "file_type": {
+        "type": "string"
+      },
+      "file_size_kb": {
+        "type": "number"
+      },
+      "version": {
+        "type": "number",
+        "default": 1
+      },
+      "parent_doc_id": {
+        "type": "string",
+        "description": "Previous version document ID"
+      },
+      "is_latest_version": {
+        "type": "boolean",
+        "default": true
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "internal_notes": {
+        "type": "string",
+        "description": "Admin-only notes"
+      },
+      "uploaded_by": {
+        "type": "string"
+      },
+      "secure_token": {
+        "type": "string",
+        "description": "Unique token for secure client access link"
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When secure link expires"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "viewed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "downloaded_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "approved_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "rejected_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "download_count": {
+        "type": "number",
+        "default": 0
+      },
+      "open_count": {
+        "type": "number",
+        "default": 0
+      },
+      "client_message": {
+        "type": "string",
+        "description": "Message from client (changes request, question)"
+      },
+      "proof_url": {
+        "type": "string",
+        "description": "Uploaded payment proof or signed copy URL"
+      },
+      "signature_url": {
+        "type": "string",
+        "description": "Electronic signature image URL"
+      },
+      "reminder_sent_count": {
+        "type": "number",
+        "default": 0
+      },
+      "last_reminder_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signer_name": {
+        "type": "string",
+        "description": "Name of the person who signed the document"
+      },
+      "signer_email": {
+        "type": "string",
+        "description": "Email of the person who signed the document"
+      },
+      "signed_nda_file_url": {
+        "type": "string",
+        "description": "URL to the signed NDA file"
+      },
+      "signature_certificate_url": {
+        "type": "string",
+        "description": "URL to the signature certificate"
+      },
+      "nda_signed": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether NDA has been signed by the client"
+      },
+      "nda_signed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the NDA was signed"
+      },
+      "nda_signed_by": {
+        "type": "string",
+        "description": "Name of the signer"
+      },
+      "nda_signed_email": {
+        "type": "string",
+        "description": "Email of the signer"
+      },
+      "nda_signed_admin_notification_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether admin has been notified of NDA signing"
+      },
+      "nda_signed_admin_notification_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "nda_signed_client_confirmation_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether client has received NDA signed confirmation"
+      },
+      "nda_signed_client_confirmation_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "nda_signed_whatsapp_notification_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether admin WhatsApp notification was sent for NDA signing"
+      }
+    },
+    "required": [
+      "category",
+      "file_name",
+      "file_url"
+    ]
+  },
+  "AvailabilityRule": {
+    "name": "AvailabilityRule",
+    "type": "object",
+    "properties": {
+      "weekday": {
+        "type": "string",
+        "enum": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "description": "Day of the week"
+      },
+      "start_time": {
+        "type": "string",
+        "description": "HH:MM in SAST e.g. 09:00"
+      },
+      "end_time": {
+        "type": "string",
+        "description": "HH:MM in SAST e.g. 17:00"
+      },
+      "is_open": {
+        "type": "boolean",
+        "default": true
+      },
+      "min_notice_hours": {
+        "type": "number",
+        "default": 24,
+        "description": "Minimum hours notice required before a booking (global \u2014 stored on Monday rule)"
+      }
+    },
+    "required": [
+      "weekday"
+    ]
+  },
+  "ClientServiceProject": {
+    "name": "ClientServiceProject",
+    "type": "object",
+    "properties": {
+      "client_name": {
+        "type": "string"
+      },
+      "client_email": {
+        "type": "string"
+      },
+      "client_phone": {
+        "type": "string"
+      },
+      "service_type": {
+        "type": "string",
+        "enum": [
+          "Book Printing",
+          "Book Editing",
+          "Book Cover Design",
+          "Typesetting and Layout",
+          "Manuscript Evaluation",
+          "Ghostwriting",
+          "Author Website",
+          "Ebook Publishing"
+        ]
+      },
+      "project_title": {
+        "type": "string"
+      },
+      "start_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "assigned_team_member": {
+        "type": "string"
+      },
+      "current_stage_key": {
+        "type": "string"
+      },
+      "current_stage_label": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "active",
+          "on_hold",
+          "completed",
+          "cancelled"
+        ],
+        "default": "active"
+      },
+      "payment_receipt_url": {
+        "type": "string"
+      },
+      "payment_receipt_name": {
+        "type": "string"
+      },
+      "invoice_url": {
+        "type": "string"
+      },
+      "invoice_name": {
+        "type": "string"
+      },
+      "stage_history": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stage_key": {
+              "type": "string"
+            },
+            "stage_label": {
+              "type": "string"
+            },
+            "updated_at": {
+              "type": "string"
+            },
+            "updated_by": {
+              "type": "string"
+            },
+            "email_sent": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "last_email_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "total_emails_sent": {
+        "type": "number",
+        "default": 0
+      },
+      "welcome_email_sent": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "client_name",
+      "client_email",
+      "service_type",
+      "project_title"
+    ]
+  },
+  "ActivityLog": {
+    "name": "ActivityLog",
+    "type": "object",
+    "properties": {
+      "entity_type": {
+        "type": "string",
+        "enum": [
+          "submission",
+          "contact",
+          "lead"
+        ],
+        "description": "Type of entity"
+      },
+      "entity_id": {
+        "type": "string",
+        "description": "ID of the entity"
+      },
+      "action": {
+        "type": "string",
+        "description": "Action performed (created, updated, stage_changed, etc.)"
+      },
+      "actor_id": {
+        "type": "string",
+        "description": "User who performed the action"
+      },
+      "description": {
+        "type": "string",
+        "description": "Human-readable description of the action"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Additional action metadata (old/new values, etc.)"
+      }
+    },
+    "required": [
+      "entity_type",
+      "entity_id",
+      "action",
+      "actor_id"
+    ],
+    "rls": {
+      "create": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "read": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "update": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "ProjectUpdate": {
+    "name": "ProjectUpdate",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "update_type": {
+        "type": "string",
+        "enum": [
+          "milestone_completed",
+          "stage_changed",
+          "file_uploaded",
+          "action_required",
+          "general",
+          "payment_received",
+          "proof_approved",
+          "printing_started",
+          "ready_for_collection"
+        ],
+        "description": "Type of update"
+      },
+      "title": {
+        "type": "string",
+        "description": "Update title"
+      },
+      "message": {
+        "type": "string",
+        "description": "Update message content"
+      },
+      "milestone_name": {
+        "type": "string",
+        "description": "Milestone name if applicable"
+      },
+      "stage_from": {
+        "type": "string",
+        "description": "Previous stage (for stage changes)"
+      },
+      "stage_to": {
+        "type": "string",
+        "description": "New stage (for stage changes)"
+      },
+      "email_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether email notification was sent"
+      },
+      "read_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When client read the update"
+      }
+    },
+    "required": [
+      "project_id",
+      "contact_id",
+      "update_type",
+      "title",
+      "message"
+    ]
+  },
+  "BookRecord": {
+    "name": "BookRecord",
+    "type": "object",
+    "properties": {
+      "book_title": {
+        "type": "string"
+      },
+      "author_name": {
+        "type": "string"
+      },
+      "pen_name": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "author_id": {
+        "type": "string",
+        "description": "Linked Author ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "genre": {
+        "type": "string",
+        "enum": [
+          "Fiction",
+          "Non-Fiction",
+          "Christian",
+          "Biography",
+          "Memoir",
+          "Children's",
+          "Poetry",
+          "Academic",
+          "Business",
+          "Self-Help",
+          "Other"
+        ]
+      },
+      "services_provided": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "print_specs": {
+        "type": "object",
+        "properties": {
+          "book_size": {
+            "type": "string"
+          },
+          "page_count": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "interior_colour": {
+            "type": "string"
+          },
+          "paper_type": {
+            "type": "string"
+          },
+          "cover_finish": {
+            "type": "string"
+          },
+          "binding_type": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string"
+          }
+        }
+      },
+      "final_cover_url": {
+        "type": "string"
+      },
+      "final_interior_url": {
+        "type": "string"
+      },
+      "thumbnail_url": {
+        "type": "string"
+      },
+      "reprint_count": {
+        "type": "number",
+        "default": 0
+      },
+      "last_reprint_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "project_status": {
+        "type": "string",
+        "enum": [
+          "In Progress",
+          "Completed",
+          "Delivered",
+          "Archived"
+        ],
+        "default": "In Progress"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "year_completed": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "book_title",
+      "author_name"
+    ]
+  },
+  "MessageQueue": {
+    "name": "MessageQueue",
+    "type": "object",
+    "properties": {
+      "client_id": {
+        "type": "string",
+        "description": "Reference to Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Reference to Project ID"
+      },
+      "automation_rule_id": {
+        "type": "string",
+        "description": "Reference to AutomationRule that created this item"
+      },
+      "channel": {
+        "type": "string",
+        "enum": [
+          "email",
+          "whatsapp"
+        ],
+        "default": "email"
+      },
+      "template_id": {
+        "type": "string",
+        "description": "Reference to MessageTemplate ID"
+      },
+      "template_name": {
+        "type": "string"
+      },
+      "recipient": {
+        "type": "string",
+        "description": "Email address or WhatsApp number"
+      },
+      "rendered_subject": {
+        "type": "string",
+        "description": "Fully rendered subject \u2014 frozen at queue time"
+      },
+      "rendered_body": {
+        "type": "string",
+        "description": "Fully rendered HTML body including branded shell \u2014 frozen at queue time so preview = what sends"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending_approval",
+          "scheduled",
+          "sending",
+          "sent",
+          "failed",
+          "cancelled"
+        ],
+        "default": "pending_approval"
+      },
+      "scheduled_for": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When to send (null = send immediately on approval)"
+      },
+      "dedup_key": {
+        "type": "string",
+        "description": "projectId+stage+automationType+date \u2014 prevents duplicate sends"
+      },
+      "triggered_by": {
+        "type": "string",
+        "enum": [
+          "automation",
+          "admin"
+        ],
+        "default": "automation"
+      },
+      "trigger_event": {
+        "type": "string",
+        "description": "The automation trigger that created this item"
+      },
+      "retry_count": {
+        "type": "number",
+        "default": 0
+      },
+      "last_error": {
+        "type": "string"
+      },
+      "approved_by": {
+        "type": "string",
+        "description": "Email of admin who approved"
+      },
+      "approved_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "client_name": {
+        "type": "string",
+        "description": "Denormalized for display"
+      },
+      "project_name": {
+        "type": "string",
+        "description": "Denormalized for display"
+      }
+    },
+    "required": [
+      "client_id",
+      "channel",
+      "recipient",
+      "rendered_subject",
+      "rendered_body",
+      "dedup_key"
+    ]
+  },
+  "OnboardingChecklist": {
+    "name": "OnboardingChecklist",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "Linked Quote ID"
+      },
+      "client_name": {
+        "type": "string"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "service_type": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Active",
+          "Completed",
+          "Stalled",
+          "Cancelled"
+        ],
+        "default": "Active"
+      },
+      "steps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "done",
+                "skipped"
+              ],
+              "default": "pending"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "default": [
+          {
+            "key": "quote_accepted",
+            "label": "Quote Accepted",
+            "status": "pending"
+          },
+          {
+            "key": "invoice_sent",
+            "label": "Invoice Sent",
+            "status": "pending"
+          },
+          {
+            "key": "payment_received",
+            "label": "Payment Received",
+            "status": "pending"
+          },
+          {
+            "key": "nda_sent",
+            "label": "NDA Sent",
+            "status": "pending"
+          },
+          {
+            "key": "nda_signed",
+            "label": "NDA Signed",
+            "status": "pending"
+          },
+          {
+            "key": "portal_access_sent",
+            "label": "Portal Access Sent",
+            "status": "pending"
+          },
+          {
+            "key": "project_kickoff",
+            "label": "Project Kicked Off",
+            "status": "pending"
+          },
+          {
+            "key": "first_update_sent",
+            "label": "First Update Sent to Client",
+            "status": "pending"
+          }
+        ]
+      },
+      "progress_percent": {
+        "type": "number",
+        "default": 0
+      },
+      "started_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "completed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "last_activity_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "assigned_to": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact_id"
+    ]
+  },
+  "CoverDesignEnquiry": {
+    "name": "CoverDesignEnquiry",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "cover_notes": {
+        "type": "string"
+      },
+      "manuscript_url": {
+        "type": "string"
+      },
+      "full_cover_width": {
+        "type": "number"
+      },
+      "full_cover_height": {
+        "type": "number"
+      },
+      "spine_width": {
+        "type": "number"
+      },
+      "trim_width": {
+        "type": "number"
+      },
+      "trim_height": {
+        "type": "number"
+      },
+      "page_count": {
+        "type": "number"
+      },
+      "paper_type": {
+        "type": "string"
+      },
+      "binding_type": {
+        "type": "string"
+      },
+      "cover_type": {
+        "type": "string"
+      },
+      "bleed": {
+        "type": "number"
+      },
+      "safe_margin": {
+        "type": "number"
+      },
+      "flap_sizes": {
+        "type": "string"
+      },
+      "hardcover_allowances": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "new",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ],
+        "default": "new"
+      }
+    },
+    "required": [
+      "name",
+      "email",
+      "book_title"
+    ]
+  },
+  "Payment": {
+    "name": "Payment",
+    "type": "object",
+    "properties": {
+      "payment_number": {
+        "type": "string",
+        "description": "Auto-generated, e.g. PAY-0001"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "receipt_id": {
+        "type": "string",
+        "description": "Linked Receipt ID (set after receipt is created)"
+      },
+      "amount": {
+        "type": "number",
+        "default": 0
+      },
+      "payment_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "payment_method": {
+        "type": "string",
+        "enum": [
+          "EFT",
+          "Card",
+          "Cash",
+          "Other"
+        ],
+        "default": "EFT"
+      },
+      "reference": {
+        "type": "string",
+        "description": "Optional transaction reference"
+      },
+      "notes": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "invoice_id",
+      "contact_id",
+      "amount",
+      "payment_date"
+    ]
+  },
+  "Task": {
+    "name": "Task",
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "task_type": {
+        "type": "string",
+        "enum": [
+          "Quote Follow-up",
+          "Payment Follow-up",
+          "Contract Reminder",
+          "Client Approval",
+          "Production Deadline",
+          "Collection Reminder",
+          "Reprint Follow-up",
+          "Review Request",
+          "General"
+        ],
+        "default": "General"
+      },
+      "entity_type": {
+        "type": "string",
+        "enum": [
+          "contact",
+          "lead",
+          "quote",
+          "invoice",
+          "project"
+        ],
+        "description": "Type of entity this task relates to"
+      },
+      "entity_id": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "string"
+      },
+      "project_id": {
+        "type": "string"
+      },
+      "due_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "priority": {
+        "type": "string",
+        "enum": [
+          "Low",
+          "Medium",
+          "High",
+          "Urgent"
+        ],
+        "default": "Medium"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Pending",
+          "In Progress",
+          "Done",
+          "Cancelled"
+        ],
+        "default": "Pending"
+      },
+      "assigned_to": {
+        "type": "string",
+        "description": "Staff member email"
+      },
+      "notes": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "title",
+      "due_date"
+    ]
+  },
+  "WorkflowTemplate": {
+    "name": "WorkflowTemplate",
+    "type": "object",
+    "properties": {
+      "template_name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "Client Onboarding",
+          "Quote to Invoice",
+          "Production",
+          "Quality Control",
+          "Delivery",
+          "Custom"
+        ]
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "is_public": {
+        "type": "boolean",
+        "default": false,
+        "description": "Available to all users or private"
+      },
+      "trigger_type": {
+        "type": "string",
+        "enum": [
+          "entity_create",
+          "entity_update",
+          "stage_change",
+          "status_change",
+          "manual",
+          "scheduled"
+        ]
+      },
+      "trigger_entity": {
+        "type": "string",
+        "description": "Entity that triggers workflow e.g. Contact, Quote, Project"
+      },
+      "trigger_conditions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "equals",
+                "not_equals",
+                "contains",
+                "gt",
+                "lt",
+                "gte",
+                "lte",
+                "exists"
+              ]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "steps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "step_number": {
+              "type": "number"
+            },
+            "step_name": {
+              "type": "string"
+            },
+            "step_type": {
+              "type": "string",
+              "enum": [
+                "update_entity",
+                "send_email",
+                "send_whatsapp",
+                "create_task",
+                "create_document",
+                "create_invoice",
+                "move_stage",
+                "assign_user",
+                "wait",
+                "condition",
+                "webhook",
+                "run_function"
+              ]
+            },
+            "action_config": {
+              "type": "object"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string"
+                  },
+                  "operator": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "wait_duration": {
+              "type": "number",
+              "description": "Minutes to wait (for wait step type)"
+            },
+            "wait_unit": {
+              "type": "string",
+              "enum": [
+                "minutes",
+                "hours",
+                "days"
+              ],
+              "default": "hours"
+            },
+            "on_success_goto_step": {
+              "type": "number",
+              "description": "Jump to step number on success"
+            },
+            "on_failure_goto_step": {
+              "type": "number",
+              "description": "Jump to step number on failure"
+            },
+            "is_parallel": {
+              "type": "boolean",
+              "default": false,
+              "description": "Run in parallel with previous step"
+            }
+          }
+        }
+      },
+      "error_handling": {
+        "type": "object",
+        "properties": {
+          "retry_count": {
+            "type": "number",
+            "default": 3
+          },
+          "retry_delay_minutes": {
+            "type": "number",
+            "default": 5
+          },
+          "notify_on_error": {
+            "type": "boolean",
+            "default": true
+          },
+          "error_notification_email": {
+            "type": "string"
+          }
+        }
+      },
+      "statistics": {
+        "type": "object",
+        "properties": {
+          "times_run": {
+            "type": "number",
+            "default": 0
+          },
+          "success_rate": {
+            "type": "number"
+          },
+          "average_duration_minutes": {
+            "type": "number"
+          },
+          "last_run_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "created_by": {
+        "type": "string"
+      },
+      "version": {
+        "type": "number",
+        "default": 1
+      }
+    },
+    "required": [
+      "template_name",
+      "trigger_type",
+      "trigger_entity",
+      "steps"
+    ]
+  },
+  "ESignatureRequest": {
+    "name": "ESignatureRequest",
+    "type": "object",
+    "properties": {
+      "document_id": {
+        "type": "string",
+        "description": "Linked Document ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "title": {
+        "type": "string",
+        "description": "Document title shown to signer"
+      },
+      "file_url": {
+        "type": "string",
+        "description": "URL of document to sign"
+      },
+      "file_name": {
+        "type": "string"
+      },
+      "document_category": {
+        "type": "string"
+      },
+      "signing_order": {
+        "type": "string",
+        "enum": [
+          "admin_first",
+          "client_first",
+          "any_order"
+        ],
+        "default": "admin_first",
+        "description": "Who signs first"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Prepared",
+          "Admin Fields Completed",
+          "Admin Signed",
+          "Sent",
+          "Delivered",
+          "Opened",
+          "Viewed",
+          "Signing Started",
+          "Client Signed",
+          "Fully Signed",
+          "Declined",
+          "Expired",
+          "Cancelled",
+          "Archived"
+        ],
+        "default": "Draft"
+      },
+      "contract_fields": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        },
+        "description": "Field definitions: {id, label, type, assigned_to, required, value}"
+      },
+      "admin_field_values": {
+        "type": "object",
+        "description": "Admin-filled field values keyed by field id"
+      },
+      "client_field_values": {
+        "type": "object",
+        "description": "Client-filled field values keyed by field id"
+      },
+      "admin_signature_url": {
+        "type": "string",
+        "description": "Admin signature image URL"
+      },
+      "admin_signed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "admin_signer_name": {
+        "type": "string"
+      },
+      "admin_signer_email": {
+        "type": "string"
+      },
+      "recipient_name": {
+        "type": "string"
+      },
+      "recipient_email": {
+        "type": "string"
+      },
+      "recipient_phone": {
+        "type": "string"
+      },
+      "company_name": {
+        "type": "string"
+      },
+      "sign_token": {
+        "type": "string"
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "allow_download_before_sign": {
+        "type": "boolean",
+        "default": true
+      },
+      "allow_download_after_sign": {
+        "type": "boolean",
+        "default": true
+      },
+      "send_whatsapp": {
+        "type": "boolean",
+        "default": false
+      },
+      "email_subject": {
+        "type": "string"
+      },
+      "email_message": {
+        "type": "string"
+      },
+      "reminder_days": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "reminder_sent_count": {
+        "type": "number",
+        "default": 0
+      },
+      "last_reminder_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "viewed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signing_started_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Client signed at"
+      },
+      "declined_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "decline_reason": {
+        "type": "string"
+      },
+      "signature_image_url": {
+        "type": "string",
+        "description": "Client signature image URL"
+      },
+      "signature_method": {
+        "type": "string",
+        "enum": [
+          "drawn",
+          "typed"
+        ]
+      },
+      "signer_confirmed_name": {
+        "type": "string"
+      },
+      "signer_confirmed_email": {
+        "type": "string"
+      },
+      "signer_ip": {
+        "type": "string"
+      },
+      "signer_device": {
+        "type": "string"
+      },
+      "signer_browser": {
+        "type": "string"
+      },
+      "signer_user_agent": {
+        "type": "string"
+      },
+      "consent_read": {
+        "type": "boolean",
+        "default": false
+      },
+      "consent_identity": {
+        "type": "boolean",
+        "default": false
+      },
+      "consent_authorised": {
+        "type": "boolean",
+        "default": false
+      },
+      "consent_electronic": {
+        "type": "boolean",
+        "default": false
+      },
+      "consent_submit": {
+        "type": "boolean",
+        "default": false
+      },
+      "signed_document_url": {
+        "type": "string"
+      },
+      "pdf_generation_status": {
+        "type": "string"
+      },
+      "audit_trail": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "sent_by": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "open_count": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "title",
+      "recipient_email",
+      "file_url"
+    ]
+  },
+  "LeadScore": {
+    "name": "LeadScore",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "score": {
+        "type": "number",
+        "default": 0,
+        "description": "0-100 composite score"
+      },
+      "grade": {
+        "type": "string",
+        "enum": [
+          "Cold",
+          "Warm",
+          "Hot",
+          "Qualified"
+        ],
+        "default": "Cold"
+      },
+      "score_breakdown": {
+        "type": "object",
+        "properties": {
+          "recency": {
+            "type": "number",
+            "default": 0,
+            "description": "Points for recent activity"
+          },
+          "engagement": {
+            "type": "number",
+            "default": 0,
+            "description": "Points for quote views, portal logins"
+          },
+          "deal_value": {
+            "type": "number",
+            "default": 0,
+            "description": "Points for high deal value"
+          },
+          "completeness": {
+            "type": "number",
+            "default": 0,
+            "description": "Points for complete contact profile"
+          },
+          "pipeline_stage": {
+            "type": "number",
+            "default": 0,
+            "description": "Points for advanced pipeline stage"
+          }
+        }
+      },
+      "last_calculated_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "notes": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact_id"
+    ]
+  },
+  "ClientDelay": {
+    "name": "ClientDelay",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "delay_type": {
+        "type": "string",
+        "enum": [
+          "Late Manuscript",
+          "Late Payment",
+          "Late Approval",
+          "Late Corrections",
+          "Wrong File Sent",
+          "Changed Specifications",
+          "Client Unresponsive",
+          "Contract Delay",
+          "Other"
+        ]
+      },
+      "description": {
+        "type": "string"
+      },
+      "days_delayed": {
+        "type": "number",
+        "default": 0
+      },
+      "reported_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "resolved": {
+        "type": "boolean",
+        "default": false
+      },
+      "resolved_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "impact_on_deadline": {
+        "type": "string"
+      },
+      "notified_client": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "project_id",
+      "delay_type",
+      "reported_at"
+    ]
+  },
+  "Pipeline": {
+    "name": "Pipeline",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Pipeline name"
+      },
+      "description": {
+        "type": "string"
+      },
+      "pipeline_type": {
+        "type": "string",
+        "enum": [
+          "sales",
+          "printing",
+          "editing",
+          "cover_design",
+          "typesetting",
+          "full_publishing",
+          "ghostwriting",
+          "author_website",
+          "contract",
+          "invoice",
+          "delivery",
+          "custom"
+        ],
+        "default": "sales"
+      },
+      "stages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "order": {
+              "type": "number"
+            },
+            "checklist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "assigned_to": {
+              "type": "string"
+            },
+            "auto_move_trigger": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Ordered list of pipeline stages"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "is_default": {
+        "type": "boolean",
+        "default": false
+      },
+      "entity_type": {
+        "type": "string",
+        "enum": [
+          "contact",
+          "project"
+        ],
+        "default": "contact",
+        "description": "Whether this pipeline manages contacts or projects"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "EmailCampaign": {
+    "name": "EmailCampaign",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Campaign name"
+      },
+      "subject": {
+        "type": "string",
+        "description": "Email subject line"
+      },
+      "preview_text": {
+        "type": "string",
+        "description": "Email preview/preheader text"
+      },
+      "body_html": {
+        "type": "string",
+        "description": "HTML email body"
+      },
+      "body_text": {
+        "type": "string",
+        "description": "Plain text fallback"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Scheduled",
+          "Sending",
+          "Sent",
+          "Paused",
+          "Cancelled"
+        ],
+        "default": "Draft"
+      },
+      "campaign_type": {
+        "type": "string",
+        "enum": [
+          "Newsletter",
+          "Promotion",
+          "Follow-up",
+          "Drip",
+          "Announcement",
+          "Re-engagement"
+        ],
+        "default": "Newsletter"
+      },
+      "audience_filter": {
+        "type": "object",
+        "description": "Filter criteria for recipients",
+        "properties": {
+          "lifecycle_stages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pipeline_stages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "service_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclude_unsubscribed": {
+            "type": "boolean",
+            "default": true
+          },
+          "exclude_do_not_contact": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "scheduled_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "total_recipients": {
+        "type": "number",
+        "default": 0
+      },
+      "total_sent": {
+        "type": "number",
+        "default": 0
+      },
+      "total_delivered": {
+        "type": "number",
+        "default": 0
+      },
+      "total_opened": {
+        "type": "number",
+        "default": 0
+      },
+      "total_clicked": {
+        "type": "number",
+        "default": 0
+      },
+      "total_bounced": {
+        "type": "number",
+        "default": 0
+      },
+      "total_unsubscribed": {
+        "type": "number",
+        "default": 0
+      },
+      "open_rate": {
+        "type": "number",
+        "default": 0
+      },
+      "click_rate": {
+        "type": "number",
+        "default": 0
+      },
+      "from_name": {
+        "type": "string"
+      },
+      "from_email": {
+        "type": "string"
+      },
+      "reply_to": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "notes": {
+        "type": "string"
+      },
+      "created_by": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "subject"
+    ]
+  },
+  "PurchaseOrder": {
+    "name": "PurchaseOrder",
+    "type": "object",
+    "properties": {
+      "po_number": {
+        "type": "string",
+        "description": "Auto-generated PO number e.g. PO-2026-0001"
+      },
+      "supplier_id": {
+        "type": "string",
+        "description": "Supplier Contact ID"
+      },
+      "supplier_snapshot": {
+        "type": "object",
+        "description": "Snapshot of supplier details at time of order"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Sent",
+          "Confirmed",
+          "Partially Received",
+          "Completed",
+          "Cancelled"
+        ],
+        "default": "Draft"
+      },
+      "order_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "expected_delivery_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "actual_delivery_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "line_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "material_id": {
+              "type": "string"
+            },
+            "material_name": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "number"
+            },
+            "unit_price": {
+              "type": "number"
+            },
+            "line_total": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "subtotal": {
+        "type": "number",
+        "default": 0
+      },
+      "vat_rate": {
+        "type": "number",
+        "default": 15
+      },
+      "vat_amount": {
+        "type": "number",
+        "default": 0
+      },
+      "total": {
+        "type": "number",
+        "default": 0
+      },
+      "delivery_address": {
+        "type": "string"
+      },
+      "payment_terms": {
+        "type": "string",
+        "default": "Payment due within 30 days"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "internal_notes": {
+        "type": "string"
+      },
+      "tracking_number": {
+        "type": "string"
+      },
+      "received_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "line_item_index": {
+              "type": "number"
+            },
+            "quantity_received": {
+              "type": "number"
+            },
+            "received_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "received_by": {
+              "type": "string"
+            },
+            "condition": {
+              "type": "string",
+              "enum": [
+                "Good",
+                "Damaged",
+                "Incorrect",
+                "Missing"
+              ]
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "invoice_number": {
+        "type": "string",
+        "description": "Supplier invoice number"
+      },
+      "invoice_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "payment_status": {
+        "type": "string",
+        "enum": [
+          "Unpaid",
+          "Partially Paid",
+          "Paid"
+        ],
+        "default": "Unpaid"
+      },
+      "payment_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "created_by": {
+        "type": "string"
+      },
+      "approved_by": {
+        "type": "string"
+      },
+      "approved_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "po_number",
+      "supplier_id",
+      "order_date"
+    ]
+  },
+  "QuotePackage": {
+    "name": "QuotePackage",
+    "type": "object",
+    "properties": {
+      "quote_id": {
+        "type": "string",
+        "description": "Parent Quote ID"
+      },
+      "name": {
+        "type": "string",
+        "description": "Package name e.g. Bronze, Silver, Gold"
+      },
+      "description": {
+        "type": "string",
+        "description": "Package description"
+      },
+      "total_price": {
+        "type": "number",
+        "default": 0
+      },
+      "is_recommended": {
+        "type": "boolean",
+        "default": false
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      },
+      "features": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of features included (5-7 bullet points)"
+      }
+    },
+    "required": [
+      "quote_id",
+      "name",
+      "total_price"
+    ]
+  },
+  "Notification": {
+    "name": "Notification",
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "message": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "info",
+          "success",
+          "warning",
+          "error",
+          "action_required"
+        ],
+        "default": "info"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "invoice",
+          "quote",
+          "payment",
+          "nda",
+          "portal",
+          "project",
+          "lead",
+          "client",
+          "system",
+          "campaign"
+        ],
+        "default": "system"
+      },
+      "priority": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "urgent"
+        ],
+        "default": "medium"
+      },
+      "is_read": {
+        "type": "boolean",
+        "default": false
+      },
+      "is_snoozed": {
+        "type": "boolean",
+        "default": false
+      },
+      "snoozed_until": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "action_label": {
+        "type": "string",
+        "description": "CTA button label"
+      },
+      "action_url": {
+        "type": "string",
+        "description": "CTA link path"
+      },
+      "entity_type": {
+        "type": "string"
+      },
+      "entity_id": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "string"
+      },
+      "read_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "title",
+      "message"
+    ]
+  },
+  "ProductionJob": {
+    "name": "ProductionJob",
+    "type": "object",
+    "properties": {
+      "job_number": {
+        "type": "string",
+        "description": "Auto-generated job number e.g. PROD-2026-0001"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "job_type": {
+        "type": "string",
+        "enum": [
+          "Sample Print",
+          "Mass Production",
+          "Cover Print",
+          "Interior Print",
+          "Reprint"
+        ]
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Queued",
+          "In Progress",
+          "Quality Check",
+          "Completed",
+          "On Hold",
+          "Cancelled"
+        ],
+        "default": "Queued"
+      },
+      "priority": {
+        "type": "string",
+        "enum": [
+          "Low",
+          "Normal",
+          "High",
+          "Urgent"
+        ],
+        "default": "Normal"
+      },
+      "quantity": {
+        "type": "number",
+        "description": "Number of copies to print"
+      },
+      "book_size": {
+        "type": "string",
+        "description": "e.g. A5, 6x9, 21x21cm"
+      },
+      "page_count": {
+        "type": "number"
+      },
+      "paper_type": {
+        "type": "string",
+        "description": "e.g. Cream 90gsm, White 80gsm"
+      },
+      "colour_type": {
+        "type": "string",
+        "enum": [
+          "Black & White",
+          "Full Colour",
+          "Mixed"
+        ],
+        "default": "Black & White"
+      },
+      "cover_finish": {
+        "type": "string",
+        "description": "e.g. Matte, Gloss, Soft Touch"
+      },
+      "binding_type": {
+        "type": "string",
+        "enum": [
+          "Perfect Bound",
+          "Saddle Stitch",
+          "Hardcover",
+          "Spiral"
+        ]
+      },
+      "special_instructions": {
+        "type": "string"
+      },
+      "assigned_machine": {
+        "type": "string",
+        "description": "Printing machine assigned"
+      },
+      "assigned_operator": {
+        "type": "string",
+        "description": "Machine operator name"
+      },
+      "estimated_start_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "estimated_completion_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "actual_start_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "actual_completion_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "quality_check_passed": {
+        "type": "boolean",
+        "default": false
+      },
+      "quality_check_by": {
+        "type": "string"
+      },
+      "quality_check_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "quality_check_notes": {
+        "type": "string"
+      },
+      "material_usage": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "material_id": {
+              "type": "string"
+            },
+            "material_name": {
+              "type": "string"
+            },
+            "quantity_used": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            },
+            "cost": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "total_material_cost": {
+        "type": "number",
+        "default": 0
+      },
+      "labor_hours": {
+        "type": "number",
+        "default": 0
+      },
+      "labor_cost": {
+        "type": "number",
+        "default": 0
+      },
+      "total_production_cost": {
+        "type": "number",
+        "default": 0
+      },
+      "waste_percentage": {
+        "type": "number",
+        "description": "Percentage of material wasted"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "internal_notes": {
+        "type": "string"
+      },
+      "files": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "file_name": {
+              "type": "string"
+            },
+            "file_url": {
+              "type": "string"
+            },
+            "file_type": {
+              "type": "string"
+            },
+            "uploaded_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "checklist": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "type": "string"
+            },
+            "completed": {
+              "type": "boolean"
+            },
+            "completed_by": {
+              "type": "string"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updated_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "job_number",
+      "project_id",
+      "job_type",
+      "quantity"
+    ]
+  },
+  "Material": {
+    "name": "Material",
+    "type": "object",
+    "properties": {
+      "material_code": {
+        "type": "string",
+        "description": "Unique material code e.g. PAPER-A5-90GSM"
+      },
+      "name": {
+        "type": "string"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "Paper",
+          "Ink",
+          "Cover Stock",
+          "Binding",
+          "Packaging",
+          "Other"
+        ]
+      },
+      "description": {
+        "type": "string"
+      },
+      "supplier_id": {
+        "type": "string",
+        "description": "Linked Supplier Contact ID"
+      },
+      "unit_of_measure": {
+        "type": "string",
+        "enum": [
+          "sheets",
+          "reams",
+          "liters",
+          "kg",
+          "meters",
+          "units"
+        ],
+        "default": "sheets"
+      },
+      "cost_per_unit": {
+        "type": "number",
+        "default": 0
+      },
+      "current_stock": {
+        "type": "number",
+        "default": 0
+      },
+      "minimum_stock": {
+        "type": "number",
+        "description": "Reorder point"
+      },
+      "maximum_stock": {
+        "type": "number",
+        "description": "Maximum storage capacity"
+      },
+      "reorder_quantity": {
+        "type": "number",
+        "description": "Standard reorder quantity"
+      },
+      "lead_time_days": {
+        "type": "number",
+        "description": "Days for delivery from supplier"
+      },
+      "last_restock_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "last_used_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "storage_location": {
+        "type": "string",
+        "description": "Warehouse/bin location"
+      },
+      "expiry_date": {
+        "type": "string",
+        "format": "date",
+        "description": "For ink and time-sensitive materials"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "notes": {
+        "type": "string"
+      },
+      "specifications": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "finish": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          }
+        }
+      },
+      "attachments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "file_name": {
+              "type": "string"
+            },
+            "file_url": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "material_code",
+      "name",
+      "category"
+    ]
+  },
+  "CoverReview": {
+    "name": "CoverReview",
+    "type": "object",
+    "properties": {
+      "fileUrl": {
+        "type": "string"
+      },
+      "coverType": {
+        "type": "string"
+      },
+      "fullWidth": {
+        "type": "number"
+      },
+      "fullHeight": {
+        "type": "number"
+      },
+      "bleed": {
+        "type": "number"
+      },
+      "safe": {
+        "type": "number"
+      },
+      "spine": {
+        "type": "number"
+      },
+      "foldX": {
+        "type": "string"
+      },
+      "issues": {
+        "type": "string"
+      },
+      "checks": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pass",
+          "minor",
+          "fail"
+        ]
+      },
+      "summary": {
+        "type": "string"
+      }
+    },
+    "required": []
+  },
+  "QuoteLineItem": {
+    "name": "QuoteLineItem",
+    "type": "object",
+    "properties": {
+      "quote_id": {
+        "type": "string",
+        "description": "Parent Quote ID"
+      },
+      "service_id": {
+        "type": "string",
+        "description": "Optional linked QuoteService ID"
+      },
+      "description": {
+        "type": "string"
+      },
+      "quantity": {
+        "type": "number",
+        "default": 1
+      },
+      "unit_price": {
+        "type": "number",
+        "default": 0
+      },
+      "line_total": {
+        "type": "number",
+        "default": 0
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      },
+      "is_optional": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether this is an optional add-on"
+      },
+      "is_selected": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether this item is selected (for add-ons)"
+      }
+    },
+    "required": [
+      "quote_id",
+      "description"
+    ]
+  },
+  "MessageTemplate": {
+    "name": "MessageTemplate",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Template name e.g. Project Welcome"
+      },
+      "channel": {
+        "type": "string",
+        "enum": [
+          "email",
+          "whatsapp"
+        ],
+        "default": "email"
+      },
+      "subject": {
+        "type": "string",
+        "description": "Email subject line (supports {{variables}})"
+      },
+      "content_html": {
+        "type": "string",
+        "description": "Inner content HTML only \u2014 branded shell applied at render time. Supports {{variables}}."
+      },
+      "variables_used": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of variable names used in this template e.g. client_name, project_name"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "welcome",
+          "stage_update",
+          "payment",
+          "files",
+          "proof",
+          "approval",
+          "printing",
+          "collection",
+          "delivery",
+          "completion",
+          "reminder",
+          "review",
+          "delay",
+          "general"
+        ],
+        "default": "general"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "is_default": {
+        "type": "boolean",
+        "default": false,
+        "description": "Protects seed templates from deletion \u2014 can be restored to original"
+      },
+      "default_content_html": {
+        "type": "string",
+        "description": "Original seed content for restore functionality"
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "name",
+      "channel",
+      "content_html"
+    ]
+  },
+  "ClientWorkflow": {
+    "name": "ClientWorkflow",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "current_stage": {
+        "type": "string",
+        "description": "Current workflow stage"
+      },
+      "stage_history": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "stage": {
+              "type": "string"
+            },
+            "entered_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "exited_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "changed_by": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "Linked Quote ID"
+      },
+      "quote_status": {
+        "type": "string",
+        "enum": [
+          "not_required",
+          "draft",
+          "sent",
+          "viewed",
+          "accepted",
+          "rejected",
+          "expired"
+        ]
+      },
+      "nda_required": {
+        "type": "boolean",
+        "default": false
+      },
+      "nda_document_id": {
+        "type": "string",
+        "description": "Linked Document ID for NDA"
+      },
+      "nda_status": {
+        "type": "string",
+        "enum": [
+          "not_required",
+          "draft",
+          "sent",
+          "signed",
+          "declined"
+        ]
+      },
+      "nda_signed": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether NDA has been signed"
+      },
+      "nda_signed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When NDA was signed"
+      },
+      "nda_signed_by": {
+        "type": "string",
+        "description": "Name of the signer"
+      },
+      "nda_signed_email": {
+        "type": "string",
+        "description": "Email of the signer"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "invoice_status": {
+        "type": "string",
+        "enum": [
+          "not_required",
+          "draft",
+          "sent",
+          "partially_paid",
+          "paid",
+          "overdue"
+        ]
+      },
+      "payment_status": {
+        "type": "string",
+        "enum": [
+          "unpaid",
+          "deposit_paid",
+          "partially_paid",
+          "paid",
+          "overdue"
+        ]
+      },
+      "payment_received_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "project_started_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "blocked_reason": {
+        "type": "string",
+        "description": "Why workflow is blocked (e.g. payment pending)"
+      },
+      "next_action": {
+        "type": "string",
+        "description": "Next required action e.g. Send Quote, Await NDA Signature"
+      },
+      "next_action_due_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "service_type": {
+        "type": "string",
+        "description": "Selected service type"
+      },
+      "automation_enabled": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "required": [
+      "contact_id",
+      "current_stage"
+    ]
+  },
+  "Clause": {
+    "name": "Clause",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Clause name e.g. Confidentiality Clause"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "Confidentiality",
+          "Payment",
+          "Intellectual Property",
+          "Cancellation",
+          "Approval",
+          "Revision Limits",
+          "Delivery",
+          "Liability",
+          "Dispute Resolution",
+          "General",
+          "NDA",
+          "Supplier"
+        ],
+        "default": "General"
+      },
+      "content": {
+        "type": "string",
+        "description": "Full clause text (may contain merge fields like {{client_name}})"
+      },
+      "short_description": {
+        "type": "string",
+        "description": "Brief one-line summary of what this clause does"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "name",
+      "content"
+    ]
+  },
+  "ServiceEmailLog": {
+    "name": "ServiceEmailLog",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string"
+      },
+      "client_name": {
+        "type": "string"
+      },
+      "client_email": {
+        "type": "string"
+      },
+      "project_title": {
+        "type": "string"
+      },
+      "service_type": {
+        "type": "string"
+      },
+      "stage_key": {
+        "type": "string"
+      },
+      "stage_label": {
+        "type": "string"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "body_html": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "sent",
+          "failed",
+          "resent"
+        ],
+        "default": "sent"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sent_by": {
+        "type": "string"
+      },
+      "error_message": {
+        "type": "string"
+      },
+      "attachments_included": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of attachment filenames included with this email"
+      },
+      "is_welcome_email": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "project_id",
+      "client_email",
+      "stage_key",
+      "subject"
+    ]
+  },
+  "Receipt": {
+    "name": "Receipt",
+    "type": "object",
+    "properties": {
+      "receipt_number": {
+        "type": "string",
+        "description": "Auto-generated, e.g. REC-0001"
+      },
+      "payment_id": {
+        "type": "string",
+        "description": "Linked Payment ID"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "contact_snapshot": {
+        "type": "object",
+        "description": "Snapshot of client details at time of receipt"
+      },
+      "invoice_number": {
+        "type": "string",
+        "description": "Denormalised invoice number"
+      },
+      "amount_paid": {
+        "type": "number",
+        "default": 0
+      },
+      "balance_after": {
+        "type": "number",
+        "default": 0,
+        "description": "Remaining balance on the invoice after this payment"
+      },
+      "invoice_total": {
+        "type": "number",
+        "default": 0
+      },
+      "payment_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "payment_method": {
+        "type": "string",
+        "enum": [
+          "EFT",
+          "Card",
+          "Cash",
+          "Other"
+        ]
+      },
+      "reference": {
+        "type": "string"
+      },
+      "acknowledgement_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "payment_id",
+      "invoice_id",
+      "contact_id",
+      "receipt_number",
+      "amount_paid"
+    ]
+  },
+  "Quote": {
+    "name": "Quote",
+    "type": "object",
+    "properties": {
+      "quote_number": {
+        "type": "string",
+        "description": "Auto-sequential quote number e.g. CBSA-QT-2026-0001"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "contact_snapshot": {
+        "type": "object",
+        "description": "Snapshot of contact details at time of quote"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "standard",
+          "premium"
+        ],
+        "default": "standard",
+        "description": "Quote generation mode"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Sent",
+          "Delivered",
+          "Opened",
+          "Viewed",
+          "Pending",
+          "Accepted",
+          "Rejected",
+          "Changes Requested",
+          "Expired",
+          "Converted",
+          "Paid",
+          "Cancelled"
+        ],
+        "default": "Draft"
+      },
+      "service_category": {
+        "type": "string",
+        "enum": [
+          "Book Printing",
+          "Book Editing",
+          "Proofreading",
+          "Book Cover Design",
+          "Typesetting and Layout",
+          "Manuscript Evaluation",
+          "Ghostwriting",
+          "Author Website Design",
+          "Ebook Publishing",
+          "Full Publishing Package",
+          "Custom Service"
+        ],
+        "description": "Primary service category for this quote"
+      },
+      "project_type": {
+        "type": "string",
+        "description": "Type of project e.g. Novel, Children's Book, Academic, Business Book"
+      },
+      "subtotal": {
+        "type": "number",
+        "default": 0
+      },
+      "discount_amount": {
+        "type": "number",
+        "default": 0
+      },
+      "discount_percentage": {
+        "type": "number",
+        "description": "Discount as a percentage (optional)"
+      },
+      "vat_rate": {
+        "type": "number",
+        "default": 15
+      },
+      "vat_amount": {
+        "type": "number",
+        "default": 0
+      },
+      "total": {
+        "type": "number",
+        "default": 0
+      },
+      "include_vat": {
+        "type": "boolean",
+        "default": true
+      },
+      "deposit_required": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether a deposit is required"
+      },
+      "deposit_amount": {
+        "type": "number",
+        "description": "Deposit amount if required"
+      },
+      "deposit_percentage": {
+        "type": "number",
+        "description": "Deposit as percentage of total"
+      },
+      "balance_due": {
+        "type": "number",
+        "description": "Remaining balance after deposit"
+      },
+      "valid_until": {
+        "type": "string",
+        "format": "date"
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When quote expires (auto-calculated)"
+      },
+      "view_token": {
+        "type": "string",
+        "description": "Unique token for public view link"
+      },
+      "pdf_url": {
+        "type": "string",
+        "description": "URL to generated PDF"
+      },
+      "book_title": {
+        "type": "string",
+        "description": "Client's book title"
+      },
+      "project_understanding_text": {
+        "type": "string",
+        "description": "Personalised project understanding (Premium mode)"
+      },
+      "intro_video_url": {
+        "type": "string",
+        "description": "Intro video URL (Premium mode)"
+      },
+      "primary_package_id": {
+        "type": "string",
+        "description": "Selected package ID (Premium mode)"
+      },
+      "printing_specs": {
+        "type": "object",
+        "description": "Book printing specifications",
+        "properties": {
+          "book_size": {
+            "type": "string"
+          },
+          "page_count": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "paper_type": {
+            "type": "string"
+          },
+          "colour_type": {
+            "type": "string",
+            "enum": [
+              "Black & White",
+              "Full Colour",
+              "Mixed"
+            ]
+          },
+          "cover_finish": {
+            "type": "string"
+          },
+          "binding_type": {
+            "type": "string"
+          },
+          "hardcover": {
+            "type": "boolean"
+          },
+          "isbn_required": {
+            "type": "boolean"
+          },
+          "sample_required": {
+            "type": "boolean"
+          }
+        }
+      },
+      "notes": {
+        "type": "string",
+        "description": "Internal/client notes"
+      },
+      "internal_notes": {
+        "type": "string",
+        "description": "Admin-only internal notes"
+      },
+      "terms": {
+        "type": "string",
+        "description": "Payment terms shown on quote"
+      },
+      "payment_link": {
+        "type": "string",
+        "description": "Payment link URL if applicable"
+      },
+      "payment_type": {
+        "type": "string",
+        "enum": [
+          "full",
+          "deposit",
+          "balance",
+          "manual"
+        ],
+        "description": "Type of payment this quote supports"
+      },
+      "follow_up_date": {
+        "type": "string",
+        "format": "date",
+        "description": "Date for follow-up reminder"
+      },
+      "follow_up_sent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether follow-up reminder was sent"
+      },
+      "converted_to_invoice_id": {
+        "type": "string",
+        "description": "Invoice ID if converted"
+      },
+      "converted_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When quote was converted to invoice"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "delivered_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "viewed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "accepted_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "accepted_signature_url": {
+        "type": "string",
+        "description": "URL to signature image"
+      },
+      "signature_method": {
+        "type": "string",
+        "description": "How the client signed (drawn, typed, etc.)"
+      },
+      "signed_by_name": {
+        "type": "string",
+        "description": "Name of the person who accepted/signed the quote"
+      },
+      "signed_by_email": {
+        "type": "string",
+        "description": "Email of the person who accepted/signed the quote"
+      },
+      "rejected_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "rejected_reason": {
+        "type": "string",
+        "description": "Reason for rejection"
+      },
+      "declined_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the quote was declined by the client"
+      },
+      "declined_reason": {
+        "type": "string",
+        "description": "Reason the client declined the quote"
+      },
+      "changes_requested_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the client requested changes"
+      },
+      "client_message": {
+        "type": "string",
+        "description": "Message left by the client when requesting changes"
+      },
+      "cancelled_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "cancelled_reason": {
+        "type": "string"
+      },
+      "last_viewer_ip": {
+        "type": "string"
+      },
+      "last_viewer_timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "audit_trail": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "user": {
+              "type": "string"
+            },
+            "details": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "History of actions on this quote"
+      }
+    },
+    "required": [
+      "contact_id",
+      "quote_number"
+    ]
+  },
+  "QuoteViewSession": {
+    "name": "QuoteViewSession",
+    "type": "object",
+    "properties": {
+      "quote_id": {
+        "type": "string",
+        "description": "Quote ID being viewed"
+      },
+      "viewer_ip": {
+        "type": "string"
+      },
+      "user_agent": {
+        "type": "string"
+      },
+      "session_start": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "session_end": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sections_viewed": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Array of section IDs viewed"
+      },
+      "addons_toggled": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Array of add-on IDs toggled"
+      },
+      "time_on_page_seconds": {
+        "type": "number",
+        "default": 0
+      },
+      "came_from_email": {
+        "type": "boolean",
+        "default": false
+      },
+      "device_type": {
+        "type": "string",
+        "enum": [
+          "mobile",
+          "tablet",
+          "desktop"
+        ]
+      }
+    },
+    "required": [
+      "quote_id",
+      "session_start"
+    ]
+  },
+  "User": {
+    "name": "User",
+    "type": "object",
+    "properties": {
+      "role": {
+        "type": "string",
+        "description": "The role of the user in the app",
+        "enum": [
+          "admin",
+          "super_user",
+          "standard_user"
+        ],
+        "default": "standard_user"
+      },
+      "profile_photo_url": {
+        "type": "string",
+        "description": "URL to user profile photo"
+      },
+      "assigned_leads": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Lead IDs assigned to this user"
+      },
+      "assigned_clients": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Client IDs assigned to this user"
+      }
+    },
+    "required": [
+      "role"
+    ]
+  },
+  "QuoteSignature": {
+    "name": "QuoteSignature",
+    "type": "object",
+    "properties": {
+      "quote_id": {
+        "type": "string",
+        "description": "Quote ID"
+      },
+      "signer_name": {
+        "type": "string"
+      },
+      "signer_email": {
+        "type": "string"
+      },
+      "signer_ip": {
+        "type": "string"
+      },
+      "signer_user_agent": {
+        "type": "string"
+      },
+      "signature_image_url": {
+        "type": "string",
+        "description": "URL to signature image"
+      },
+      "signed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signature_method": {
+        "type": "string",
+        "enum": [
+          "drawn",
+          "typed"
+        ],
+        "description": "How signature was created"
+      },
+      "legal_acknowledgment_checked": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "quote_id",
+      "signer_name",
+      "signer_email",
+      "signature_image_url",
+      "signed_at"
+    ]
+  },
+  "WorkflowRule": {
+    "name": "WorkflowRule",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Rule name e.g. Send Quote on Stage Change"
+      },
+      "trigger_stage": {
+        "type": "string",
+        "description": "Pipeline stage that triggers this rule"
+      },
+      "trigger_action": {
+        "type": "string",
+        "enum": [
+          "stage_entered",
+          "quote_accepted",
+          "document_signed",
+          "invoice_paid",
+          "payment_received"
+        ],
+        "description": "What triggers this rule"
+      },
+      "service_types": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Which services this applies to (empty = all)"
+      },
+      "requires_quote": {
+        "type": "boolean",
+        "default": true
+      },
+      "requires_nda": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether this service requires an NDA"
+      },
+      "requires_invoice": {
+        "type": "boolean",
+        "default": true
+      },
+      "requires_deposit": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether deposit payment is required before starting"
+      },
+      "deposit_percentage": {
+        "type": "number",
+        "default": 50,
+        "description": "Deposit percentage if required"
+      },
+      "block_production_until_paid": {
+        "type": "boolean",
+        "default": true,
+        "description": "Prevent project from starting before payment"
+      },
+      "auto_send_email": {
+        "type": "boolean",
+        "default": false
+      },
+      "email_template_id": {
+        "type": "string",
+        "description": "MessageTemplate ID to use"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "required": [
+      "name",
+      "trigger_stage"
+    ]
+  },
+  "ProofApproval": {
+    "name": "ProofApproval",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "proof_type": {
+        "type": "string",
+        "enum": [
+          "cover_design",
+          "typesetting",
+          "manuscript",
+          "final_proof",
+          "other"
+        ],
+        "description": "Type of proof"
+      },
+      "title": {
+        "type": "string",
+        "description": "Proof title (e.g., book title)"
+      },
+      "proof_file_url": {
+        "type": "string",
+        "description": "URL to proof file"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "approved",
+          "changes_requested",
+          "rejected",
+          "expired"
+        ],
+        "default": "pending"
+      },
+      "client_decision": {
+        "type": "string",
+        "enum": [
+          "approve",
+          "request_changes",
+          "reject"
+        ],
+        "description": "Client's decision"
+      },
+      "client_feedback": {
+        "type": "string",
+        "description": "Client feedback if changes requested"
+      },
+      "approved_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "changes_requested_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "deadline": {
+        "type": "string",
+        "format": "date",
+        "description": "Deadline for approval"
+      },
+      "reminder_sent": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "project_id",
+      "contact_id",
+      "proof_type",
+      "title",
+      "proof_file_url"
+    ]
+  },
+  "Project": {
+    "name": "Project",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "Linked Quote ID"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "author_name": {
+        "type": "string"
+      },
+      "service_type": {
+        "type": "string",
+        "enum": [
+          "Full Publishing Package",
+          "Printing Only",
+          "Editing Only",
+          "Cover Design Only",
+          "Typesetting Only",
+          "Ebook",
+          "Ghostwriting",
+          "Children's Book",
+          "Academic Editing",
+          "Custom"
+        ],
+        "default": "Full Publishing Package"
+      },
+      "stage": {
+        "type": "string",
+        "enum": [
+          "Enquiry Received",
+          "Quote Sent",
+          "Quote Accepted",
+          "Contract Sent",
+          "Contract Signed",
+          "Payment Received",
+          "Manuscript Received",
+          "Editing",
+          "Proofreading",
+          "Typesetting",
+          "Cover Design",
+          "Client Approval",
+          "Changes Requested",
+          "Final Approval Received",
+          "Sample Print Queued",
+          "Sample Print Completed",
+          "Mass Production Started",
+          "Ready for Collection",
+          "Courier Booked",
+          "Delivered",
+          "Completed"
+        ],
+        "default": "Enquiry Received"
+      },
+      "stage_changed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "waiting_on": {
+        "type": "string",
+        "enum": [
+          "Client",
+          "Admin",
+          "Editor",
+          "Designer",
+          "Typesetter",
+          "Production",
+          "Courier",
+          "Payment",
+          "Approval",
+          "Documents",
+          "None"
+        ],
+        "default": "None"
+      },
+      "queue_number": {
+        "type": "number",
+        "description": "Production queue number"
+      },
+      "queue_type": {
+        "type": "string",
+        "enum": [
+          "Sample Print Queue",
+          "Mass Production Queue",
+          "Active Print Queue"
+        ],
+        "description": "Which print queue this project belongs to"
+      },
+      "deadline": {
+        "type": "string",
+        "format": "date"
+      },
+      "project_value": {
+        "type": "number",
+        "default": 0
+      },
+      "payment_status": {
+        "type": "string",
+        "enum": [
+          "Unpaid",
+          "Deposit Paid",
+          "Partially Paid",
+          "Fully Paid",
+          "Overdue"
+        ],
+        "default": "Unpaid"
+      },
+      "contract_status": {
+        "type": "string",
+        "enum": [
+          "Not Sent",
+          "Sent",
+          "Signed",
+          "Expired"
+        ],
+        "default": "Not Sent"
+      },
+      "assigned_editor": {
+        "type": "string"
+      },
+      "assigned_designer": {
+        "type": "string"
+      },
+      "assigned_typesetter": {
+        "type": "string"
+      },
+      "assigned_manager": {
+        "type": "string"
+      },
+      "revision_counts": {
+        "type": "object",
+        "description": "How many revision rounds used per service",
+        "properties": {
+          "cover_design": {
+            "type": "number",
+            "default": 0
+          },
+          "editing": {
+            "type": "number",
+            "default": 0
+          },
+          "layout": {
+            "type": "number",
+            "default": 0
+          },
+          "proofreading": {
+            "type": "number",
+            "default": 0
+          }
+        }
+      },
+      "revision_limits": {
+        "type": "object",
+        "description": "Included revision rounds per service",
+        "properties": {
+          "cover_design": {
+            "type": "number",
+            "default": 2
+          },
+          "editing": {
+            "type": "number",
+            "default": 1
+          },
+          "layout": {
+            "type": "number",
+            "default": 2
+          },
+          "proofreading": {
+            "type": "number",
+            "default": 1
+          }
+        }
+      },
+      "book_spec": {
+        "type": "object",
+        "description": "Book specification sheet",
+        "properties": {
+          "book_size": {
+            "type": "string"
+          },
+          "page_count": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "interior_colour": {
+            "type": "string",
+            "enum": [
+              "Black & White",
+              "Full Colour",
+              "Mixed"
+            ]
+          },
+          "paper_type": {
+            "type": "string"
+          },
+          "cover_finish": {
+            "type": "string",
+            "enum": [
+              "Matte",
+              "Gloss",
+              "Soft Touch"
+            ]
+          },
+          "binding_type": {
+            "type": "string",
+            "enum": [
+              "Perfect Bound",
+              "Saddle Stitch",
+              "Hardcover",
+              "Spiral"
+            ]
+          },
+          "isbn": {
+            "type": "string"
+          },
+          "special_instructions": {
+            "type": "string"
+          }
+        }
+      },
+      "is_vip": {
+        "type": "boolean",
+        "default": false
+      },
+      "vip_tag": {
+        "type": "string",
+        "enum": [
+          "Returning Author",
+          "High-Value",
+          "Corporate",
+          "Urgent",
+          "Referral",
+          "Bulk Print"
+        ]
+      },
+      "notes": {
+        "type": "string",
+        "description": "Internal admin notes"
+      },
+      "client_notes": {
+        "type": "string",
+        "description": "Notes visible to client"
+      },
+      "is_at_risk": {
+        "type": "boolean",
+        "default": false
+      },
+      "risk_reason": {
+        "type": "string"
+      },
+      "completed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "automation_enabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Enable Automated Project Updates for this project"
+      },
+      "updates_paused": {
+        "type": "boolean",
+        "default": false,
+        "description": "Temporarily pause automated updates without disabling"
+      },
+      "last_update_sent_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the last automated update was sent \u2014 used by the 2-day check"
+      },
+      "current_stage": {
+        "type": "string",
+        "description": "Mirrors stage field \u2014 used by automation engine for stage-change detection"
+      },
+      "automation_stop_reason": {
+        "type": "string",
+        "description": "Why automation was stopped e.g. completed, do_not_contact, manual"
+      }
+    },
+    "required": [
+      "contact_id",
+      "book_title"
+    ]
+  },
+  "ServiceWorkflow": {
+    "name": "ServiceWorkflow",
+    "type": "object",
+    "properties": {
+      "service_name": {
+        "type": "string",
+        "description": "The service this workflow applies to. e.g. Book Printing, Ghostwriting"
+      },
+      "pipeline_stages": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The sequence of pipeline stages for this service."
+      },
+      "requires_quote": {
+        "type": "boolean",
+        "default": true
+      },
+      "requires_nda": {
+        "type": "boolean",
+        "default": false
+      },
+      "nda_template_id": {
+        "type": "string",
+        "description": "Default Document ID for the NDA template"
+      },
+      "requires_invoice": {
+        "type": "boolean",
+        "default": true
+      },
+      "requires_deposit": {
+        "type": "boolean",
+        "default": false
+      },
+      "deposit_percentage": {
+        "type": "number",
+        "default": 50
+      },
+      "block_production_until_paid": {
+        "type": "boolean",
+        "default": true
+      },
+      "automated_reminders": {
+        "type": "object",
+        "properties": {
+          "quote_sent": {
+            "type": "boolean",
+            "default": true
+          },
+          "nda_sent": {
+            "type": "boolean",
+            "default": true
+          },
+          "invoice_sent": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "required": [
+      "service_name"
+    ]
+  },
+  "DocumentActivity": {
+    "name": "DocumentActivity",
+    "type": "object",
+    "properties": {
+      "document_id": {
+        "type": "string",
+        "description": "Linked Document ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "action": {
+        "type": "string",
+        "enum": [
+          "uploaded",
+          "sent",
+          "resent",
+          "opened",
+          "viewed",
+          "downloaded",
+          "signed",
+          "approved",
+          "rejected",
+          "expired",
+          "archived",
+          "payment_proof_uploaded",
+          "changes_requested",
+          "question_asked",
+          "link_clicked",
+          "password_entered",
+          "version_created",
+          "reminder_sent"
+        ]
+      },
+      "actor_type": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "client"
+        ],
+        "default": "client"
+      },
+      "actor_email": {
+        "type": "string"
+      },
+      "actor_ip": {
+        "type": "string"
+      },
+      "actor_device": {
+        "type": "string"
+      },
+      "actor_browser": {
+        "type": "string"
+      },
+      "actor_user_agent": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Extra data e.g. file URL for proof uploads"
+      }
+    },
+    "required": [
+      "document_id",
+      "action",
+      "timestamp"
+    ]
+  },
+  "PipelineStageHistory": {
+    "name": "PipelineStageHistory",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "ID of the contact"
+      },
+      "from_stage": {
+        "type": "string",
+        "description": "Previous pipeline stage"
+      },
+      "to_stage": {
+        "type": "string",
+        "description": "New pipeline stage"
+      },
+      "changed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the stage changed"
+      },
+      "changed_by": {
+        "type": "string",
+        "description": "Email of user who changed the stage"
+      },
+      "notes": {
+        "type": "string",
+        "description": "Optional notes about the stage change"
+      }
+    },
+    "required": [
+      "contact_id",
+      "to_stage",
+      "changed_at",
+      "changed_by"
+    ]
+  },
+  "QuoteService": {
+    "name": "QuoteService",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Service name"
+      },
+      "default_description": {
+        "type": "string",
+        "description": "Default line item description"
+      },
+      "default_price": {
+        "type": "number",
+        "description": "Default unit price"
+      },
+      "default_unit": {
+        "type": "string",
+        "description": "Unit label e.g. per word, per page, flat fee"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether service is available in quote builder"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "editing",
+          "design",
+          "typesetting",
+          "printing",
+          "package",
+          "ebook",
+          "other"
+        ],
+        "default": "other",
+        "description": "Service category for grouping"
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0,
+        "description": "Display order in dropdowns"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "EmailMessage": {
+    "name": "EmailMessage",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string"
+      },
+      "quote_id": {
+        "type": "string"
+      },
+      "template_id": {
+        "type": "string"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sent_by": {
+        "type": "string"
+      },
+      "email_type": {
+        "type": "string",
+        "enum": [
+          "follow_up",
+          "quote",
+          "nda",
+          "invoice",
+          "welcome",
+          "reminder",
+          "general"
+        ]
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "sent",
+          "delivered",
+          "bounced",
+          "failed"
+        ]
+      },
+      "opened": {
+        "type": "boolean",
+        "default": false
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "last_opened_ip": {
+        "type": "string"
+      },
+      "clicked": {
+        "type": "boolean",
+        "default": false
+      },
+      "clicked_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "clicked_link": {
+        "type": "string"
+      },
+      "last_clicked_ip": {
+        "type": "string"
+      },
+      "user_agent": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact_id",
+      "subject",
+      "sent_at"
+    ]
+  },
+  "PipelineDeal": {
+    "name": "PipelineDeal",
+    "type": "object",
+    "properties": {
+      "pipeline_id": {
+        "type": "string"
+      },
+      "stage_key": {
+        "type": "string"
+      },
+      "client_name": {
+        "type": "string"
+      },
+      "client_email": {
+        "type": "string"
+      },
+      "client_phone": {
+        "type": "string"
+      },
+      "service_type": {
+        "type": "string"
+      },
+      "project_title": {
+        "type": "string"
+      },
+      "deal_value": {
+        "type": "number"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "assigned_team_member": {
+        "type": "string"
+      },
+      "linked_project_id": {
+        "type": "string",
+        "description": "ID of the ClientServiceProject created when deal reached Won"
+      },
+      "project_created_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "project_created_by": {
+        "type": "string"
+      },
+      "project_creation_failed": {
+        "type": "boolean",
+        "default": false
+      },
+      "project_creation_error": {
+        "type": "string"
+      },
+      "won_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lost_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "pipeline_id",
+      "stage_key",
+      "client_name"
+    ]
+  },
+  "AutomationRule": {
+    "name": "AutomationRule",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Human-readable rule name e.g. Send Welcome on Project Created"
+      },
+      "trigger": {
+        "type": "string",
+        "enum": [
+          "project_created",
+          "project_approved",
+          "stage_changed",
+          "no_update_2_days",
+          "payment_confirmed",
+          "proof_sent",
+          "proof_approved",
+          "client_no_response",
+          "project_completed",
+          "files_received",
+          "files_required"
+        ],
+        "description": "WHEN this event occurs"
+      },
+      "trigger_stage": {
+        "type": "string",
+        "description": "Optional \u2014 only fire when stage_changed to this specific stage"
+      },
+      "conditions": {
+        "type": "object",
+        "description": "Filter conditions e.g. {only_if_active: true, skip_if_do_not_contact: true, only_if_automation_enabled: true, require_email_exists: true, skip_if_already_sent: true}",
+        "properties": {
+          "only_if_active": {
+            "type": "boolean"
+          },
+          "skip_if_do_not_contact": {
+            "type": "boolean"
+          },
+          "only_if_automation_enabled": {
+            "type": "boolean"
+          },
+          "require_email_exists": {
+            "type": "boolean"
+          },
+          "skip_if_already_sent": {
+            "type": "boolean"
+          },
+          "skip_if_unsubscribed": {
+            "type": "boolean"
+          },
+          "not_stage": {
+            "type": "string"
+          }
+        }
+      },
+      "action": {
+        "type": "string",
+        "enum": [
+          "send_email",
+          "send_whatsapp",
+          "notify_admin",
+          "create_task",
+          "update_status",
+          "add_note",
+          "send_reminder",
+          "stop_automation"
+        ],
+        "description": "THEN do this"
+      },
+      "template_id": {
+        "type": "string",
+        "description": "Reference to MessageTemplate ID"
+      },
+      "template_name": {
+        "type": "string",
+        "description": "Denormalized template name for display"
+      },
+      "requires_approval": {
+        "type": "boolean",
+        "default": false,
+        "description": "If true, creates a pending_approval queue item instead of sending immediately"
+      },
+      "delay_minutes": {
+        "type": "number",
+        "default": 0,
+        "description": "Minutes to wait after trigger before sending (0 = immediate)"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "run_count": {
+        "type": "number",
+        "default": 0,
+        "description": "How many times this rule has fired"
+      },
+      "last_run_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "name",
+      "trigger",
+      "action"
+    ]
+  },
+  "QuoteSavedProgress": {
+    "name": "QuoteSavedProgress",
+    "type": "object",
+    "properties": {
+      "quote_id": {
+        "type": "string",
+        "description": "Quote ID"
+      },
+      "viewer_email": {
+        "type": "string"
+      },
+      "package_selected": {
+        "type": "string",
+        "description": "Selected package ID or name"
+      },
+      "addons_selected_json": {
+        "type": "object",
+        "description": "JSON of selected add-on IDs"
+      },
+      "last_section_viewed": {
+        "type": "string",
+        "description": "Last section ID viewed"
+      },
+      "return_token": {
+        "type": "string",
+        "description": "Secure token for return link"
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "quote_id",
+      "viewer_email",
+      "return_token"
+    ]
+  },
+  "FileRequest": {
+    "name": "FileRequest",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "request_type": {
+        "type": "string",
+        "enum": [
+          "manuscript",
+          "cover_image",
+          "author_photo",
+          "isbn_document",
+          "proof_corrections",
+          "signed_documents",
+          "final_files",
+          "other"
+        ],
+        "description": "Type of file requested"
+      },
+      "title": {
+        "type": "string",
+        "description": "Request title"
+      },
+      "description": {
+        "type": "string",
+        "description": "Description of what's needed"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "requested",
+          "uploaded",
+          "approved",
+          "rejected",
+          "expired"
+        ],
+        "default": "requested"
+      },
+      "uploaded_file_url": {
+        "type": "string",
+        "description": "URL to uploaded file"
+      },
+      "uploaded_file_name": {
+        "type": "string",
+        "description": "Name of uploaded file"
+      },
+      "uploaded_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "admin_feedback": {
+        "type": "string",
+        "description": "Admin feedback if rejected"
+      },
+      "deadline": {
+        "type": "string",
+        "format": "date",
+        "description": "Upload deadline"
+      }
+    },
+    "required": [
+      "project_id",
+      "contact_id",
+      "request_type",
+      "title"
+    ]
+  },
+  "PipelineTemplate": {
+    "name": "PipelineTemplate",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "stages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "isWon": {
+              "type": "boolean"
+            },
+            "isLost": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "is_default": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "name",
+      "stages"
+    ]
+  },
+  "ClientPortalAccess": {
+    "name": "ClientPortalAccess",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "access_token": {
+        "type": "string",
+        "description": "Unique secure token for portal URL (auto-generated if custom_slug not provided)"
+      },
+      "custom_slug": {
+        "type": "string",
+        "description": "Custom URL slug (e.g., 'john-doe-book') - if provided, used instead of access_token"
+      },
+      "email": {
+        "type": "string"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "expires_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "last_accessed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "access_count": {
+        "type": "number",
+        "default": 0
+      },
+      "allowed_sections": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Which sections client can see: quotes, invoices, projects, documents"
+      }
+    },
+    "required": [
+      "contact_id",
+      "project_id"
+    ]
+  },
+  "AppSettings": {
+    "name": "AppSettings",
+    "type": "object",
+    "properties": {
+      "setting_key": {
+        "type": "string",
+        "description": "Unique key e.g. email_settings"
+      },
+      "email_provider": {
+        "type": "string",
+        "enum": [
+          "resend",
+          "builtin"
+        ],
+        "default": "resend"
+      },
+      "sender_name": {
+        "type": "string",
+        "default": "Creative Books SA"
+      },
+      "sender_email": {
+        "type": "string",
+        "default": "info@creativebooks.co.za"
+      },
+      "reply_to": {
+        "type": "string",
+        "default": "info@creativebooks.co.za"
+      },
+      "is_configured": {
+        "type": "boolean",
+        "default": false
+      },
+      "value": {
+        "type": "object",
+        "description": "Generic JSON value for other settings"
+      }
+    },
+    "required": [
+      "setting_key"
+    ]
+  },
+  "Lead": {
+    "name": "Lead",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked contact ID"
+      },
+      "source_submission_id": {
+        "type": "string",
+        "description": "Source submission ID"
+      },
+      "stage": {
+        "type": "string",
+        "enum": [
+          "new",
+          "contacted",
+          "qualified",
+          "quoted",
+          "negotiating",
+          "won",
+          "lost"
+        ],
+        "default": "new",
+        "description": "Lead stage"
+      },
+      "stage_changed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When stage last changed"
+      },
+      "service_interest": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Services of interest"
+      },
+      "estimated_value": {
+        "type": "number",
+        "description": "Estimated value in ZAR"
+      },
+      "probability_percent": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Probability percentage"
+      },
+      "weighted_value": {
+        "type": "number",
+        "description": "Calculated: estimated_value \u00d7 probability / 100"
+      },
+      "expected_close_date": {
+        "type": "string",
+        "format": "date",
+        "description": "Expected close date"
+      },
+      "owner_id": {
+        "type": "string",
+        "description": "Owner user ID"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Lead tags"
+      },
+      "next_action": {
+        "type": "string",
+        "description": "Next action to take"
+      },
+      "next_action_due": {
+        "type": "string",
+        "format": "date",
+        "description": "Due date for next action"
+      },
+      "lost_reason": {
+        "type": "string",
+        "enum": [
+          "price",
+          "timing",
+          "competitor",
+          "no_response",
+          "not_a_fit",
+          "other"
+        ],
+        "description": "Reason lost"
+      },
+      "lost_reason_detail": {
+        "type": "string",
+        "description": "Detailed reason for loss"
+      },
+      "description": {
+        "type": "string",
+        "maxLength": 1000,
+        "description": "Optional description or summary of lead"
+      }
+    },
+    "required": [
+      "contact_id"
+    ],
+    "rls": {
+      "create": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "read": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          },
+          {
+            "data.owner_id": "{{user.id}}"
+          }
+        ]
+      },
+      "update": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          },
+          {
+            "data.owner_id": "{{user.id}}"
+          }
+        ]
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "CollectionSignature": {
+    "name": "CollectionSignature",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "book_title": {
+        "type": "string"
+      },
+      "collected_by": {
+        "type": "string",
+        "description": "Full name of person collecting"
+      },
+      "collector_id_number": {
+        "type": "string"
+      },
+      "collection_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "quantity_collected": {
+        "type": "number"
+      },
+      "signature_image_url": {
+        "type": "string",
+        "description": "Digital signature image URL"
+      },
+      "staff_member": {
+        "type": "string"
+      },
+      "collection_notes": {
+        "type": "string"
+      },
+      "invoice_id": {
+        "type": "string"
+      },
+      "fully_paid_at_collection": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "project_id",
+      "contact_id",
+      "collected_by",
+      "collection_date",
+      "quantity_collected"
+    ]
+  },
+  "EmailTemplate": {
+    "name": "EmailTemplate",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Template name"
+      },
+      "subject": {
+        "type": "string",
+        "description": "Email subject (supports merge fields)"
+      },
+      "body_html": {
+        "type": "string",
+        "description": "HTML body (supports merge fields)"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "follow_up",
+          "quote",
+          "onboarding",
+          "invoice",
+          "general",
+          "marketing"
+        ],
+        "default": "general"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0
+      }
+    },
+    "required": [
+      "name",
+      "subject",
+      "body_html"
+    ]
+  },
+  "SalesPipeline": {
+    "name": "SalesPipeline",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "stages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "isWon": {
+              "type": "boolean"
+            },
+            "isLost": {
+              "type": "boolean"
+            },
+            "order": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "created_from_template": {
+        "type": "string"
+      },
+      "template_id": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "NurtureSequence": {
+    "name": "NurtureSequence",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "trigger": {
+        "type": "string",
+        "enum": [
+          "new_lead",
+          "quote_sent",
+          "quote_viewed",
+          "quote_expired",
+          "no_activity_7d",
+          "no_activity_14d",
+          "no_activity_30d",
+          "manual"
+        ],
+        "default": "manual"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true
+      },
+      "steps": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "step_number": {
+              "type": "number"
+            },
+            "delay_days": {
+              "type": "number",
+              "default": 0
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body_html": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string",
+              "enum": [
+                "email",
+                "whatsapp"
+              ],
+              "default": "email"
+            }
+          }
+        }
+      },
+      "total_enrolled": {
+        "type": "number",
+        "default": 0
+      },
+      "total_completed": {
+        "type": "number",
+        "default": 0
+      },
+      "created_by": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "trigger"
+    ]
+  },
+  "CoverSpec": {
+    "name": "CoverSpec",
+    "type": "object",
+    "properties": {
+      "specId": {
+        "type": "string",
+        "description": "Unique spec ID (e.g. CS-XXXXXX)"
+      },
+      "version": {
+        "type": "string"
+      },
+      "coverType": {
+        "type": "string"
+      },
+      "bookSize": {
+        "type": "string"
+      },
+      "bindingType": {
+        "type": "string"
+      },
+      "paperType": {
+        "type": "string"
+      },
+      "pageCount": {
+        "type": "number"
+      },
+      "paperThicknessFactor": {
+        "type": "number"
+      },
+      "trimWidth": {
+        "type": "number"
+      },
+      "trimHeight": {
+        "type": "number"
+      },
+      "spineWidth": {
+        "type": "number"
+      },
+      "bleed": {
+        "type": "number"
+      },
+      "safeMargin": {
+        "type": "number"
+      },
+      "fullCoverWidth": {
+        "type": "number"
+      },
+      "fullCoverHeight": {
+        "type": "number"
+      },
+      "flapWidth": {
+        "type": "number"
+      },
+      "wrap": {
+        "type": "number"
+      },
+      "hinge": {
+        "type": "number"
+      },
+      "readingDirection": {
+        "type": "string"
+      },
+      "panelsJson": {
+        "type": "string",
+        "description": "Panel geometry as JSON"
+      },
+      "foldLinesJson": {
+        "type": "string",
+        "description": "Fold line positions as JSON"
+      },
+      "safeZonesJson": {
+        "type": "string",
+        "description": "Safe zone rects as JSON"
+      },
+      "barcodeBoxJson": {
+        "type": "string",
+        "description": "Barcode box as JSON"
+      },
+      "checksum": {
+        "type": "string",
+        "description": "Hash of key spec fields"
+      }
+    },
+    "required": [
+      "specId"
+    ]
+  },
+  "MessageLog": {
+    "name": "MessageLog",
+    "type": "object",
+    "properties": {
+      "client_id": {
+        "type": "string",
+        "description": "Reference to Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Reference to Project ID"
+      },
+      "channel": {
+        "type": "string",
+        "enum": [
+          "email",
+          "whatsapp"
+        ],
+        "default": "email"
+      },
+      "template_used": {
+        "type": "string",
+        "description": "Template name used"
+      },
+      "template_id": {
+        "type": "string"
+      },
+      "recipient": {
+        "type": "string",
+        "description": "Email address or WhatsApp number"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string",
+        "description": "Full rendered HTML body as sent"
+      },
+      "trigger": {
+        "type": "string",
+        "description": "Automation trigger that caused this send e.g. stage_changed"
+      },
+      "action_taken": {
+        "type": "string",
+        "description": "The action e.g. send_email"
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "success": {
+        "type": "boolean",
+        "default": true
+      },
+      "error_message": {
+        "type": "string"
+      },
+      "triggered_by": {
+        "type": "string",
+        "enum": [
+          "automation",
+          "admin"
+        ],
+        "default": "automation"
+      },
+      "dedup_key": {
+        "type": "string",
+        "description": "Unique key \u2014 checked before every send to prevent duplicates"
+      },
+      "automation_rule_id": {
+        "type": "string"
+      },
+      "provider": {
+        "type": "string",
+        "description": "resend or builtin"
+      },
+      "client_name": {
+        "type": "string",
+        "description": "Denormalized for display and filtering"
+      },
+      "project_name": {
+        "type": "string",
+        "description": "Denormalized for display and filtering"
+      },
+      "stage_at_send": {
+        "type": "string",
+        "description": "Project stage at time of send"
+      }
+    },
+    "required": [
+      "client_id",
+      "channel",
+      "recipient",
+      "sent_at",
+      "dedup_key"
+    ]
+  },
+  "PortalMessage": {
+    "name": "PortalMessage",
+    "type": "object",
+    "properties": {
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "sender_type": {
+        "type": "string",
+        "enum": [
+          "client",
+          "admin",
+          "system"
+        ],
+        "description": "Who sent the message"
+      },
+      "sender_name": {
+        "type": "string",
+        "description": "Name of sender"
+      },
+      "message": {
+        "type": "string",
+        "description": "Message content"
+      },
+      "is_read": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether message has been read"
+      },
+      "attachments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "file_name": {
+              "type": "string"
+            },
+            "file_url": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "internal_note": {
+        "type": "boolean",
+        "default": false,
+        "description": "If true, only visible to admin"
+      },
+      "parent_message_id": {
+        "type": "string",
+        "description": "For threaded conversations"
+      }
+    },
+    "required": [
+      "project_id",
+      "contact_id",
+      "sender_type",
+      "message"
+    ]
+  },
+  "CreditNote": {
+    "name": "CreditNote",
+    "type": "object",
+    "properties": {
+      "credit_note_number": {
+        "type": "string",
+        "description": "Auto-generated, e.g. CN-0001"
+      },
+      "invoice_id": {
+        "type": "string",
+        "description": "Linked Invoice ID"
+      },
+      "invoice_number": {
+        "type": "string",
+        "description": "Denormalised invoice number"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "contact_snapshot": {
+        "type": "object",
+        "description": "Snapshot of client details at time of credit note"
+      },
+      "date": {
+        "type": "string",
+        "format": "date"
+      },
+      "reason": {
+        "type": "string",
+        "description": "Reason for the credit note"
+      },
+      "line_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "quantity": {
+              "type": "number"
+            },
+            "unit_price": {
+              "type": "number"
+            },
+            "line_total": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "subtotal": {
+        "type": "number",
+        "default": 0,
+        "description": "Value excluding VAT"
+      },
+      "vat_rate": {
+        "type": "number",
+        "default": 15
+      },
+      "vat_amount": {
+        "type": "number",
+        "default": 0
+      },
+      "total": {
+        "type": "number",
+        "default": 0,
+        "description": "Total credited (incl. VAT)"
+      },
+      "acknowledgement_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "invoice_id",
+      "contact_id",
+      "credit_note_number",
+      "total"
+    ]
+  },
+  "Contract": {
+    "name": "Contract",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string",
+        "description": "Linked Contact ID"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Linked Project ID"
+      },
+      "title": {
+        "type": "string"
+      },
+      "document_type": {
+        "type": "string",
+        "enum": [
+          "Contract",
+          "NDA",
+          "Publishing Agreement",
+          "Book Cover Agreement",
+          "Editing Agreement",
+          "Printing Agreement",
+          "Supplier Agreement",
+          "Freelancer Agreement",
+          "Payment Agreement",
+          "Approval Form",
+          "Author Agreement",
+          "Internal Document",
+          "Legal Document",
+          "Other"
+        ],
+        "default": "Contract",
+        "description": "Type of document"
+      },
+      "book_title": {
+        "type": "string",
+        "description": "Client or company name / book title"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Draft",
+          "Admin Fields Completed",
+          "Admin Signed",
+          "Sent for Signature",
+          "Opened",
+          "Viewed",
+          "Signing Started",
+          "Signed",
+          "Fully Signed",
+          "Declined",
+          "Expired",
+          "Resent",
+          "Cancelled",
+          "Archived"
+        ],
+        "default": "Draft"
+      },
+      "contract_file_url": {
+        "type": "string",
+        "description": "Unsigned document file URL"
+      },
+      "signed_file_url": {
+        "type": "string",
+        "description": "Signed document file URL"
+      },
+      "sign_token": {
+        "type": "string"
+      },
+      "sign_token_expires": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "admin_signature_url": {
+        "type": "string",
+        "description": "Admin signature image URL"
+      },
+      "admin_signed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "admin_signer_name": {
+        "type": "string"
+      },
+      "admin_signer_email": {
+        "type": "string"
+      },
+      "contract_field_values": {
+        "type": "object",
+        "description": "Admin pre-filled field values"
+      },
+      "signer_name": {
+        "type": "string"
+      },
+      "signer_email": {
+        "type": "string"
+      },
+      "signer_ip": {
+        "type": "string"
+      },
+      "signer_user_agent": {
+        "type": "string"
+      },
+      "signature_image_url": {
+        "type": "string"
+      },
+      "audit_trail": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "opened_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "viewed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "signed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "declined_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "declined_reason": {
+        "type": "string"
+      },
+      "expiry_date": {
+        "type": "string",
+        "format": "date"
+      },
+      "reminder_sent_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "reminder_count": {
+        "type": "number",
+        "default": 0
+      },
+      "legal_consent_checked": {
+        "type": "boolean",
+        "default": false
+      },
+      "notes": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact_id",
+      "title"
+    ]
+  },
+  "CompanySettings": {
+    "name": "CompanySettings",
+    "type": "object",
+    "properties": {
+      "setting_key": {
+        "type": "string",
+        "description": "Always 'main' \u2014 singleton record",
+        "default": "main"
+      },
+      "company_name": {
+        "type": "string",
+        "default": "Creative Books SA"
+      },
+      "company_registration": {
+        "type": "string",
+        "description": "Company registration number"
+      },
+      "logo_url": {
+        "type": "string",
+        "description": "URL to company logo image"
+      },
+      "physical_address": {
+        "type": "string",
+        "description": "Full physical address"
+      },
+      "postal_address": {
+        "type": "string",
+        "description": "Postal address"
+      },
+      "email": {
+        "type": "string",
+        "default": "info@creativebooks.co.za"
+      },
+      "phone": {
+        "type": "string"
+      },
+      "whatsapp": {
+        "type": "string",
+        "description": "WhatsApp number for notifications"
+      },
+      "website_url": {
+        "type": "string"
+      },
+      "vat_number": {
+        "type": "string",
+        "description": "VAT registration number"
+      },
+      "currency": {
+        "type": "string",
+        "default": "ZAR",
+        "description": "ISO currency code"
+      },
+      "currency_symbol": {
+        "type": "string",
+        "default": "R",
+        "description": "Display symbol"
+      },
+      "default_vat_rate": {
+        "type": "number",
+        "default": 15,
+        "description": "Default VAT % applied to quotes and invoices"
+      },
+      "bank_name": {
+        "type": "string"
+      },
+      "bank_account_name": {
+        "type": "string"
+      },
+      "bank_account_number": {
+        "type": "string"
+      },
+      "bank_branch_code": {
+        "type": "string"
+      },
+      "bank_name_2": {
+        "type": "string",
+        "description": "Secondary bank name"
+      },
+      "bank_account_name_2": {
+        "type": "string",
+        "description": "Secondary account name"
+      },
+      "bank_account_number_2": {
+        "type": "string",
+        "description": "Secondary account number"
+      },
+      "bank_branch_code_2": {
+        "type": "string",
+        "description": "Secondary branch code"
+      },
+      "banking_details": {
+        "type": "string",
+        "description": "Free-text banking override \u2014 if set, used instead of structured fields"
+      },
+      "payment_instructions": {
+        "type": "string",
+        "description": "Default payment instructions for invoices"
+      },
+      "quote_terms": {
+        "type": "string",
+        "description": "Default terms & conditions for quotes"
+      },
+      "invoice_terms": {
+        "type": "string",
+        "description": "Default terms & conditions for invoices"
+      },
+      "quote_validity_days": {
+        "type": "number",
+        "default": 30,
+        "description": "Default quote validity period in days"
+      },
+      "signature_label": {
+        "type": "string",
+        "default": "Authorized Signature",
+        "description": "Label shown beneath the signature line on documents"
+      },
+      "admin_signature_url": {
+        "type": "string",
+        "description": "URL to uploaded admin signature image for documents"
+      },
+      "signature_name": {
+        "type": "string",
+        "description": "Name of authorised signatory"
+      },
+      "signature_role": {
+        "type": "string",
+        "description": "Role/title of authorised signatory"
+      },
+      "company_stamp_url": {
+        "type": "string",
+        "description": "URL to company stamp image"
+      },
+      "brand_color_primary": {
+        "type": "string",
+        "default": "#B87333",
+        "description": "Primary brand color (hex)"
+      },
+      "brand_color_secondary": {
+        "type": "string",
+        "default": "#D4A574",
+        "description": "Secondary brand color (hex)"
+      },
+      "document_footer_note": {
+        "type": "string",
+        "description": "Footer note printed on quotes, invoices, and receipts"
+      },
+      "email_footer": {
+        "type": "string",
+        "description": "Email footer text for branded emails"
+      },
+      "email_signature": {
+        "type": "string",
+        "description": "Email signature HTML"
+      },
+      "enable_whatsapp_notifications": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable WhatsApp notifications for quote actions"
+      },
+      "enable_email_notifications": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable email notifications for quote actions"
+      },
+      "admin_notification_email": {
+        "type": "string",
+        "description": "Email address for admin notifications (defaults to company email)"
+      }
+    },
+    "required": [
+      "setting_key"
+    ]
+  },
+  "ResourceDocument": {
+    "name": "ResourceDocument",
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "Document name"
+      },
+      "description": {
+        "type": "string",
+        "description": "Short description shown on the card"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "NDA",
+          "Contract",
+          "Agreement",
+          "Form",
+          "Policy",
+          "Template",
+          "Publishing Resource",
+          "Other"
+        ],
+        "default": "Other",
+        "description": "Document category"
+      },
+      "file_type": {
+        "type": "string",
+        "enum": [
+          "PDF",
+          "Word",
+          "Excel",
+          "Other"
+        ],
+        "default": "PDF",
+        "description": "File type"
+      },
+      "file_url": {
+        "type": "string",
+        "description": "Public URL of the uploaded document"
+      },
+      "file_size_kb": {
+        "type": "number",
+        "description": "File size in kilobytes"
+      },
+      "is_featured": {
+        "type": "boolean",
+        "default": false,
+        "description": "Show this document in the Featured section with premium styling"
+      },
+      "download_count": {
+        "type": "number",
+        "default": 0,
+        "description": "Number of times the document has been downloaded"
+      },
+      "sort_order": {
+        "type": "number",
+        "default": 0,
+        "description": "Display order (lower shows first)"
+      },
+      "is_active": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the document is visible on the public page"
+      }
+    },
+    "required": [
+      "title",
+      "file_url"
+    ]
+  },
+  "Service": {
+    "name": "Service",
+    "type": "object",
+    "properties": {
+      "category": {
+        "type": "string",
+        "enum": [
+          "printing",
+          "editing",
+          "design",
+          "writing",
+          "publishing",
+          "other"
+        ],
+        "description": "Service category"
+      },
+      "serviceName": {
+        "type": "string",
+        "description": "Main service name (e.g., 'Book Printing')"
+      },
+      "packageName": {
+        "type": "string",
+        "description": "Package name if applicable"
+      },
+      "description": {
+        "type": "string",
+        "description": "Service description"
+      },
+      "price": {
+        "type": "number",
+        "description": "Fixed price if applicable"
+      },
+      "pricingType": {
+        "type": "string",
+        "enum": [
+          "fixed",
+          "per_page",
+          "per_word",
+          "per_copy",
+          "per_colour_page",
+          "custom"
+        ],
+        "description": "How pricing is calculated"
+      },
+      "basePrice": {
+        "type": "number",
+        "description": "Base price for per-unit calculations"
+      },
+      "quantity": {
+        "type": "number",
+        "description": "Quantity this price applies to"
+      },
+      "bookSizeCondition": {
+        "type": "string",
+        "description": "Book size requirement (e.g., 'A5', '6x9', 'any')"
+      },
+      "pageCountMin": {
+        "type": "number",
+        "description": "Minimum page count"
+      },
+      "pageCountMax": {
+        "type": "number",
+        "description": "Maximum page count"
+      },
+      "wordCountMin": {
+        "type": "number",
+        "description": "Minimum word count"
+      },
+      "wordCountMax": {
+        "type": "number",
+        "description": "Maximum word count"
+      },
+      "copyQuantityMin": {
+        "type": "number",
+        "description": "Minimum copy quantity"
+      },
+      "copyQuantityMax": {
+        "type": "number",
+        "description": "Maximum copy quantity"
+      },
+      "addOnCondition": {
+        "type": "string",
+        "description": "Add-on or condition"
+      },
+      "notes": {
+        "type": "string",
+        "description": "Additional notes"
+      },
+      "active": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether this pricing is active"
+      }
+    },
+    "required": [
+      "category",
+      "serviceName",
+      "pricingType"
+    ],
+    "rls": {
+      "create": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "read": {},
+      "update": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "Submission": {
+    "name": "Submission",
+    "type": "object",
+    "properties": {
+      "form_type": {
+        "type": "string",
+        "enum": [
+          "contact",
+          "quote",
+          "newsletter",
+          "package_order",
+          "service_enquiry",
+          "other"
+        ],
+        "description": "Type of form submitted"
+      },
+      "source_page": {
+        "type": "string",
+        "description": "URL of the page where form was submitted"
+      },
+      "full_name": {
+        "type": "string",
+        "description": "Submitter's full name"
+      },
+      "email": {
+        "type": "string",
+        "description": "Submitter's email address"
+      },
+      "phone": {
+        "type": "string",
+        "description": "Submitter's phone number"
+      },
+      "message": {
+        "type": "string",
+        "description": "Message or enquiry content"
+      },
+      "service_interest": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Services of interest"
+      },
+      "budget": {
+        "type": "string",
+        "description": "Budget indication"
+      },
+      "book_title": {
+        "type": "string",
+        "description": "Book title if applicable"
+      },
+      "book_genre": {
+        "type": "string",
+        "description": "Book genre"
+      },
+      "book_page_count": {
+        "type": "number",
+        "description": "Book page count"
+      },
+      "book_word_count": {
+        "type": "number",
+        "description": "Book word count"
+      },
+      "additional_fields": {
+        "type": "object",
+        "description": "Any extra form fields as JSON"
+      },
+      "marketing_source": {
+        "type": "string",
+        "enum": [
+          "organic_search",
+          "direct",
+          "social",
+          "referral",
+          "paid",
+          "email",
+          "other"
+        ],
+        "description": "How the visitor found the site"
+      },
+      "search_keywords": {
+        "type": "string",
+        "description": "Search keywords from referrer"
+      },
+      "referrer_url": {
+        "type": "string",
+        "description": "Full referrer URL"
+      },
+      "landing_page": {
+        "type": "string",
+        "description": "First page visited in session"
+      },
+      "pages_viewed": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "URLs visited in session"
+      },
+      "session_duration_seconds": {
+        "type": "number",
+        "description": "Time spent on site before submission"
+      },
+      "device_type": {
+        "type": "string",
+        "enum": [
+          "desktop",
+          "mobile",
+          "tablet"
+        ],
+        "description": "Device type"
+      },
+      "browser": {
+        "type": "string",
+        "description": "Browser name"
+      },
+      "city": {
+        "type": "string",
+        "description": "Visitor city"
+      },
+      "country": {
+        "type": "string",
+        "description": "Visitor country"
+      },
+      "ip_address_hash": {
+        "type": "string",
+        "description": "Hashed IP address for POPIA compliance"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "new",
+          "read",
+          "converted_to_lead",
+          "spam",
+          "archived"
+        ],
+        "default": "new",
+        "description": "Submission status"
+      },
+      "internal_notes": {
+        "type": "string",
+        "description": "Private notes for admin"
+      },
+      "description": {
+        "type": "string",
+        "maxLength": 1000,
+        "description": "Optional description or summary of submission"
+      },
+      "contact_id": {
+        "type": "string",
+        "description": "Linked contact ID"
+      },
+      "lead_id": {
+        "type": "string",
+        "description": "Linked lead ID"
+      }
+    },
+    "required": [
+      "form_type",
+      "source_page",
+      "full_name",
+      "email"
+    ],
+    "rls": {
+      "create": {},
+      "read": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "update": {
+        "user_condition": {
+          "role": "admin"
+        }
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "Contact": {
+    "name": "Contact",
+    "type": "object",
+    "properties": {
+      "full_name": {
+        "type": "string",
+        "description": "Contact's full name"
+      },
+      "email": {
+        "type": "string",
+        "description": "Primary email address"
+      },
+      "email_secondary": {
+        "type": "string",
+        "description": "Secondary email address"
+      },
+      "phone": {
+        "type": "string",
+        "description": "Primary phone number"
+      },
+      "phone_secondary": {
+        "type": "string",
+        "description": "Secondary phone number"
+      },
+      "whatsapp_number": {
+        "type": "string",
+        "description": "WhatsApp contact number"
+      },
+      "company": {
+        "type": "string",
+        "description": "Company name"
+      },
+      "contact_person": {
+        "type": "string",
+        "description": "Name of the primary contact person at the company (if different from full_name)"
+      },
+      "billing_address": {
+        "type": "string",
+        "description": "Full billing address used on invoices and quotes"
+      },
+      "vat_number": {
+        "type": "string",
+        "description": "Client VAT registration number (optional)"
+      },
+      "is_disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disabled clients cannot be deleted \u2014 they have linked documents"
+      },
+      "role": {
+        "type": "string",
+        "enum": [
+          "author",
+          "publisher",
+          "agent",
+          "other"
+        ],
+        "description": "Contact role"
+      },
+      "street_address": {
+        "type": "string"
+      },
+      "city": {
+        "type": "string"
+      },
+      "province": {
+        "type": "string"
+      },
+      "postal_code": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string",
+        "default": "South Africa"
+      },
+      "author_bio": {
+        "type": "string"
+      },
+      "website_url": {
+        "type": "string"
+      },
+      "social_links": {
+        "type": "object"
+      },
+      "how_heard": {
+        "type": "string",
+        "enum": [
+          "google",
+          "referral",
+          "social",
+          "event",
+          "other"
+        ]
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "lifecycle_stage": {
+        "type": "string",
+        "enum": [
+          "subscriber",
+          "lead",
+          "customer",
+          "repeat_customer",
+          "past_customer"
+        ],
+        "default": "lead"
+      },
+      "profile_photo_url": {
+        "type": "string"
+      },
+      "first_contact_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "last_contact_date": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "custom_fields": {
+        "type": "object"
+      },
+      "description": {
+        "type": "string",
+        "maxLength": 1000
+      },
+      "book_title": {
+        "type": "string",
+        "description": "Book title in progress"
+      },
+      "pipeline_stage": {
+        "type": "string",
+        "enum": [
+          "New Enquiry",
+          "Information Requested",
+          "Quote in Progress",
+          "Quote Sent",
+          "Payment Pending",
+          "Project Started",
+          "Editing",
+          "Cover Design",
+          "Typesetting",
+          "Sample Queued",
+          "Sample Approved",
+          "Mass Production",
+          "Completed",
+          "Delivered",
+          "Lost"
+        ],
+        "default": "New Enquiry"
+      },
+      "pipeline_stage_changed_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "pipeline_value": {
+        "type": "number"
+      },
+      "pipeline_owner": {
+        "type": "string"
+      },
+      "lost_reason": {
+        "type": "string"
+      },
+      "do_not_contact": {
+        "type": "boolean",
+        "default": false,
+        "description": "If true, skip all automated and manual outreach \u2014 legal / admin flag"
+      },
+      "unsubscribed": {
+        "type": "boolean",
+        "default": false,
+        "description": "Client opted out via unsubscribe link \u2014 required for POPIA compliance"
+      },
+      "unsubscribed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the client unsubscribed"
+      },
+      "probability": {
+        "type": "number",
+        "description": "Win probability 0\u2013100 \u2014 overrides stage default when set"
+      },
+      "package_type": {
+        "type": "string",
+        "enum": [
+          "Full publishing",
+          "Editing only",
+          "Cover + layout",
+          "Typesetting",
+          "Print run",
+          "Other"
+        ],
+        "description": "Type of publishing package"
+      },
+      "deal_source": {
+        "type": "string",
+        "enum": [
+          "Website form",
+          "Referral",
+          "Social",
+          "Submission",
+          "Lead",
+          "Other"
+        ],
+        "description": "How this deal originated"
+      },
+      "expected_close_date": {
+        "type": "string",
+        "format": "date",
+        "description": "Expected close / decision date"
+      },
+      "deal_priority": {
+        "type": "string",
+        "enum": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "description": "Deal priority \u2014 overrides the computed priority from value"
+      },
+      "last_activity_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the last activity occurred on this deal"
+      },
+      "last_followup_sent_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the last follow-up email was sent"
+      },
+      "followup_response_received": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether a response was received after the last follow-up"
+      },
+      "followup_response_received_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the response was received after follow-up"
+      },
+      "welcome_email_sent_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the welcome email was sent"
+      }
+    },
+    "required": [
+      "full_name",
+      "email"
+    ],
+    "rls": {
+      "create": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "read": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "update": {
+        "$or": [
+          {
+            "user_condition": {
+              "role": "admin"
+            }
+          },
+          {
+            "created_by": "{{user.email}}"
+          }
+        ]
+      },
+      "delete": {
+        "user_condition": {
+          "role": "admin"
+        }
+      }
+    }
+  },
+  "RecurringInvoice": {
+    "name": "RecurringInvoice",
+    "type": "object",
+    "properties": {
+      "contact_id": {
+        "type": "string"
+      },
+      "amount": {
+        "type": "number"
+      },
+      "description": {
+        "type": "string"
+      },
+      "start_date": {
+        "type": "string"
+      },
+      "end_date": {
+        "type": "string"
+      },
+      "frequency": {
+        "type": "string"
+      },
+      "day_of_month": {
+        "type": "number"
+      },
+      "auto_send": {
+        "type": "boolean"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -269,9 +269,9 @@ export default function PublishingRoadmap() {
 
       <InternalLinks
         links={[
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Cover Design', path: '/bookcoverdesign' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Cover Design', path: '/book-cover-design' },
           { label: 'Typesetting', path: '/typesetting' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

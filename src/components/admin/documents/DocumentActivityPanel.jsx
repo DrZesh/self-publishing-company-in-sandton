@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { 
   Send, Eye, Download, CheckCircle, XCircle, FileSignature,
   CreditCard, RotateCcw, Clock, Upload, MessageSquare, AlertTriangle, Bell
@@ -29,7 +29,7 @@ export default function DocumentActivityPanel({ documentId }) {
   useEffect(() => {
     if (!documentId) return;
     setLoading(true);
-    base44.functions.invoke('documentActions', { action: 'get_activity', document_id: documentId })
+    platform.functions.invoke('documentActions', { action: 'get_activity', document_id: documentId })
       .then(res => setActivities(res.data?.activities || []))
       .catch(() => setActivities([]))
       .finally(() => setLoading(false));

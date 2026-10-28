@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { CheckCircle, XCircle, Calendar, Clock, Loader2, AlertCircle } from 'lucide-react';
+import NoIndexMeta from '@/components/shared/NoIndexMeta';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 function formatDate(s) {
@@ -23,7 +24,7 @@ export default function AppointmentCancel() {
   const [cancelled, setCancelled] = useState(false);
 
   useEffect(() => {
-    base44.functions.invoke('appointmentActions', { action: 'get_by_cancel_token', cancel_token: token })
+    platform.functions.invoke('appointmentActions', { action: 'get_by_cancel_token', cancel_token: token })
       .then(res => {
         if (res.data?.appointment) setAppt(res.data.appointment);
         else setError('Appointment not found. The link may have already been used or has expired.');
@@ -35,7 +36,7 @@ export default function AppointmentCancel() {
   const handleCancel = async () => {
     setCancelling(true);
     try {
-      const res = await base44.functions.invoke('appointmentActions', { action: 'cancel_by_client', cancel_token: token });
+      const res = await platform.functions.invoke('appointmentActions', { action: 'cancel_by_client', cancel_token: token });
       if (res.data?.success) {
         setCancelled(true);
       } else {
@@ -50,6 +51,7 @@ export default function AppointmentCancel() {
 
   return (
     <div className="min-h-screen bg-[#f9f7f2] flex flex-col items-center justify-center px-4 py-16">
+      <NoIndexMeta title="Cancel Appointment | Creative Books SA" />
       {/* Logo */}
       <div className="mb-8">
         <img src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png" alt="Creative Books SA" className="h-10" />

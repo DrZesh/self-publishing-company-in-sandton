@@ -10,8 +10,8 @@ const slides = [
     heading: ['Self Publishing', 'Company in South Africa'],
     subheading: 'From manuscript to printed book, we help authors publish professionally with expert support.',
     primary: { label: 'Request a Quote', to: '/getquote' },
-    secondary: { label: 'View Services', to: '/bookpublishing' },
-    bg: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1800&q=80',
+    secondary: { label: 'View Services', to: '/book-publishing' },
+    bg: 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/c2a7401d7_Slider1.png',
   },
   {
     id: 1,
@@ -19,7 +19,7 @@ const slides = [
     heading: ['Professional', 'Book Printing'],
     subheading: "High-quality A5, 6×9, hardcover, and children's book printing for authors and publishers.",
     primary: { label: 'Get Printing Quote', to: '/getquote' },
-    secondary: { label: 'View Services', to: '/bookprinting' },
+    secondary: { label: 'View Services', to: '/book-printing' },
     bg: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1800&q=80',
   },
   {
@@ -28,7 +28,7 @@ const slides = [
     heading: ['Editing, Layout', '& Cover Design'],
     subheading: 'Give your manuscript a professional finish with editing, typesetting, and custom book cover design.',
     primary: { label: 'Start Your Project', to: '/getquote' },
-    secondary: { label: 'View Services', to: '/bookcoverdesign' },
+    secondary: { label: 'View Services', to: '/book-cover-design' },
     bg: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1800&q=80',
   },
   {
@@ -37,7 +37,7 @@ const slides = [
     heading: ['Build Your', 'Author Brand'],
     subheading: 'We help authors with publishing support, author websites, book design, and launch-ready presentation.',
     primary: { label: 'Book a Consultation', to: '/contact' },
-    secondary: { label: 'View Services', to: '/bookpublishing' },
+    secondary: { label: 'View Services', to: '/book-publishing' },
     bg: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1800&q=80',
   },
 ];
@@ -57,7 +57,7 @@ export default function HeroSlider({ locationData }) {
     heading: [locationData.serviceType, `in ${locationData.city}`],
     subheading: `Professional ${locationData.serviceType.toLowerCase()} services for ${locationData.city} and ${locationData.province}. Fast turnaround, competitive pricing, and expert support for authors and businesses.`,
     primary: { label: 'Get a Quote', to: '/getquote' },
-    secondary: { label: 'View Services', to: locationData.serviceType === 'Book Printing' ? '/bookprinting' : '/selfpublishingsouthafrica' },
+    secondary: { label: 'View Services', to: locationData.serviceType === 'Book Printing' ? '/book-printing' : '/self-publishing-south-africa' },
     bg: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1800&q=80',
   } : null;
 

@@ -73,10 +73,9 @@ export default function EbookPublishing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Affordable Ebook Publishing Services"
-        description="Affordable ebook publishing services for South African authors. EPUB conversion, Kindle formatting and Amazon KDP distribution."
-        description="eBook publishing for SA authors — EPUB and MOBI conversion, Kindle formatting, Amazon, Kobo and Google Play distribution. Reach global readers."
-        canonical="https://www.creativebooks.co.za/ebookpublishing"
+        title="Ebook Publishing in South Africa | Creative Books SA"
+        description="Publish your ebook in South Africa on Amazon Kindle, Apple Books & more. Conversion, cover & upload handled for you. Reach global readers. Get a quote."
+        canonical="https://creativebooks.co.za/ebook-publishing"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -91,7 +90,7 @@ export default function EbookPublishing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">eBook Formatting and Publishing · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Affordable Ebook Publishing Services
+              Ebook Publishing in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional eBook Formatting, Conversion, Paperback Layout and Amazon Publishing Support</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -225,7 +224,7 @@ export default function EbookPublishing() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request an eBook Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/bookcoverdesign" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+              <Link to="/book-cover-design" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 Book Cover Design
               </Link>
             </div>
@@ -234,10 +233,10 @@ export default function EbookPublishing() {
       </section>
 
       <InternalLinks links={[
-      { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Book Cover Design', path: '/book-cover-design' },
       { label: 'Book Layout & Typesetting', path: '/typesetting' },
-      { label: 'I Need a Complete Package', path: '/selfpublishingpackagesinsouthafrica' },
-      { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+      { label: 'I Need a Complete Package', path: '/self-publishing-packages-in-south-africa' },
+      { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
       { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

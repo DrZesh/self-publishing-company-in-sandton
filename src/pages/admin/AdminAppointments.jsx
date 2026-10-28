@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Calendar, Clock, MapPin, Video, User, AlertTriangle, Check, X, ArrowRight, ChevronLeft, ChevronRight, MessageSquare } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, User, AlertTriangle, Check, X, ArrowRight, ChevronLeft, ChevronRight, MessageSquare, Bell, RefreshCw, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -19,9 +19,18 @@ function formatTime(t) {
 function initials(name) {
   return (name || '?').split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
 }
-function parseHHMM(s) { const [h, m] = s.split(':').map(Number); return h * 60 + m; }
+function parseHHMM(s) { 
+  if (!s) return 0; 
+  const [h, m] = s.split(':').map(Number); 
+  return h * 60 + m; 
+}
 function overlaps(s1, e1, s2, e2) {
-  return parseHHMM(s1) < parseHHMM(e2) && parseHHMM(e1) > parseHHMM(s2);
+  if (!s1 || !s2) return false;
+  const start1 = parseHHMM(s1);
+  const end1 = e1 ? parseHHMM(e1) : start1 + 30;
+  const start2 = parseHHMM(s2);
+  const end2 = e2 ? parseHHMM(e2) : start2 + 30;
+  return start1 < end2 && end1 > start2;
 }
 
 const STATUS_COLORS = {
@@ -205,8 +214,134 @@ function CalendarView({ appointments }) {
   );
 }
 
+// ── Reminders Tab ─────────────────────────────────────────────────────────────
+function RemindersTab({ appointments }) {
+  const qc = useQueryClient();
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = appointments
+    .filter(a => a.status === 'approved' && a.date >= today)
+    .sort((a, b) => (a.date + a.start_time).localeCompare(b.date + b.start_time));
+
+  const [resending, setResending] = useState(null);
+
+  async function handleResend(appt) {
+    setResending(appt.id);
+    try {
+      await platform.functions.invoke('appointmentActions', { action: 'resend_reminder', appointmentId: appt.id });
+      qc.invalidateQueries({ queryKey: ['appointments'] });
+      toast.success(`✅ Reminder resent to ${appt.client_email}`);
+    } catch {
+      toast.error('Failed to resend reminder');
+    } finally {
+      setResending(null);
+    }
+  }
+
+  if (upcoming.length === 0) {
+    return (
+      <div className="text-center py-16 text-gray-400 text-sm bg-white border border-gray-100 rounded-xl">
+        <Bell className="w-8 h-8 mx-auto mb-3 text-gray-300" />
+        No upcoming approved appointments
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+        <Bell className="w-4 h-4 mt-0.5 flex-shrink-0" />
+        <span>The system automatically sends a reminder email to clients <strong>5 hours before</strong> their scheduled appointment. You can manually resend a reminder at any time.</span>
+      </div>
+
+      {/* Table header — desktop */}
+      <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_auto] gap-3 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        <span>Client</span>
+        <span>Service</span>
+        <span>Date</span>
+        <span>Time</span>
+        <span>Location</span>
+        <span>Reminder</span>
+        <span></span>
+      </div>
+
+      {upcoming.map(appt => {
+        const reminderSent = appt.reminder_5h_sent;
+        const sentAt = appt.reminder_5h_sent_at
+          ? new Date(appt.reminder_5h_sent_at).toLocaleString('en-ZA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : null;
+        const locationLabel = appt.mode === 'zoom' ? 'Zoom' : 'On-site';
+
+        return (
+          <div key={appt.id} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            {/* Mobile layout */}
+            <div className="md:hidden space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-full bg-[#B87333]/15 flex items-center justify-center text-[#B87333] font-bold text-xs flex-shrink-0">
+                    {initials(appt.client_name)}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">{appt.client_name}</p>
+                    <p className="text-xs text-gray-500">{appt.service_name}</p>
+                  </div>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${reminderSent ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-500 border border-gray-200'}`}>
+                  {reminderSent ? 'Sent' : 'Pending'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-gray-400" />{appt.client_email}</span>
+                {appt.client_phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-gray-400" />{appt.client_phone}</span>}
+                <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-gray-400" />{formatDate(appt.date)}</span>
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-gray-400" />{formatTime(appt.start_time)}</span>
+                <span className="flex items-center gap-1">
+                  {appt.mode === 'zoom' ? <Video className="w-3 h-3 text-blue-500" /> : <MapPin className="w-3 h-3 text-green-600" />}
+                  {locationLabel}
+                </span>
+                {sentAt && <span className="text-gray-400 col-span-2">Sent: {sentAt}</span>}
+              </div>
+              <Button size="sm" variant="outline" className="w-full text-xs gap-1.5 text-[#B87333] border-[#B87333]/30 hover:bg-[#B87333]/5"
+                onClick={() => handleResend(appt)} disabled={resending === appt.id}>
+                {resending === appt.id ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><RefreshCw className="w-3.5 h-3.5" /> Resend Reminder</>}
+              </Button>
+            </div>
+
+            {/* Desktop layout */}
+            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_auto] gap-3 items-center">
+              <div>
+                <p className="font-semibold text-gray-900 text-sm">{appt.client_name}</p>
+                <p className="text-xs text-gray-400 flex items-center gap-1"><Mail className="w-3 h-3" />{appt.client_email}</p>
+                {appt.client_phone && <p className="text-xs text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" />{appt.client_phone}</p>}
+              </div>
+              <div>
+                <p className="text-sm text-gray-800">{appt.service_name}</p>
+              </div>
+              <div className="text-sm text-gray-700">{formatDate(appt.date)}</div>
+              <div className="text-sm text-gray-700">{formatTime(appt.start_time)}</div>
+              <div className="flex items-center gap-1 text-sm text-gray-700">
+                {appt.mode === 'zoom' ? <Video className="w-3.5 h-3.5 text-blue-500" /> : <MapPin className="w-3.5 h-3.5 text-green-600" />}
+                {locationLabel}
+              </div>
+              <div>
+                <span className={`text-xs px-2 py-1 rounded-full font-medium ${reminderSent ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-500 border border-gray-200'}`}>
+                  {reminderSent ? '✓ Sent' : '⏳ Pending'}
+                </span>
+                {sentAt && <p className="text-[10px] text-gray-400 mt-1">{sentAt}</p>}
+              </div>
+              <Button size="sm" variant="outline" className="text-xs gap-1.5 text-[#B87333] border-[#B87333]/30 hover:bg-[#B87333]/5 whitespace-nowrap"
+                onClick={() => handleResend(appt)} disabled={resending === appt.id}>
+                {resending === appt.id ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><RefreshCw className="w-3.5 h-3.5" /> Resend</>}
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
-const TABS = ['Pending', 'Upcoming', 'All', 'Calendar'];
+const TABS = ['Pending', 'Upcoming', 'All', 'Calendar', 'Reminders'];
 
 export default function AdminAppointments() {
   const [activeTab, setActiveTab] = useState('Pending');
@@ -214,12 +349,12 @@ export default function AdminAppointments() {
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['appointments'],
-    queryFn: () => base44.entities.Appointment.list('-created_date', 200),
+    queryFn: () => platform.entities.Appointment.list('-created_date', 200),
     refetchInterval: 30000,
   });
 
   const updateAppt = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Appointment.update(id, data),
+    mutationFn: ({ id, data }) => platform.entities.Appointment.update(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['appointments'] }),
   });
 
@@ -232,21 +367,21 @@ export default function AdminAppointments() {
 
   async function handleApprove(appt) {
     try {
-      await base44.functions.invoke('appointmentActions', { action: 'approve', appointmentId: appt.id });
+      await platform.functions.invoke('appointmentActions', { action: 'approve', appointmentId: appt.id });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       toast.success(`✅ Approved & confirmation email sent to ${appt.client_email}`);
     } catch { toast.error('Failed to approve'); }
   }
   async function handleDecline(appt, reason) {
     try {
-      await base44.functions.invoke('appointmentActions', { action: 'decline', appointmentId: appt.id, declineReason: reason });
+      await platform.functions.invoke('appointmentActions', { action: 'decline', appointmentId: appt.id, declineReason: reason });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       toast.success('Declined — client notified by email');
     } catch { toast.error('Failed to decline'); }
   }
   async function handlePropose(appt, date, time) {
     try {
-      await base44.functions.invoke('appointmentActions', { action: 'propose', appointmentId: appt.id, proposeDate: date, proposeTime: time });
+      await platform.functions.invoke('appointmentActions', { action: 'propose', appointmentId: appt.id, proposeDate: date, proposeTime: time });
       qc.invalidateQueries({ queryKey: ['appointments'] });
       toast.success('Proposal sent — client notified by email');
     } catch { toast.error('Failed to send proposal'); }
@@ -286,6 +421,11 @@ export default function AdminAppointments() {
                   {upcoming.length}
                 </span>
               )}
+              {tab === 'Reminders' && upcoming.length > 0 && (
+                <span className="bg-[#B87333] text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  {upcoming.length}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -293,8 +433,11 @@ export default function AdminAppointments() {
         {/* Calendar view */}
         {activeTab === 'Calendar' && <CalendarView appointments={appointments} />}
 
+        {/* Reminders view */}
+        {activeTab === 'Reminders' && <RemindersTab appointments={appointments} />}
+
         {/* List views */}
-        {activeTab !== 'Calendar' && (
+        {activeTab !== 'Calendar' && activeTab !== 'Reminders' && (
           <div className="space-y-4">
             {isLoading && <div className="text-center py-12 text-gray-400 text-sm">Loading…</div>}
             {!isLoading && listForTab.length === 0 && (

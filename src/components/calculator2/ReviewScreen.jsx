@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { formatZAR, PACKAGES } from '../../lib/calculatorPricing';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 const EXTRA_LABELS = {
   author_website: 'Author Website', book_launch: 'Book Launch & Marketing', rollup_banner: 'Roll-up Banner',
@@ -50,7 +50,7 @@ export default function ReviewScreen({ answers, pricing, inclVat, setInclVat, up
   const savePath = (path) => {
     setChosenPath(path);
     update({ chosenPath: path });
-    base44.analytics.track({ eventName: path === 'A' ? 'option_a_selected' : 'option_b_selected', properties: { total: subtotal } });
+    platform.analytics.track({ eventName: path === 'A' ? 'option_a_selected' : 'option_b_selected', properties: { total: subtotal } });
   };
 
   // Quick-add chips — items not already in quote

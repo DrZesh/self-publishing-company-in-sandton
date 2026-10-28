@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { FileText, CheckCircle, XCircle, Clock, Download, Eye, Calendar, User, Mail } from 'lucide-react';
 
@@ -28,8 +28,8 @@ export default function AdminSignatures() {
 
   const loadSignatures = async () => {
     try {
-      const sigs = await base44.entities.QuoteSignature.list('-signed_at', 100);
-      const quotes = await base44.entities.Quote.list();
+      const sigs = await platform.entities.QuoteSignature.list('-signed_at', 100);
+      const quotes = await platform.entities.Quote.list();
       const merged = sigs.map(sig => {
         const quote = quotes.find(q => q.id === sig.quote_id);
         return {
@@ -55,7 +55,7 @@ export default function AdminSignatures() {
 
   const handleDownloadContract = async (sig) => {
     try {
-      const quote = await base44.entities.Quote.filter({ id: sig.quote_id });
+      const quote = await platform.entities.Quote.filter({ id: sig.quote_id });
       if (!quote.length) return;
       
       const viewUrl = `https://creativebooks.co.za/quote/view/${sig.quote_id}/${quote[0].view_token}`;

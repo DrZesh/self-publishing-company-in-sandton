@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, ChevronDown, Plus, Minus, BookOpen, Eye, AlignLeft, Feather, Users, Shield, Star, Award } from 'lucide-react';
 import InternalLinks from '../../components/shared/InternalLinks';
 import PageMeta from '../../components/shared/PageMeta';
-import { serviceSchema, faqSchema, breadcrumbSchema, aggregateRatingSchema, authorSchema } from '../../lib/seo/schemas';
+import { serviceSchema, faqSchema, breadcrumbSchema, authorSchema } from '../../lib/seo/schemas';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const faqs = [
@@ -64,13 +64,13 @@ const pricing = [
   {
     title: 'Copy Edit', price: 'R0.30', cents: '30c', badge: null,
     includes: ['Spelling', 'Grammar', 'Syntax', 'Tenses', 'Punctuation', 'Suggestions-based editing', 'Two returned manuscript versions', 'One week review period per 30,000 words'],
-    process: ['50% upfront payment', 'Word or Google Docs accepted', 'Suggestions visible version included', 'Final accepted version included'],
+    process: ['75% upfront payment', 'Word or Google Docs accepted', 'Suggestions visible version included', 'Final accepted version included'],
     cta: 'Get Started',
   },
   {
     title: 'Line Edit', price: 'R0.40', cents: '40c', badge: null,
     includes: ['Copy Edit', 'Flow Improvement', 'Consistent Tone of Voice', 'Best Word Choice', 'Repetition Reduction', 'Wordiness Reduction', 'Two returned manuscript versions', 'One week review period'],
-    process: ['50% upfront payment', 'Suggestions editing', 'Word or Google Docs accepted'],
+    process: ['75% upfront payment', 'Suggestions editing', 'Word or Google Docs accepted'],
     cta: 'Choose Package',
   },
   {
@@ -90,6 +90,23 @@ const pricing = [
     includes: ['Full Content Edit', 'Time To Implement Changes', 'Full Line Edit', 'Manuscript Assessment', 'Advanced Editing Workflow', 'Two Edited Versions', 'One Week Review Period'],
     process: ['Round 1 content editing', 'Revision implementation', 'Advanced line editing', 'Premium author support'],
     cta: 'Get Premium Editing',
+  },
+  {
+    title: 'Advanced Manuscript Refinement', price: 'R0.35', cents: '35c', badge: null,
+    includes: [
+      'Repetitive sentence patterns',
+      'Weak transitions',
+      'Excessive short sentences',
+      'Unnecessary one-line paragraphs',
+      'Generic motivational language',
+      'Repetitive introductions and conclusions',
+      'Awkward chapter flow',
+      'Mechanical writing',
+      'Excessive phrases such as "It is important to understand"',
+      'Weak paragraph development',
+    ],
+    process: ['75% upfront payment', 'Word or Google Docs accepted', 'Targeted refinement of flagged issues'],
+    cta: 'Refine My Manuscript',
   },
 ];
 
@@ -134,16 +151,15 @@ export default function BookEditing() {
       serviceSchema({
         name: 'Book Editing Services South Africa',
         description: 'Professional book editing services including copy editing, line editing, content editing, and manuscript evaluation for authors in Johannesburg and across South Africa.',
-        url: '/bookediting',
+        url: '/book-editing',
         areaServed: 'South Africa',
       }),
       faqSchema(faqs.map(f => ({ question: f.q, answer: f.a }))),
       breadcrumbSchema([
         { name: 'Home', path: '/' },
-        { name: 'Services', path: '/bookediting' },
-        { name: 'Book Editing', path: '/bookediting' },
+        { name: 'Services', path: '/book-editing' },
+        { name: 'Book Editing', path: '/book-editing' },
       ]),
-      aggregateRatingSchema(),
       authorSchema({ name: 'Creative Books SA', description: 'Professional book editing services in South Africa' }),
     ],
   };
@@ -151,11 +167,10 @@ export default function BookEditing() {
   return (
     <>
       <PageMeta
-        title="Professional Book Editing Services"
-        description="Professional book editing services in South Africa from R0.30 per word. Copy editing, line editing, content editing and proofreading for authors."
-        description="Professional book editing services in South Africa from R0.30 per word. Copy editing, line editing, content editing & proofreading for authors."
-        keywords="book editing South Africa, book editors Johannesburg, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
-        canonical="https://www.creativebooks.co.za/bookediting"
+        title="Book Editing Services in South Africa | Creative Books"
+        description="Professional book editing services in South Africa - developmental, copy editing & proofreading. Keep your voice, raise your quality. Get a free sample edit."
+        keywords="book editing services South Africa, book editors South Africa, copy editing, line editing, content editing, manuscript editing, proofreading services, professional editors South Africa"
+        canonical="https://creativebooks.co.za/book-editing"
         schema={schema}
       />
       <div style={{ background: '#f8f9fc' }}>
@@ -171,7 +186,7 @@ export default function BookEditing() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Editing Services · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Book Editing Services
+              Book Editing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">Professional Book Editing, Copy Editing, Line Editing and Manuscript Refinement for Authors</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -464,7 +479,7 @@ export default function BookEditing() {
                 Request an Editing Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
+              <Link to="/publishingpackages/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
               </Link>
@@ -474,11 +489,11 @@ export default function BookEditing() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Typesetting and Layout', path: '/typesetting' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

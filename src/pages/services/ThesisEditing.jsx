@@ -202,10 +202,9 @@ export default function ThesisEditing() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Thesis Editing Services"
-        description="Professional thesis editing services for Master's and PhD students in South Africa. Grammar, clarity and academic tone improved before submission."
-        description="Thesis editing for South African master's and doctoral candidates. Academic language, structure and formatting refined. Confidential and supervisor-ready."
-        canonical="https://www.creativebooks.co.za/thesisediting"
+        title="Thesis Editing Services in South Africa | Creative Books"
+        description="Thesis editing for South African master's & doctoral candidates - academic language, structure & formatting refined. Confidential & supervisor-ready. Get a quote."
+        canonical="https://creativebooks.co.za/thesisediting"
       />
 
       {/* FAQ Schema */}
@@ -229,7 +228,7 @@ export default function ThesisEditing() {
               Thesis Editing Services · Johannesburg · South Africa
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Thesis Editing Services
+              Thesis Editing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">
               Professional Thesis Editing and Proofreading for Master's and PhD Students
@@ -628,11 +627,11 @@ export default function ThesisEditing() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Editing Services',    path: '/bookediting' },
+        { label: 'Book Editing Services',    path: '/book-editing' },
         { label: 'Proofreading Services',    path: '/proofreading' },
         { label: 'Dissertation Editing',     path: '/dissertationediting' },
         { label: 'Academic Editing',         path: '/academicediting' },
-        { label: 'Language Editing',         path: '/languageediting' },
+        { label: 'Language Editing',         path: '/book-editing' },
         { label: 'Request a Quote',          path: '/getquote' },
       ]} light />
     </div>

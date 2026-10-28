@@ -17,14 +17,14 @@ const schema = {
     serviceSchema({
       name: 'Book Cover Design South Africa',
       description: 'Professional book cover design services in South Africa. Award-winning designers creating market-ready covers for print and digital publishing.',
-      url: '/bookcoverdesignsouthafrica',
+      url: '/book-cover-design',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Book Cover Design', path: '/bookcoverdesign' },
-      { name: 'Book Cover Design South Africa', path: '/bookcoverdesignsouthafrica' },
+      { name: 'Book Cover Design', path: '/book-cover-design' },
+      { name: 'Book Cover Design South Africa', path: '/book-cover-design' },
     ]),
   ],
 };
@@ -36,7 +36,7 @@ export default function BookCoverDesignSouthAfrica() {
         title="Book Cover Design South Africa"
         description="Custom book cover design in South Africa — illustrated, photographic and typographic covers for print and ebook. View portfolio and get a project quote."
         keywords="book cover design South Africa, book cover designer South Africa, book cover design Johannesburg, eBook cover design South Africa, professional book covers South Africa"
-        canonical="https://www.creativebooks.co.za/bookcoverdesignsouthafrica"
+        canonical="https://creativebooks.co.za/bookcoverdesignsouthafrica"
         schema={schema}
       />
       <ServicePageTemplate
@@ -60,12 +60,12 @@ export default function BookCoverDesignSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
           { label: 'Book Layout & Typesetting', path: '/typesetting' },
           { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
           { label: 'eBook Formatting', path: '/ebookformatting' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Book Publishing', path: '/bookpublishing' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Book Publishing', path: '/book-publishing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Get a Book Cover Design Quote in South Africa"

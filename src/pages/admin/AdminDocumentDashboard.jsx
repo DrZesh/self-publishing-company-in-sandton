@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
 import { 
@@ -50,12 +50,12 @@ function DocRow({ doc, contact }) {
 export default function AdminDocumentDashboard() {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['documents'],
-    queryFn: () => base44.entities.Document.list('-updated_date', 500),
+    queryFn: () => platform.entities.Document.list('-updated_date', 500),
   });
 
   const { data: contacts = [] } = useQuery({
     queryKey: ['contacts'],
-    queryFn: () => base44.entities.Contact.list('-created_date', 500),
+    queryFn: () => platform.entities.Contact.list('-created_date', 500),
   });
 
   const contactMap = Object.fromEntries(contacts.map(c => [c.id, c]));
@@ -144,11 +144,20 @@ export default function AdminDocumentDashboard() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div
+        className="min-h-screen -m-6 p-6 relative"
+        style={{
+          backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(100,120,200,0.55) 0%, rgba(180,100,200,0.45) 50%, rgba(100,160,220,0.5) 100%)' }} />
+      <div className="relative z-10 space-y-6 max-w-7xl mx-auto">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Document Dashboard</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Live status of all sent documents and client actions</p>
+            <h1 className="text-2xl font-bold text-white drop-shadow">Document Dashboard</h1>
+            <p className="text-sm text-white/60 mt-0.5">Live status of all sent documents and client actions</p>
           </div>
           <Link to="/admin/documents" className="flex items-center gap-2 text-sm text-[#B87333] hover:underline font-medium">
             All Documents <ArrowRight className="w-4 h-4" />
@@ -195,6 +204,7 @@ export default function AdminDocumentDashboard() {
             })}
           </div>
         )}
+      </div>
       </div>
     </AdminLayout>
   );

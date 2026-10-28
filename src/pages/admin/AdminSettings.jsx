@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { BarChart2, Shield, ExternalLink, Users, Target, FileText, Columns, Mail, BookOpen, Inbox, LayoutDashboard, Search, CheckCircle } from 'lucide-react';
+import { platform } from '@/api/platformClient';
+import { BarChart2, Shield, ExternalLink, Users, Target, FileText, Columns, Mail, BookOpen, Inbox, LayoutDashboard, Search, CheckCircle, Building2 } from 'lucide-react';
 import { ADMIN_THEMES, getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 function Section({ title, sub, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm p-6 mb-5">
-      <h2 className="text-base font-bold text-[#1A1208] mb-1">{title}</h2>
-      {sub && <p className="text-xs text-black/40 mb-5">{sub}</p>}
+    <div className="rounded-2xl p-6 mb-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+      <h2 className="text-base font-bold text-white mb-1">{title}</h2>
+      {sub && <p className="text-xs text-white/40 mb-5">{sub}</p>}
       {children}
     </div>
   );
@@ -17,10 +17,10 @@ function Section({ title, sub, children }) {
 
 function Row({ label, sub, children }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-black/5 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
       <div className="min-w-0 mr-4">
-        <p className="text-sm font-medium text-[#1A1208]">{label}</p>
-        {sub && <p className="text-xs text-black/40 mt-0.5">{sub}</p>}
+        <p className="text-sm font-medium text-white">{label}</p>
+        {sub && <p className="text-xs text-white/40 mt-0.5">{sub}</p>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -39,10 +39,10 @@ export default function AdminSettings() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Contact.list('-created_date', 1).catch(() => []),
-      base44.entities.Lead.list('-created_date', 1).catch(() => []),
-      base44.entities.Quote.list('-created_date', 1).catch(() => []),
-      base44.entities.Submission.filter({ status: 'new' }).catch(() => []),
+      platform.entities.Contact.list('-created_date', 1).catch(() => []),
+      platform.entities.Lead.list('-created_date', 1).catch(() => []),
+      platform.entities.Quote.list('-created_date', 1).catch(() => []),
+      platform.entities.Submission.filter({ status: 'new' }).catch(() => []),
     ]).then(([contacts, leads, quotes, unread]) => {
       setCounts({
         contacts: contacts.length,
@@ -54,15 +54,17 @@ export default function AdminSettings() {
 
     // Get real counts
     Promise.all([
-      base44.entities.Contact.list('-created_date', 500),
-      base44.entities.Lead.list('-created_date', 500),
-      base44.entities.Quote.list('-created_date', 500),
+      platform.entities.Contact.list('-created_date', 500),
+      platform.entities.Lead.list('-created_date', 500),
+      platform.entities.Quote.list('-created_date', 500),
     ]).then(([c, l, q]) => {
       setCounts(prev => ({ ...prev, contacts: c.length, leads: l.length, quotes: q.length }));
     }).catch(() => {});
   }, []);
 
   const adminPages = [
+    { label: 'Company Settings', path: '/admin/company-settings', sub: 'Company profile, banking details, VAT & document defaults', icon: Building2 },
+    { label: 'User Management', path: '/admin/settings/users', sub: 'Manage staff roles and permissions', icon: Users },
     { label: 'Dashboard', path: '/admin/dashboard', sub: 'Business overview & KPIs', icon: LayoutDashboard },
     { label: 'Submissions', path: '/admin/submissions', sub: 'Incoming enquiry inbox', icon: Inbox },
     { label: 'Leads', path: '/admin/leads', sub: 'Sales lead management', icon: Target },
@@ -77,10 +79,11 @@ export default function AdminSettings() {
 
   return (
     <AdminLayout>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)' }}>
       <div className="max-w-3xl mx-auto px-4 lg:px-6 py-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[#1A1208]">Settings</h1>
-          <p className="text-sm text-black/50 mt-0.5">Admin panel configuration, integrations and portal overview</p>
+          <h1 className="text-2xl font-bold text-white">Settings</h1>
+          <p className="text-sm text-white/50 mt-0.5">Admin panel configuration, integrations and portal overview</p>
         </div>
 
         {/* Theme Selector */}
@@ -117,18 +120,18 @@ export default function AdminSettings() {
         <Section title="Data Overview" sub="Current counts across your CRM">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Contacts', value: counts.contacts, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-              { label: 'Leads', value: counts.leads, icon: Target, color: 'text-amber-600', bg: 'bg-amber-50' },
-              { label: 'Quotes', value: counts.quotes, icon: FileText, color: 'text-[#B87333]', bg: 'bg-[#B87333]/10' },
-              { label: 'Unread', value: counts.unread, icon: Inbox, color: 'text-red-600', bg: 'bg-red-50' },
+              { label: 'Contacts', value: counts.contacts, icon: Users, color: 'text-blue-400' },
+              { label: 'Leads', value: counts.leads, icon: Target, color: 'text-amber-400' },
+              { label: 'Quotes', value: counts.quotes, icon: FileText, color: 'text-[#B87333]' },
+              { label: 'Unread', value: counts.unread, icon: Inbox, color: 'text-red-400' },
             ].map(card => (
-              <div key={card.label} className="rounded-xl p-4 bg-gray-50 flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl ${card.bg} flex items-center justify-center shrink-0`}>
+              <div key={card.label} className="rounded-xl p-4 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <card.icon className={`w-4 h-4 ${card.color}`} />
                 </div>
                 <div>
-                  <p className="text-xs text-black/40">{card.label}</p>
-                  <p className="text-xl font-bold text-[#1A1208]">{loadingCounts ? '…' : card.value}</p>
+                  <p className="text-xs text-white/40">{card.label}</p>
+                  <p className="text-xl font-bold text-white">{loadingCounts ? '…' : card.value}</p>
                 </div>
               </div>
             ))}
@@ -168,8 +171,8 @@ export default function AdminSettings() {
         <Section title="Pipeline Stages" sub="The 15 production stages used in the Pipeline kanban">
           <div className="flex flex-wrap gap-1.5">
             {['New Enquiry','Information Requested','Quote in Progress','Quote Sent','Payment Pending','Project Started','Editing','Cover Design','Typesetting','Sample Queued','Sample Approved','Mass Production','Completed','Delivered','Lost'].map((stage, i) => (
-              <span key={stage} className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700">
-                <span className="text-gray-300 font-mono">{i + 1}.</span> {stage}
+              <span key={stage} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-white/70" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <span className="text-white/30 font-mono">{i + 1}.</span> {stage}
               </span>
             ))}
           </div>
@@ -188,12 +191,13 @@ export default function AdminSettings() {
         </Section>
 
         <Section title="About" sub="Creative Books SA Admin Portal">
-          <div className="space-y-1.5 text-sm text-black/60">
+          <div className="space-y-1.5 text-sm text-white/60">
             <p>Built on Base44 · React · Tailwind CSS · Google Search Console API</p>
             <p>Dashboard data refreshes every 60 seconds.</p>
             <p>GSC data has a 2–3 day reporting lag (Google's own delay).</p>
           </div>
         </Section>
+      </div>
       </div>
     </AdminLayout>
   );

@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-28",
+  "project_url": "https://cobpbsfkeewxzyprbmet.supabase.co",
+  "remote_schema_applied": true,
+  "tables": 71,
+  "remote_functions_deployed": "partial",
+  "website_target": "https://creativebooks.co.za",
+  "vercel_project": "creative-books-sa",
+  "live_data_imported": false,
+  "integration_secrets_configured": false,
+  "admin_account_created": false,
+  "disabled_pending_review": [
+    "captureFormSubmission",
+    "createBookingRequest",
+    "adminConfirmWorkflow",
+    "autoCreatePortalAccess",
+    "adobeSignActions"
+  ],
+  "notes": "Blocked functions are intentionally disabled with inert 503 handlers. Full source is retained for later review. Other workflows remain undeployed. Authentication setup and provider integrations are incomplete."
+}

@@ -42,7 +42,7 @@ export default function CompletePublishingGuide() {
         title="Complete Publishing Guide"
         description="The complete guide to publishing a book in South Africa — manuscript prep, ISBN, printing, distribution. Everything in one place. Free resource."
         keywords="self-publishing South Africa, how to publish a book South Africa, book publishing guide South Africa, self-publishing costs South Africa"
-        canonical="https://www.creativebooks.co.za/publishingguide"
+        canonical="https://creativebooks.co.za/publishingguide"
       />
 
       {/* Hero */}
@@ -157,7 +157,7 @@ export default function CompletePublishingGuide() {
             </div>
 
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-4">
-              We don't use templates. Every cover is original and built for your book specifically. Full details and examples on our <InlineLink to="/bookcoverdesign">Book Cover Design</InlineLink> page.
+              We don't use templates. Every cover is original and built for your book specifically. Full details and examples on our <InlineLink to="/book-cover-design">Book Cover Design</InlineLink> page.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-10">
               For more on cover budgeting, see <InlineLink to="/howmuchdoispendonbookcoverdesigninsouthafrica">How Much Should You Spend on Book Cover Design?</InlineLink>
@@ -211,7 +211,7 @@ export default function CompletePublishingGuide() {
               You'll also need a barcode that incorporates your ISBN for the back cover. Barcode generation is free online, but our cover designers include it as part of the cover design.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-10">
-              For more detail, see <InlineLink to="/howtogetanisbnforyourbook">How to Get an ISBN for Your Book</InlineLink> and <InlineLink to="/isbnregistrationsouthafrica">ISBN Registration South Africa</InlineLink>.
+              For more detail, see <InlineLink to="/how-to-get-an-isbn-for-your-book">How to Get an ISBN for Your Book</InlineLink> and <InlineLink to="/isbnregistrationsouthafrica">ISBN Registration South Africa</InlineLink>.
             </p>
 
             {/* Section 7 */}
@@ -258,7 +258,7 @@ export default function CompletePublishingGuide() {
               A worked per-copy example: a 200-page A5 novel printed at 100 copies costs R7,500, which works out to <strong className="text-[#0F0F0F]">R75 per book</strong> before any other costs.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-4">
-              White paper printing is also available in both A5 and 6x9 sizes if your book contains many images or you prefer a brighter look. See our <InlineLink to="/bookprinting">Book Printing</InlineLink> page for the full pricing range and options.
+              White paper printing is also available in both A5 and 6x9 sizes if your book contains many images or you prefer a brighter look. See our <InlineLink to="/book-printing">Book Printing</InlineLink> page for the full pricing range and options.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-10">
               For more, see <InlineLink to="/howmuchdoesbookprintingcost">How Much Does Book Printing Cost?</InlineLink>, <InlineLink to="/a5vs6x9bookprinting">A5 vs 6x9 Book Printing</InlineLink>, and <InlineLink to="/howtoprintyourselfpublishedbookinsouthafrica">How to Print a Self-Published Book</InlineLink>.
@@ -317,7 +317,7 @@ export default function CompletePublishingGuide() {
               Our packages are one-off charges. There are no ongoing royalties or hidden fees. You keep 100% of your profits on every book you sell.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-10">
-              See <InlineLink to="/selfpublishingpackagesinsouthafrica">Self-Publishing Packages</InlineLink> and <InlineLink to="/publishingpackages/mini">Mini Publishing Package</InlineLink> for the full breakdown.
+              See <InlineLink to="/self-publishing-packages-in-south-africa">Self-Publishing Packages</InlineLink> and <InlineLink to="/publishingpackages/mini">Mini Publishing Package</InlineLink> for the full breakdown.
             </p>
 
             {/* Section 9 */}
@@ -562,7 +562,7 @@ export default function CompletePublishingGuide() {
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Link to="/selfpublishingpackagesinsouthafrica"
+                  <Link to="/self-publishing-packages-in-south-africa"
                     className="inline-flex items-center gap-2 px-8 py-4 font-medium rounded-full transition-all text-base text-[#0F0F0F]"
                     style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(184,115,51,0.2)' }}>
                     Browse Self-Publishing Services
@@ -579,13 +579,13 @@ export default function CompletePublishingGuide() {
       <InternalLinks
         title="Related Services & Guides"
         links={[
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Book Printing', path: '/bookprinting' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Cover Design', path: '/bookcoverdesign' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Ebook Publishing', path: '/ebookpublishing' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
+          { label: 'Book Publishing', path: '/book-publishing' },
+          { label: 'Book Printing', path: '/book-printing' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Cover Design', path: '/book-cover-design' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Ebook Publishing', path: '/ebook-publishing' },
+          { label: 'ISBN Registration', path: '/isbn' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         light

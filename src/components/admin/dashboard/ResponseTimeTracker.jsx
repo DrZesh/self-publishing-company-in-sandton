@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Timer } from 'lucide-react';
 
 export default function ResponseTimeTracker() {
@@ -8,8 +8,8 @@ export default function ResponseTimeTracker() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Submission.filter({ status: 'read' }, '-created_date', 100),
-      base44.entities.Submission.filter({ status: 'converted_to_lead' }, '-created_date', 100),
+      platform.entities.Submission.filter({ status: 'read' }, '-created_date', 100),
+      platform.entities.Submission.filter({ status: 'converted_to_lead' }, '-created_date', 100),
     ]).then(([read, converted]) => {
       const all = [...read, ...converted];
       // estimate response time as time between creation and last update (when status changed from new)

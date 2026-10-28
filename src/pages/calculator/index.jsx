@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageMeta from '../../components/shared/PageMeta';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { computePricing, formatZAR } from '../../lib/calculatorPricing';
 
 import WizardProgress from '../../components/calculator2/WizardProgress';
@@ -112,14 +112,14 @@ export default function Calculator() {
     } else {
       setStep(next);
     }
-    base44.analytics.track({ eventName: 'step_completed', properties: { step } });
+    platform.analytics.track({ eventName: 'step_completed', properties: { step } });
   }, [step, shouldSkipStep]);
 
   const prevStep = useCallback(() => {
     let prev = step - 1;
     while (prev >= 1 && shouldSkipStep(prev)) prev--;
     if (prev >= 1) setStep(prev);
-    base44.analytics.track({ eventName: 'step_back', properties: { step } });
+    platform.analytics.track({ eventName: 'step_back', properties: { step } });
   }, [step, shouldSkipStep]);
 
   const resumeSaved = () => {
@@ -127,7 +127,7 @@ export default function Calculator() {
       setAnswers(window._cbsa_saved.answers);
       setStep(window._cbsa_saved.step);
       setRestoredBanner(false);
-      base44.analytics.track({ eventName: 'wizard_resumed', properties: { step: window._cbsa_saved.step } });
+      platform.analytics.track({ eventName: 'wizard_resumed', properties: { step: window._cbsa_saved.step } });
     }
   };
 
@@ -141,7 +141,7 @@ export default function Calculator() {
 
   const skipToReview = () => {
     setPhase('review');
-    base44.analytics.track({ eventName: 'skip_to_summary_clicked', properties: { step } });
+    platform.analytics.track({ eventName: 'skip_to_summary_clicked', properties: { step } });
   };
 
   const stepProps = { answers, update, onNext: nextStep, onBack: prevStep };
@@ -172,7 +172,7 @@ export default function Calculator() {
         title="Book Printing Cost Calculator"
         description="Calculate book printing costs instantly. Get accurate quotes by format, page count, paper type and print run. Free tool, no signup required."
         description="Calculate book printing costs instantly. Get accurate quotes by format, page count, paper type and print run. Free tool, no signup required."
-        canonical="https://www.creativebooks.co.za/calculator"
+        canonical="https://creativebooks.co.za/calculator"
       />
 
       {/* Header */}

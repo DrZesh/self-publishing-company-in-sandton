@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
@@ -28,8 +28,8 @@ export default function TaskModal({ contacts, task, onClose, onSaved }) {
     if (!form.title || !form.due_date) return;
     setSaving(true);
     const data = { ...form, due_date: new Date(form.due_date).toISOString() };
-    if (task) await base44.entities.Task.update(task.id, data);
-    else await base44.entities.Task.create(data);
+    if (task) await platform.entities.Task.update(task.id, data);
+    else await platform.entities.Task.create(data);
     setSaving(false);
     onSaved();
   };

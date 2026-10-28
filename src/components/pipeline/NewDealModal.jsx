@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { CheckCircle, Plus } from 'lucide-react';
 
@@ -39,7 +39,7 @@ export default function NewDealModal({ onClose, onCreated }) {
   const handleSave = async () => {
     if (!valid) return;
     setSaving(true);
-    await base44.entities.Contact.create({
+    await platform.entities.Contact.create({
       full_name: form.full_name.trim(),
       email: form.email.trim(),
       phone: form.phone.trim() || undefined,

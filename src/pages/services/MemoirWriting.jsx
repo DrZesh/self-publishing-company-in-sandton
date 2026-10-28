@@ -57,10 +57,9 @@ export default function MemoirWriting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Memoir Writing Services"
-        description="Professional memoir writing services for South African authors. Turn your life story into a published book."
-        description="Professional memoir writing for South African authors. Turn your life story into a published book. Ghostwriting, editing, full publishing service."
-        canonical="https://www.creativebooks.co.za/memoirwriting"
+        title="Memoir Writing Services in South Africa | Creative Books SA"
+        description="Turn your life story into a published memoir with South African writers. Ghostwriting, editing & full publishing in your voice. Confidential. Get a free consult."
+        canonical="https://creativebooks.co.za/memoirwriting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -75,7 +74,7 @@ export default function MemoirWriting() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Memoir Writing · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Memoir Writing Services
+              Memoir Writing Services in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Memoir Writers for Personal Stories, Life Journeys and Legacy Books</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -229,8 +228,8 @@ export default function MemoirWriting() {
       <InternalLinks links={[
         { label: 'Ghost Writing Services', path: '/ghostwriting' },
         { label: 'Biography Writing Services', path: '/biographywriting' },
-        { label: 'Book Editing Services', path: '/bookediting' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'Book Editing Services', path: '/book-editing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

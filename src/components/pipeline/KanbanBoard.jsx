@@ -80,13 +80,20 @@ export default function KanbanBoard({ contacts, onStageChange, customPipeline })
   return (
     <>
       {/* Summary Row */}
-      <div className="flex items-center gap-4 mb-3 flex-wrap text-xs text-gray-500">
-        <span className="font-semibold text-gray-700">{contacts.length} contacts</span>
+      <div className="flex items-center gap-4 mb-4 flex-wrap text-xs" style={{ color: 'rgba(226, 232, 240, 0.7)' }}>
+        <span className="font-semibold" style={{ color: '#22d3ee' }}>{contacts.length} contacts</span>
         {totalValue > 0 && (
-          <span className="text-emerald-700 font-bold">Pipeline value: R {totalValue.toLocaleString('en-ZA')}</span>
+          <span className="font-bold" style={{ color: '#34d399', textShadow: '0 0 20px rgba(52, 211, 153, 0.5)' }}>
+            Pipeline value: R {totalValue.toLocaleString('en-ZA')}
+          </span>
         )}
         {customPipeline && (
-          <span className="px-2 py-1 bg-[#B87333]/10 text-[#B87333] rounded-full font-semibold">{customPipeline.name}</span>
+          <span className="px-3 py-1 rounded-full font-semibold" style={{ 
+            background: 'rgba(184, 115, 51, 0.15)', 
+            color: '#fbbf24',
+            border: '1px solid rgba(184, 115, 51, 0.3)',
+            boxShadow: '0 0 20px rgba(184, 115, 51, 0.2)'
+          }}>{customPipeline.name}</span>
         )}
       </div>
 
@@ -102,29 +109,49 @@ export default function KanbanBoard({ contacts, onStageChange, customPipeline })
             const headerStyle = rgb ? { color: stage.color } : {};
 
             return (
-              <div key={stage.name} className="flex-shrink-0 w-56">
+              <div key={stage.name} className="flex-shrink-0 w-72">
                 <div
-                  className={`rounded-2xl border-2 flex flex-col ${defaultColors ? `${defaultColors.bg} ${defaultColors.border}` : 'bg-gray-50 border-gray-200'}`}
-                  style={rgb && !defaultColors ? bgStyle : {}}
+                  className="rounded-2xl border flex flex-col overflow-hidden backdrop-blur-xl"
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: `rgba(${rgb || '34, 211, 238'}, 0.3)`,
+                    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 40px rgba(${rgb || '34, 211, 238'}, 0.05)`,
+                    backdropFilter: 'blur(20px)',
+                  }}
                 >
                   {/* Stage Header */}
-                  <div className="px-3 py-2.5 border-b border-black/8">
+                  <div className="px-4 py-3 border-b" style={{ borderColor: `rgba(${rgb || '34, 211, 238'}, 0.2)` }}>
                     <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        {stage.icon && <span className="text-sm flex-shrink-0">{stage.icon}</span>}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ 
+                          background: stage.color || defaultColors?.dot || '#22d3ee',
+                          boxShadow: `0 0 12px ${stage.color || defaultColors?.dot || '#22d3ee'}`
+                        }} />
                         <span
-                          className={`text-[11px] font-bold uppercase tracking-wide leading-tight truncate ${defaultColors ? defaultColors.header : ''}`}
-                          style={rgb && !defaultColors ? headerStyle : {}}
+                          className="text-[11px] font-bold uppercase tracking-widest leading-tight truncate"
+                          style={{ 
+                            color: stage.color || defaultColors?.header || '#22d3ee',
+                            textShadow: `0 0 20px ${stage.color || defaultColors?.header || '#22d3ee'}40`
+                          }}
                         >
                           {stage.name}
                         </span>
                       </div>
-                      <span className="text-xs font-bold text-black/40 bg-white rounded-full px-2 py-0.5 flex-shrink-0">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{
+                        background: `rgba(${rgb || '34, 211, 238'}, 0.15)`,
+                        color: stage.color || '#22d3ee',
+                        border: `1px solid rgba(${rgb || '34, 211, 238'}, 0.3)`,
+                      }}>
                         {cards.length}
                       </span>
                     </div>
                     {stageValue > 0 && (
-                      <p className="text-xs text-black/40 mt-0.5">R{stageValue.toLocaleString('en-ZA')}</p>
+                      <p className="text-xs mt-1 font-mono font-bold" style={{ 
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        textShadow: '0 0 10px rgba(255, 255, 255, 0.3)'
+                      }}>
+                        R{stageValue.toLocaleString('en-ZA')}
+                      </p>
                     )}
                   </div>
 
@@ -133,7 +160,11 @@ export default function KanbanBoard({ contacts, onStageChange, customPipeline })
                       <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`flex-1 p-2 space-y-2 min-h-[100px] rounded-b-2xl transition-colors ${snapshot.isDraggingOver ? 'bg-black/5' : ''}`}
+                        className="flex-1 p-2 space-y-2 min-h-[100px] transition-colors"
+                        style={{
+                          background: snapshot.isDraggingOver ? 'rgba(34, 211, 238, 0.05)' : 'transparent',
+                          borderRadius: '0 0 16px 16px',
+                        }}
                       >
                         {cards.map((contact, index) => (
                           <Draggable key={contact.id} draggableId={contact.id} index={index}>

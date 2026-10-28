@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Link } from 'react-router-dom';
 
 const FUNNEL_STAGES = [
@@ -16,7 +16,7 @@ export default function QuoteConversionFunnel() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Quote.list('-created_date', 200)
+    platform.entities.Quote.list('-created_date', 200)
       .then(setQuotes)
       .finally(() => setLoading(false));
   }, []);

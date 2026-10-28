@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Poetry Book Printing Johannesburg', description: 'Specialist poetry book printing in Johannesburg for South African poets.', url: '/poetrybookprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Poetry Book Printing', path: '/poetrybookprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Poetry Book Printing', path: '/poetrybookprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function PoetryBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Poetry Book Printing"
-        description="Poetry book printing in Johannesburg for SA poets — short runs, A5 and custom formats with careful typesetting that respects line breaks and white space."
+        title="Poetry Book Printing in Johannesburg | Creative Books SA"
+        description="Poetry book printing in Johannesburg for SA poets - short runs, A5 and custom formats with careful typesetting that respects line breaks and white space."
         keywords="poetry book printing Johannesburg, poetry collection printing, print poetry book South Africa, poetry publishing Johannesburg"
-        canonical="https://www.creativebooks.co.za/poetrybookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/poetrybookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,11 +50,11 @@ export default function PoetryBookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Poetry Publishing', path: '/poetrypublishing' },
+          { label: 'Poetry Publishing', path: '/book-publishing' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+          { label: 'ISBN Registration', path: '/isbn' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Poetry Collection"

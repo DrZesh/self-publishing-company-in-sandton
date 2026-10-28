@@ -1,7 +1,7 @@
 import React from 'react';
 import ServicePageTemplate from '../../components/shared/ServicePageTemplate';
 import PageMeta from '../../components/shared/PageMeta';
-import { serviceSchema, breadcrumbSchema, aggregateRatingSchema } from '../../lib/seo/schemas';
+import { serviceSchema, breadcrumbSchema } from '../../lib/seo/schemas';
 
 const faqs = [
   { question: 'What file format do you need?', answer: 'We accept print-ready PDF files (PDF/X-1a preferred). If you don\'t have print-ready files, we offer typesetting and formatting services.' },
@@ -14,15 +14,14 @@ const schema = {
     serviceSchema({
       name: 'Book Printing Johannesburg',
       description: 'Professional book printing services in Johannesburg. Hardcover, softcover, children\'s books, workbooks, and specialty formats with fast turnaround and competitive pricing.',
-      url: '/bookprinting',
+      url: '/book-printing',
       areaServed: 'South Africa',
     }),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Services', path: '/bookprinting' },
-      { name: 'Book Printing', path: '/bookprinting' },
+      { name: 'Services', path: '/book-printing' },
+      { name: 'Book Printing', path: '/book-printing' },
     ]),
-    aggregateRatingSchema(),
   ],
 };
 
@@ -30,17 +29,16 @@ export default function BookPrinting() {
   return (
     <>
       <PageMeta
-        title="Affordable Book Printing Services in South Africa"
-        description="Affordable book printing services in South Africa for authors, publishers and businesses that need professional printed books."
-        description="Professional book printing for SA authors from R4,500 for 100 copies. A5, 6×9, hardcover and children's formats. Cream or white paper, free printed proof."
-        keywords="book printing Johannesburg, book printing South Africa, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
-        canonical="https://www.creativebooks.co.za/bookprinting"
+        title="Book Printing in South Africa | Creative Books SA"
+        description="Professional book printing in South Africa - softcover, hardcover & full-colour, from single copies to bulk runs. Premium finishes, fast turnaround. Free quote."
+        keywords="book printing South Africa, book printing Johannesburg, hardcover printing, softcover printing, children's book printing, workbook printing, offset printing, print on demand South Africa"
+        canonical="https://creativebooks.co.za/book-printing"
         schema={schema}
       />
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/cff7b79e1_generated_7cf45eea.png"
-        subtitle="Book Printing Johannesburg"
-        title="Affordable Book Printing Services in South Africa"
+        subtitle="Book Printing South Africa"
+        title="Book Printing in South Africa"
         description="High-quality book printing in Johannesburg. Hardcover, softcover, children's books, workbooks, and specialty formats. From 50 to 50,000 copies with fast turnaround and competitive pricing."
         features={[
           { title: 'Hardcover Printing', description: 'Case-bound hardcover books with dust jackets, foil stamping, and premium finishes.' },
@@ -58,15 +56,15 @@ export default function BookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-          { label: 'A5 Book Printing', path: '/a5bookprinting' },
-          { label: '6×9 Book Printing', path: '/6x9bookprinting' },
-          { label: 'Hardcover Printing', path: '/hardcoverprinting' },
-          { label: 'Softcover Printing', path: '/softcoverprinting' },
-          { label: "Children's Book Printing", path: '/childrensbookprinting' },
+          { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
+          { label: 'A5 Book Printing', path: '/printing/a5' },
+          { label: '6×9 Book Printing', path: '/printing/6x9' },
+          { label: 'Hardcover Printing', path: '/printing/hardcover' },
+          { label: 'Softcover Printing', path: '/book-printing' },
+          { label: "Children's Book Printing", path: '/printing/childrensbooks' },
           { label: 'Typesetting', path: '/typesetting' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Get a Printing Quote"

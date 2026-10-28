@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
@@ -39,8 +39,8 @@ export default function ProjectModal({ contacts, project, onClose, onSaved }) {
     if (!form.contact_id || !form.book_title) return;
     setSaving(true);
     const data = { ...form, project_value: parseFloat(form.project_value) || 0, stage_changed_at: new Date().toISOString() };
-    if (project) await base44.entities.Project.update(project.id, data);
-    else await base44.entities.Project.create(data);
+    if (project) await platform.entities.Project.update(project.id, data);
+    else await platform.entities.Project.create(data);
     setSaving(false);
     onSaved();
   };

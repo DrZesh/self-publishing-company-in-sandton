@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Loader2, CheckCircle, XCircle, BellOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import NoIndexMeta from '@/components/shared/NoIndexMeta';
 
 export default function Unsubscribe() {
   const [step, setStep] = useState('loading'); // loading | confirm | done | error | already
@@ -17,8 +18,8 @@ export default function Unsubscribe() {
 
     const load = async () => {
       let contacts = [];
-      if (clientId) contacts = await base44.entities.Contact.filter({ id: clientId });
-      else if (email) contacts = await base44.entities.Contact.filter({ email });
+      if (clientId) contacts = await platform.entities.Contact.filter({ id: clientId });
+      else if (email) contacts = await platform.entities.Contact.filter({ email });
 
       const c = contacts[0];
       if (!c) { setStep('error'); return; }
@@ -33,7 +34,7 @@ export default function Unsubscribe() {
   const handleUnsubscribe = async () => {
     if (!contact) return;
     setSubmitting(true);
-    await base44.entities.Contact.update(contact.id, {
+    await platform.entities.Contact.update(contact.id, {
       unsubscribed: true,
       unsubscribed_at: new Date().toISOString(),
     });
@@ -43,6 +44,7 @@ export default function Unsubscribe() {
 
   return (
     <div className="min-h-screen bg-[#f5f3ef] flex items-center justify-center p-6">
+      <NoIndexMeta title="Unsubscribe | Creative Books SA" />
       <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 text-center">
         <img
           src="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png"

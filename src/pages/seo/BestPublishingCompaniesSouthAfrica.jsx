@@ -17,13 +17,13 @@ const schema = {
     serviceSchema({
       name: 'Best Publishing Companies in South Africa',
       description: 'Rated among the best publishing companies in South Africa for self-publishing authors. Full-service publishing with full rights retention.',
-      url: '/bestpublishingcompaniesinsouthafrica',
+      url: '/best-publishing-companies-in-south-africa',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Best Publishing Companies South Africa', path: '/bestpublishingcompaniesinsouthafrica' },
+      { name: 'Best Publishing Companies South Africa', path: '/best-publishing-companies-in-south-africa' },
     ]),
   ],
 };
@@ -35,7 +35,7 @@ export default function BestPublishingCompaniesSouthAfrica() {
         title="Best Publishing Companies South Africa"
         description="Compare leading South African book publishers in 2026 — services, pricing, packages and what each does best. Make an informed choice for your manuscript."
         keywords="best publishing companies in South Africa, best book publishers South Africa, top publishing companies South Africa, best self publishing company South Africa"
-        canonical="https://www.creativebooks.co.za/bestpublishingcompaniesinsouthafrica"
+        canonical="https://creativebooks.co.za/best-publishing-companies-in-south-africa"
         schema={schema}
       />
       <ServicePageTemplate
@@ -59,12 +59,12 @@ export default function BestPublishingCompaniesSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-          { label: 'Book Publishers SA', path: '/bookpublisherssouthafrica' },
-          { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Book Editing', path: '/bookediting' },
+          { label: 'Publishing Companies SA', path: '/publishing-companies-south-africa' },
+          { label: 'Book Publishers SA', path: '/book-publishers-south-africa' },
+          { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Book Editing', path: '/book-editing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Work With One of South Africa's Best Publishing Companies"

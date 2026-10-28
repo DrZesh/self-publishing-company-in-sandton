@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import LeadDetailPanel from '@/components/admin/leads/LeadDetailPanel';
 import LeadEditModal from '@/components/admin/leads/LeadEditModal';
@@ -55,9 +55,9 @@ export default function AdminLeads() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Lead.list('-created_date', 200),
-      base44.entities.Contact.list('-created_date', 200),
-      base44.entities.Submission.list('-created_date', 200),
+      platform.entities.Lead.list('-created_date', 200),
+      platform.entities.Contact.list('-created_date', 200),
+      platform.entities.Submission.list('-created_date', 200),
     ]).then(([l, c, s]) => { setLeads(l); setContacts(c); setSubmissions(s); })
       .finally(() => setLoading(false));
   }, []);
@@ -89,12 +89,12 @@ export default function AdminLeads() {
 
   const handleSave = async (data) => {
     if (editLead?.id) {
-      const updated = await base44.entities.Lead.update(editLead.id, data);
+      const updated = await platform.entities.Lead.update(editLead.id, data);
       setLeads(prev => prev.map(l => l.id === editLead.id ? { ...l, ...data } : l));
       if (selectedLead?.id === editLead.id) setSelectedLead(prev => ({ ...prev, ...data }));
       toast.success('Lead updated');
     } else {
-      const created = await base44.entities.Lead.create(data);
+      const created = await platform.entities.Lead.create(data);
       setLeads(prev => [created, ...prev]);
       toast.success('Lead created');
     }
@@ -103,7 +103,7 @@ export default function AdminLeads() {
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this lead? This cannot be undone.')) return;
-    await base44.entities.Lead.delete(id);
+    await platform.entities.Lead.delete(id);
     setLeads(prev => prev.filter(l => l.id !== id));
     setSelectedLead(null);
     setShowEditModal(false);
@@ -116,15 +116,16 @@ export default function AdminLeads() {
 
   return (
     <AdminLayout>
-      <div className="flex h-full gap-0">
+      <div className="flex h-full gap-0 min-h-screen relative" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0 z-0" style={{ background: 'linear-gradient(135deg, rgba(100,120,200,0.55) 0%, rgba(180,100,200,0.45) 50%, rgba(100,160,220,0.5) 100%)' }} />
         {/* Main list */}
-        <div className={`flex-1 min-w-0 transition-all ${selectedLead ? 'hidden lg:block lg:max-w-none' : ''}`}>
+        <div className={`flex-1 min-w-0 transition-all relative z-10 ${selectedLead ? 'hidden lg:block lg:max-w-none' : ''}`}>
           <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Leads</h1>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <h1 className="text-2xl font-bold text-white">Leads</h1>
+                <p className="text-sm text-white/50 mt-0.5">
                   {openLeads.length} open · R{pipelineValue.toLocaleString()} pipeline · R{wonValue.toLocaleString()} won
                 </p>
               </div>
@@ -138,7 +139,7 @@ export default function AdminLeads() {
                   const csv = [headers,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
                   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`leads-${new Date().toISOString().slice(0,10)}.csv`;a.click();
                 }}
-                  className="flex items-center gap-2 px-3 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm font-semibold hover:border-[#B87333] hover:text-[#B87333] transition-colors bg-white">
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:border-[#B87333] hover:text-[#B87333] transition-colors text-white/60" style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.06)' }}>
                   <Download className="w-4 h-4" /> Export CSV
                 </button>
                 <button onClick={() => { setEditLead(null); setShowEditModal(true); }}
@@ -151,12 +152,14 @@ export default function AdminLeads() {
             {/* Stage filter pills */}
             <div className="flex gap-2 flex-wrap mb-4">
               <button onClick={() => setStageFilter('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === 'all' ? 'bg-white text-gray-900' : 'text-white/60 hover:bg-white/10'}`}
+                style={stageFilter !== 'all' ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' } : {}}>
                 All ({leads.length})
               </button>
               {STAGES.map(s => (
                 <button key={s} onClick={() => setStageFilter(s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === s ? 'bg-[#B87333] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-[#B87333]'}`}>
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${stageFilter === s ? 'bg-[#B87333] text-white' : 'text-white/60 hover:bg-white/10'}`}
+                  style={stageFilter !== s ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' } : {}}>
                   {STAGE_LABELS[s] || s} ({leads.filter(l => l.stage === s).length})
                 </button>
               ))}
@@ -165,39 +168,41 @@ export default function AdminLeads() {
             {/* Search + filters row */}
             <div className="flex gap-3 mb-5 flex-wrap">
               <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-white/30" />
                 <input value={search} onChange={e => setSearch(e.target.value)}
                   placeholder="Search name, email, phone, book title…"
-                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white" />
+                  className="w-full pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none text-white placeholder-white/30"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }} />
               </div>
               <select value={serviceFilter} onChange={e => setServiceFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#B87333] bg-white text-gray-600">
-                <option value="">All Services</option>
-                {SERVICE_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                className="px-3 py-2 rounded-lg text-sm focus:outline-none text-white/70"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <option value="" className="text-gray-900">All Services</option>
+                {SERVICE_OPTIONS.map(s => <option key={s} value={s} className="text-gray-900">{s}</option>)}
               </select>
             </div>
 
             {/* Table */}
             {loading ? (
-              <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />)}</div>
+              <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.06)' }} />)}</div>
             ) : filtered.length === 0 ? (
-              <div className="py-20 text-center bg-white rounded-xl border border-gray-200">
+              <div className="py-20 text-center rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div className="text-4xl mb-3">🎯</div>
-                <p className="text-sm font-semibold text-gray-500">No leads found</p>
-                <p className="text-xs text-gray-400 mt-1">Leads are created from submissions or manually.</p>
+                <p className="text-sm font-semibold text-white/50">No leads found</p>
+                <p className="text-xs text-white/30 mt-1">Leads are created from submissions or manually.</p>
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Contact</th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Service</th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Stage</th>
-                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Value</th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">Next Action</th>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden xl:table-cell">Date</th>
+                      <tr style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">Contact</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide hidden sm:table-cell">Service</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">Stage</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-white/40 uppercase tracking-wide hidden md:table-cell">Value</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide hidden lg:table-cell">Next Action</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide hidden xl:table-cell">Date</th>
                         <th className="px-4 py-3 w-8" />
                       </tr>
                     </thead>
@@ -210,19 +215,22 @@ export default function AdminLeads() {
                         return (
                           <tr key={lead.id}
                             onClick={() => handleSelectLead(lead)}
-                            className={`border-b border-gray-100 hover:bg-amber-50/40 cursor-pointer transition-colors ${isSelected ? 'bg-amber-50 border-l-2 border-l-[#B87333]' : ''}`}>
+                            className="cursor-pointer transition-colors"
+                            style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: isSelected ? 'rgba(184,115,51,0.15)' : undefined }}
+                            onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+                            onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = ''; }}>
                             <td className="px-4 py-3">
-                              <p className="font-semibold text-gray-900">{contact?.full_name || '—'}</p>
-                              <p className="text-xs text-gray-400">{contact?.email || ''}</p>
-                              {contact?.phone && <p className="text-xs text-gray-400">{contact.phone}</p>}
+                              <p className="font-semibold text-white">{contact?.full_name || '—'}</p>
+                              <p className="text-xs text-white/40">{contact?.email || ''}</p>
+                              {contact?.phone && <p className="text-xs text-white/40">{contact.phone}</p>}
                             </td>
                             <td className="px-4 py-3 hidden sm:table-cell">
                               <div className="flex flex-wrap gap-1">
                                 {services.length ? services.map(s => (
-                                  <span key={s} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{s}</span>
-                                )) : <span className="text-xs text-gray-300">—</span>}
+                                  <span key={s} className="px-2 py-0.5 rounded text-xs text-white/60" style={{ background: 'rgba(255,255,255,0.1)' }}>{s}</span>
+                                )) : <span className="text-xs text-white/20">—</span>}
                               </div>
-                              {contact?.book_title && <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[140px]">📖 {contact.book_title}</p>}
+                              {contact?.book_title && <p className="text-xs text-white/40 mt-0.5 truncate max-w-[140px]">📖 {contact.book_title}</p>}
                             </td>
                             <td className="px-4 py-3">
                               <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STAGE_COLORS[lead.stage] || 'bg-gray-100 text-gray-600'}`}>
@@ -230,18 +238,18 @@ export default function AdminLeads() {
                               </span>
                             </td>
                             <td className="px-4 py-3 text-right hidden md:table-cell">
-                              <p className="font-semibold text-gray-900">R{(lead.estimated_value || 0).toLocaleString()}</p>
-                              <p className="text-xs text-gray-400">{lead.probability_percent || 0}% prob</p>
+                              <p className="font-semibold text-white">R{(lead.estimated_value || 0).toLocaleString()}</p>
+                              <p className="text-xs text-white/40">{lead.probability_percent || 0}% prob</p>
                             </td>
                             <td className="px-4 py-3 hidden lg:table-cell max-w-[180px]">
                               {lead.next_action
-                                ? <p className={`text-xs truncate ${isOverdue ? 'text-red-500 font-semibold' : 'text-gray-600'}`}>{isOverdue ? '⚠ ' : ''}{lead.next_action}</p>
-                                : <span className="text-xs text-gray-300">—</span>}
+                                ? <p className={`text-xs truncate ${isOverdue ? 'text-red-400 font-semibold' : 'text-white/60'}`}>{isOverdue ? '⚠ ' : ''}{lead.next_action}</p>
+                                : <span className="text-xs text-white/20">—</span>}
                             </td>
                             <td className="px-4 py-3 hidden xl:table-cell">
-                              <p className="text-xs text-gray-400">{new Date(lead.created_date).toLocaleDateString('en-ZA')}</p>
+                              <p className="text-xs text-white/40">{new Date(lead.created_date).toLocaleDateString('en-ZA')}</p>
                             </td>
-                            <td className="px-4 py-3"><ChevronRight className="w-4 h-4 text-gray-300" /></td>
+                            <td className="px-4 py-3"><ChevronRight className="w-4 h-4 text-white/20" /></td>
                           </tr>
                         );
                       })}
@@ -255,11 +263,11 @@ export default function AdminLeads() {
 
         {/* Detail panel */}
         {selectedLead && (
-          <div className="flex-1 max-w-2xl border-l border-gray-200 bg-white overflow-y-auto">
+          <div className="flex-1 max-w-2xl overflow-y-auto relative z-10" style={{ borderLeft: '1px solid rgba(255,255,255,0.15)', background: 'rgba(0,0,0,0.25)' }}>
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[#2B2B2B]">Lead Details</h2>
-                <button onClick={() => setSelectedLead(null)} className="text-gray-400 hover:text-gray-600">
+                <h2 className="text-lg font-bold text-white">Lead Details</h2>
+                <button onClick={() => setSelectedLead(null)} className="text-white/40 hover:text-white/80">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -289,7 +297,7 @@ export default function AdminLeads() {
                 onEdit={() => { setEditLead(selectedLead); setShowEditModal(true); }}
                 onDelete={handleDelete}
                 onStageChange={async (newStage) => {
-                  await base44.entities.Lead.update(selectedLead.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
+                  await platform.entities.Lead.update(selectedLead.id, { stage: newStage, stage_changed_at: new Date().toISOString() });
                   setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, stage: newStage } : l));
                   setSelectedLead(prev => ({ ...prev, stage: newStage }));
                   toast.success(`Stage updated to ${newStage}`);

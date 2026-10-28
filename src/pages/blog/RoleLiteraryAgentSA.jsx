@@ -23,8 +23,8 @@ const article = {
   ],
   relatedLinks: [
     { label: 'How to Find a Literary Agent', path: '/howtofindliteraryagentinsouthafrica' },
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

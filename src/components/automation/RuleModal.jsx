@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Loader2 } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function RuleModal({ rule, onClose, onSaved }) {
 
   const { data: templates = [] } = useQuery({
     queryKey: ['message-templates-all'],
-    queryFn: () => base44.entities.MessageTemplate.filter({ channel: 'email', is_active: true }),
+    queryFn: () => platform.entities.MessageTemplate.filter({ channel: 'email', is_active: true }),
   });
 
   useEffect(() => {
@@ -74,8 +74,8 @@ export default function RuleModal({ rule, onClose, onSaved }) {
     setSaving(true);
     const selectedTemplate = templates.find(t => t.id === form.template_id);
     const data = { ...form, template_name: selectedTemplate?.name || form.template_name };
-    if (isEdit) await base44.entities.AutomationRule.update(rule.id, data);
-    else await base44.entities.AutomationRule.create(data);
+    if (isEdit) await platform.entities.AutomationRule.update(rule.id, data);
+    else await platform.entities.AutomationRule.create(data);
     setSaving(false);
     toast.success(isEdit ? 'Rule updated' : 'Rule created');
     onSaved();

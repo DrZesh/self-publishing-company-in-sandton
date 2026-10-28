@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminSidebar from './AdminSidebar';
 import CommandPalette from './CommandPalette';
+import NotificationBell from './notifications/NotificationBell';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 export default function AdminLayout({ children }) {
@@ -62,7 +63,7 @@ export default function AdminLayout({ children }) {
 
   // Load initial unread count
   useEffect(() => {
-    base44.entities.Submission.filter({ status: 'new' })
+    platform.entities.Submission.filter({ status: 'new' })
       .then(subs => {
         subs.forEach(s => lastSeenRef.current.add(s.id));
         setUnreadCount(subs.length);
@@ -72,7 +73,7 @@ export default function AdminLayout({ children }) {
 
   // Subscribe to new submissions in real-time
   useEffect(() => {
-    const unsubscribe = base44.entities.Submission.subscribe((event) => {
+    const unsubscribe = platform.entities.Submission.subscribe((event) => {
       if (event.type === 'create') {
         if (!lastSeenRef.current.has(event.id)) {
           lastSeenRef.current.add(event.id);
@@ -142,11 +143,11 @@ export default function AdminLayout({ children }) {
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {/* Time */}
-            <span className="text-sm text-[#2B2B2B]/60 hidden sm:inline">{currentTime}</span>
+            <span className="text-sm text-[#2B2B2B]/60 hidden sm:inline mr-2">{currentTime}</span>
 
-            {/* Notifications */}
+            {/* Submissions bell (existing) */}
             <button
               onClick={() => { setUnreadCount(0); navigate('/admin/submissions'); }}
               className="relative p-2 hover:bg-[#f0f0f0] rounded-lg"
@@ -159,6 +160,11 @@ export default function AdminLayout({ children }) {
                 </span>
               )}
             </button>
+
+            {/* Smart Notification Bell */}
+            <div className="[&_button]:text-[#2B2B2B] [&_button:hover]:bg-[#f0f0f0]">
+              <NotificationBell />
+            </div>
 
             {/* Logout */}
             <button

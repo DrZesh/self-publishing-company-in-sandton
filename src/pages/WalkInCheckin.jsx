@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { BookOpen, CheckCircle, Loader2 } from 'lucide-react';
+import NoIndexMeta from '@/components/shared/NoIndexMeta';
 
 export default function WalkInCheckin() {
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', service_interest: '', notes: '' });
@@ -13,13 +14,13 @@ export default function WalkInCheckin() {
     setSubmitting(true);
     try {
       // Create or find contact
-      const existing = await base44.entities.Contact.filter({ email: form.email }).catch(() => []);
+      const existing = await platform.entities.Contact.filter({ email: form.email }).catch(() => []);
       let contactId;
       if (existing.length > 0) {
         contactId = existing[0].id;
-        await base44.entities.Contact.update(contactId, { last_contact_date: new Date().toISOString() });
+        await platform.entities.Contact.update(contactId, { last_contact_date: new Date().toISOString() });
       } else {
-        const contact = await base44.entities.Contact.create({
+        const contact = await platform.entities.Contact.create({
           full_name: form.full_name,
           email: form.email,
           phone: form.phone,
@@ -32,7 +33,7 @@ export default function WalkInCheckin() {
       }
 
       // Create walk-in submission
-      await base44.entities.Submission.create({
+      await platform.entities.Submission.create({
         form_type: 'contact',
         source_page: '/walk-in',
         full_name: form.full_name,
@@ -45,7 +46,7 @@ export default function WalkInCheckin() {
 
       // Log activity note
       if (form.notes || form.service_interest) {
-        await base44.entities.Note.create({
+        await platform.entities.Note.create({
           contact_id: contactId,
           content: `📍 Walk-in visit on ${new Date().toLocaleDateString('en-ZA')}.\nService interest: ${form.service_interest || 'Not specified'}\nNotes: ${form.notes || 'None'}`,
           note_type: 'visit',
@@ -62,6 +63,7 @@ export default function WalkInCheckin() {
 
   if (done) return (
     <div className="min-h-screen bg-[#1A1208] flex items-center justify-center p-6">
+      <NoIndexMeta title="Check In | Creative Books SA" />
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full text-center">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome!</h2>
@@ -76,6 +78,7 @@ export default function WalkInCheckin() {
 
   return (
     <div className="min-h-screen bg-[#1A1208] flex items-center justify-center p-6">
+      <NoIndexMeta title="Check In | Creative Books SA" />
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-[#B87333] to-[#D4A574] p-8 text-white text-center">

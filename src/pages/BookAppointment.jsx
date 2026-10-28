@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { ChevronLeft, ChevronRight, Clock, MapPin, Video, CheckCircle, Calendar, Loader2, User, Mail, Phone, MessageSquare } from 'lucide-react';
 
 const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -46,8 +46,8 @@ export default function BookAppointment() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    base44.entities.BookingService.filter({ is_active: true }).then(setServices).catch(() => {});
-    base44.entities.AvailabilityRule.list().then(rules => {
+    platform.entities.BookingService.filter({ is_active: true }).then(setServices).catch(() => {});
+    platform.entities.AvailabilityRule.list().then(rules => {
       const map = {};
       rules.forEach(r => { map[r.weekday] = r; });
       setAvailabilityRules(map);
@@ -74,7 +74,7 @@ export default function BookAppointment() {
     setLoadingSlots(true);
     setSlots([]);
     try {
-      const res = await base44.functions.invoke('getAvailableSlots', { serviceId, date: dateStr });
+      const res = await platform.functions.invoke('getAvailableSlots', { serviceId, date: dateStr });
       setSlots(res.data?.slots || []);
     } catch {
       setSlots([]);
@@ -98,19 +98,25 @@ export default function BookAppointment() {
     setSubmitting(true);
     try {
       const endTime = addMinutes(selectedSlot.start, selectedService.duration_minutes);
-      await base44.functions.invoke('createBookingRequest', {
-        service_id: selectedService.id,
-        service_name: selectedService.name,
-        service_duration_minutes: selectedService.duration_minutes,
-        mode: selectedMode,
-        date: selectedDate,
-        start_time: selectedSlot.start,
-        end_time: endTime,
-        client_name: form.name,
-        client_email: form.email,
-        client_phone: form.phone,
-        client_note: form.note,
-      });
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 20000)
+      );
+      await Promise.race([
+        platform.functions.invoke('createBookingRequest', {
+          service_id: selectedService.id,
+          service_name: selectedService.name,
+          service_duration_minutes: selectedService.duration_minutes,
+          mode: selectedMode,
+          date: selectedDate,
+          start_time: selectedSlot.start,
+          end_time: endTime,
+          client_name: form.name,
+          client_email: form.email,
+          client_phone: form.phone,
+          client_note: form.note,
+        }),
+        timeout,
+      ]);
       setSubmitted(true);
     } catch (e) {
       setError('Something went wrong. Please try again or call us on 084 230 5393.');

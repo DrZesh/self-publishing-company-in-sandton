@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,7 +42,7 @@ function InvoiceEmailSender({ contacts, invoices }) {
   const handleSend = async () => {
     if (!invoiceId) return;
     setSending(true);
-    const res = await base44.functions.invoke('sendInvoiceEmail', { invoice_id: invoiceId });
+    const res = await platform.functions.invoke('sendInvoiceEmail', { invoice_id: invoiceId });
     setSending(false);
     if (res.data?.success) toast.success('Invoice emailed successfully!');
     else toast.error(res.data?.error || 'Failed to send invoice');
@@ -73,7 +73,7 @@ function PaymentReminderSender({ contacts, invoices }) {
   const handleSend = async () => {
     if (!invoiceId) return;
     setSending(true);
-    const res = await base44.functions.invoke('sendPaymentReminder', { invoice_id: invoiceId, channel });
+    const res = await platform.functions.invoke('sendPaymentReminder', { invoice_id: invoiceId, channel });
     setSending(false);
     if (res.data?.success) toast.success(`Payment reminder sent via ${channel}!`);
     else toast.error(res.data?.error || 'Failed to send reminder');
@@ -109,7 +109,7 @@ function ProjectUpdateSender({ contacts, projects }) {
   const handleSend = async () => {
     if (!projectId) return;
     setSending(true);
-    const res = await base44.functions.invoke('sendProjectUpdateEmail', { project_id: projectId, custom_message: customMessage || undefined });
+    const res = await platform.functions.invoke('sendProjectUpdateEmail', { project_id: projectId, custom_message: customMessage || undefined });
     setSending(false);
     if (res.data?.success) toast.success('Project update email sent!');
     else toast.error(res.data?.error || 'Failed to send email');
@@ -138,7 +138,7 @@ function FollowUpRunner() {
   const [result, setResult] = useState(null);
   const handleRun = async () => {
     setRunning(true); setResult(null);
-    const res = await base44.functions.invoke('sendFollowUpReminders', {});
+    const res = await platform.functions.invoke('sendFollowUpReminders', {});
     setRunning(false); setResult(res.data);
     if (res.data?.success) toast.success('Follow-up reminders processed!');
     else toast.error(res.data?.error || 'Failed');
@@ -165,7 +165,7 @@ function OverdueChecker() {
   const [result, setResult] = useState(null);
   const handleRun = async () => {
     setRunning(true); setResult(null);
-    const res = await base44.functions.invoke('checkOverdueInvoices', {});
+    const res = await platform.functions.invoke('checkOverdueInvoices', {});
     setRunning(false); setResult(res.data);
     if (res.data?.success) toast.success(`${res.data.invoices_marked_overdue} overdue, ${res.data.tasks_created} tasks created`);
     else toast.error(res.data?.error || 'Check failed');
@@ -201,9 +201,9 @@ const TABS = [
 export default function AdminAutomations() {
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => base44.entities.Contact.list('-created_date', 500) });
-  const { data: invoices = [] } = useQuery({ queryKey: ['invoices'], queryFn: () => base44.entities.Invoice.list('-created_date', 200) });
-  const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: () => base44.entities.Project.list('-created_date', 200) });
+  const { data: contacts = [] } = useQuery({ queryKey: ['contacts'], queryFn: () => platform.entities.Contact.list('-created_date', 500) });
+  const { data: invoices = [] } = useQuery({ queryKey: ['invoices'], queryFn: () => platform.entities.Invoice.list('-created_date', 200) });
+  const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: () => platform.entities.Project.list('-created_date', 200) });
 
   return (
     <AdminLayout>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MessageSquare, Send, TestTube, Copy, CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
@@ -139,7 +139,7 @@ export default function WhatsAppPanel({ contacts }) {
     if (!number) { toast.error(isTest ? 'Set a test number in Settings' : 'No phone number found'); return; }
     if (!msg) { toast.error('No message to send'); return; }
     isTest ? setTesting(true) : setSending(true);
-    const res = await base44.functions.invoke('sendWhatsAppNotification', {
+    const res = await platform.functions.invoke('sendWhatsAppNotification', {
       to_number: number,
       message: msg,
       contact_id: contactId || undefined,

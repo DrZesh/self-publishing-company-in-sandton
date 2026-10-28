@@ -18,13 +18,13 @@ const schema = {
     serviceSchema({
       name: 'Self Publishing South Africa',
       description: 'Professional self-publishing services in South Africa. Retain 100% of your rights while getting expert editing, design, printing and distribution support.',
-      url: '/selfpublishingsouthafrica',
+      url: '/self-publishing-south-africa',
       areaServed: 'South Africa',
     }),
     faqSchema(faqs),
     breadcrumbSchema([
       { name: 'Home', path: '/' },
-      { name: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+      { name: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     ]),
   ],
 };
@@ -33,16 +33,16 @@ export default function SelfPublishingSouthAfrica() {
   return (
     <>
       <PageMeta
-        title="Self Publishing South Africa"
-        description="Professional self-publishing in South Africa from R21,000. ISBN, editing, cover design, printing & distribution. Keep 100% of your rights and royalties."
+        title="Self Publishing in South Africa | Creative Books SA"
+        description="Self-publish your book in South Africa from R21,000 - ISBN, editing, cover design, printing & distribution done for you. Keep 100% of your rights. Get a quote."
         keywords="self publishing South Africa, self publish a book South Africa, self publishing services South Africa, how to self publish in South Africa"
-        canonical="https://www.creativebooks.co.za/selfpublishingsouthafrica"
+        canonical="https://creativebooks.co.za/self-publishing-south-africa"
         schema={schema}
       />
       <ServicePageTemplate
         heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/5741d046a_generated_c8e794a5.png"
         subtitle="Self Publishing South Africa"
-        title="Self Publishing South Africa"
+        title="Self Publishing in South Africa"
         description="Self-publish your book in South Africa with professional support from Creative Books SA. Keep 100% of your rights and royalties while receiving expert editing, cover design, typesetting, ISBN registration, printing, and global distribution services."
         features={[
           { title: '100% Rights Retained', description: 'Unlike traditional publishing, you own your work completely — all rights, all royalties, always.' },
@@ -60,12 +60,12 @@ export default function SelfPublishingSouthAfrica() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Publishing Companies SA', path: '/publishingcompaniessouthafrica' },
-          { label: 'Book Publishers SA', path: '/bookpublisherssouthafrica' },
-          { label: 'Publishing Packages', path: '/publishingpackages' },
-          { label: 'Book Printing JHB', path: '/bookprintingjohannesburg' },
-          { label: 'Book Cover Design', path: '/bookcoverdesign' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
+          { label: 'Publishing Companies SA', path: '/publishing-companies-south-africa' },
+          { label: 'Book Publishers SA', path: '/book-publishers-south-africa' },
+          { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+          { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
+          { label: 'Book Cover Design', path: '/book-cover-design' },
+          { label: 'ISBN Registration', path: '/isbn' },
           { label: 'How to Publish a Book', path: '/howtopublishabook' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

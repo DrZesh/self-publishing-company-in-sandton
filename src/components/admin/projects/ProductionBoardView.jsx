@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { AlertTriangle, Clock, ArrowRight, ChevronRight } from 'lucide-react';
 
@@ -65,7 +65,7 @@ function ProjectCard({ project, contact, onSelect, onMoveStage }) {
     e.stopPropagation();
     if (!nextStage || moving) return;
     setMoving(true);
-    await base44.entities.Project.update(project.id, { stage: nextStage, stage_changed_at: new Date().toISOString() });
+    await platform.entities.Project.update(project.id, { stage: nextStage, stage_changed_at: new Date().toISOString() });
     toast.success(`→ ${nextStage}`);
     onMoveStage();
     setMoving(false);

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { CheckCircle, AlertTriangle, MessageSquare, Mail, Clock, Zap, TrendingUp, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -10,7 +10,7 @@ export default function AutomationDashboard({ contacts, invoices, projects }) {
 
   const { data: logs = [] } = useQuery({
     queryKey: ['activitylog-auto'],
-    queryFn: () => base44.entities.ActivityLog.list('-created_date', 200),
+    queryFn: () => platform.entities.ActivityLog.list('-created_date', 200),
   });
 
   const today = new Date().toDateString();
@@ -25,7 +25,7 @@ export default function AutomationDashboard({ contacts, invoices, projects }) {
 
   const handleOverdueCheck = async () => {
     setRunningCheck(true);
-    const res = await base44.functions.invoke('checkOverdueInvoices', {});
+    const res = await platform.functions.invoke('checkOverdueInvoices', {});
     setRunningCheck(false);
     if (res.data?.success) toast.success(`Done — ${res.data.invoices_marked_overdue || 0} overdue, ${res.data.tasks_created || 0} tasks created`);
     else toast.error('Check failed');
@@ -99,7 +99,7 @@ export default function AutomationDashboard({ contacts, invoices, projects }) {
             </Button>
             <Button
               onClick={async () => {
-                const res = await base44.functions.invoke('sendFollowUpReminders', {});
+                const res = await platform.functions.invoke('sendFollowUpReminders', {});
                 if (res.data?.success) toast.success('Follow-up reminders sent!');
                 else toast.error('Failed to send reminders');
               }}

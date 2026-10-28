@@ -42,7 +42,7 @@ const publishingPackages = [
       'Amazon KDP setup',
       'eBook publishing'
     ],
-    link: '/publishingpackages',
+    link: '/publishingpackages/a5',
     ctaText: 'Choose This Package'
   },
   {

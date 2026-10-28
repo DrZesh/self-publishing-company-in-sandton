@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { 
   Search, Users, FileText, Receipt, FolderKanban, CheckSquare, 
   CreditCard, FolderOpen, X, ArrowRight, Zap, Settings, BarChart3
@@ -52,11 +52,11 @@ export default function CommandPalette({ open, onClose }) {
   const loadData = async () => {
     setLoading(true);
     const [c, q, p, i, t] = await Promise.all([
-      base44.entities.Contact.list('-created_date', 200),
-      base44.entities.Quote.list('-created_date', 200),
-      base44.entities.Project.list('-created_date', 200),
-      base44.entities.Invoice.list('-created_date', 200),
-      base44.entities.Task.list('-created_date', 100),
+      platform.entities.Contact.list('-created_date', 200),
+      platform.entities.Quote.list('-created_date', 200),
+      platform.entities.Project.list('-created_date', 200),
+      platform.entities.Invoice.list('-created_date', 200),
+      platform.entities.Task.list('-created_date', 100),
     ]).catch(() => [[], [], [], [], []]);
     setContacts(c || []);
     setQuotes(q || []);

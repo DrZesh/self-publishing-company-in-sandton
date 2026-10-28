@@ -85,10 +85,9 @@ export default function BookTypesetting() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Affordable Book Typesetting & Layout Services"
-        description="Affordable book typesetting and layout services for authors who need a clean, professional and print-ready book interior."
-        description="Professional book typesetting and interior layout for South African authors. Print-ready PDFs for A5, 6×9, hardcover and custom formats. Built for print."
-        canonical="https://www.creativebooks.co.za/typesetting"
+        title="Book Typesetting & Layout in South Africa | Creative Books"
+        description="Professional book typesetting & layout in South Africa for print and ebook. Clean, readable, industry-standard formatting in any trim size. Get a quote today."
+        canonical="https://creativebooks.co.za/typesetting"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -103,7 +102,7 @@ export default function BookTypesetting() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Layout & Typesetting · Johannesburg · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Affordable Book Typesetting & Layout Services
+              Book Typesetting & Layout in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Book Interior Layout, Typesetting and Print-Ready Files</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -270,7 +269,7 @@ export default function BookTypesetting() {
               <Link to="/getquote" className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold transition-all group" style={{ background: '#B8955B', boxShadow: '0 12px 32px rgba(184,149,91,0.35)', borderRadius: '8px' }}>
                 Request a Typesetting Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/bookcoverdesign" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
+              <Link to="/book-cover-design" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm" style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 Book Cover Design
               </Link>
             </div>
@@ -279,11 +278,11 @@ export default function BookTypesetting() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
-        { label: 'eBook Formatting', path: '/ebookpublishing' },
-        { label: 'Book Editing Services', path: '/bookediting' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
+        { label: 'eBook Formatting', path: '/ebook-publishing' },
+        { label: 'Book Editing Services', path: '/book-editing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

@@ -28,11 +28,10 @@ export default function BookPrintingPretoria() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Pretoria"
-        description="Professional book printing services for Pretoria authors, educators, businesses and creatives. A5, 6×9 and hardcover formats available."
-        description="We specialise in quality book printing services for authors, educators, businesses, and creatives in Pretoria"
+        title="Book Printing Pretoria | Creative Books SA"
+        description="Professional book printing in Pretoria for authors, educators & businesses. A5, 6×9 and hardcover formats, transparent once-off pricing. Get a free quote today."
         keywords="book printing Pretoria, book printers Pretoria, Pretoria book printing, printing services Pretoria, book publishing Pretoria, Tshwane book printing"
-        canonical="https://www.creativebooks.co.za/bookprintingpretoria"
+        canonical="https://creativebooks.co.za/bookprintingpretoria"
         schema={{ '@graph': [schema] }}
       />
 

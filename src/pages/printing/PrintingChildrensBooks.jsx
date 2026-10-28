@@ -19,7 +19,7 @@ export default function PrintingChildrensBooks() {
       <PageMeta
         title="Children's Book Printing in Johannesburg"
         description="Full-colour children's book printing in 15×15, 20×20 and 21×21cm formats. Saddle-stitch or perfect binding. Perfect for picture books and stories."
-        canonical="https://www.creativebooks.co.za/printing/childrensbooks"
+        canonical="https://creativebooks.co.za/printing/childrensbooks"
       />
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-20 bg-obsidian">
@@ -77,8 +77,8 @@ export default function PrintingChildrensBooks() {
         { label: 'A5 Printing', path: '/printing/a5' },
         { label: '6x9 Printing', path: '/printing/6x9' },
         { label: 'Hardcover Printing', path: '/printing/hardcover' },
-        { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: "Children's Book Publishing", path: '/childrensbookpackages' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Get a Quote', path: '/getquote' },
       ]} light />
       <CTASection title="Ready to Print Your Children's Book?" description="Get a free children's book printing quote tailored to your size and quantity requirements." />

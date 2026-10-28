@@ -1,5 +1,4 @@
 import React from 'react';
-import LazySection from '../components/shared/LazySection';
 import PageMeta from '../components/shared/PageMeta';
 import { mainLocalBusinessSchema } from '../lib/seo/schemas';
 
@@ -19,6 +18,8 @@ import PortfolioPreview from '../components/home/PortfolioPreview';
 import HomeFAQ from '../components/home/HomeFAQ';
 import FinalCTA from '../components/home/FinalCTA';
 import FeaturedBlog from '../components/home/FeaturedBlog';
+import BarcodeToolCTA from '../components/home/BarcodeToolCTA';
+import CoverCalculatorCTA from '../components/home/CoverCalculatorCTA';
 
 
 
@@ -27,10 +28,10 @@ export default function Home() {
   return (
     <div>
       <PageMeta
-        title="Publish Your Book in South Africa: Packages From R21,000"
-        description="Self-publishing services in South Africa — editing, cover design, typesetting and printing from R21,000. Based in Sandton, working with authors nationwide."
-        keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing Johannesburg, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
-        canonical="https://www.creativebooks.co.za/"
+        title="Self-Publishing & Book Printing in South Africa | Creative Books"
+        description="Creative Books SA helps authors self-publish, edit, design & print professional books nationwide. Full packages from R21,000. Keep 100% of your rights. Get a quote."
+        keywords="self publishing South Africa, book printing South Africa, book editing South Africa, book publishing South Africa, self publish a book, book cover design, typesetting South Africa, ebook publishing South Africa"
+        canonical="https://creativebooks.co.za/"
         schema={{ '@graph': [mainLocalBusinessSchema()] }}
       />
 
@@ -40,50 +41,20 @@ export default function Home() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3–14. Below-fold sections — deferred until near viewport */}
-      <LazySection>
-        <PublishingPath />
-      </LazySection>
-
-      <LazySection>
-        <CoreServices />
-      </LazySection>
-
-      <LazySection>
-        <PublishingPackagesSection />
-      </LazySection>
-
-      <LazySection>
-        <WhyChooseUsNew />
-      </LazySection>
-
-      <LazySection>
-        <BookTypes />
-      </LazySection>
-
-      <LazySection>
-        <PublishingProcess />
-      </LazySection>
-
-      <LazySection>
-        <LocationSEO />
-      </LazySection>
-
-      <LazySection>
-        <PortfolioPreview />
-      </LazySection>
-
-      <LazySection>
-        <FeaturedBlog />
-      </LazySection>
-
-      <LazySection>
-        <HomeFAQ />
-      </LazySection>
-
-      <LazySection>
-        <FinalCTA />
-      </LazySection>
+      {/* 3–14. Below-fold sections */}
+      <PublishingPath />
+      <CoreServices />
+      <PublishingPackagesSection />
+      <WhyChooseUsNew />
+      <BookTypes />
+      <PublishingProcess />
+      <LocationSEO />
+      <PortfolioPreview />
+      <CoverCalculatorCTA />
+      <BarcodeToolCTA />
+      <FeaturedBlog />
+      <HomeFAQ />
+      <FinalCTA />
     </div>
   );
 }

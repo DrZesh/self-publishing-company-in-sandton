@@ -23,7 +23,7 @@ const article = {
     { q: 'Is a self-published author considered a sole trader?', a: "In most cases, yes. Your author income is typically declared as personal income from a sole proprietorship. Consult a tax practitioner familiar with creative industry taxation for specific guidance." },
   ],
   relatedLinks: [
-    { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+    { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
     { label: 'How Much Will I Earn', path: '/howmuchwilliearnfrommyfirstbook' },
     { label: "Can You Make a Living as an Author", path: '/canyoumakealivingasaselfpublishedauthorinsouthafrica' },
     { label: 'Request a Quote', path: '/getquote' },

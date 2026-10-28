@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { AlertTriangle, Clock, Send, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function QuoteExpiryAlerts() {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(null);
+
+  const sendFollowUp = async (q) => {
+    setSending(q.id);
+    try {
+      await platform.functions.invoke('quoteFollowUps', { action: 'send_followup', quote_id: q.id });
+      toast.success(`Follow-up sent for ${q.quote_number}`);
+    } catch (e) {
+      toast.error('Failed to send follow-up');
+    } finally {
+      setSending(null);
+    }
+  };
 
   useEffect(() => {
-    base44.entities.Quote.filter({ status: 'Sent' }, '-valid_until', 100)
+    platform.entities.Quote.filter({ status: 'Sent' }, '-valid_until', 100)
       .then(quotes => {
         const now = new Date();
         const in7 = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -53,14 +67,19 @@ export default function QuoteExpiryAlerts() {
             const daysLeft = getDaysLeft(q.valid_until);
             const urgent = daysLeft <= 2;
             return (
-              <div key={q.id} className={`flex items-center justify-between p-3 rounded-xl border ${urgent ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'}`}>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">{q.book_title || q.quote_number}</p>
+              <div key={q.id} className={`flex items-center justify-between p-3 rounded-xl border gap-2 ${urgent ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'}`}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">{q.book_title || q.quote_number}</p>
                   <p className="text-xs text-gray-500">{q.quote_number} · R{(q.total || 0).toLocaleString()}</p>
                 </div>
-                <div className={`text-xs font-bold px-2 py-1 rounded-lg ${urgent ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                <div className={`text-xs font-bold px-2 py-1 rounded-lg flex-shrink-0 ${urgent ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                   {daysLeft === 0 ? 'Today' : `${daysLeft}d left`}
                 </div>
+                <button onClick={() => sendFollowUp(q)} disabled={sending === q.id}
+                  title="Send follow-up email"
+                  className="flex-shrink-0 p-1.5 rounded-lg bg-[#B87333]/10 hover:bg-[#B87333]/20 text-[#B87333] transition-colors disabled:opacity-50">
+                  {sending === q.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                </button>
               </div>
             );
           })}

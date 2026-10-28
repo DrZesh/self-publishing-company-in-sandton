@@ -8,7 +8,7 @@ const publishingPackages = [
   {
     id: 0,
     name: 'Mini Package',
-    price: 'R4,999',
+    price: 'From Quote',
     tagline: 'Perfect for first-time authors',
     icon: BookOpen,
     features: [
@@ -19,13 +19,13 @@ const publishingPackages = [
       'ISBN registration',
       'Print-ready PDF files'
     ],
-    link: '/minipublishingpackage',
+    link: '/publishingpackages/mini',
     ctaText: 'Get Started'
   },
   {
     id: 1,
     name: 'Standard Package',
-    price: 'R12,999',
+    price: 'From Quote',
     tagline: 'Most comprehensive solution',
     icon: Zap,
     featured: true,
@@ -38,13 +38,13 @@ const publishingPackages = [
       'Amazon KDP setup',
       'eBook publishing'
     ],
-    link: '/publishingpackages',
+    link: '/publishingpackages/a5',
     ctaText: 'Choose This Package'
   },
   {
     id: 2,
     name: 'Premium Package',
-    price: 'R24,999',
+    price: 'From Quote',
     tagline: 'Full-service publishing',
     icon: Star,
     features: [
@@ -57,7 +57,7 @@ const publishingPackages = [
       'Launch marketing consultation',
       'National distribution network'
     ],
-    link: '/premiumpublishingpackage',
+    link: '/publishingpackages/6x9',
     ctaText: 'Upgrade to Premium'
   }
 ];
@@ -67,9 +67,8 @@ export default function BookPublishing() {
     <>
       <PageMeta
         title="Affordable Book Publishing Services in South Africa"
-        description="Affordable book publishing services in South Africa from R21,000. Editing, cover design, typesetting and printing included."
-        description="Full-service book publishing for South African authors — editing, cover design, typesetting and printing. Packages from R21,000. Get a free quote."
-        canonical="https://www.creativebooks.co.za/bookpublishing"
+        description="Full-service book publishing for South African authors — editing, cover design, typesetting and printing. Get a free quote."
+        canonical="https://creativebooks.co.za/book-publishing"
       />
       <ServicePageTemplate
       heroImage="https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a56a0b3c6_generated_e004f6f0.png"
@@ -99,13 +98,13 @@ export default function BookPublishing() {
         />
       }
       relatedLinks={[
-        { label: 'Self Publishing', path: '/selfpublishing' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'Book Printing', path: '/bookprinting' },
-        { label: 'Book Editing', path: '/bookediting' },
-        { label: 'Cover Design', path: '/bookcoverdesign' },
-        { label: 'eBook Publishing', path: '/ebookpublishing' },
-        { label: 'ISBN Registration', path: '/isbnregistration' },
+        { label: 'Self Publishing', path: '/self-publishing-south-africa' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+        { label: 'Book Printing', path: '/book-printing' },
+        { label: 'Book Editing', path: '/book-editing' },
+        { label: 'Cover Design', path: '/book-cover-design' },
+        { label: 'eBook Publishing', path: '/ebook-publishing' },
+        { label: 'ISBN Registration', path: '/isbn' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Ready to Publish Your Book?"

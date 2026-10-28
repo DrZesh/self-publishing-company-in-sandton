@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import SubmissionDetail from '@/components/admin/SubmissionDetail';
 import { Search, Mail, Eye, CheckCircle, AlertCircle, Archive, Tag, Clock, RefreshCw } from 'lucide-react';
@@ -36,22 +36,25 @@ function SubmissionRow({ submission, selected, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-4 py-3 border-b border-black/5 transition-all hover:bg-[#faf8f4] ${selected ? 'bg-[#faf3ea] border-l-2 border-l-[#B87333]' : 'border-l-2 border-l-transparent'}`}
+      className={`w-full text-left px-4 py-3 transition-all ${selected ? 'border-l-2 border-l-[#B87333]' : 'border-l-2 border-l-transparent'}`}
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: selected ? 'rgba(184,115,51,0.12)' : undefined }}
+      onMouseEnter={e => { if (!selected) e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+      onMouseLeave={e => { if (!selected) e.currentTarget.style.background = ''; }}
     >
       <div className="flex items-start gap-3">
         <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isNew ? 'bg-blue-500' : 'bg-transparent'}`} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-0.5">
-            <p className={`text-sm truncate ${isNew ? 'font-bold text-[#1A1208]' : 'font-medium text-[#1A1208]'}`}>{submission.full_name}</p>
-            <span className="text-xs text-black/30 shrink-0 whitespace-nowrap">{timeAgo(submission.created_date)}</span>
+            <p className={`text-sm truncate ${isNew ? 'font-bold text-white' : 'font-medium text-white/80'}`}>{submission.full_name}</p>
+            <span className="text-xs text-white/30 shrink-0 whitespace-nowrap">{timeAgo(submission.created_date)}</span>
           </div>
-          <p className="text-xs text-black/50 truncate">{submission.email}</p>
+          <p className="text-xs text-white/50 truncate">{submission.email}</p>
           <div className="flex items-center gap-2 mt-1">
             <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-medium ${cfg.text} ${cfg.bg}`}>
               {FORM_TYPE_LABELS[submission.form_type] || submission.form_type}
             </span>
             {submission.message && (
-              <p className="text-xs text-black/30 truncate">{submission.message}</p>
+              <p className="text-xs text-white/40 truncate">{submission.message}</p>
             )}
           </div>
         </div>
@@ -72,7 +75,7 @@ export default function AdminInbox() {
     if (showRefresh) setRefreshing(true);
     else setLoading(true);
     try {
-      const data = await base44.entities.Submission.list('-created_date', 200);
+      const data = await platform.entities.Submission.list('-created_date', 200);
       setSubmissions(data || []);
     } catch (err) {
       toast.error('Failed to load submissions');
@@ -86,7 +89,7 @@ export default function AdminInbox() {
 
   // Real-time updates
   useEffect(() => {
-    const unsub = base44.entities.Submission.subscribe((event) => {
+    const unsub = platform.entities.Submission.subscribe((event) => {
       if (event.type === 'create') {
         setSubmissions(prev => [event.data, ...prev]);
         toast.success(`New submission from ${event.data.full_name}`);
@@ -109,7 +112,7 @@ export default function AdminInbox() {
   });
 
   const handleStatusChange = async (id, status) => {
-    await base44.entities.Submission.update(id, { status });
+    await platform.entities.Submission.update(id, { status });
     setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
     if (selected?.id === id) setSelected(s => ({ ...s, status }));
     toast.success(`Marked as ${status.replace(/_/g, ' ')}`);
@@ -117,7 +120,7 @@ export default function AdminInbox() {
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this submission? This cannot be undone.')) return;
-    await base44.entities.Submission.delete(id);
+    await platform.entities.Submission.delete(id);
     setSubmissions(prev => prev.filter(s => s.id !== id));
     if (selected?.id === id) setSelected(null);
     toast.success('Submission deleted');
@@ -148,29 +151,31 @@ export default function AdminInbox() {
 
   return (
     <AdminLayout>
-      <div className="flex h-full -m-6 lg:-m-8">
+      <div className="flex h-full -m-6 lg:-m-8 relative" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0 z-0" style={{ background: 'linear-gradient(135deg, rgba(100,120,200,0.55) 0%, rgba(180,100,200,0.45) 50%, rgba(100,160,220,0.5) 100%)' }} />
         {/* Left panel — list */}
-        <div className={`flex flex-col ${selected ? 'hidden lg:flex' : 'flex'} w-full lg:w-96 xl:w-[420px] border-r border-black/8 bg-white shrink-0`}>
+        <div className={`flex flex-col relative z-10 ${selected ? 'hidden lg:flex' : 'flex'} w-full lg:w-96 xl:w-[420px] shrink-0`} style={{ borderRight: '1px solid rgba(255,255,255,0.15)', background: 'rgba(0,0,0,0.25)' }}>
           {/* Header */}
-          <div className="px-5 pt-5 pb-3 border-b border-black/8">
+          <div className="px-5 pt-5 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-xl font-bold text-[#1A1208]">Inbox</h1>
+              <h1 className="text-xl font-bold text-white">Inbox</h1>
               <div className="flex items-center gap-2">
                 {counts.new > 0 && (
                   <span className="px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">{counts.new}</span>
                 )}
-                <button onClick={() => load(true)} disabled={refreshing} className="p-1.5 hover:bg-black/5 rounded-lg transition-colors">
-                  <RefreshCw className={`w-4 h-4 text-black/40 ${refreshing ? 'animate-spin' : ''}`} />
+                <button onClick={() => load(true)} disabled={refreshing} className="p-1.5 rounded-lg transition-colors hover:bg-white/10">
+                  <RefreshCw className={`w-4 h-4 text-white/40 ${refreshing ? 'animate-spin' : ''}`} />
                 </button>
               </div>
             </div>
             {/* Search */}
             <div className="relative mb-3">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-black/30" />
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-white/30" />
               <input
                 value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search name, email, message…"
-                className="w-full pl-9 pr-3 py-2 bg-[#f5f5f5] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#B87333]/30"
+                className="w-full pl-9 pr-3 py-2 rounded-xl text-sm focus:outline-none text-white placeholder-white/30"
+                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
               />
             </div>
             {/* Status filter pills */}
@@ -179,7 +184,8 @@ export default function AdminInbox() {
                 <button
                   key={t.value}
                   onClick={() => setStatusFilter(t.value)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${statusFilter === t.value ? 'bg-[#B87333] text-white' : 'bg-black/5 text-black/50 hover:bg-black/10'}`}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${statusFilter === t.value ? 'bg-[#B87333] text-white' : 'text-white/50 hover:bg-white/10'}`}
+                  style={statusFilter !== t.value ? { background: 'rgba(255,255,255,0.06)' } : {}}
                 >
                   {t.dot && counts.new > 0 && <span className="w-1.5 h-1.5 bg-blue-400 rounded-full" />}
                   {t.label}
@@ -193,13 +199,13 @@ export default function AdminInbox() {
           <div className="flex-1 overflow-y-auto">
             {loading ? (
               <div className="p-4 space-y-3">
-                {[...Array(6)].map((_, i) => <div key={i} className="h-16 bg-black/5 rounded-xl animate-pulse" />)}
+                {[...Array(6)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.06)' }} />)}
               </div>
             ) : filtered.length === 0 ? (
               <div className="py-16 text-center px-6">
                 <div className="text-4xl mb-3">📭</div>
-                <p className="text-sm font-semibold text-black/50">No submissions here</p>
-                <p className="text-xs text-black/30 mt-1">
+                <p className="text-sm font-semibold text-white/50">No submissions here</p>
+                <p className="text-xs text-white/30 mt-1">
                   {statusFilter === 'new' ? 'All caught up! No unread messages.' : 'Nothing matches your current filter.'}
                 </p>
               </div>
@@ -217,10 +223,9 @@ export default function AdminInbox() {
         </div>
 
         {/* Right panel — detail */}
-        <div className={`flex-1 overflow-y-auto bg-[#f8f9fc] ${selected ? 'block' : 'hidden lg:block'}`}>
+        <div className={`flex-1 overflow-y-auto relative z-10 ${selected ? 'block' : 'hidden lg:block'}`} style={{ background: 'rgba(0,0,0,0.15)' }}>
           {selected ? (
             <div className="p-6 lg:p-8 max-w-3xl">
-              {/* Mobile back button */}
               <button
                 onClick={() => setSelected(null)}
                 className="lg:hidden flex items-center gap-1.5 text-sm text-[#B87333] mb-4 hover:underline"
@@ -239,8 +244,8 @@ export default function AdminInbox() {
             <div className="h-full flex items-center justify-center text-center p-8">
               <div>
                 <div className="text-5xl mb-4">✉️</div>
-                <p className="text-base font-semibold text-black/40">Select a submission to view details</p>
-                <p className="text-sm text-black/25 mt-1">Click any item from the list on the left</p>
+                <p className="text-base font-semibold text-white/40">Select a submission to view details</p>
+                <p className="text-sm text-white/25 mt-1">Click any item from the list on the left</p>
               </div>
             </div>
           )}

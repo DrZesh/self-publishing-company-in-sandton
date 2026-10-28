@@ -7,45 +7,45 @@ const footerSilos = [
   {
     title: 'Printing Services',
     links: [
-      { label: 'Book Printing SA', path: '/bookprinting' },
+      { label: 'Book Printing SA', path: '/book-printing' },
       { label: 'A5 Book Printing', path: '/printing/a5' },
       { label: '6×9 Book Printing', path: '/printing/6x9' },
       { label: 'Hardcover Printing', path: '/printing/hardcover' },
-      { label: 'Softcover Printing', path: '/softcoverprinting' },
+      { label: 'Softcover Printing', path: '/book-printing' },
       { label: "Children's Book Printing", path: '/printing/childrensbooks' },
-      { label: 'Workbook Printing', path: '/workbookprinting' },
+      { label: 'Workbook Printing', path: '/book-printing' },
       { label: 'Novel Printing JHB', path: '/novelprintingjohannesburg' },
-      { label: 'Cookbook Printing', path: '/cookbookprintingjohannesburg' },
+      { label: 'Cookbook Printing', path: '/book-printing' },
       { label: 'Training Manual Printing', path: '/trainingmanualprintingjohannesburg' },
     ]
   },
   {
     title: 'Publishing Services',
     links: [
-      { label: 'Book Publishing', path: '/bookpublishing' },
-      { label: 'Self Publishing SA', path: '/selfpublishingsouthafrica' },
-      { label: 'Publishing Packages', path: '/publishingpackages' },
-      { label: 'eBook Publishing', path: '/ebookpublishing' },
-      { label: 'Amazon KDP', path: '/amazonkdp' },
-      { label: "Children's Book Publishing", path: '/childrensbookpublishing' },
-      { label: 'Christian Book Publishing', path: '/christianbookpublishing' },
-      { label: 'Memoir Publishing', path: '/memoirpublishing' },
-      { label: 'Poetry Publishing', path: '/poetrypublishing' },
-      { label: 'Business Book Publishing', path: '/businessbookpublishing' },
+      { label: 'Book Publishing', path: '/book-publishing' },
+      { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
+      { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+      { label: 'eBook Publishing', path: '/ebook-publishing' },
+      { label: 'Amazon KDP', path: '/ebook-publishing' },
+      { label: "Children's Book Publishing", path: '/childrensbookpackages' },
+      { label: 'Christian Book Publishing', path: '/book-publishing' },
+      { label: 'Memoir Publishing', path: '/memoirwriting' },
+      { label: 'Poetry Publishing', path: '/book-publishing' },
+      { label: 'Business Book Publishing', path: '/book-publishing' },
     ]
   },
   {
     title: 'Editing & Design',
     links: [
-      { label: 'Book Editing', path: '/bookediting' },
-      { label: 'Proofreading SA', path: '/proofreadingservicessouthafrica' },
-      { label: 'Copy Editing', path: '/copyediting' },
+      { label: 'Book Editing', path: '/book-editing' },
+      { label: 'Proofreading SA', path: '/proofreading' },
+      { label: 'Copy Editing', path: '/book-editing' },
       { label: 'Thesis Editing', path: '/thesisediting' },
-      { label: 'Book Cover Design', path: '/bookcoverdesign' },
+      { label: 'Book Cover Design', path: '/book-cover-design' },
       { label: 'Book Typesetting', path: '/typesetting' },
       { label: 'Book Layout Design', path: '/booklayoutdesign' },
       { label: 'Ghostwriting', path: '/ghostwriting' },
-      { label: 'Ghostwriters SA', path: '/ghostwriterssouthafrica' },
+      { label: 'Ghostwriters SA', path: '/ghostwriting' },
       { label: 'Annual Report Design', path: '/annualreportdesignsandton' },
     ]
   },
@@ -75,9 +75,21 @@ const footerSilos = [
       { label: 'A5 vs 6×9', path: '/a5vs6x9bookprinting' },
       { label: 'Hardcover vs Paperback', path: '/hardcovervspaperbackprinting' },
       { label: 'ISBN Registration', path: '/isbn' },
+      { label: 'ISBN Barcode Generator', path: '/barcode-generator' },
       { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Blog', path: '/blog' },
       { label: 'FAQ', path: '/faq' },
+    ]
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy Policy', path: '/privacy-policy' },
+      { label: 'Cookie Policy', path: '/cookie-policy' },
+      { label: 'Terms & Conditions', path: '/terms-and-conditions' },
+      { label: 'Refunds & Returns', path: '/refunds-and-returns' },
+      { label: 'PAIA Manual', path: '/paia-manual' },
+      { label: 'Website Disclaimer', path: '/disclaimer' },
     ]
   },
 ];
@@ -134,7 +146,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Silo Columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
             {footerSilos.map((silo) => (
               <motion.div key={silo.title} variants={itemVariants}>
                 <h4 className="text-white font-heading text-xs font-semibold mb-4 tracking-wider uppercase flex items-center gap-2">

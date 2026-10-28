@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Loader2, Eye, Send } from 'lucide-react';
@@ -47,8 +47,8 @@ export default function TemplateModal({ template, onClose, onSaved }) {
   const handleSave = async () => {
     if (!form.name || !form.content_html) { toast.error('Name and content are required'); return; }
     setSaving(true);
-    if (isEdit) await base44.entities.MessageTemplate.update(template.id, form);
-    else await base44.entities.MessageTemplate.create(form);
+    if (isEdit) await platform.entities.MessageTemplate.update(template.id, form);
+    else await platform.entities.MessageTemplate.create(form);
     setSaving(false);
     toast.success(isEdit ? 'Template updated' : 'Template created');
     onSaved();
@@ -58,7 +58,7 @@ export default function TemplateModal({ template, onClose, onSaved }) {
   const handlePreview = async () => {
     if (!template?.id) { toast.error('Save the template first to preview'); return; }
     setPreviewing(true);
-    const res = await base44.functions.invoke('renderTemplate', { templateId: template.id, preview: true });
+    const res = await platform.functions.invoke('renderTemplate', { templateId: template.id, preview: true });
     setPreviewing(false);
     if (res.data?.rendered_body) { setPreviewHtml(res.data.rendered_body); setShowPreview(true); }
     else toast.error(res.data?.error || 'Preview failed');
@@ -68,7 +68,7 @@ export default function TemplateModal({ template, onClose, onSaved }) {
     if (!template?.id) { toast.error('Save the template first to test send'); return; }
     if (!testEmail) { toast.error('Enter a test email address'); return; }
     setTesting(true);
-    const res = await base44.functions.invoke('renderTemplate', { templateId: template.id, preview: true, testSendTo: testEmail });
+    const res = await platform.functions.invoke('renderTemplate', { templateId: template.id, preview: true, testSendTo: testEmail });
     setTesting(false);
     if (res.data?.success) toast.success(`Test email sent to ${testEmail}`);
     else toast.error(res.data?.error || 'Send failed');

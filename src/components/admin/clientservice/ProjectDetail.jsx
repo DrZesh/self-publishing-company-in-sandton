@@ -1,6 +1,6 @@
 import { X, Mail, Clock, CheckCircle, XCircle, RefreshCw, FileText, RotateCcw, Loader2, Send } from 'lucide-react';
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import ProjectTimeline from './ProjectTimeline';
 import { STATUS_COLORS, SERVICE_COLORS } from './WORKFLOWS';
@@ -12,7 +12,7 @@ export default function ProjectDetail({ project, emailLogs, onClose, onUpdated, 
   const handleResend = async (log) => {
     setResending(log.id);
     try {
-      await base44.functions.invoke('clientServiceActions', {
+      await platform.functions.invoke('clientServiceActions', {
         action: 'send_stage_email',
         projectId: project.id,
         stageKey: log.stage_key,

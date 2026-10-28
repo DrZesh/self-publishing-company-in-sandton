@@ -25,7 +25,7 @@ const article = {
     { label: "Children's Book Packages", path: '/childrensbookpackages' },
     { label: "Children's Book Illustrations", path: '/childrensbookillustrationsprinting' },
     { label: "Self Publish Children's Books", path: '/howtoselfpublishchildrensbooks' },
-    { label: 'Book Cover Design', path: '/bookcoverdesign' },
+    { label: 'Book Cover Design', path: '/book-cover-design' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

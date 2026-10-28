@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -39,7 +39,7 @@ export default function CommunicationTimeline({ contactId }) {
   useEffect(() => {
     if (!contactId) return;
     
-    base44.functions.invoke('getCommunicationTimeline', { contact_id: contactId })
+    platform.functions.invoke('getCommunicationTimeline', { contact_id: contactId })
       .then(res => setData(res.data))
       .finally(() => setLoading(false));
   }, [contactId]);

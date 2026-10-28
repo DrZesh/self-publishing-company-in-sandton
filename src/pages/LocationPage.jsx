@@ -51,7 +51,7 @@ export default function LocationPage({ locationData }) {
           faqSchema(homeFaqs),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
-            { name: serviceType, path: serviceType === 'Book Printing' ? '/bookprinting' : '/selfpublishingsouthafrica' },
+            { name: serviceType, path: serviceType === 'Book Printing' ? '/book-printing' : '/self-publishing-south-africa' },
             { name: `${serviceType} ${city}`, path: canonical.replace('https://www.creativebookssa.co.za', '') }
           ])
         ]}}

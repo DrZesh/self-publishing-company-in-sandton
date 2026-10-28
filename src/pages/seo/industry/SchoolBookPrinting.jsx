@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'School Book Printing Johannesburg', description: 'School textbook and workbook printing for South African educators.', url: '/schoolbookprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'School Book Printing', path: '/schoolbookprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'School Book Printing', path: '/schoolbookprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function SchoolBookPrinting() {
   return (
     <>
       <PageMeta
-        title="School Book Printing Johannesburg"
-        description="School book printing in Johannesburg for primary and high schools — textbooks, workbooks, readers and CAPS-aligned learning materials in bulk quantities."
+        title="School Book Printing in Johannesburg | Creative Books SA"
+        description="School book printing in Johannesburg for primary and high schools - textbooks, workbooks, readers and CAPS-aligned learning materials in bulk quantities."
         keywords="school book printing Johannesburg, textbook printing South Africa, workbook printing Johannesburg, educational book printing, study guide printing"
-        canonical="https://www.creativebooks.co.za/schoolbookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/schoolbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,9 +50,9 @@ export default function SchoolBookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Workbook Printing', path: '/workbookprinting' },
+          { label: 'Workbook Printing', path: '/book-printing' },
           { label: 'Educational Book Printing', path: '/educationalbookprintingjohannesburg' },
-          { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
+          { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

@@ -28,7 +28,7 @@ export default function BookCoverDesignPriceSouthAfrica() {
         title="Book Cover Design Price South Africa"
         description="What book cover design actually costs in South Africa in 2026 — transparent pricing for custom illustration, photographic and typographic covers. No quote forms."
         keywords="book cover design price South Africa, book cover designer, book cover design near me, ebook cover design"
-        canonical="https://www.creativebooks.co.za/bookcoverdesignpricesouthafrica"
+        canonical="https://creativebooks.co.za/bookcoverdesignpricesouthafrica"
         schema={schema}
       />
       
@@ -118,10 +118,10 @@ export default function BookCoverDesignPriceSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
-            { label: 'Book Printing', path: '/bookprinting' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
+            { label: 'Book Printing', path: '/book-printing' },
             { label: 'Children\'s Book Illustrations', path: '/printing/childrensbooks' },
-            { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+            { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}

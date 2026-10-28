@@ -62,7 +62,7 @@ export default function AnnualReportDesign() {
       <PageMeta
         title="Annual Report Design in Sandton | Premium Reports"
         description="Premium annual report design and printing in Sandton. Professionally designed reports for companies, NGOs and institutions."
-        canonical="https://www.creativebooks.co.za/annualreportdesignsandton"
+        canonical="https://creativebooks.co.za/annualreportdesignsandton"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -230,10 +230,10 @@ export default function AnnualReportDesign() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Book Layout & Typesetting', path: '/typesetting' },
         { label: 'eBook Formatting', path: '/ebookformatting' },
-        { label: 'Author Websites', path: '/authorwebsites' },
+        { label: 'Author Websites', path: '/author-websites' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} />
     </div>

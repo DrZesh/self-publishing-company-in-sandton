@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { CheckCircle, XCircle, AlertTriangle, Lock, Unlock } from 'lucide-react';
 
 const CHECKLIST_ITEMS = [
@@ -60,19 +60,19 @@ const CHECKLIST_ITEMS = [
 export default function PrintChecklist({ project }) {
   const { data: quotes = [] } = useQuery({
     queryKey: ['quotes', project.contact_id],
-    queryFn: () => base44.entities.Quote.filter({ contact_id: project.contact_id }),
+    queryFn: () => platform.entities.Quote.filter({ contact_id: project.contact_id }),
     enabled: !!project.contact_id,
   });
 
   const { data: invoices = [] } = useQuery({
     queryKey: ['invoices', project.contact_id],
-    queryFn: () => base44.entities.Invoice.filter({ contact_id: project.contact_id }),
+    queryFn: () => platform.entities.Invoice.filter({ contact_id: project.contact_id }),
     enabled: !!project.contact_id,
   });
 
   const { data: documents = [] } = useQuery({
     queryKey: ['documents', project.contact_id],
-    queryFn: () => base44.entities.Document.filter({ contact_id: project.contact_id }),
+    queryFn: () => platform.entities.Document.filter({ contact_id: project.contact_id }),
     enabled: !!project.contact_id,
   });
 

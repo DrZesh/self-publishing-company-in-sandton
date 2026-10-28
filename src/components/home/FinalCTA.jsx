@@ -58,7 +58,7 @@ export default function FinalCTA() {
               </motion.div>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                 <Link
-                  to="/bookpublishing"
+                  to="/book-publishing"
                   className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm transition-all"
                   style={{ border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.04)' }}
                 >

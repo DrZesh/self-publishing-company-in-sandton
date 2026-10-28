@@ -28,7 +28,7 @@ export default function BookLayoutTypesetting() {
         title="Book Layout Typesetting"
         description="Professional book layout and typesetting in South Africa — print-ready interior PDFs for A5, 6×9, hardcover and children's book formats. Built for print."
         keywords="book layout, typesetting, book typesetting services, typesetter South Africa, print-ready book files"
-        canonical="https://www.creativebooks.co.za/booklayoutandtypesetting"
+        canonical="https://creativebooks.co.za/booklayoutandtypesetting"
         schema={schema}
       />
       
@@ -119,10 +119,10 @@ export default function BookLayoutTypesetting() {
         <InternalLinks
           links={[
             { label: 'Book Typesetting', path: '/typesetting' },
-            { label: 'Book Editing', path: '/bookediting' },
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
-            { label: 'Book Printing', path: '/bookprinting' },
-            { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+            { label: 'Book Editing', path: '/book-editing' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
+            { label: 'Book Printing', path: '/book-printing' },
+            { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

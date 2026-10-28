@@ -80,11 +80,11 @@ export default function LocationPage({ locationKey }) {
         { question: 'Can I visit your printing facility?', answer: 'Yes, authors are welcome to visit our Johannesburg facility by appointment to see the printing process and review proofs in person.' },
       ]}
       relatedLinks={[
-        { label: 'Book Publishing', path: '/bookpublishing' },
-        { label: 'Book Printing', path: '/bookprinting' },
-        { label: 'Book Editing', path: '/bookediting' },
-        { label: 'Cover Design', path: '/bookcoverdesign' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'Book Publishing', path: '/book-publishing' },
+        { label: 'Book Printing', path: '/book-printing' },
+        { label: 'Book Editing', path: '/book-editing' },
+        { label: 'Cover Design', path: '/book-cover-design' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Get a Quote', path: '/getquote' },
         { label: 'Contact Us', path: '/contact' },
       ]}

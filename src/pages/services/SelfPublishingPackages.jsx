@@ -342,7 +342,7 @@ export default function SelfPublishingPackages() {
         title="Affordable Self-Publishing Packages in South Africa"
         description="Affordable self-publishing packages in South Africa. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design and printing included."
         description="Self-publishing packages for South African authors. Bronze R21,000, Silver R25,500, Gold R35,000 — editing, design, printing all included."
-        canonical="https://www.creativebooks.co.za/selfpublishingpackagesinsouthafrica"
+        canonical="https://creativebooks.co.za/self-publishing-packages-in-south-africa"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -729,15 +729,15 @@ export default function SelfPublishingPackages() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Printing Johannesburg', path: '/bookprintingjohannesburg' },
-        { label: 'Book Editing Services', path: '/bookediting' },
+        { label: 'Book Printing Johannesburg', path: '/book-printing-johannesburg' },
+        { label: 'Book Editing Services', path: '/book-editing' },
         { label: 'Proofreading Services', path: '/proofreading' },
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Book Layout & Typesetting', path: '/typesetting' },
-        { label: 'eBook Formatting', path: '/ebookpublishing' },
-        { label: 'Author Website Design', path: '/authorwebsites' },
+        { label: 'eBook Formatting', path: '/ebook-publishing' },
+        { label: 'Author Website Design', path: '/author-websites' },
         { label: 'Ghost Writing Services', path: '/ghostwriting' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} />
     </div>

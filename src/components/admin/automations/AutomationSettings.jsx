@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Settings, MessageSquare, Mail, Clock, Shield, TestTube, CheckCircle, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -72,7 +72,7 @@ export default function AutomationSettings() {
   const handleTestWA = async () => {
     if (!settings.wa_test_number) { toast.error('Enter a test WhatsApp number first'); return; }
     setTestingWA(true);
-    const res = await base44.functions.invoke('sendWhatsAppNotification', {
+    const res = await platform.functions.invoke('sendWhatsAppNotification', {
       to_number: settings.wa_test_number,
       message: 'This is a test message from Creative Books SA CRM Automation. Your WhatsApp integration is working correctly!',
       type: 'Test',
@@ -85,7 +85,7 @@ export default function AutomationSettings() {
   const handleTestEmail = async () => {
     if (!settings.email_test_address) { toast.error('Enter a test email address first'); return; }
     setTestingEmail(true);
-    const res = await base44.functions.invoke('sendContactEmail', {
+    const res = await platform.functions.invoke('sendContactEmail', {
       to: settings.email_test_address,
       subject: 'Creative Books SA — Automation Test Email',
       body: '<p>This is a test email from the Creative Books SA CRM Automation system. Your email integration is working correctly!</p>',

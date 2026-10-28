@@ -204,11 +204,10 @@ export default function BookEditingSandton() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Book Editing Sandton"
-        description="Professional book editing for authors in Sandton and Johannesburg. Copy editing, line editing and full manuscript packages. Free quote."
-        description="Professional book editing for authors in Sandton and Johannesburg. Copy editing, line editing and full manuscript packages. Free quote."
+        title="Book Editing in Sandton | Creative Books SA"
+        description="Professional book editing for authors in Sandton & Johannesburg - copy editing, line editing & full manuscript packages priced per word. Get a free quote."
         keywords="book editing Sandton, book editors Sandton, Sandton editing services, manuscript editing Sandton, copy editing Sandton"
-        canonical="https://www.creativebooks.co.za/bookeditingsandton"
+        canonical="https://creativebooks.co.za/bookeditingsandton"
       />
 
       {/* Hero */}
@@ -220,7 +219,7 @@ export default function BookEditingSandton() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Book Editing Services · Sandton</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Book Editing Sandton
+              Book Editing in Sandton
             </h1>
             <p className="text-white/60 text-base font-body mb-4 font-medium">Professional Book Editing, Copy Editing, Line Editing and Manuscript Refinement for Authors in Sandton</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -510,7 +509,7 @@ export default function BookEditingSandton() {
                 Request an Editing Quote
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/publishingpackages" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
+              <Link to="/publishingpackages/a5" className="inline-flex items-center gap-2 px-8 py-4 text-white/70 text-sm transition-all"
                 style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', background: 'rgba(255,255,255,0.04)' }}>
                 View Publishing Packages
               </Link>
@@ -520,12 +519,12 @@ export default function BookEditingSandton() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Editing Johannesburg', path: '/bookediting' },
+        { label: 'Book Editing Johannesburg', path: '/book-editing' },
         { label: 'Book Printing Sandton', path: '/bookprintingsandton' },
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Typesetting and Layout', path: '/typesetting' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
 

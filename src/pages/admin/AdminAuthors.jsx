@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,21 +15,21 @@ export default function AdminAuthors() {
 
   const { data: authors = [], isLoading } = useQuery({
     queryKey: ['authors'],
-    queryFn: () => base44.entities.Author.list('-created_date', 500),
+    queryFn: () => platform.entities.Author.list('-created_date', 500),
   });
 
   const { data: books = [] } = useQuery({
     queryKey: ['books'],
-    queryFn: () => base44.entities.BookRecord.list('-created_date', 500),
+    queryFn: () => platform.entities.BookRecord.list('-created_date', 500),
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data) => editing ? base44.entities.Author.update(editing.id, data) : base44.entities.Author.create(data),
+    mutationFn: (data) => editing ? platform.entities.Author.update(editing.id, data) : platform.entities.Author.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['authors'] }); setShowModal(false); setEditing(null); },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Author.delete(id),
+    mutationFn: (id) => platform.entities.Author.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['authors'] }),
   });
 

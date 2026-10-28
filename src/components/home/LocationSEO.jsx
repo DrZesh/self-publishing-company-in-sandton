@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { MapPin, ArrowRight } from 'lucide-react';
 
 const links = [
-  { label: 'Book Printing Johannesburg',        to: '/bookprintingjohannesburg' },
-  { label: 'Self Publishing South Africa',      to: '/selfpublishingsouthafrica' },
-  { label: 'Book Publishers South Africa',      to: '/bookpublisherssouthafrica' },
-  { label: 'Publishing Companies South Africa', to: '/publishingcompaniessouthafrica' },
+  { label: 'Book Printing Johannesburg',        to: '/book-printing-johannesburg' },
+  { label: 'Self Publishing South Africa',      to: '/self-publishing-south-africa' },
+  { label: 'Book Publishers South Africa',      to: '/book-publishers-south-africa' },
+  { label: 'Publishing Companies South Africa', to: '/publishing-companies-south-africa' },
 ];
 
 export default function LocationSEO() {

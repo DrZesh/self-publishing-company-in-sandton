@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { X, Upload, Trash2, FileText, Loader2, Plus } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { WORKFLOWS, SERVICE_TYPES } from './WORKFLOWS';
 
@@ -88,7 +88,7 @@ export default function ProjectModal({ project, onClose, onSaved }) {
     const setter = type === 'receipt' ? setUploadingReceipt : setUploadingInvoice;
     setter(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await platform.integrations.Core.UploadFile({ file });
       if (type === 'receipt') { setReceiptUrl(file_url); setReceiptName(file.name); }
       else { setInvoiceUrl(file_url); setInvoiceName(file.name); }
       toast.success(`${type === 'receipt' ? 'Receipt' : 'Invoice'} uploaded`);
@@ -144,10 +144,10 @@ export default function ProjectModal({ project, onClose, onSaved }) {
 
       let saved;
       if (project?.id) {
-        saved = await base44.entities.ClientServiceProject.update(project.id, saveData);
+        saved = await platform.entities.ClientServiceProject.update(project.id, saveData);
         toast.success('Project updated');
       } else {
-        saved = await base44.entities.ClientServiceProject.create(saveData);
+        saved = await platform.entities.ClientServiceProject.create(saveData);
         toast.success('Project created');
       }
       onSaved(saved);

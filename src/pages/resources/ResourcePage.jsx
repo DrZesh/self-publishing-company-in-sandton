@@ -112,12 +112,12 @@ export default function ResourcePage({ resourceKey }) {
       <InternalLinks
         title="Related Resources & Services"
         links={[
-          { label: 'Book Publishing', path: '/bookpublishing' },
-          { label: 'Book Printing', path: '/bookprinting' },
-          { label: 'Book Editing', path: '/bookediting' },
-          { label: 'Cover Design', path: '/bookcoverdesign' },
+          { label: 'Book Publishing', path: '/book-publishing' },
+          { label: 'Book Printing', path: '/book-printing' },
+          { label: 'Book Editing', path: '/book-editing' },
+          { label: 'Cover Design', path: '/book-cover-design' },
           { label: 'Publishing Guide', path: '/publishingguide' },
-          { label: 'ISBN Registration', path: '/isbnregistration' },
+          { label: 'ISBN Registration', path: '/isbn' },
           { label: 'Blog', path: '/blog' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

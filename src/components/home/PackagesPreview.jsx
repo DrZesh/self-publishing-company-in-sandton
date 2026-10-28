@@ -21,7 +21,7 @@ const packages = [
     tagline: 'Most popular — comprehensive solution',
     featured: true,
     features: ['Professional copy editing', 'Premium cover design (3 concepts)', 'Interior layout & typesetting', 'ISBN & barcode', '100 printed softcover copies', 'Amazon KDP setup', 'eBook publishing'],
-    link: '/publishingpackages',
+    link: '/publishingpackages/a5',
   },
   {
     id: 2,

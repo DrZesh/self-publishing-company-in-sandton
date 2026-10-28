@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 
 const contactInfo = [
   { icon: Phone, label: 'Landline', value: '010 500 3331', href: 'tel:0105003331' },
@@ -30,7 +30,7 @@ export default function Contact() {
     setSubmitting(true);
     try {
       // Capture to admin database (non-blocking)
-      base44.functions.invoke('captureFormSubmission', {
+      platform.functions.invoke('captureFormSubmission', {
         formType: 'contact',
         fullName: form.name,
         email: form.email,
@@ -43,7 +43,7 @@ export default function Contact() {
       }).catch(err => console.error('Form capture failed:', err));
 
       // Send confirmation emails (primary action)
-      await base44.functions.invoke('sendFormEmailResend', {
+      await platform.functions.invoke('sendFormEmailResend', {
         formType: 'Contact Form',
         submitterName: form.name,
         submitterEmail: form.email,
@@ -57,7 +57,7 @@ export default function Contact() {
                            ['Subject', form.subject],
                            ['Message', form.message],
                          ],
-        pageUrl: 'https://www.creativebooks.co.za/contact',
+        pageUrl: 'https://creativebooks.co.za/contact',
         honeypot: '',
         loadedAt: loadedAt.current,
       });
@@ -74,7 +74,7 @@ export default function Contact() {
       <PageMeta
         title="Contact Creative Books SA | Book Publishing Company in Sandton"
         description="Get in touch with Creative Books SA — phone, email or visit. Sandton-based book publishing and printing for South African authors."
-        canonical="https://www.creativebooks.co.za/contact"
+        canonical="https://creativebooks.co.za/contact"
       />
       {/* Hero */}
       <section className="relative pt-32 pb-20 bg-obsidian">
@@ -135,7 +135,7 @@ export default function Contact() {
                       <Link to="/" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-copper text-white rounded-full font-medium text-sm hover:bg-copper/90 transition-colors">
                         <Home className="w-4 h-4" /> Back to Home
                       </Link>
-                      <Link to="/selfpublishingpackagesinsouthafrica" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm text-[#0F0F0F]/60 hover:text-copper transition-colors" style={{ border: '1px solid rgba(0,0,0,0.12)' }}>
+                      <Link to="/self-publishing-packages-in-south-africa" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm text-[#0F0F0F]/60 hover:text-copper transition-colors" style={{ border: '1px solid rgba(0,0,0,0.12)' }}>
                         Explore Our Services <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>

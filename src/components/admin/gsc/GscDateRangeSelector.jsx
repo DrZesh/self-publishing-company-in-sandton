@@ -25,12 +25,14 @@ export default function GscDateRangeSelector({ days, onDaysChange, compare, onCo
       <div className="flex flex-wrap items-center gap-1">
         {PRESETS.map(p => (
           <button key={p.days} onClick={() => { onDaysChange(p.days); setShowCustom(false); }}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${days === p.days && !showCustom ? 'bg-[#B87333] text-white' : 'bg-white border border-black/10 text-black/60 hover:border-[#B87333]'}`}>
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${days === p.days && !showCustom ? 'bg-[#B87333] text-white' : 'text-white/60 hover:text-white hover:border-[#B87333]'}`}
+            style={days === p.days && !showCustom ? {} : { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
             {p.label}
           </button>
         ))}
         <button onClick={() => setShowCustom(!showCustom)}
-          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all ${showCustom ? 'bg-[#B87333] text-white' : 'bg-white border border-black/10 text-black/60 hover:border-[#B87333]'}`}>
+          className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all ${showCustom ? 'bg-[#B87333] text-white' : 'text-white/60 hover:text-white'}`}
+          style={showCustom ? {} : { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
           <Calendar className="w-3 h-3" />
           Custom
           <ChevronDown className={`w-3 h-3 transition-transform ${showCustom ? 'rotate-180' : ''}`} />
@@ -39,27 +41,27 @@ export default function GscDateRangeSelector({ days, onDaysChange, compare, onCo
 
       {/* Custom date range */}
       {showCustom && (
-        <div className="flex items-center gap-2 bg-white border border-black/10 rounded-xl px-3 py-1.5">
+        <div className="flex items-center gap-2 rounded-xl px-3 py-1.5" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
           <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} max={maxDate}
-            className="text-xs border-none outline-none text-black/70" />
-          <span className="text-black/30 text-xs">to</span>
+            className="text-xs border-none outline-none text-white bg-transparent" />
+          <span className="text-white/30 text-xs">to</span>
           <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} max={maxDate}
-            className="text-xs border-none outline-none text-black/70" />
+            className="text-xs border-none outline-none text-white bg-transparent" />
         </div>
       )}
 
       {/* Compare toggle */}
       <label className="flex items-center gap-2 cursor-pointer ml-1">
-        <div className={`w-8 h-4 rounded-full relative transition-colors ${compare ? 'bg-[#B87333]' : 'bg-black/15'}`}
+        <div className={`w-8 h-4 rounded-full relative transition-colors ${compare ? 'bg-[#B87333]' : 'bg-white/15'}`}
           onClick={() => onCompareChange(!compare)}>
           <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-all ${compare ? 'left-4' : 'left-0.5'}`} />
         </div>
-        <span className="text-xs text-black/60">Compare to prior period</span>
+        <span className="text-xs text-white/60">Compare to prior period</span>
       </label>
 
       {/* Last updated */}
       {lastDate && (
-        <span className="text-xs text-black/30 ml-auto hidden sm:block">
+        <span className="text-xs text-white/30 ml-auto hidden sm:block">
           GSC data as of {lastDate} (2–3 day delay)
         </span>
       )}

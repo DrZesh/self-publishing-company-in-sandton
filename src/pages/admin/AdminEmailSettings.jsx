@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ export default function AdminEmailSettings() {
 
   const { data: settings = [] } = useQuery({
     queryKey: ['app-settings', SETTING_KEY],
-    queryFn: () => base44.entities.AppSettings.filter({ setting_key: SETTING_KEY }),
+    queryFn: () => platform.entities.AppSettings.filter({ setting_key: SETTING_KEY }),
   });
 
   const existing = settings[0];
@@ -44,8 +44,8 @@ export default function AdminEmailSettings() {
   const handleSave = async () => {
     setSaving(true);
     const data = { setting_key: SETTING_KEY, ...form, is_configured: true };
-    if (existing) await base44.entities.AppSettings.update(existing.id, data);
-    else await base44.entities.AppSettings.create(data);
+    if (existing) await platform.entities.AppSettings.update(existing.id, data);
+    else await platform.entities.AppSettings.create(data);
     setSaving(false);
     queryClient.invalidateQueries({ queryKey: ['app-settings'] });
     toast.success('Email settings saved');
@@ -54,7 +54,7 @@ export default function AdminEmailSettings() {
   const handleTestEmail = async () => {
     if (!testEmail) { toast.error('Enter a test email address'); return; }
     setSending(true);
-    const res = await base44.functions.invoke('sendBrandedEmail', {
+    const res = await platform.functions.invoke('sendBrandedEmail', {
       to: testEmail,
       subject: 'Test Email — Creative Books SA CRM',
       htmlBody: `
@@ -77,12 +77,14 @@ export default function AdminEmailSettings() {
 
   return (
     <AdminLayout>
-      <div className="max-w-2xl space-y-6">
+      <div className="min-h-screen -m-6 p-6 relative" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1614851099511-773084f6911d?w=1600&q=80)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(100,120,200,0.55) 0%, rgba(180,100,200,0.45) 50%, rgba(100,160,220,0.5) 100%)' }} />
+      <div className="relative z-10 max-w-2xl space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Settings className="w-6 h-6 text-[#B87333]" /> Email Settings
+          <h1 className="text-2xl font-bold text-white drop-shadow flex items-center gap-2">
+            <Settings className="w-6 h-6 text-white" /> Email Settings
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Configure outbound email for all CRM communications</p>
+          <p className="text-sm text-white/60 mt-0.5">Configure outbound email for all CRM communications</p>
         </div>
 
         {/* Status */}
@@ -172,6 +174,7 @@ export default function AdminEmailSettings() {
             logo, colours, and contact details are applied by the renderer so styling never drifts.
           </p>
         </div>
+      </div>
       </div>
     </AdminLayout>
   );

@@ -43,10 +43,9 @@ export default function AuthorWebsites() {
   return (
     <div style={{ background: '#f8f9fc' }}>
       <PageMeta
-        title="Professional Author Website Design Services"
-        description="Professional author website design services for writers, self-published authors and publishers in South Africa."
-        description="Author websites built by a publishing team, not a generic web agency. Showcase your books, build a mailing list, sell direct. Mobile-friendly and SEO-ready."
-        canonical="https://www.creativebooks.co.za/authorwebsites"
+        title="Author Website Design in South Africa | Creative Books SA"
+        description="Author websites built by a publishing team, not a generic agency. Showcase your books, build a mailing list & sell direct. Mobile-friendly & SEO-ready. Get a quote."
+        canonical="https://creativebooks.co.za/author-websites"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "FAQPage",
@@ -61,7 +60,7 @@ export default function AuthorWebsites() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
             <span className="text-[#B8955B] text-xs font-body font-semibold tracking-[0.3em] uppercase mb-5 block">Author Website Design · South Africa</span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-[1.05]">
-              Professional Author Website Design Services
+              Author Website Design in South Africa
             </h1>
             <p className="text-white/60 text-base font-body mb-5 font-medium">Professional Websites for Authors, Writers and Self-Published Creatives</p>
             <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -193,10 +192,10 @@ export default function AuthorWebsites() {
       </section>
 
       <InternalLinks links={[
-        { label: 'Book Cover Design', path: '/bookcoverdesign' },
-        { label: 'eBook Formatting', path: '/ebookpublishing' },
-        { label: 'Publishing Packages', path: '/publishingpackages' },
-        { label: 'Self Publishing South Africa', path: '/selfpublishingsouthafrica' },
+        { label: 'Book Cover Design', path: '/book-cover-design' },
+        { label: 'eBook Formatting', path: '/ebook-publishing' },
+        { label: 'Publishing Packages', path: '/publishingpackages/a5' },
+        { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
         { label: 'Request a Quote', path: '/getquote' },
       ]} light />
     </div>

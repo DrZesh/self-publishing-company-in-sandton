@@ -18,10 +18,10 @@ export default function BookCoverDesignDurban() {
   return (
     <>
       <PageMeta
-        title="Book Cover Design Durban"
-        description="Professional book cover design for Durban and KwaZulu-Natal authors. Full print covers and eBook covers. Remote service, free quote."
+        title="Book Cover Design in Durban | Creative Books SA"
+        description="Professional book cover design for Durban & KwaZulu-Natal authors - full print covers & eBook covers. Remote service with national delivery. Get a free quote."
         keywords="book cover design Durban, book cover designer Durban, book cover design KwaZulu-Natal, professional book covers Durban"
-        canonical="https://www.creativebooks.co.za/bookcoverdesigndurban"
+        canonical="https://creativebooks.co.za/bookcoverdesigndurban"
         schema={schema}
       />
       
@@ -32,7 +32,7 @@ export default function BookCoverDesignDurban() {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-copper text-xs font-body bg-copper/10 px-3 py-1 rounded-full mb-4 inline-block">Book Cover Design · Durban</span>
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Book Cover Design Durban
+                Book Cover Design in Durban
               </h1>
               <p className="text-white/60 text-base font-body mb-4">Professional Book Cover Design for Authors in Durban and KwaZulu-Natal</p>
               <p className="text-white/45 text-sm leading-relaxed font-body mb-10 max-w-2xl">
@@ -73,11 +73,11 @@ export default function BookCoverDesignDurban() {
 
         <InternalLinks
           links={[
-            { label: 'Book Cover Design', path: '/bookcoverdesign' },
+            { label: 'Book Cover Design', path: '/book-cover-design' },
             { label: 'Book Cover Design Johannesburg', path: '/bookcoverdesignjohannesburg' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
             { label: 'Book Printing', path: '/printing/a5' },
-            { label: 'Publishing Packages', path: '/publishingpackages' },
+            { label: 'Publishing Packages', path: '/publishingpackages/a5' },
             { label: 'Get a Quote', path: '/getquote' },
           ]}
           light

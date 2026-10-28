@@ -138,21 +138,38 @@ export default function AICopilot({ data }) {
   };
 
   return (
-    <Card className="border-[#B87333]/20 bg-gradient-to-br from-[#F8F5EF]/50 to-white">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold text-[#2B2B2B] flex items-center gap-2">
-          <Brain className="w-4 h-4 text-[#B87333]" />
-          AI Copilot
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Question Input */}
-        <div className="space-y-2">
-          <Textarea
+    <div
+      className="rounded-2xl border backdrop-blur-xl p-6"
+      style={{
+        background: 'rgba(15, 23, 42, 0.6)',
+        borderColor: 'rgba(34, 211, 238, 0.2)',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.1)'
+      }}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#a855f7,#c084fc)', boxShadow: '0 2px 12px rgba(168, 85, 247, 0.5)' }}>
+          <Brain className="w-4 h-4 text-white" />
+        </div>
+        <div>
+          <h2 className="text-base font-bold text-cyan-50">AI Revenue Insights</h2>
+          <p className="text-xs text-cyan-200/50">Ask me anything about your business</p>
+        </div>
+      </div>
+
+      {/* Question Input */}
+      <div className="space-y-3 mb-4">
+        <div
+          className="rounded-xl border p-3 backdrop-blur-xl"
+          style={{
+            background: 'rgba(15, 23, 42, 0.8)',
+            borderColor: 'rgba(34, 211, 238, 0.2)'
+          }}
+        >
+          <textarea
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask me anything about your CRM data..."
-            className="h-20 text-sm"
+            className="w-full h-20 bg-transparent text-cyan-50 text-sm resize-none focus:outline-none placeholder:text-cyan-200/30"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -160,91 +177,110 @@ export default function AICopilot({ data }) {
               }
             }}
           />
-          <div className="flex gap-2">
-            <Button
-              onClick={handleAsk}
-              disabled={thinking || !question.trim()}
-              className="flex-1 bg-[#B87333] hover:bg-[#a06428]"
-            >
-              {thinking ? (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-                  Thinking...
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Ask AI
-                </>
-              )}
-            </Button>
-          </div>
         </div>
+        <button
+          onClick={handleAsk}
+          disabled={thinking || !question.trim()}
+          className="w-full py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            background: thinking ? 'rgba(168, 85, 247, 0.5)' : 'linear-gradient(135deg,#a855f7,#c084fc)',
+            color: 'white',
+            boxShadow: '0 2px 12px rgba(168, 85, 247, 0.4)'
+          }}
+        >
+          {thinking ? (
+            <span className="flex items-center justify-center gap-2">
+              <Sparkles className="w-4 h-4 animate-pulse" />
+              Thinking...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Send className="w-4 h-4" />
+              Ask AI
+            </span>
+          )}
+        </button>
+      </div>
 
-        {/* Quick Questions */}
-        <div className="flex flex-wrap gap-2">
-          {QUESTION_PRESETS.slice(0, 3).map((q, idx) => (
-            <Button
-              key={idx}
-              size="sm"
-              variant="outline"
-              className="text-xs h-7"
-              onClick={() => setQuestion(q)}
-            >
-              {q}
-            </Button>
-          ))}
-        </div>
+      {/* Quick Questions */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {QUESTION_PRESETS.slice(0, 3).map((q, idx) => (
+          <button
+            key={idx}
+            onClick={() => setQuestion(q)}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border"
+            style={{
+              background: 'rgba(15, 23, 42, 0.6)',
+              borderColor: 'rgba(34, 211, 238, 0.2)',
+              color: 'rgba(165, 243, 252, 0.7)'
+            }}
+          >
+            {q}
+          </button>
+        ))}
+      </div>
 
-        {/* AI Answer */}
-        {answer && (
-          <div className="space-y-3">
-            <div className="p-3 bg-white rounded-lg border border-gray-200">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="w-4 h-4 text-[#B87333]" />
-                <div className="text-sm font-semibold text-[#2B2B2B]">{answer.summary}</div>
-              </div>
-              <Badge className="text-xs bg-[#B87333]/10 text-[#B87333]">
-                {answer.confidence}% confidence
-              </Badge>
+      {/* AI Answer */}
+      {answer && (
+        <div className="space-y-3">
+          <div
+            className="p-4 rounded-xl border backdrop-blur-xl"
+            style={{
+              background: 'rgba(15, 23, 42, 0.8)',
+              borderColor: 'rgba(34, 211, 238, 0.25)'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              <div className="text-sm font-bold text-cyan-50">{answer.summary}</div>
             </div>
-
-            {answer.recommendations && answer.recommendations.length > 0 && (
-              <div className="space-y-2">
-                {answer.recommendations.map((rec, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 bg-white rounded-lg border border-gray-200 hover:border-[#B87333]/30 transition-colors"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <div className="text-sm font-semibold text-[#2B2B2B]">{rec.title}</div>
-                        <div className="text-xs text-gray-600 mt-1">{rec.reason}</div>
-                      </div>
-                      <Badge className={`text-xs ${
-                        rec.priority === 'High' ? 'bg-red-100 text-red-700' :
-                        rec.priority === 'Medium' ? 'bg-amber-100 text-amber-700' :
-                        'bg-blue-100 text-blue-700'
-                      }`}>
-                        {rec.priority}
-                      </Badge>
-                    </div>
-                    {rec.action && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full mt-2 h-8 text-xs"
-                      >
-                        {rec.action}
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
+              {answer.confidence}% confidence
+            </span>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {answer.recommendations && answer.recommendations.length > 0 && (
+            <div className="space-y-2">
+              {answer.recommendations.map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-xl border backdrop-blur-xl transition-all hover:scale-[1.01]"
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.6)',
+                    borderColor: rec.priority === 'High' ? 'rgba(239, 68, 68, 0.3)' : rec.priority === 'Medium' ? 'rgba(245, 158, 11, 0.3)' : 'rgba(59, 130, 246, 0.3)'
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <div className="text-sm font-bold text-cyan-50">{rec.title}</div>
+                      <div className="text-xs text-cyan-200/50 mt-1">{rec.reason}</div>
+                    </div>
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      rec.priority === 'High' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
+                      rec.priority === 'Medium' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                      'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                    }`}>
+                      {rec.priority}
+                    </span>
+                  </div>
+                  {rec.action && (
+                    <button
+                      className="w-full mt-3 py-2 rounded-lg text-xs font-bold transition-all border"
+                      style={{
+                        background: 'rgba(34, 211, 238, 0.15)',
+                        borderColor: 'rgba(34, 211, 238, 0.3)',
+                        color: '#22d3ee'
+                      }}
+                    >
+                      {rec.action}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

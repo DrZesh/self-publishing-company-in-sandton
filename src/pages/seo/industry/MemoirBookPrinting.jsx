@@ -15,7 +15,7 @@ const schema = {
   '@graph': [
     serviceSchema({ name: 'Memoir Book Printing Johannesburg', description: 'Professional memoir book printing services in Johannesburg.', url: '/memoirbookprintingjohannesburg' }),
     faqSchema(faqs),
-    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/bookprinting' }, { name: 'Memoir Book Printing', path: '/memoirbookprintingjohannesburg' }]),
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Book Printing', path: '/book-printing' }, { name: 'Memoir Book Printing', path: '/memoirbookprintingjohannesburg' }]),
   ],
 };
 
@@ -23,10 +23,10 @@ export default function MemoirBookPrinting() {
   return (
     <>
       <PageMeta
-        title="Memoir Book Printing"
-        description="Memoir printing in Johannesburg for South African authors — hardcover, paperback and family-edition runs. Photo inserts, dedications, lasting binding options."
+        title="Memoir Book Printing in Johannesburg | Creative Books SA"
+        description="Memoir printing in Johannesburg for South African authors - hardcover, paperback and family-edition runs. Photo inserts, dedications, lasting binding options."
         keywords="memoir book printing Johannesburg, memoir printing South Africa, print memoir book, memoir publishing Johannesburg, biography printing South Africa"
-        canonical="https://www.creativebooks.co.za/memoirbookprintingjohannesburg"
+        canonical="https://creativebooks.co.za/memoirbookprintingjohannesburg"
         schema={schema}
       />
       <ServicePageTemplate
@@ -50,11 +50,11 @@ export default function MemoirBookPrinting() {
         ]}
         faqs={faqs}
         relatedLinks={[
-          { label: 'Memoir Publishing', path: '/memoirpublishing' },
+          { label: 'Memoir Publishing', path: '/memoirwriting' },
           { label: 'Memoir Writing', path: '/memoirwriting' },
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: 'Hardcover Printing', path: '/printing/hardcover' },
-          { label: 'Book Editing', path: '/bookediting' },
+          { label: 'Book Editing', path: '/book-editing' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Memoir Professionally"

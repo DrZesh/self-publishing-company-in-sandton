@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Users, Eye, TrendingUp, Clock, RefreshCw, Wifi, Globe, BarChart2 } from 'lucide-react';
@@ -44,10 +44,10 @@ export default function AnalyticsDashboard() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     const [r, p, s, rt] = await Promise.all([
-      base44.functions.invoke('getAnalyticsData', { action: 'report', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'top_pages', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'sources', propertyId: PROPERTY_ID }),
-      base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID }),
+      platform.functions.invoke('getAnalyticsData', { action: 'report', propertyId: PROPERTY_ID }),
+      platform.functions.invoke('getAnalyticsData', { action: 'top_pages', propertyId: PROPERTY_ID }),
+      platform.functions.invoke('getAnalyticsData', { action: 'sources', propertyId: PROPERTY_ID }),
+      platform.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID }),
     ]);
     setReport(r.data);
     setTopPages(p.data);
@@ -60,7 +60,7 @@ export default function AnalyticsDashboard() {
   useEffect(() => {
     fetchAll();
     const interval = setInterval(async () => {
-      const rt = await base44.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID });
+      const rt = await platform.functions.invoke('getAnalyticsData', { action: 'realtime', propertyId: PROPERTY_ID });
       setRealtime(rt.data);
     }, 30000);
     return () => clearInterval(interval);
@@ -105,21 +105,22 @@ export default function AnalyticsDashboard() {
 
   return (
     <AdminLayout>
+      <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)' }}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 font-heading">Website Analytics</h1>
-            <p className="text-sm text-gray-500 mt-0.5">creativebooks.co.za — last 30 days</p>
+            <h1 className="text-2xl font-bold text-white font-heading">Website Analytics</h1>
+            <p className="text-sm text-white/50 mt-0.5">creativebooks.co.za — last 30 days</p>
           </div>
           <div className="flex items-center gap-3">
             {lastRefresh && (
-              <span className="text-xs text-gray-400">Updated {lastRefresh.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="text-xs text-white/40">Updated {lastRefresh.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' })}</span>
             )}
             <button
               onClick={fetchAll}
               disabled={loading}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/20 text-sm text-white/60 hover:bg-white/10 disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh
@@ -149,7 +150,7 @@ export default function AnalyticsDashboard() {
 
         {loading && !report && (
           <div className="flex items-center justify-center h-48">
-            <div className="w-8 h-8 border-4 border-gray-200 border-t-[#B87333] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-white/10 border-t-[#B87333] rounded-full animate-spin" />
           </div>
         )}
 
@@ -164,10 +165,10 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Trend Chart */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <BarChart2 className="w-4 h-4 text-[#B87333]" />
-                <h2 className="text-sm font-semibold text-gray-800">Sessions &amp; Users — Last 30 Days</h2>
+                <h2 className="text-sm font-semibold text-white">Sessions &amp; Users — Last 30 Days</h2>
               </div>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={chartData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
@@ -194,10 +195,10 @@ export default function AnalyticsDashboard() {
             {/* Bottom Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Traffic Sources */}
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
                 <div className="flex items-center gap-2 mb-4">
                   <Globe className="w-4 h-4 text-[#B87333]" />
-                  <h2 className="text-sm font-semibold text-gray-800">Traffic Sources</h2>
+                  <h2 className="text-sm font-semibold text-white">Traffic Sources</h2>
                 </div>
                 <div className="flex items-center gap-4">
                   <PieChart width={160} height={160}>
@@ -213,9 +214,9 @@ export default function AnalyticsDashboard() {
                       return (
                         <div key={s.name} className="flex items-center gap-2">
                           <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-                          <span className="text-xs text-gray-700 flex-1 truncate">{s.name}</span>
-                          <span className="text-xs font-semibold text-gray-900">{s.value}</span>
-                          <span className="text-xs text-gray-400 w-8 text-right">{pct}%</span>
+                          <span className="text-xs text-white/70 flex-1 truncate">{s.name}</span>
+                          <span className="text-xs font-semibold text-white">{s.value}</span>
+                          <span className="text-xs text-white/40 w-8 text-right">{pct}%</span>
                         </div>
                       );
                     })}
@@ -224,10 +225,10 @@ export default function AnalyticsDashboard() {
               </div>
 
               {/* Top Pages */}
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)' }}>
                 <div className="flex items-center gap-2 mb-4">
                   <Eye className="w-4 h-4 text-[#B87333]" />
-                  <h2 className="text-sm font-semibold text-gray-800">Top Pages (30 days)</h2>
+                  <h2 className="text-sm font-semibold text-white">Top Pages (30 days)</h2>
                 </div>
                 <div className="space-y-2.5">
                   {pagesData.map((p, i) => {
@@ -236,16 +237,16 @@ export default function AnalyticsDashboard() {
                     return (
                       <div key={p.path}>
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-xs text-gray-700 truncate max-w-[60%]" title={p.path}>
-                            <span className="text-gray-400 mr-1">{i + 1}.</span>
+                          <span className="text-xs text-white/70 truncate max-w-[60%]" title={p.path}>
+                            <span className="text-white/40 mr-1">{i + 1}.</span>
                             {p.path === '/' ? 'Home' : p.path}
                           </span>
                           <div className="flex gap-3 text-xs">
-                            <span className="text-gray-900 font-semibold">{p.views.toLocaleString()}</span>
-                            <span className="text-gray-400">{p.users} users</span>
+                            <span className="text-white font-semibold">{p.views.toLocaleString()}</span>
+                            <span className="text-white/40">{p.users} users</span>
                           </div>
                         </div>
-                        <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                           <div className="h-full rounded-full bg-[#B87333]" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
@@ -256,6 +257,7 @@ export default function AnalyticsDashboard() {
             </div>
           </>
         )}
+      </div>
       </div>
     </AdminLayout>
   );

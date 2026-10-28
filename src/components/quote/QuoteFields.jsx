@@ -1,4 +1,5 @@
 import React from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function Field({ label, error, required, children }) {
   return (
@@ -28,18 +29,20 @@ export function TextInput({ value, onChange, placeholder, type = 'text', error, 
 
 export function SelectInput({ value, onChange, options, placeholder, error }) {
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={`w-full px-4 py-3 rounded-xl border text-sm font-body text-[#0F0F0F] bg-[#F9F7F2] outline-none transition-all appearance-none
-        ${error ? 'border-red-400 focus:border-red-400' : 'border-[#0F0F0F]/10 focus:border-copper'}
-        ${!value ? 'text-[#0F0F0F]/40' : ''}`}
-    >
-      <option value="">{placeholder || 'Select an option'}</option>
-      {options.map(opt => (
-        <option key={opt.value} value={opt.value}>{opt.label}</option>
-      ))}
-    </select>
+    <Select value={value || undefined} onValueChange={onChange}>
+      <SelectTrigger
+        className={`w-full h-auto px-4 py-3 rounded-xl border text-sm font-body bg-[#F9F7F2] outline-none transition-all
+          ${error ? 'border-red-400 focus:border-red-400' : 'border-[#0F0F0F]/10 focus:border-copper'}
+          ${!value ? 'text-[#0F0F0F]/40' : 'text-[#0F0F0F]'}`}
+      >
+        <SelectValue placeholder={placeholder || 'Select an option'} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map(opt => (
+          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 

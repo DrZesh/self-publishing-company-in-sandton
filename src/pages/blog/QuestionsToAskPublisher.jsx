@@ -41,10 +41,10 @@ const article = {
     { q: 'Does a publishing quote usually include editing?', a: 'Not always. Always ask whether editing is included and what type of editing is covered. A responsible publisher will need to see the manuscript before confirming the editing scope and cost.' },
   ],
   relatedLinks: [
-    { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
-    { label: 'Book Editing Services', path: '/bookediting' },
-    { label: 'Book Cover Design', path: '/bookcoverdesign' },
-    { label: 'eBook Publishing', path: '/ebookpublishing' },
+    { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
+    { label: 'Book Editing Services', path: '/book-editing' },
+    { label: 'Book Cover Design', path: '/book-cover-design' },
+    { label: 'eBook Publishing', path: '/ebook-publishing' },
     { label: 'Request a Quote', path: '/getquote' },
   ],
 };

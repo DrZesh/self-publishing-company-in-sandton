@@ -1,7 +1,31 @@
 import React, { useState } from 'react';
-import { X, Mail, Phone, Calendar, ArrowRight, Trash2, Flag, Archive, Send, ChevronDown, ChevronUp } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { X, Mail, Phone, Calendar, ArrowRight, Trash2, Flag, Archive, Send, ChevronDown, ChevronUp, Sparkles, Loader2, Zap } from 'lucide-react';
+import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
+import InboxTriageTag from '@/components/admin/inbox/InboxTriageTag';
+
+const QUICK_REPLIES = [
+  {
+    label: 'Acknowledge',
+    subject: (name) => `Re: Your enquiry — Creative Books SA`,
+    body: (name, services) => `Hi ${name},\n\nThank you for reaching out to Creative Books SA! We've received your enquiry${services?.length ? ` about ${services.join(', ')}` : ''} and will get back to you within 1–2 business days.\n\nIn the meantime, feel free to browse our website at www.creativebooks.co.za for more information.\n\nWarm regards,\nCreative Books SA Team`,
+  },
+  {
+    label: 'Request Info',
+    subject: (name) => `Re: Your enquiry — A few more details`,
+    body: (name) => `Hi ${name},\n\nThank you for your message! To prepare an accurate quote for you, could you please share the following details:\n\n• Your book title (if decided)\n• Approximate page/word count\n• Preferred timeline\n• Any specific requirements or preferences\n\nOnce we have these details, we can put together a tailored proposal for you.\n\nLooking forward to hearing from you!\n\nWarm regards,\nCreative Books SA Team`,
+  },
+  {
+    label: 'Book Appointment',
+    subject: (name) => `Re: Let's schedule a consultation`,
+    body: (name) => `Hi ${name},\n\nThank you for your interest in Creative Books SA!\n\nWe'd love to schedule a free consultation to discuss your project in more detail. You can book a convenient time directly here:\n\n👉 https://creativebooks.co.za/book\n\nAlternatively, reply to this email with your preferred date and time and we'll confirm.\n\nLooking forward to connecting!\n\nWarm regards,\nCreative Books SA Team`,
+  },
+  {
+    label: 'Send Quote',
+    subject: (name) => `Re: Your personalised quote from Creative Books SA`,
+    body: (name, services) => `Hi ${name},\n\nThank you for your enquiry${services?.length ? ` regarding ${services.join(', ')}` : ''}!\n\nWe're preparing a personalised quote for you and will send it through shortly. In the meantime, if you have any additional requirements or questions, please don't hesitate to ask.\n\nWarm regards,\nCreative Books SA Team`,
+  },
+];
 
 const STATUS_BADGES = {
   new: 'bg-blue-100 text-blue-700',
@@ -38,12 +62,47 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
   const [replySubject, setReplySubject] = useState(`Re: Your enquiry — Creative Books SA`);
   const [replyBody, setReplyBody] = useState(`Hi ${submission.full_name?.split(' ')[0] || 'there'},\n\nThank you for reaching out to Creative Books SA.\n\n`);
   const [sending, setSending] = useState(false);
+  const [aiDrafting, setAiDrafting] = useState(false);
+
+  const firstName = submission.full_name?.split(' ')[0] || 'there';
+  const services = submission.service_interest || [];
+
+  const applyQuickReply = (tpl) => {
+    setReplySubject(tpl.subject(firstName));
+    setReplyBody(tpl.body(firstName, services));
+    setReplyOpen(true);
+  };
+
+  const handleAIDraft = async () => {
+    setAiDrafting(true);
+    setReplyOpen(true);
+    try {
+      const context = [
+        `Client name: ${submission.full_name}`,
+        `Email: ${submission.email}`,
+        submission.service_interest?.length ? `Services interested in: ${submission.service_interest.join(', ')}` : '',
+        submission.message ? `Their message: ${submission.message}` : '',
+        submission.book_title ? `Book title: ${submission.book_title}` : '',
+        submission.budget ? `Budget: ${submission.budget}` : '',
+      ].filter(Boolean).join('\n');
+
+      const result = await platform.integrations.Core.InvokeLLM({
+        prompt: `You are the customer service team at Creative Books SA, a South African self-publishing company. Write a warm, professional reply email to a potential client based on their enquiry details below. Keep it concise (3–5 paragraphs), helpful, and end with an invitation to get started or schedule a call. Do not include a subject line — just the email body starting with "Hi ${firstName},". Here are the enquiry details:\n\n${context}`,
+      });
+      setReplyBody(result + '\n\nWarm regards,\nCreative Books SA Team');
+      setReplySubject(`Re: Your enquiry — Creative Books SA`);
+    } catch (e) {
+      toast.error('AI draft failed: ' + e.message);
+    } finally {
+      setAiDrafting(false);
+    }
+  };
 
   const handleSendReply = async () => {
     if (!replyBody.trim() || !replySubject.trim()) { toast.error('Subject and message are required'); return; }
     setSending(true);
     try {
-      await base44.integrations.Core.SendEmail({
+      await platform.integrations.Core.SendEmail({
         to: submission.email,
         subject: replySubject,
         body: replyBody.replace(/\n/g, '<br/>'),
@@ -51,7 +110,7 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
       });
       // Log as an EmailMessage if contact is linked
       if (submission.contact_id) {
-        await base44.entities.EmailMessage.create({
+        await platform.entities.EmailMessage.create({
           contact_id: submission.contact_id,
           direction: 'outbound',
           from_address: 'noreply@creativebooks.co.za',
@@ -73,7 +132,7 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
 
   const handleSaveNotes = async () => {
     setSavingNotes(true);
-    await base44.entities.Submission.update(submission.id, { internal_notes: notes });
+    await platform.entities.Submission.update(submission.id, { internal_notes: notes });
     setSavingNotes(false);
     toast.success('Notes saved');
   };
@@ -83,7 +142,7 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
     setConverting(true);
     try {
       if (submission.contact_id) {
-        await base44.entities.Lead.create({
+        await platform.entities.Lead.create({
           contact_id: submission.contact_id,
           source_submission_id: submission.id,
           stage: 'new',
@@ -105,7 +164,7 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
   };
 
   const body = (
-    <div className="bg-white rounded-2xl border border-black/8 shadow-sm overflow-hidden">
+    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 24px 64px rgba(0,0,0,0.3)' }}>
       {/* Header */}
       <div className="px-6 py-5 border-b border-black/8 flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -224,6 +283,15 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
           )}
         </div>
 
+        {/* AI Triage */}
+        <div>
+          <h3 className="text-xs font-bold text-black/40 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Sparkles className="w-3 h-3" /> AI Analysis</h3>
+          {submission.additional_fields?.ai_summary && (
+            <p className="text-xs text-black/60 italic bg-purple-50 rounded-lg px-3 py-2 mb-2 border border-purple-100">"{submission.additional_fields.ai_summary}"</p>
+          )}
+          <InboxTriageTag submission={submission} onTriaged={() => {}} />
+        </div>
+
         {/* Actions */}
         <div className="pt-2 border-t border-black/8 space-y-2">
           {submission.status !== 'converted_to_lead' && (
@@ -237,17 +305,43 @@ export default function SubmissionDetail({ submission, onClose, onStatusChange, 
             </button>
           )}
 
+          {/* Quick reply templates */}
+          <div>
+            <p className="text-xs font-bold text-black/30 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Zap className="w-3 h-3" /> Quick Replies</p>
+            <div className="grid grid-cols-2 gap-2">
+              {QUICK_REPLIES.map(tpl => (
+                <button
+                  key={tpl.label}
+                  onClick={() => applyQuickReply(tpl)}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-colors text-[#B87333] hover:bg-[#B87333]/10 border border-[#B87333]/20"
+                >
+                  {tpl.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Inline reply compose */}
           <div className="border border-[#B87333]/25 rounded-xl overflow-hidden">
             <button
               onClick={() => setReplyOpen(r => !r)}
               className="w-full flex items-center justify-between px-4 py-3 bg-[#B87333]/8 text-[#B87333] hover:bg-[#B87333]/12 font-semibold text-sm transition-colors"
             >
-              <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> Reply to {submission.full_name?.split(' ')[0]}</span>
+              <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> Reply to {firstName}</span>
               {replyOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {replyOpen && (
               <div className="p-4 bg-white space-y-3">
+                {/* AI Draft button */}
+                <button
+                  onClick={handleAIDraft}
+                  disabled={aiDrafting}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all border"
+                  style={{ background: 'linear-gradient(135deg,#8b5cf6,#6366f1)', color: '#fff', borderColor: 'transparent', opacity: aiDrafting ? 0.7 : 1 }}
+                >
+                  {aiDrafting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  {aiDrafting ? 'Drafting with AI…' : 'AI Draft Reply'}
+                </button>
                 <div>
                   <label className="text-xs font-bold text-black/40 uppercase tracking-wide block mb-1">To</label>
                   <div className="px-3 py-2 bg-[#f5f5f5] rounded-lg text-sm text-black/60">{submission.email}</div>

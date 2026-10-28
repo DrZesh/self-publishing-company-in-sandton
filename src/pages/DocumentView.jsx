@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Button } from '@/components/ui/button';
 import { 
   Download, CheckCircle, XCircle, MessageSquare, FileSignature,
   CreditCard, Upload, AlertTriangle, Clock, Eye, BookOpen
 } from 'lucide-react';
 import { toast } from 'sonner';
+import NoIndexMeta from '@/components/shared/NoIndexMeta';
 
 export default function DocumentView() {
   const { id, token } = useParams();
@@ -80,7 +81,7 @@ export default function DocumentView() {
   useEffect(() => {
     if (tracked.current) return;
     tracked.current = true;
-    base44.functions.invoke('documentActions', { action: 'track_view', document_id: id, token })
+    platform.functions.invoke('documentActions', { action: 'track_view', document_id: id, token })
       .then(res => {
         if (res.data?.error) { setError(res.data.error); }
         else { setDoc(res.data?.doc); setContact(res.data?.contact); }
@@ -90,7 +91,7 @@ export default function DocumentView() {
   }, [id, token]);
 
   const handleDownload = async () => {
-    await base44.functions.invoke('documentActions', { action: 'track_download', document_id: id, token });
+    await platform.functions.invoke('documentActions', { action: 'track_download', document_id: id, token });
     window.open(doc.file_url, '_blank');
   };
 
@@ -127,17 +128,17 @@ export default function DocumentView() {
       let proof_url = null;
       let signature_url = null;
       if (proofFile) {
-        const uploaded = await base44.integrations.Core.UploadFile({ file: proofFile });
+        const uploaded = await platform.integrations.Core.UploadFile({ file: proofFile });
         proof_url = uploaded.file_url;
       }
       // Convert canvas signature to file and upload
       if (clientAction === 'sign' && sigData) {
         const blob = await fetch(sigData).then(r => r.blob());
         const sigFile = new File([blob], 'signature.png', { type: 'image/png' });
-        const uploaded = await base44.integrations.Core.UploadFile({ file: sigFile });
+        const uploaded = await platform.integrations.Core.UploadFile({ file: sigFile });
         signature_url = uploaded.file_url;
       }
-      const res = await base44.functions.invoke('documentActions', {
+      const res = await platform.functions.invoke('documentActions', {
         action: 'client_action',
         document_id: id,
         token,
@@ -210,6 +211,7 @@ export default function DocumentView() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7]">
+      <NoIndexMeta title="Document | Creative Books SA" />
       {/* Header */}
       <div className="bg-[#1A1208] text-white px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center gap-3">

@@ -17,7 +17,7 @@ export default function BlogArticlePage({ article }) {
       <PageMeta
         title={article.title}
         description={article.description}
-        canonical={article.url ? `https://www.creativebooks.co.za${article.url}` : undefined}
+        canonical={article.url ? `https://creativebooks.co.za${article.url}` : undefined}
         ogType="article"
       />
       {/* JSON-LD Article Schema */}
@@ -27,10 +27,10 @@ export default function BlogArticlePage({ article }) {
         "headline": article.title,
         "description": article.description,
         "author": { "@type": "Organization", "name": "Creative Books SA" },
-        "publisher": { "@type": "Organization", "name": "Creative Books SA", "url": "https://www.creativebooks.co.za" },
+        "publisher": { "@type": "Organization", "name": "Creative Books SA", "url": "https://creativebooks.co.za" },
         "datePublished": article.datePublished || "2024-01-01",
-        "url": `https://www.creativebooks.co.za${article.url}`,
-        "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.creativebooks.co.za${article.url}` }
+        "url": `https://creativebooks.co.za${article.url}`,
+        "mainEntityOfPage": { "@type": "WebPage", "@id": `https://creativebooks.co.za${article.url}` }
       }) }} />
 
       {/* FAQ Schema if present */}
@@ -51,9 +51,9 @@ export default function BlogArticlePage({ article }) {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.creativebooks.co.za/" },
-          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.creativebooks.co.za/blog" },
-          { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://www.creativebooks.co.za${article.url}` }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://creativebooks.co.za/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://creativebooks.co.za/blog" },
+          { "@type": "ListItem", "position": 3, "name": article.title, "item": `https://creativebooks.co.za${article.url}` }
         ]
       }) }} />
 
@@ -161,10 +161,10 @@ export default function BlogArticlePage({ article }) {
       )}
 
       <InternalLinks title="Related Services & Articles" links={article.relatedLinks || [
-        { label: 'Book Publishing', path: '/bookpublishing' },
-        { label: 'Book Printing', path: '/bookprinting' },
-        { label: 'Book Editing', path: '/bookediting' },
-        { label: 'Self Publishing Packages', path: '/selfpublishingpackagesinsouthafrica' },
+        { label: 'Book Publishing', path: '/book-publishing' },
+        { label: 'Book Printing', path: '/book-printing' },
+        { label: 'Book Editing', path: '/book-editing' },
+        { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
         { label: 'Request a Quote', path: '/getquote' },
         { label: 'Blog', path: '/blog' },
       ]} light />

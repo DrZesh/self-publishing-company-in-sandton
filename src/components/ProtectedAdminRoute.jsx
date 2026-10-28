@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { platform } from '@/api/platformClient';
 import { Loader2 } from 'lucide-react';
 
 export default function ProtectedAdminRoute({ children }) {
@@ -9,14 +9,15 @@ export default function ProtectedAdminRoute({ children }) {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
+        const isAuthenticated = await platform.auth.isAuthenticated();
         if (!isAuthenticated) {
           setIsAdmin(false);
           return;
         }
 
-        const user = await base44.auth.me();
-        setIsAdmin(user?.role === 'admin');
+        const user = await platform.auth.me();
+        const allowed = ['admin', 'super_user', 'standard_user'];
+        setIsAdmin(user && allowed.includes(user.role));
       } catch (err) {
         console.error('Admin check failed:', err);
         setIsAdmin(false);

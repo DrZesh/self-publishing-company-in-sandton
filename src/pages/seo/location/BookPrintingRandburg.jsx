@@ -28,11 +28,10 @@ export default function BookPrintingRandburg() {
   return (
     <div>
       <PageMeta
-        title="Book Printing Randburg"
-        description="Book printing for Randburg authors — softcover, hardcover and children's formats. Fast Gauteng delivery, competitive pricing, from 100 copies."
-        description="Book printing for Randburg authors — softcover, hardcover and children's formats. Fast Gauteng delivery, competitive pricing, from 100 copies."
+        title="Book Printing in Randburg | Creative Books SA"
+        description="Book printing for Randburg authors - softcover, hardcover & children's formats. Fast Gauteng delivery, competitive pricing, from 100 copies. Get a free quote."
         keywords="book printing Randburg, book printers Randburg, Randburg book printing, printing services Randburg, book publishing Randburg"
-        canonical="https://www.creativebooks.co.za/bookprintingrandburg"
+        canonical="https://creativebooks.co.za/bookprintingrandburg"
         schema={{ '@graph': [schema] }}
       />
 
