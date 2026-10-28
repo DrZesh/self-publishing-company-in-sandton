@@ -16,7 +16,7 @@ async function harness(name, failWrites = false) {
   const platform = { asServiceRole: { entities }, functions: { invoke: forbidden }, integrations: { Core: { SendEmail: forbidden } } };
   let handler;
   const source = (await readFile(`supabase/functions/${name}/index.ts`, 'utf8')).replace(/^import .*;\n/gm, '');
-  vm.runInNewContext(source, { createClientFromRequest: () => platform, serve: (_, fn) => { handler = fn; }, fetch: forbidden, crypto: webcrypto, TextEncoder, Response, console: { log() {}, error() {} } });
+  vm.runInNewContext(source, { queueRecordEmails: () => Promise.resolve(), createClientFromRequest: () => platform, serve: (_, fn) => { handler = fn; }, fetch: forbidden, crypto: webcrypto, TextEncoder, Response, console: { log() {}, error() {} } });
   return { saved, submit: data => handler(new Request('https://test.invalid', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })) };
 }
 

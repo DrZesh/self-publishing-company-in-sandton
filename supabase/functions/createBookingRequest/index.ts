@@ -1,3 +1,4 @@
+import { queueRecordEmails } from '../_shared/notifications.js';
 import { createClientFromRequest, serve } from '../_shared/server.ts';
 
 function generateToken() { return crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().replaceAll('-', ''); }
@@ -66,6 +67,8 @@ serve('createBookingRequest', async (req) => {
       cancel_token: generateToken(),
       reschedule_token: generateToken(),
     });
+
+    queueRecordEmails(platform, 'booking', appointment.id);
 
     return Response.json({ success: true, appointment_id: appointment.id });
   } catch (error) {

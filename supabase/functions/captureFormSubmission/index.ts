@@ -1,3 +1,4 @@
+import { queueRecordEmails } from '../_shared/notifications.js';
 import { createClientFromRequest, serve } from '../_shared/server.ts';
 
 // Hash function for IP anonymization
@@ -187,6 +188,8 @@ serve('captureFormSubmission', async (req) => {
     } catch (logErr) {
       console.error('Activity logging error:', logErr.message);
     }
+
+    queueRecordEmails(platform, 'enquiry', submission.id);
 
     return Response.json({
       success: true,

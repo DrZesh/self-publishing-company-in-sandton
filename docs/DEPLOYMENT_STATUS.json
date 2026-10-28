@@ -14,12 +14,16 @@
     "autoCreatePortalAccess",
     "adobeSignActions"
   ],
-  "notes": "Enquiries and bookings save to Supabase without email or WhatsApp. Other deferred workflows remain disabled or undeployed. Auth/admin and booking availability setup are incomplete.",
+  "notes": "Enquiries and bookings save first, then send fixed-template Resend notices in the background. Provider failures are recorded on the saved record. Other deferred integrations remain disabled. Booking availability, Auth/admin setup and custom-domain DNS remain incomplete.",
   "save_only_forms_enabled": [
     "captureFormSubmission",
     "createBookingRequest"
   ],
   "live_form_tests": "passed with synthetic enquiry and pending booking; test records removed",
   "booking_configuration": "No services or availability configured",
-  "domain_status": "creativebooks.co.za still points to Base44; new site at creative-books-sa.vercel.app"
+  "domain_status": "creativebooks.co.za still points to Base44; new site at creative-books-sa.vercel.app",
+  "enquiry_booking_email": "enabled through domain-restricted Resend key",
+  "email_notifications_to": "info@creativebooks.co.za and the saved submitter email",
+  "whatsapp_notifications": "disabled",
+  "email_test": "Enquiry and booking business notices and submitter receipts delivered to info@creativebooks.co.za; synthetic records removed"
 }
