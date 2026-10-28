@@ -56,6 +56,8 @@ async function logActivity(platform, { contact_id, entity_type, entity_id, actio
 serve('adminConfirmWorkflow', async (req) => {
   try {
     const platform = createClientFromRequest(req);
+    const authorizedAdmin = await platform.auth.me();
+    if (!authorizedAdmin || !['admin', 'super_user'].includes(authorizedAdmin.role)) return Response.json({ error: 'Administrator access required' }, { status: 403 });
     const user = await platform.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 

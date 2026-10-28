@@ -1,4 +1,4 @@
-export const staffRoles = ['admin', 'super_user', 'standard_user'];
+export const staffRoles = ['admin', 'super_user'];
 export const publicActions = {
   quoteActions: ['get_public', 'respond', 'generate_pdf'], invoiceActions: ['get_public'],
   contractSignature: ['get_by_token', 'sign', 'signing_started'],
@@ -8,12 +8,13 @@ export const publicActions = {
 };
 export const publicForms = ['captureFormSubmission', 'sendFormEmailResend', 'createBookingRequest', 'getAvailableSlots', 'fetchGoogleReviews', 'sendEstimateNotification', 'checkCoverErrors'];
 export const portalActions = {
-  clientPortalData: ['load', 'access', 'mark_messages_read', 'list_projects_with_messages', 'accept_quote', 'decline_quote', 'download_invoice', 'download_receipt'],
+  clientPortalData: ['load', 'access', 'mark_messages_read', 'accept_quote', 'decline_quote', 'download_invoice', 'download_receipt'],
   portalMessages: ['list', 'send', 'mark_read'],
   portalAppointments: ['get_my_appointments', 'get_available_slots', 'create_appointment', 'cancel_appointment'],
   fileUploadActions: ['upload_file', 'upload_payment_proof'], proofApprovalActions: ['approve', 'request_changes'],
 };
 export function accessMode(name, action, role, internal = false) {
+  if (['adminConfirmWorkflow', 'autoCreatePortalAccess'].includes(name)) return internal || ['admin', 'super_user'].includes(role) ? 'staff' : 'deny';
   if (internal || staffRoles.includes(role)) return 'staff';
   if (publicForms.includes(name)) return 'form';
   if (publicActions[name]?.includes(action)) return 'document';

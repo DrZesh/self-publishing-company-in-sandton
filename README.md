@@ -40,3 +40,7 @@ npm run build
 ```
 
 Copy .env.example to .env.local for local development and supply the project's public publishable key. Entity definitions are preserved in docs/entity-schemas.json.
+
+## Partial deployment
+
+The website target is https://creativebooks.co.za, Vercel project creative-books-sa. Supabase function deployment is partial. See docs/DEPLOYMENT_STATUS.json. Functions flagged for external communications or access control are intentionally disabled or undeployed, with their source retained. Forms and booking that depend on disabled functions will not submit until those workflows are approved and configured. The website deployment does not imply that the CRM or integrations are ready.

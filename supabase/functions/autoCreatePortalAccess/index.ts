@@ -26,6 +26,8 @@ async function sendBrandedEmail(to, subject, htmlContent) {
 serve('autoCreatePortalAccess', async (req) => {
   try {
     const platform = createClientFromRequest(req);
+    const authorizedAdmin = await platform.auth.me();
+    if (!authorizedAdmin || !['admin', 'super_user'].includes(authorizedAdmin.role)) return Response.json({ error: 'Administrator access required' }, { status: 403 });
     const body = await req.json();
     
     // Get the project from automation payload

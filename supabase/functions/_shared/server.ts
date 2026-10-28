@@ -81,7 +81,7 @@ async function authorizePortal(client: any, name: string, body: any, user: any) 
 export function serve(name: string, handler: (req: Request) => Promise<Response>) {
   Deno.serve(async original => {
     const origin = original.headers.get('origin');
-    const allowed = (Deno.env.get('ALLOWED_ORIGINS') || Deno.env.get('SITE_URL') || 'https://www.creativebooks.co.za').split(',').map(v => v.trim());
+    const allowed = (Deno.env.get('ALLOWED_ORIGINS') || Deno.env.get('SITE_URL') || 'https://www.creativebooks.co.za,https://creativebooks.co.za,https://creative-books-sa.vercel.app,https://creative-books-5ixx7mm2j-draubreyzesh-gmailcoms-projects.vercel.app').split(',').map(v => v.trim());
     const cors = { ...(origin && allowed.includes(origin) ? { 'Access-Control-Allow-Origin': origin } : {}), 'Access-Control-Allow-Headers': 'authorization, apikey, x-client-info, content-type', 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS', Vary: 'Origin' };
     if (origin && !allowed.includes(origin)) return Response.json({ error: 'Origin not allowed' }, { status: 403, headers: cors });
     if (original.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
@@ -99,6 +99,7 @@ export function serve(name: string, handler: (req: Request) => Promise<Response>
         if (!body || Array.isArray(body) || typeof body !== 'object') fail('Invalid request', 400);
       }
       const mode = accessMode(name, body.action, user?.role, internal);
+      if (mode === 'staff' && !internal && !['admin', 'super_user'].includes(user?.role)) fail('Administrator access required');
       if (mode === 'deny') fail(user ? 'Staff access required' : 'Please sign in', user ? 403 : 401);
       if (mode === 'form' || (mode === 'file' && name === 'platform-upload')) {
         const ip = original.headers.get('x-forwarded-for')?.split(',')[0] || original.headers.get('x-real-ip') || 'unknown';

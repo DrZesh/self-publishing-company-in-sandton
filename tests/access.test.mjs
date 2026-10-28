@@ -9,11 +9,22 @@ test('public document actions require the document authorization path',()=>{
  assert.equal(accessMode('eSignatureActions','submit_signature',null),'document');
  assert.equal(accessMode('portalMessages','send',null),'portal');
 });
-test('all employee roles can use staff workflows, client accounts cannot',()=>{
- for(const role of ['admin','super_user','standard_user']) assert.equal(accessMode('paymentActions','create',role),'staff');
+test('only administrators can run privileged workflows',()=>{
+ for(const role of ['admin','super_user']) assert.equal(accessMode('paymentActions','create',role),'staff');
  assert.equal(accessMode('paymentActions','create','client'),'deny');
+ assert.equal(accessMode('paymentActions','create','standard_user'),'deny');
+ assert.equal(accessMode('clientPortalData','list_projects_with_messages','client'),'deny');
+ assert.equal(accessMode('contractSignature','admin_sign','standard_user'),'deny');
 });
 test('return URLs cannot redirect visitors to an outside domain',()=>{
  assert.equal(safeRedirect('https://outside.test/steal','https://creativebooks.co.za'),'/');
  assert.equal(safeRedirect('/my-portal?tab=files','https://creativebooks.co.za'),'/my-portal?tab=files');
+});
+
+test('invoice confirmation and portal credential creation require an administrator',()=>{
+ for(const name of ['adminConfirmWorkflow','autoCreatePortalAccess']) {
+  for(const role of [null,'client','standard_user']) assert.equal(accessMode(name,undefined,role),'deny');
+  for(const role of ['admin','super_user']) assert.equal(accessMode(name,undefined,role),'staff');
+  assert.equal(accessMode(name,undefined,null,true),'staff');
+ }
 });
