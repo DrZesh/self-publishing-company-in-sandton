@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -157,7 +158,7 @@ export default function SalesPipelineTab({ onProjectCreated }) {
     const firstStage = workflow?.[0] || { key: 'project_started', label: 'Project Started' };
 
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       const project = await base44.entities.ClientServiceProject.create({
         client_name: deal.client_name,
         client_email: deal.client_email || '',

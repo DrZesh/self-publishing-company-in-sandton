@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
@@ -48,7 +49,7 @@ export default function AdminContractPrepare() {
 
   useEffect(() => {
     const load = async () => {
-      const user = await base44.auth.me().catch(() => null);
+      const user = await getCurrentUser().catch(() => null);
       if (user) setAdminName(user.full_name || user.email || '');
 
       const reqs = await base44.entities.ESignatureRequest.filter({ id });

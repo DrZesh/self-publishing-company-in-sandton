@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const FROM_EMAIL = 'Creative Books SA <info@creativebooks.co.za>';
@@ -130,7 +131,7 @@ Deno.serve(async (req) => {
 
     // ── SEND FOR SIGNATURE ──────────────────────────────────────────────────
     if (action === 'send') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { contract_id } = body;
@@ -174,7 +175,7 @@ Deno.serve(async (req) => {
 
     // ── RESEND SIGNING LINK ─────────────────────────────────────────────────
     if (action === 'resend') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { contract_id } = body;
@@ -409,7 +410,7 @@ Deno.serve(async (req) => {
 
     // ── ADMIN SIGN (authenticated) ───────────────────────────────────────────────
     if (action === 'admin_sign') {
-      const user = await base44.auth.me();
+      const user = await requireAdmin(req);
       if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
       const { contract_id, admin_signature_url, contract_field_values, admin_signer_name } = body;
@@ -464,6 +465,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('contractSignature error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }

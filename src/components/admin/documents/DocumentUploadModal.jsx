@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -78,7 +79,7 @@ export default function DocumentUploadModal({ contacts, document, onClose, onSav
 
     if (!file_url && !document) { setSaving(false); return; }
 
-    const data = { ...form, file_url, file_name, file_type, file_size_kb, uploaded_by: (await base44.auth.me())?.email || '' };
+    const data = { ...form, file_url, file_name, file_type, file_size_kb, uploaded_by: (await getCurrentUser())?.email || '' };
     // Templates don't require contact_id
     if (form.is_template) delete data.contact_id;
 

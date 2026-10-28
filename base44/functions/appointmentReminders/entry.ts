@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -78,14 +79,7 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow scheduled calls (no user auth) but verify admin if called manually
-    const isScheduled = req.headers.get('x-scheduled') === 'true';
-    if (!isScheduled) {
-      const user = await base44.auth.me();
-      if (!user || user.role !== 'admin') {
-        return Response.json({ error: 'Forbidden' }, { status: 403 });
-      }
-    }
+    await requireAdmin(req, { allowScheduled: true });
 
     const nowMs = Date.now();
     const h24 = 24 * 60 * 60 * 1000;
@@ -122,6 +116,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ success: true, sent_24h: sent24, sent_1h: sent1 });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

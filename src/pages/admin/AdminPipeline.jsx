@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth-service';
 import { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -806,7 +807,7 @@ export default function AdminPipeline() {
   };
 
   const load = useCallback(async () => {
-    const [, all] = await Promise.all([base44.auth.me(), base44.entities.Contact.list('-updated_date', 500)]);
+    const [, all] = await Promise.all([getCurrentUser(), base44.entities.Contact.list('-updated_date', 500)]);
     setContacts(all);
     setLoading(false);
   }, []);

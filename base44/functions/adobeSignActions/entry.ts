@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const CLIENT_ID     = Deno.env.get('ADOBE_SIGN_CLIENT_ID');
@@ -50,7 +51,7 @@ async function uploadTransientDoc(accessToken, fileUrl, filename) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const user = await requireAdmin(req);
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -210,6 +211,7 @@ Deno.serve(async (req) => {
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('Adobe Sign error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }

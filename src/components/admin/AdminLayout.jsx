@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import AdminSidebar from './AdminSidebar';
@@ -7,6 +8,8 @@ import CommandPalette from './CommandPalette';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
 
 export default function AdminLayout({ children }) {
+  const { logout } = useAuth();
+  const [logoutError, setLogoutError] = useState('');
   // Prevent admin pages from being indexed by search engines
   useEffect(() => {
     let meta = document.querySelector('meta[name="robots"]');
@@ -94,10 +97,8 @@ export default function AdminLayout({ children }) {
     return unsubscribe;
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminRememberMe');
-    localStorage.removeItem('adminEmail');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    try { await logout(); } catch { setLogoutError('Could not sign out. Please try again.'); }
   };
 
   const currentTime = new Date().toLocaleTimeString('en-ZA', {
@@ -167,6 +168,7 @@ export default function AdminLayout({ children }) {
               title="Logout"
             >
               <LogOut className="w-5 h-5" />
+              {logoutError && <span role="alert">{logoutError}</span>}
             </button>
           </div>
         </div>

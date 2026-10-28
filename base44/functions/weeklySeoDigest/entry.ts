@@ -1,3 +1,4 @@
+import { requireAdmin, AuthError } from './supabase-auth.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const SITE_URL = 'sc-domain:creativebooks.co.za';
@@ -7,11 +8,7 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow both scheduled (service role) and manual admin invocation
-    const user = await base44.auth.me().catch(() => null);
-    if (user && user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    await requireAdmin(req, { allowScheduled: true });
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('google_search_console');
 
@@ -139,6 +136,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ success: true, period: `${startDate} to ${endDate}`, topQueries: topQueries.length });
   } catch (error) {
+    if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

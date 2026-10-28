@@ -1,0 +1,4 @@
+{
+  "name": "supabaseAdminGateway",
+  "entry": "entry.ts"
+}
