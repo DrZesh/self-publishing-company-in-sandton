@@ -139,7 +139,7 @@ serve('captureFormSubmission', async (req) => {
       // Continue without contact linking
     }
 
-    // For calculator submissions, auto-create lead and send WhatsApp
+    // For calculator submissions, auto-create a lead without external notifications
     let leadId = null;
     if (formType === 'calculator_estimate') {
       try {
@@ -167,27 +167,6 @@ serve('captureFormSubmission', async (req) => {
           lead_id: leadId,
           status: 'converted_to_lead',
         });
-        
-        // Send WhatsApp notification to admin
-        try {
-          const waNumber = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
-          const apiKey = Deno.env.get('CALLMEBOT_API_KEY');
-          if (waNumber && apiKey) {
-            const waMessage = `🔔 NEW CALCULATOR LEAD\n\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone || 'N/A'}\nEstimate: R${estimatedValue.toLocaleString()}\nProject: ${additionalFields.chosenPath || 'Custom'}\n\nContact ASAP!`;
-            
-            await fetch('https://api.callmebot.com/whatsapp.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                apikey: apiKey,
-                phone: waNumber,
-                text: waMessage,
-              }),
-            }).catch(waErr => console.error('WhatsApp notification failed:', waErr.message));
-          }
-        } catch (waErr) {
-          console.error('WhatsApp setup error:', waErr.message);
-        }
         
         console.log(`Calculator lead created: ${leadId}, estimate: R${estimatedValue.toLocaleString()}`);
       } catch (leadErr) {

@@ -15,16 +15,16 @@ export default function SuccessState({ data, onReset }) {
           <CheckCircle2 className="w-10 h-10 text-white" />
         </motion.div>
 
-        <h2 className="font-heading text-3xl font-bold text-[#1A1208] mb-3">Quote sent, {firstName}!</h2>
+        <h2 className="font-heading text-3xl font-bold text-[#1A1208] mb-3">Enquiry saved, {firstName}!</h2>
 
         <p className="text-[#2C2C2C]/60 mb-2">
-          ✓ Check your inbox — quote sent to <strong className="text-copper">{clientInfo?.email}</strong>.
+          Your estimate details have been saved for our team to review.
         </p>
         <p className="text-[#2C2C2C]/60 mb-2">
-          ✓ Your project has been added to our pipeline.
+          Your request is awaiting review.
         </p>
         <p className="text-[#2C2C2C]/50 text-sm mb-8">
-          Our team will review your estimate and contact you within 24 hours.
+          Please call 084 230 5393 if you need to follow up.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

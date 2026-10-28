@@ -66,3 +66,12 @@ test('private file capabilities and rate controls are inaccessible to clients',a
 test('no table in the application schema lacks RLS',async () => {
  const result=await db.query(`select count(*)::int count from pg_tables where schemaname='public' and not rowsecurity`);assert.equal(result.rows[0].count,0);
 });
+
+test('public form rate limiting counts requests and rejects the excess',async () => {
+ await as('service_role',null,async () => {
+  for(const expected of [true,true,false]) {
+   const result=await db.query(`select public.cb_rate_limit('save-only-regression',2) allowed`);
+   assert.equal(result.rows[0].allowed,expected);
+  }
+ });
+});

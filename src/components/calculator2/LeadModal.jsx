@@ -32,9 +32,8 @@ export default function LeadModal({ mode, answers, pricing, inclVat, onClose, on
     try {
       const quoteRef = `CB-EST-${new Date().toISOString().slice(0,10)}-${String(Math.floor(1000+Math.random()*9000))}`;
       
-      // Step 1: Capture lead in database (guaranteed) - this auto-creates lead and sends WhatsApp
-      try {
-        await platform.functions.invoke('captureFormSubmission', {
+      // Save the calculator enquiry without external notifications.
+      await platform.functions.invoke('captureFormSubmission', {
           formType: 'calculator_estimate',
           fullName: form.name,
           email: form.email,
@@ -59,31 +58,7 @@ export default function LeadModal({ mode, answers, pricing, inclVat, onClose, on
             words: answers.words,
           },
         });
-      } catch (captureErr) {
-        console.error('Lead capture failed, but continuing with email:', captureErr);
-        // Continue even if capture fails - don't block user experience
-      }
-      
-      // Step 2: Send email notification (best effort)
-      try {
-        await platform.functions.invoke('sendEstimateNotification', {
-          clientInfo: form,
-          breakdown: pricing.lines,
-          total,
-          quoteNumber: quoteRef,
-          answers,
-          chosenPath: answers.chosenPath || pricing.recommendation,
-          pathA: pricing.pathA,
-          pathATotal: pricing.pathATotal,
-          pathBTotal: pricing.pathBTotal,
-          mode,
-        });
-      } catch (emailErr) {
-        console.error('Email notification failed:', emailErr);
-        // Email failed but lead was captured, still consider it a success
-      }
-      
-      platform.analytics.track({ eventName: mode === 'email' ? 'quote_emailed' : 'pdf_downloaded', properties: { total, chosenPath: answers.chosenPath || pricing.recommendation } });
+      platform.analytics.track({ eventName: mode === 'email' ? 'enquiry_saved' : 'pdf_downloaded', properties: { total, chosenPath: answers.chosenPath || pricing.recommendation } });
       onSuccess(form);
     } catch (e) {
       console.error('LeadModal submit error:', e);
@@ -117,10 +92,10 @@ export default function LeadModal({ mode, answers, pricing, inclVat, onClose, on
         <div className="bg-[#0A0806] px-6 py-5 rounded-t-2xl flex items-start justify-between">
           <div>
             <div className="text-white font-heading text-lg font-bold">
-              {mode === 'email' ? '📧 Email This Quote' : '📥 Download as PDF'}
+              {mode === 'email' ? 'Save My Enquiry' : '📥 Download as PDF'}
             </div>
             <div className="text-white/50 text-sm mt-0.5">
-              {mode === 'email' ? "We'll email a branded PDF copy to your inbox." : "Enter your details to generate your PDF."}
+              {mode === 'email' ? "Save your estimate details for our team to review." : "Enter your details to generate your PDF."}
             </div>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all flex-shrink-0 mt-0.5">
@@ -172,7 +147,7 @@ export default function LeadModal({ mode, answers, pricing, inclVat, onClose, on
 
           <button onClick={submit} disabled={loading}
             className="w-full py-4 bg-copper text-white rounded-full font-bold text-base disabled:opacity-50 hover:bg-copper/90 transition-all flex items-center justify-center gap-2 shadow-lg">
-            {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</> : mode === 'email' ? '📧 Send My Quote' : '📥 Generate & Download PDF'}
+            {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</> : mode === 'email' ? 'Save My Enquiry' : '📥 Generate & Download PDF'}
           </button>
 
           <p className="text-xs text-center text-black/30">We respect your privacy. No spam, ever. Unsubscribe anytime.</p>
