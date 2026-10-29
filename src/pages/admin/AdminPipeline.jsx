@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+import PublishingPipelineBoard from '@/components/admin/pipeline/PublishingPipelineBoard';
 import React, { useState, useCallback, useEffect } from 'react';
 import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -229,7 +231,7 @@ function DealCard({ contact, isTop, onMove, onSelect }) {
   );
 }
 
-export default function AdminPipeline() {
+function LegacyPipeline({ switcher }) {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -333,6 +335,7 @@ export default function AdminPipeline() {
     <AdminLayout>
       <div style={{ minHeight: '100%', margin: '-24px -24px -24px', padding: '0 0 32px', background: 'linear-gradient(135deg, #F4F5F7 0%, #FFFFFF 100%)', position: 'relative' }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
+          <div className="px-5 pt-4">{switcher}</div>
           {/* Header */}
           <div style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
@@ -647,4 +650,22 @@ export default function AdminPipeline() {
       `}</style>
     </AdminLayout>
   );
+}
+
+export default function AdminPipeline() {
+  const [params, setParams] = useSearchParams();
+  const legacy = params.get('board') === 'legacy';
+  function choose(mode) {
+    setParams(current => {
+      const next = new URLSearchParams(current);
+      if (mode === 'legacy') next.set('board', 'legacy'); else next.delete('board');
+      return next;
+    });
+  }
+  const switcher = <nav aria-label="Pipeline boards" className="mb-6 flex flex-wrap gap-2">
+    <button type="button" aria-current={!legacy ? 'page' : undefined} onClick={()=>choose('publishing')} className={`rounded-lg px-4 py-2 text-sm font-semibold ${!legacy ? 'bg-[#9a6030] text-white' : 'border border-slate-300 bg-white text-slate-700'}`}>Creative Books Pipeline</button>
+    <button type="button" aria-current={legacy ? 'page' : undefined} onClick={()=>choose('legacy')} className={`rounded-lg px-4 py-2 text-sm font-semibold ${legacy ? 'bg-[#9a6030] text-white' : 'border border-slate-300 bg-white text-slate-700'}`}>Existing sales pipeline</button>
+  </nav>;
+  if (legacy) return <LegacyPipeline switcher={switcher}/>;
+  return <AdminLayout>{switcher}<PublishingPipelineBoard/></AdminLayout>;
 }
