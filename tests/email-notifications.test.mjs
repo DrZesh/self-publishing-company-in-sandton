@@ -9,7 +9,7 @@ function fixture() {
 }
 test('notification destinations are fixed and receipts exclude submitted content', () => {
  const messages = notificationMessages('enquiry', { id: 'id', email: 'client@example.test', full_name: 'Name', message: 'https://untrusted.invalid' });
- assert.equal(messages[0].to, 'info@creativebooks.co.za');
+ assert.deepEqual(messages[0].to, ['info@creativebooks.co.za', 'draubreyzesh@gmail.com']);
  assert.equal(messages[1].to, 'client@example.test');
  assert.equal(messages[0].from, 'Creative Books SA <info@creativebooks.co.za>');
  assert.ok(!messages[1].text.includes('https://untrusted.invalid'));
@@ -26,6 +26,8 @@ test('successful sends are persisted and retries do not send again', async () =>
  const options = { getEnv: () => 'test-key', transport: async (url, req) => { calls.push({ url, req }); return Response.json({ id: `email-${calls.length}` }); } };
  assert.deepEqual(await sendRecordEmails(f.platform, 'enquiry', f.row.id, options), { status: 'accepted' });
  assert.equal(calls.length, 2);
+ assert.deepEqual(JSON.parse(calls[0].req.body).to, ['info@creativebooks.co.za', 'draubreyzesh@gmail.com']);
+ assert.equal(JSON.parse(calls[1].req.body).to, 'submitter@example.test');
  assert.ok(calls.every(c => c.url === 'https://api.resend.com/emails'));
  assert.equal(calls[0].req.headers['Idempotency-Key'], 'cbsa-enquiry-record-123-business');
  assert.equal(f.row.email_delivery.business.status, 'accepted');
@@ -45,6 +47,8 @@ test('provider failures are recorded without losing the saved enquiry', async ()
 test('booking receipts do not confirm an appointment', () => {
  const messages = notificationMessages('booking', { id: 'appointment-1', client_email: 'client@example.test', service_name: 'Consultation', date: '2026-11-10', start_time: '10:00', status: 'pending' });
  assert.ok(messages[1].text.includes('not an appointment confirmation'));
+ assert.equal(messages[0].to, 'info@creativebooks.co.za');
+ assert.equal(messages[1].reply_to, 'info@creativebooks.co.za');
 });
 
 test('branded HTML escapes submitted fields and keeps customer receipts free of enquiry content', () => {
