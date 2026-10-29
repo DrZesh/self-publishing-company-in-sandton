@@ -15,7 +15,7 @@ export default function ProductionCard({project,catalogue}){
    <ErrorNote error={error}/>
    <div className="cb-help">Select the services included in this project. Completed stages are preserved.</div>
    <fieldset disabled={busy||project.status==='closed'} style={{border:0,padding:0,margin:'12px 0'}}><legend className="cb-label">Project services</legend>
-    {catalogue.map(s=><label key={s.key} className="cb-check" style={{margin:'8px 0'}}><input type="checkbox" checked={selected.includes(s.key)} onChange={e=>setSelected(e.target.checked?[...selected,s.key]:selected.filter(k=>k!==s.key))}/><span>{s.label}</span></label>)}
+    {catalogue.map(s=><label key={s.key} className="cb-check" style={{display:'flex',margin:'8px 0'}}><input type="checkbox" checked={selected.includes(s.key)} onChange={e=>setSelected(e.target.checked?[...selected,s.key]:selected.filter(k=>k!==s.key))}/><span>{s.label}</span></label>)}
    </fieldset>
    {different&&<button className="cb-btn primary" disabled={busy||!selected.length} onClick={()=>action(()=>api.configureProjectServices(project.id,selected,project.production_version),'Project services saved')}>Save project services</button>}
    <div className="cb-banner info" style={{margin:'14px 0'}}><span>{project.status==='on_hold'?'Waiting for the deposit to clear.':project.status==='complete'?`Production marked complete. ${current?'Current stage: '+current.label:'Final handover can still be tracked below.'}`:project.status==='closed'?'Project paid and closed.':`Current stage: ${current?.label||'Production checks complete'}`}</span></div>
