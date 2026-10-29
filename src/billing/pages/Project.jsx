@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import ProductionCard from './ProductionCard.jsx';
 import cfg from '../billing.config.js';
 import { api } from '../lib/store.js';
 import { buildDeal, firstName, fmtDate, money, num } from '../lib/rules.js';
@@ -28,7 +29,7 @@ export default function ProjectView() {
       } else if (project.status === 'complete' && !balancePaid) {
         banner = <div className="cb-banner info"><span className="tag">Complete</span><span>Project marked complete on {fmtDate(project.completed_at)}. Balance invoice <b>{balance?.number}</b> was created (T&amp;C 4.3).</span></div>;
         const reminder = mailto(d.client?.email, `Your balance invoice ${balance?.number}`, `Hi ${firstName(d.client)},\n\nGreat news: your project is complete. The balance of ${money(balance?.balance_due)} (invoice ${balance?.number}) is now due. We release your final files as soon as payment reflects.\n\nPay by EFT or cash deposit using ${balance?.number} as reference:\n${cfg.banks.map((b) => `${b.bank}: ${b.accountName}, ${b.accountNumber}`).join('\n')}\n\nKind regards,\n${cfg.company.name}`);
-        actions = <><button className="cb-btn primary" onClick={() => nav(to(`invoices/${balance.id}/pay`))}>Record Payment</button><a className="cb-btn" href={reminder}>Email balance invoice</a><button className="cb-btn" disabled title="Unlocks after the balance is paid">Release final files</button></>;
+        actions = <><button className="cb-btn primary" onClick={() => nav(to(`invoices/${balance.id}/pay`))}>Record Payment</button><button className="cb-btn" onClick={() => nav(to(`invoices/${balance.id}/send`))}>Email balance invoice</button><button className="cb-btn" disabled title="Unlocks after the balance is paid">Release final files</button></>;
         doc = balance && <DocSheet kind="invoice" deal={d} invoice={balance} compact />;
       } else if (project.status === 'complete' && balancePaid) {
         banner = <div className="cb-banner success"><span className="tag">Paid in full</span><span>Balance received. You can now release the final files and close the deal.</span></div>;
@@ -46,19 +47,7 @@ export default function ProjectView() {
           {banner}
           <div className="cb-cols side">
             <div className="cb-stack">
-              <Card title="Production">
-                <ul className="cb-tl">
-                  <li className={project.started_at ? 'ok' : ''}><b>Deposit cleared</b>{project.started_at ? ` · ${fmtDate(project.started_at)}` : ''}</li>
-                  {project.checklist.map((c, i) => {
-                    const locked = project.status === 'on_hold' || project.status === 'closed';
-                    return (
-                      <li key={c.label} className={c.done ? 'ok' : ''}>
-                        <label className="cb-check" style={{ fontSize: 12 }}><input type="checkbox" disabled={locked} checked={!!c.done} onChange={() => run(() => api.toggleChecklist(project.id, i))} /><b style={{ color: 'var(--ink)' }}>{c.label}</b></label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Card>
+              <ProductionCard key={project.id} project={project} catalogue={db.production_services || []} />
               <Card title="Money">
                 <SplitBar compact total={d.quote.total} depositState={deposit?.status === 'paid' ? 'paid' : 'due'} balanceState={balance ? (balancePaid ? 'paid' : 'due') : 'wait'} />
                 <div className="cb-sum" style={{ marginTop: 12 }}>
@@ -74,7 +63,7 @@ export default function ProjectView() {
           </div>
           {confirm && (
             <Modal title="Mark project complete?" onClose={() => setConfirm(false)} footer={<><button className="cb-btn ghost" onClick={() => setConfirm(false)}>Cancel</button><button className="cb-btn primary" onClick={async () => { setConfirm(false); await run(() => api.completeProject(project.id), 'Balance invoice created'); }}>Complete &amp; issue invoice</button></>}>
-              <div>This issues the balance tax invoice for <b>{money(d.quote.total - d.received)}</b> to {d.client?.display_name}. Final files stay locked until it is paid (T&amp;C 4.3).</div>
+              <div>This issues the balance invoice for <b>{money(d.quote.total - d.received)}</b> to {d.client?.display_name}. Final files stay locked until it is paid (T&amp;C 4.3).</div>
             </Modal>
           )}
         </Shell>

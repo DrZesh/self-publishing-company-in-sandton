@@ -14,7 +14,7 @@ await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_
  GRANT USAGE ON SCHEMA auth,cb_private,storage TO anon,authenticated,service_role;
  CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
  CREATE FUNCTION cb_private.is_staff() RETURNS boolean LANGUAGE sql STABLE AS $$ SELECT auth.uid()='${admin}'::uuid $$;
- CREATE TABLE public.contact(id text PRIMARY KEY,data jsonb);
+ CREATE TABLE public.contact(id text PRIMARY KEY,data jsonb); CREATE TABLE public.notification(id text PRIMARY KEY DEFAULT gen_random_uuid()::text,data jsonb);
  CREATE TABLE public.quote(id text PRIMARY KEY,data jsonb); CREATE TABLE public.invoice(id text PRIMARY KEY,data jsonb); CREATE TABLE public.payment(id text PRIMARY KEY,data jsonb);
  INSERT INTO public.contact VALUES ('legacy-24hex','{"full_name":"Existing client","email":"existing@example.test"}'),('missing-email','{"full_name":"No email"}');
  INSERT INTO public.quote VALUES ('oldquote','{"quote_number":"Quote-001061","total":123}');
@@ -24,6 +24,7 @@ await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_
  CREATE TABLE storage.objects(id uuid DEFAULT gen_random_uuid(),bucket_id text,name text); ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;`);
 await db.exec(await readFile(new URL('../supabase/migrations/20261029202832_quote_to_cash_replacement.sql',import.meta.url),'utf8'));
 await db.exec(await readFile(new URL('../supabase/migrations/20261029210405_billing_document_delivery.sql',import.meta.url),'utf8'));
+const workflowSql=await readFile(new URL('../supabase/migrations/20261029212706_billing_workflow_notifications.sql',import.meta.url),'utf8');await db.exec(workflowSql.split('-- INFRASTRUCTURE:')[0]+'COMMIT;');
 equal((await db.query('SELECT count(*)::int n FROM cb_clients')).rows[0].n,1);
 equal((await db.query('SELECT next FROM cb_counters WHERE key=\'invoice\'')).rows[0].next,3105);
 const cid=(await db.query('SELECT id FROM cb_clients')).rows[0].id;
@@ -36,6 +37,15 @@ await role('authenticated',admin);await rpc('cb_mark_sent',{p_quote_id:qid});
 await role('anon');const view=await rpc('cb_portal_quote',{p_token:token});equal(view.quote.status,'viewed');
 const accepted=await rpc('cb_accept_quote',{p_token:token,p_name:'Local test only',p_signature:'data:image/png;base64,aGVsbG8='});
 await fails(rpc('cb_accept_quote',{p_token:token,p_name:'Local test only',p_signature:'data:image/png;base64,aGVsbG8='}));
+await db.exec('RESET ROLE');equal((await db.query("SELECT count(*)::int n FROM cb_workflow_notifications WHERE kind='acceptance_admin'")).rows[0].n,1);equal((await db.query('SELECT count(*)::int n FROM notification')).rows[0].n,1);
+await role('authenticated',admin);
+equal((await db.query('SELECT services FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].services,['editing']);
+await fails(rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'editing:0',p_complete:true,p_version:0}));
+await rpc('cb_configure_project_services',{p_id:accepted.project_id,p_services:['editing','typesetting','cover','printing'],p_version:0});
+equal((await db.query('SELECT jsonb_array_length(checklist)::int n FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].n,26);
+await fails(rpc('cb_configure_project_services',{p_id:accepted.project_id,p_services:['editing'],p_version:0}));
+await role('anon');
+
 await fails(db.query('SELECT * FROM cb_quotes'));await fails(db.query('SELECT cb_billing_private.cb__apply_gates($1)',[accepted.invoice_id]));
 await role('authenticated',client);equal((await db.query('SELECT * FROM cb_quotes')).rows.length,0);await fails(rpc('cb_mark_sent',{p_quote_id:qid}));
 await role('authenticated',admin);equal((await db.query('SELECT total::float8 total FROM cb_invoices WHERE id=$1',[accepted.invoice_id])).rows[0].total,750);
@@ -63,10 +73,21 @@ await fails(rpc('cb_record_payment',{p_payment:{invoice_id:accepted.invoice_id,a
 const pay=await rpc('cb_record_payment',{p_payment:{invoice_id:accepted.invoice_id,amount:750,method:'eft',proof_url:'storage:verification/proof.pdf',funds_cleared:false}});
 equal((await db.query('SELECT status FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].status,'on_hold');
 await rpc('cb_clear_payment',{p_payment_id:pay.id});equal((await db.query('SELECT status FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].status,'in_production');
+await rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'editing:0',p_complete:true,p_version:1});
+equal((await db.query('SELECT current_stage FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].current_stage,'editing:1');
+const countBefore=(await db.query('SELECT count(*)::int n FROM cb_workflow_notifications')).rows[0].n;
+await rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'editing:0',p_complete:true,p_version:2});
+equal((await db.query('SELECT count(*)::int n FROM cb_workflow_notifications')).rows[0].n,countBefore);
+await fails(rpc('cb_configure_project_services',{p_id:accepted.project_id,p_services:['printing'],p_version:2}));
+await rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'cover:0',p_complete:null,p_version:2});
+equal((await db.query('SELECT current_stage FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].current_stage,'cover:0');
+await role('authenticated',client);await fails(rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'printing:0',p_complete:null,p_version:3}));equal((await db.query('SELECT * FROM cb_workflow_notifications')).rows.length,0);await fails(rpc('cb_claim_workflow_notifications',{}));await role('authenticated',admin);
+
 const bid=await rpc('cb_complete_project',{p_project_id:accepted.project_id});equal((await db.query('SELECT total::float8 total FROM cb_invoices WHERE id=$1',[bid])).rows[0].total,250);
+await fails(rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'printing:4',p_complete:true,p_version:3}));
 await fails(rpc('cb_release_files',{p_project_id:accepted.project_id}));
 const bp=await rpc('cb_record_payment',{p_payment:{invoice_id:bid,amount:250,method:'eft',proof_url:'storage:verification/proof.pdf',funds_cleared:false}});
-await fails(rpc('cb_release_files',{p_project_id:accepted.project_id}));await rpc('cb_clear_payment',{p_payment_id:bp.id});await rpc('cb_release_files',{p_project_id:accepted.project_id});
+await fails(rpc('cb_release_files',{p_project_id:accepted.project_id}));await rpc('cb_clear_payment',{p_payment_id:bp.id});await rpc('cb_set_production_stage',{p_id:accepted.project_id,p_key:'printing:4',p_complete:true,p_version:3});await rpc('cb_release_files',{p_project_id:accepted.project_id});
 equal((await db.query('SELECT status FROM cb_projects WHERE id=$1',[accepted.project_id])).rows[0].status,'closed');
 await fails(rpc('cb_save_quote',{p_quote:{client_id:cid},p_items:[{name:'Invalid',qty:1,rate:10,discount:20}]}));
 await fails(rpc('cb_save_quote',{p_quote:{client_id:cid},p_items:[{name:'',qty:1,rate:10}]}));
