@@ -141,7 +141,7 @@ export function FilePick({ value, onPicked, accept = 'application/pdf,image/*', 
 /* ================= app shell ================= */
 const NAV = [['', 'Deals'], ['clients', 'Clients'], ['quotes', 'Quotes'], ['invoices', 'Invoices'], ['payments', 'Payments Received'], ['projects', 'Projects']];
 export function Shell({ children, stage, actions, enabled = false }) {
-  if (!enabled) return <div className="cb-screen"><nav className="cb-tabs" aria-label="Billing sections">{NAV.map(([p,label])=><NavLink key={p} end={p===''} to={to(p)}>{label}</NavLink>)}</nav>{stage ? <StageBar stage={stage} /> : null}<div className="cb-main full">{children}</div>{actions}</div>;
+  if (!enabled) return <div className="cb-screen"><nav className="cb-tabs" aria-label="Billing sections">{NAV.map(([p,label])=><NavLink key={p} end={p===''} to={to(p)}>{label}</NavLink>)}</nav>{stage ? <StageBar stage={stage} /> : null}{actions}<div className="cb-main full">{children}</div></div>;
   return (
     <div className="cb-screen" style={{ borderRadius: 0, border: 0, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header className="cb-topbar">
@@ -164,7 +164,7 @@ export function Shell({ children, stage, actions, enabled = false }) {
     </div>
   );
 }
-export const ActionBar = ({ children, note }) => <div className="cb-actions" style={{ position: 'sticky', bottom: 0, zIndex: 5 }}>{children}{note && <span className="right">{note}</span>}</div>;
+export const ActionBar = ({ children, note }) => <div className="cb-actions" role="toolbar" aria-label="Document actions">{children}{note && <span className="right">{note}</span>}</div>;
 
 export function PageHead({ crumb, title, right }) {
   return <div className="cb-head"><div>{crumb && <div className="cb-crumb">{crumb}</div>}<h1 className="cb-title">{title}</h1></div>{right && <div className="right">{right}</div>}</div>;
@@ -230,6 +230,7 @@ export function DocSheet({ kind, deal, invoice, compact }) {
           {cfg.banks.map((b) => `${b.bank} · ${b.accountName} · ${b.accountNumber}`).join('  |  ')}<br />
           {invoice.type === 'deposit' ? 'No work will start until this deposit reflects as cleared (4.2).' : 'Final files and delivery are released once this balance and proof of payment are received (4.3).'}
         </div>
+        <h4>Terms &amp; Conditions</h4><div className="small" style={{whiteSpace:'pre-wrap'}}>{invoice.terms ?? cfg.termsSummary.join('\n')}</div>
       </>
     );
   } else {

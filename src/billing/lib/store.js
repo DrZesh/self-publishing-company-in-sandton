@@ -27,6 +27,13 @@ export const api={
  portalAccept:(token,name,image)=>rpc('cb_accept_quote',{p_token:token,p_name:name,p_signature:image}),
  portalDecline:(token,reason)=>rpc('cb_decline_quote',{p_token:token,p_reason:reason}),
  portalRequestChanges:(token,message)=>rpc('cb_request_changes',{p_token:token,p_message:message}),
+ saveDocumentSettings:(kind,id,terms,attachments,version)=>rpc('cb_save_document_settings',{p_kind:kind,p_id:id,p_terms:terms,p_attachments:attachments,p_version:version}),
+ async documentAction(body){const {data,error}=await client().functions.invoke('billingDocumentEmail',{body});if(error){let message=error.message;try{const detail=await error.context.json();message=detail.error||message;}catch{}throw new Error(message);}if(data?.error)throw new Error(data.error);return data;},
+ async uploadAttachment(file){
+  const types=['application/pdf','image/png','image/jpeg','text/plain','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+  if(!types.includes(file.type))throw new Error('Use PDF, Word, PNG, JPEG or plain text.');if(file.size>5*1024*1024)throw new Error('Each supporting document must be 5 MB or smaller.');
+  const path=`${crypto.randomUUID()}/${file.name.replace(/[^\w.-]+/g,'_')}`;const {error}=await client().storage.from('cb-billing-attachments').upload(path,file,{contentType:file.type});if(error)throw new Error(error.message);return {path,name:file.name,size:file.size,type:file.type};
+ },
  recordPayment:p=>rpc('cb_record_payment',{p_payment:p}),
  clearPayment:id=>rpc('cb_clear_payment',{p_payment_id:id}),
  toggleChecklist:(id,index)=>rpc('cb_toggle_checklist',{p_project_id:id,p_index:index}),
