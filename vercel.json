@@ -7,5 +7,17 @@
       "source": "/((?!assets/|.*\\.[^/]+$).*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/isbn",
+      "destination": "/how-to-get-an-isbn-in-south-africa",
+      "permanent": true
+    },
+    {
+      "source": "/isbnregistration",
+      "destination": "/how-to-get-an-isbn-in-south-africa",
+      "permanent": true
+    }
   ]
 }

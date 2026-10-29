@@ -74,7 +74,7 @@ const footerSilos = [
       { label: 'Best Book Size Guide', path: '/bestbooksizeforselfpublishing' },
       { label: 'A5 vs 6×9', path: '/a5vs6x9bookprinting' },
       { label: 'Hardcover vs Paperback', path: '/hardcovervspaperbackprinting' },
-      { label: 'ISBN Registration', path: '/isbn' },
+      { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
       { label: 'ISBN Barcode Generator', path: '/barcode-generator' },
       { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Blog', path: '/blog' },

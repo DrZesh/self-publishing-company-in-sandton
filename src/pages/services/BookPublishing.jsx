@@ -104,7 +104,7 @@ export default function BookPublishing() {
         { label: 'Book Editing', path: '/book-editing' },
         { label: 'Cover Design', path: '/book-cover-design' },
         { label: 'eBook Publishing', path: '/ebook-publishing' },
-        { label: 'ISBN Registration', path: '/isbn' },
+        { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Ready to Publish Your Book?"

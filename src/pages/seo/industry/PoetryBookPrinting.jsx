@@ -54,7 +54,7 @@ export default function PoetryBookPrinting() {
           { label: 'A5 Book Printing', path: '/printing/a5' },
           { label: 'Book Cover Design', path: '/book-cover-design' },
           { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Print Your Poetry Collection"

@@ -117,7 +117,7 @@ export default function ResourcePage({ resourceKey }) {
           { label: 'Book Editing', path: '/book-editing' },
           { label: 'Cover Design', path: '/book-cover-design' },
           { label: 'Publishing Guide', path: '/publishingguide' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'Blog', path: '/blog' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

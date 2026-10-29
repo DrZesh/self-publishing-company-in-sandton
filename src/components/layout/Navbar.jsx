@@ -57,7 +57,7 @@ const navItems = [
       { label: 'Cover Size Calculator', path: '/resources/CoverSizeCalculator' },
       { label: 'ISBN Barcode Generator', path: '/barcode-generator' },
       { label: 'Documents', path: '/resources/documents' },
-      { label: 'ISBN Registration', path: '/isbn' },
+      { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
       { label: 'Publishing Guide', path: '/publishingguide' },
       { label: 'Portfolio', path: '/portfolio' },
       { label: 'Blog', path: '/blog' },

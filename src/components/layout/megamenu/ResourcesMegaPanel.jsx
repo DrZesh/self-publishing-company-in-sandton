@@ -28,7 +28,7 @@ export default function ResourcesMegaPanel() {
             </Link>
           </li>
           <li>
-            <Link to="/isbn" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
+            <Link to="/how-to-get-an-isbn-in-south-africa" className="text-[#2C2C2C] text-sm font-medium hover:text-copper transition-colors">
               ISBN Registration Guide
             </Link>
           </li>

@@ -123,7 +123,7 @@ export default function HowToPrintABook() {
         { label: 'Book Printing Costs', path: '/howmuchdoesbookprintingcost' },
         { label: 'A5 vs 6×9 Comparison', path: '/a5vs6x9bookprinting' },
         { label: 'Typesetting Services', path: '/typesetting' },
-        { label: 'ISBN Registration', path: '/isbn' },
+        { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
         { label: 'Get a Quote', path: '/getquote' },
       ]}
       ctaTitle="Ready to Print Your Book?"

@@ -23,7 +23,7 @@ const article = {
   ],
   relatedLinks: [
     { label: 'Copyright FAQs for Authors', path: '/copyrightfaqsforauthors' },
-    { label: 'ISBN Registration', path: '/isbn' },
+    { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
     { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
     { label: 'Request a Quote', path: '/getquote' },
   ],

@@ -585,7 +585,7 @@ export default function CompletePublishingGuide() {
           { label: 'Cover Design', path: '/book-cover-design' },
           { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Ebook Publishing', path: '/ebook-publishing' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         light
