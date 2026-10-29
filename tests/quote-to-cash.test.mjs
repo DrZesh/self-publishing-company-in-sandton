@@ -23,6 +23,7 @@ await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_
  CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
  CREATE TABLE storage.objects(id uuid DEFAULT gen_random_uuid(),bucket_id text,name text); ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;`);
 await db.exec(await readFile(new URL('../supabase/migrations/20261029202832_quote_to_cash_replacement.sql',import.meta.url),'utf8'));
+await db.exec(await readFile(new URL('../supabase/migrations/20261029210405_billing_document_delivery.sql',import.meta.url),'utf8'));
 equal((await db.query('SELECT count(*)::int n FROM cb_clients')).rows[0].n,1);
 equal((await db.query('SELECT next FROM cb_counters WHERE key=\'invoice\'')).rows[0].next,3105);
 const cid=(await db.query('SELECT id FROM cb_clients')).rows[0].id;
@@ -39,6 +40,22 @@ await fails(db.query('SELECT * FROM cb_quotes'));await fails(db.query('SELECT cb
 await role('authenticated',client);equal((await db.query('SELECT * FROM cb_quotes')).rows.length,0);await fails(rpc('cb_mark_sent',{p_quote_id:qid}));
 await role('authenticated',admin);equal((await db.query('SELECT total::float8 total FROM cb_invoices WHERE id=$1',[accepted.invoice_id])).rows[0].total,750);
 await fails(db.query('UPDATE cb_invoices SET total=1'));
+await rpc('cb_save_document_settings',{p_kind:'invoice',p_id:accepted.invoice_id,p_terms:'Custom invoice terms',p_attachments:[],p_version:0});
+equal((await db.query('SELECT terms FROM cb_invoices WHERE id=$1',[accepted.invoice_id])).rows[0].terms,'Custom invoice terms');
+await fails(rpc('cb_save_document_settings',{p_kind:'invoice',p_id:accepted.invoice_id,p_terms:'Stale edit',p_attachments:[],p_version:0}));
+await fails(rpc('cb_save_document_settings',{p_kind:'invoice',p_id:accepted.invoice_id,p_terms:'Fine',p_attachments:[{name:'Missing.pdf',path:'missing/file.pdf',size:1}],p_version:1}));
+await fails(rpc('cb_finish_document_email',{p_id:qid,p_provider_id:'forged'}));
+await db.exec('RESET ROLE');
+const attempt='44444444-4444-4444-8444-444444444444';
+await db.query('INSERT INTO cb_document_emails(id,kind,document_id,quote_id,actor_id,payload_hash,payload) VALUES ($1,$2,$3,$3,$4,$5,$6)',[attempt,'quote',qid,admin,'synthetic','{}']);
+await role('service_role');await rpc('cb_finish_document_email',{p_id:attempt,p_provider_id:'synthetic-provider'});await rpc('cb_finish_document_email',{p_id:attempt,p_provider_id:'synthetic-provider'});
+equal((await db.query('SELECT status FROM cb_quotes WHERE id=$1',[qid])).rows[0].status,'accepted');
+equal((await db.query("SELECT count(*)::int n FROM cb_activity WHERE quote_id=$1 AND action='email_sent'",[qid])).rows[0].n,1);
+await role('authenticated',admin);
+
+await role('authenticated',client);await fails(rpc('cb_save_document_settings',{p_kind:'invoice',p_id:accepted.invoice_id,p_terms:'Forbidden',p_attachments:[],p_version:1}));
+equal((await db.query('SELECT * FROM cb_document_emails')).rows.length,0);await role('authenticated',admin);
+
 await fails(rpc('cb_record_payment',{p_payment:{invoice_id:accepted.invoice_id,amount:750,method:'eft',proof_url:'https://untrusted.invalid/proof.pdf'}}));
 await db.exec('RESET ROLE');await db.exec("INSERT INTO storage.objects(bucket_id,name) VALUES ('cb-proofs','verification/proof.pdf')");await role('authenticated',admin);
 await fails(rpc('cb_record_payment',{p_payment:{invoice_id:accepted.invoice_id,amount:751,method:'eft',proof_url:'storage:verification/proof.pdf'}}));

@@ -944,3 +944,8 @@ entrypoint = "./functions/workflowAutomation/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/zohoBooksIntegration/index.ts"
+
+[functions.billingDocumentEmail]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/billingDocumentEmail/index.ts"

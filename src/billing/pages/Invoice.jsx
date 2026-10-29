@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import cfg from '../billing.config.js';
 import { api } from '../lib/store.js';
 import { buildDeal, fmtDate, invoiceStatus, money, num, todayISO, firstName } from '../lib/rules.js';
+import { DocumentSettings, downloadDocument } from './SendDocument.jsx';
 import { ActionBar, Badge, Card, DocSheet, ErrorNote, Field, FilePick, Loading, PageHead, Shell, SplitBar, Timeline, mailto, to, useBilling } from '../components.jsx';
 
 function ProofLink({ url, name }) {
@@ -29,10 +30,11 @@ export function InvoiceView() {
       return (
         <Shell stage={d.status === 'closed' ? 9 : d.stage} actions={
           <ActionBar note={isDep && d.project?.status === 'on_hold' ? 'Project is ON HOLD until the deposit clears' : null}>
+            <button className="cb-btn primary" onClick={() => nav(to(`invoices/${id}/send`))}>Send Invoice</button>
             {inv.status !== 'paid' && <button className="cb-btn primary" onClick={() => nav(to(`invoices/${id}/pay`))}>Record Payment</button>}
             {inv.status !== 'paid' && <a className="cb-btn" href={reminder}>Open reminder draft</a>}
             {d.project && <button className={`cb-btn ${inv.status === 'paid' ? 'primary' : ''}`} onClick={() => nav(to(`projects/${d.project.id}`))}>Open project</button>}
-            <button className="cb-btn" onClick={() => window.print()}>PDF / Print</button>
+            <button className="cb-btn" onClick={() => downloadDocument('invoice',id).catch(e=>window.alert(e.message))}>Download PDF</button><button className="cb-btn" onClick={() => window.print()}>Print</button>
           </ActionBar>}>
           <PageHead crumb={<Link to={to('invoices')}>Invoices · {isDep ? 'Deposit' : 'Balance'}</Link>} title={inv.number} right={<Badge status={st} />} />
           {isDep && d.quote.accepted_at && <div className="cb-banner success"><span className="tag">Accepted</span><span><b>{d.quote.number}</b> {d.quote.signature?.method === 'portal' ? `signed by ${d.quote.signature.name}` : 'accepted'} on {fmtDate(d.quote.accepted_at)}. Deposit invoice <b>{inv.number}</b> created automatically (T&amp;C 4.1).</span><span className="right"><Link className="cb-btn sm" to={to(`quotes/${d.quote.id}`)}>View signed quote</Link></span></div>}
@@ -43,6 +45,7 @@ export function InvoiceView() {
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 16, alignItems: 'start' }} className="cb-cols-r">
             <div className="cb-canvas" style={{ borderRadius: 10, border: '1px solid var(--line)' }}><div style={{ maxWidth: 780, margin: '0 auto' }}><DocSheet kind="invoice" deal={d} invoice={inv} /></div></div>
             <div className="cb-stack">
+              <DocumentSettings key={inv.id} kind="invoice" document={inv} />
               <Card title="Payments">
                 {pays.length === 0 ? <div className="cb-help" style={{ margin: 0 }}>No payments yet.</div> : pays.map((p) => (
                   <div key={p.id} style={{ display: 'grid', gap: 2, padding: '6px 0', borderBottom: '1px solid var(--line)' }}>

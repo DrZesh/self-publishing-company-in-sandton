@@ -6,8 +6,9 @@ import { BillingProvider } from './components.jsx';
 import { DealsList, ClientsList, QuotesList, InvoicesList, PaymentsList, ProjectsList } from './pages/Lists.jsx';
 import ClientForm from './pages/ClientForm.jsx';
 import QuoteEditor from './pages/QuoteEditor.jsx';
-import { QuoteView, SendQuote } from './pages/Quote.jsx';
+import { QuoteView } from './pages/Quote.jsx';
 import { InvoiceView, RecordPayment } from './pages/Invoice.jsx';
+import { SendDocument } from './pages/SendDocument.jsx';
 import ProjectView from './pages/Project.jsx';
 
 export default function BillingApp() {
@@ -24,9 +25,10 @@ export default function BillingApp() {
           <Route path="quotes/new" element={<QuoteEditor />} />
           <Route path="quotes/:id" element={<QuoteView />} />
           <Route path="quotes/:id/edit" element={<QuoteEditor />} />
-          <Route path="quotes/:id/send" element={<SendQuote />} />
+          <Route path="quotes/:id/send" element={<SendDocument kind="quote" />} />
           <Route path="invoices" element={<InvoicesList />} />
           <Route path="invoices/:id" element={<InvoiceView />} />
+          <Route path="invoices/:id/send" element={<SendDocument kind="invoice" />} />
           <Route path="invoices/:id/pay" element={<RecordPayment />} />
           <Route path="payments" element={<PaymentsList />} />
           <Route path="projects" element={<ProjectsList />} />
