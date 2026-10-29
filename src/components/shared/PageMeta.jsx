@@ -1,3 +1,4 @@
+import { setStaticHead } from '@/lib/static-head';
 import { useEffect } from 'react';
 import { organizationSchema, websiteSchema } from '@/lib/seo/schemas';
 
@@ -11,6 +12,10 @@ export default function PageMeta({
   schema,
   noindex = false,
 }) {
+  // This isolated copy must stay out of search results until launch.
+  noindex = true;
+  canonical = canonical?.replace(/^https?:\/\/[^/]+/, 'https://creativebooks.co.za');
+  if (import.meta.env.SSR) setStaticHead({ title, description, keywords, canonical, ogImage, ogType, schema: { '@context': 'https://schema.org', '@graph': [organizationSchema, websiteSchema, ...(schema && schema['@graph'] ? schema['@graph'] : schema ? [schema] : [])] } });
   useEffect(() => {
     const siteUrl = 'https://creativebooks.co.za';
 

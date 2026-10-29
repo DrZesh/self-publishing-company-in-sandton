@@ -19,5 +19,8 @@
       "destination": "/how-to-get-an-isbn-in-south-africa",
       "permanent": true
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": false
+  }
 }

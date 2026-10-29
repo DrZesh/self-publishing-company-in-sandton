@@ -1,3 +1,4 @@
+import { StaticRouter } from 'react-router-dom/server';
 import ResetPassword from './pages/admin/ResetPassword';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -767,13 +768,15 @@ const AuthenticatedApp = () => {
   );
 };
 
-function App() {
+const SiteRouter = import.meta.env.SSR ? StaticRouter : Router;
+
+function App({ url = "/" }) {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
-        <Router>
+        <SiteRouter location={url}>
           <AuthenticatedApp />
-        </Router>
+        </SiteRouter>
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>

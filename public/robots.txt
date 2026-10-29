@@ -1,22 +1,2 @@
 User-agent: *
-Allow: /
-
-# Block admin, portal and transactional/utility routes from crawling
-Disallow: /admin/
-Disallow: /my-portal
-Disallow: /ClientPortal
-Disallow: /portal/
-Disallow: /walk-in
-Disallow: /sign/
-Disallow: /quote/view/
-Disallow: /invoice/view/
-Disallow: /doc/view/
-Disallow: /appointment/cancel/
-Disallow: /unsubscribe
-Disallow: /wp-admin/
-Disallow: /wp-content/
-Disallow: /wp-includes/
-
-# Do not block tracking parameters here — handled via canonical tags instead.
-
-Sitemap: https://creativebooks.co.za/sitemap.xml
+Disallow: /

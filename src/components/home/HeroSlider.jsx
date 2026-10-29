@@ -186,7 +186,7 @@ export default function HeroSlider({ locationData }) {
 
             {/* Heading */}
             <div className="mb-8">
-              {slide.id === 0 ? (
+              {slide.id === 0 || slide.id === 'location' ? (
                 <h1 className="font-heading font-bold text-white leading-[1.0]" style={headingStyle}>
                   {slide.heading.map((line, i) => (
                     <motion.span key={i} className="block"

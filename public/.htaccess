@@ -1,8 +1,14 @@
+Options -MultiViews
+DirectoryIndex index.html
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+  RewriteEngine On
+  RewriteRule ^isbn/?$ /how-to-get-an-isbn-in-south-africa/ [R=301,L]
+  RewriteRule ^isbnregistration/?$ /how-to-get-an-isbn-in-south-africa/ [R=301,L]
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  RewriteRule ^ index.html [L]
 </IfModule>

@@ -4,7 +4,7 @@ import { supabase, isSupabaseConfigured } from '@/api/supabaseClient';
 const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isLoadingAuth, setLoading] = useState(true);
+  const [isLoadingAuth, setLoading] = useState(!import.meta.env.SSR && isSupabaseConfigured);
   const checkUserAuth = async () => {
     try { setUser(await platform.auth.me()); } catch { setUser(null); } finally { setLoading(false); }
   };
