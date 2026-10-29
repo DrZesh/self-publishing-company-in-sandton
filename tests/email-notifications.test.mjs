@@ -46,3 +46,17 @@ test('booking receipts do not confirm an appointment', () => {
  const messages = notificationMessages('booking', { id: 'appointment-1', client_email: 'client@example.test', service_name: 'Consultation', date: '2026-11-10', start_time: '10:00', status: 'pending' });
  assert.ok(messages[1].text.includes('not an appointment confirmation'));
 });
+
+test('branded HTML escapes submitted fields and keeps customer receipts free of enquiry content', () => {
+ const record = { id: 'record-html', email: 'client@example.test', full_name: '<img src=x onerror=alert(1)>', message: '<script>private-message</script>', form_type: 'quote', additional_fields: { notes: '<a href="https://attacker.invalid">click</a>', bookSize:'A5' } };
+ const messages = notificationMessages('enquiry',record);
+ assert.ok(messages[0].html.includes('&lt;script&gt;private-message&lt;/script&gt;'));
+ assert.ok(!messages[0].html.includes('<script>'));
+ assert.ok(!messages[0].html.includes('<img src=x'));
+ assert.ok(messages[0].html.includes('https://creative-books-sa.vercel.app/admin/submissions'));
+ assert.ok(messages[0].html.includes('Book Size'));
+ assert.ok(!messages[1].html.includes('private-message'));
+ assert.ok(!messages[1].html.includes('attacker.invalid'));
+ assert.ok(messages[0].html.includes('linear-gradient'));
+ assert.ok(messages[0].text.includes('private-message'));
+});

@@ -188,6 +188,7 @@ export default function GetQuote() {
         bookPageCount: parseInt(data.numberOfPages),
         bookWordCount: parseInt(data.wordCount),
         additionalFields: {
+          address: [data.address, data.city, data.province, data.postalCode].filter(Boolean).join(', '),
           bookSize: data.bookSize,
           coverType: data.needCover === 'yes' ? data.coverType : null,
           printCopies: data.printCopies,

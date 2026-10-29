@@ -1,3 +1,4 @@
+import { brandedNotificationHtml } from './email-templates.js';
 const FROM = 'Creative Books SA <info@creativebooks.co.za>';
 const BUSINESS_EMAIL = 'info@creativebooks.co.za';
 const ENDPOINT = 'https://api.resend.com/emails';
@@ -11,9 +12,10 @@ export function notificationMessages(kind, record) {
   const details = booking
     ? `Name: ${text(record.client_name, 200)}\nEmail: ${recipient}\nPhone: ${text(record.client_phone, 100)}\nService: ${text(record.service_name, 200)}\nDate: ${text(record.date, 30)}\nTime: ${text(record.start_time, 30)}\nFormat: ${text(record.mode, 100)}\nNote: ${text(record.client_note, 8000)}\nStatus: pending review`
     : `Name: ${text(record.full_name, 200)}\nEmail: ${recipient}\nPhone: ${text(record.phone, 100)}\nForm: ${text(record.form_type, 100)}\nMessage: ${text(record.message, 8000)}\nServices: ${text(JSON.stringify(record.service_interest || []))}\nProject details: ${text(JSON.stringify({ book_title: record.book_title, book_genre: record.book_genre, book_page_count: record.book_page_count, book_word_count: record.book_word_count, additional_fields: record.additional_fields }), 16000)}`;
+  const html = brandedNotificationHtml(kind, record);
   return [
-    { audience: 'business', from: FROM, to: BUSINESS_EMAIL, reply_to: recipient, subject: booking ? 'New booking request | Creative Books SA' : 'New website enquiry | Creative Books SA', text: `A new ${booking ? 'booking request' : 'enquiry'} has been saved.\n\nReference: ${record.id}\n${details}` },
-    { audience: 'receipt', from: FROM, to: recipient, reply_to: BUSINESS_EMAIL, subject: booking ? 'Booking request received | Creative Books SA' : 'Enquiry received | Creative Books SA', text: booking
+    { audience: 'business', html: html.business, from: FROM, to: BUSINESS_EMAIL, reply_to: recipient, subject: booking ? 'New booking request | Creative Books SA' : 'New website enquiry | Creative Books SA', text: `A new ${booking ? 'booking request' : 'enquiry'} has been saved.\n\nReference: ${record.id}\n${details}` },
+    { audience: 'receipt', html: html.receipt, from: FROM, to: recipient, reply_to: BUSINESS_EMAIL, subject: booking ? 'Booking request received | Creative Books SA' : 'Enquiry received | Creative Books SA', text: booking
       ? `Thank you for your booking request. It has been saved for our team to review.\n\nThis is a receipt, not an appointment confirmation. Please call 084 230 5393 if you need to follow up.\n\nReference: ${record.id}\n\nCreative Books SA\ninfo@creativebooks.co.za`
       : `Thank you for contacting Creative Books SA. Your enquiry has been saved for our team to review.\n\nPlease call 084 230 5393 if you need to follow up.\n\nReference: ${record.id}\n\nCreative Books SA\ninfo@creativebooks.co.za` },
   ];
