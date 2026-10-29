@@ -555,7 +555,7 @@ serve('invoiceActions', async (req) => {
       const contactName = invoice.contact_snapshot?.full_name || 'there';
       const logoUrl = company.logo_url || LOGO_URL;
 
-      const invoiceViewUrl = `https://www.creativebooks.co.za/invoice/view/${invoice.id}/${invoice.view_token}`;
+      const invoiceViewUrl = `https://creative-books-sa.vercel.app/invoice/view/${invoice.id}/${invoice.view_token}`;
 
       const emailHtml = buildEmail({
         preheader: `Invoice ${invoice.invoice_number} from ${companyName}`,
@@ -624,7 +624,7 @@ serve('invoiceActions', async (req) => {
       const contactName = invoice.contact_snapshot?.full_name || 'there';
       const logoUrl = company.logo_url || LOGO_URL;
 
-      const invoiceViewUrl = `https://www.creativebooks.co.za/invoice/view/${invoice.id}/${invoice.view_token}`;
+      const invoiceViewUrl = `https://creative-books-sa.vercel.app/invoice/view/${invoice.id}/${invoice.view_token}`;
 
       const emailHtml = buildEmail({
         preheader: `Invoice ${invoice.invoice_number} from ${companyName}`,

@@ -661,7 +661,7 @@ serve('quoteActions', async (req) => {
     const { action } = body;
     const company = await getCompanySettings(platform);
     // Only fetch user for admin actions
-    const user = (action === 'create' || action === 'send' || action === 'generate_pdf' || action === 'duplicate' || action === 'convert_to_invoice') ? await platform.auth.me() : null;
+    const user = (action === 'load' || action === 'update' || action === 'create' || action === 'send' || action === 'generate_pdf' || action === 'duplicate' || action === 'convert_to_invoice') ? await platform.auth.me() : null;
 
     // GET PUBLIC (client view)
     if (action === 'get_public') {
@@ -757,12 +757,41 @@ serve('quoteActions', async (req) => {
       return Response.json({ success: true, quote: updatedQuote });
     }
 
+    // Staff editor actions used by AdminQuoteBuilder.
+    if (action === 'load' && user) {
+      const quote = (await platform.entities.Quote.filter({ id: body.quote_id }))[0];
+      if (!quote) return Response.json({ error: 'Quote not found' }, { status: 404 });
+      const line_items = await platform.entities.QuoteLineItem.filter({ quote_id: quote.id });
+      line_items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      return Response.json({ quote, line_items });
+    }
+
+    if (action === 'update' && user) {
+      const existing = (await platform.entities.Quote.filter({ id: body.quote_id }))[0];
+      if (!existing) return Response.json({ error: 'Quote not found' }, { status: 404 });
+      const items = body.line_items || [];
+      const vatRate = body.vat_rate ?? existing.vat_rate ?? company.default_vat_rate ?? 15;
+      const totals = calcTotals(items, body.discount_amount, body.discount_percentage, body.include_vat !== false, vatRate);
+      const contactId = body.contact_id || existing.contact_id;
+      const contact = (await platform.entities.Contact.filter({ id: contactId }))[0];
+      if (!contact) return Response.json({ error: 'Contact not found' }, { status: 400 });
+      const quote = await platform.entities.Quote.update(existing.id, {
+        ...totals, contact_id: contactId,
+        contact_snapshot: { full_name: contact.full_name, email: contact.email, phone: contact.phone, company: contact.company, billing_address: contact.billing_address },
+        valid_until: body.valid_until || existing.valid_until,
+        include_vat: body.include_vat !== false, vat_rate: vatRate,
+        notes: body.notes ?? existing.notes, terms: body.terms ?? existing.terms,
+      });
+      await saveLineItems(platform, quote.id, items);
+      return Response.json({ quote });
+    }
+
     // ADMIN: CREATE
     if (action === 'create' && user) {
       const { contact_id, contact_snapshot, valid_until, include_vat, vat_rate, discount_amount, discount_percentage, notes, terms, line_items, service_category } = body;
       const contactData = contact_id ? (await platform.asServiceRole.entities.Contact.filter({ id: contact_id }))[0] || {} : {};
       const quoteNumber = await getNextQuoteNumber(platform);
-      const totals = calcTotals(line_items || [], discount_amount, discount_percentage, include_vat, vat_rate || company.default_vat_rate);
+      const totals = calcTotals(line_items || [], discount_amount, discount_percentage, include_vat, vat_rate ?? company.default_vat_rate ?? 15);
       const expiryDate = valid_until || new Date(Date.now() + (company.quote_validity_days || 30) * 86400000).toISOString().split('T')[0];
 
       const quote = await platform.asServiceRole.entities.Quote.create({
@@ -779,7 +808,7 @@ serve('quoteActions', async (req) => {
         service_category: service_category || '',
         valid_until: expiryDate,
         include_vat: include_vat !== false,
-        vat_rate: vat_rate || company.default_vat_rate,
+        vat_rate: vat_rate ?? company.default_vat_rate ?? 15,
         discount_amount: totals.discount_amount,
         discount_percentage: totals.discount_percentage,
         subtotal: totals.subtotal,
@@ -817,7 +846,7 @@ serve('quoteActions', async (req) => {
       const pdfBase64 = btoa(binary);
 
       const contactName = quote.contact_snapshot?.full_name || 'there';
-      const viewUrl = `https://www.creativebooks.co.za/quote/view/${quote.id}/${quote.view_token}`;
+      const viewUrl = `https://creative-books-sa.vercel.app/quote/view/${quote.id}/${quote.view_token}`;
 
       const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
       const emailHtml = buildEmail({
@@ -908,7 +937,7 @@ serve('quoteActions', async (req) => {
 
       // Upload to temporary storage
       const uploadResp = await platform.asServiceRole.integrations.Core.UploadFile({
-        file: pdfBase64,
+        file: new Blob([pdfArrayBuffer], { type: 'application/pdf' }),
       });
 
       return Response.json({ pdf_url: uploadResp.file_url });
@@ -932,7 +961,7 @@ serve('quoteActions', async (req) => {
         service_category: src.service_category || '',
         valid_until: expiryDate,
         include_vat: src.include_vat !== false,
-        vat_rate: src.vat_rate || company.default_vat_rate,
+        vat_rate: src.vat_rate ?? company.default_vat_rate ?? 15,
         discount_amount: src.discount_amount || 0,
         discount_percentage: src.discount_percentage || 0,
         subtotal: src.subtotal || 0,
