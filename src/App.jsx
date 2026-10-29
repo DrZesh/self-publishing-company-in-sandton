@@ -1,3 +1,5 @@
+import AdminLayout from '@/components/admin/AdminLayout';
+import { BillingApp, QuotePortal as BillingQuotePortal } from './billing';
 import ResetPassword from './pages/admin/ResetPassword';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -698,18 +700,23 @@ const AuthenticatedApp = () => {
       <Route path="/admin/settings/users" element={<ProtectedAdminRoute><UserManagement /></ProtectedAdminRoute>} />
       <Route path="/admin/company-settings" element={<ProtectedAdminRoute><AdminCompanySettings /></ProtectedAdminRoute>} />
       <Route path="/admin/pipeline" element={<ProtectedAdminRoute><AdminPipeline /></ProtectedAdminRoute>} />
-      <Route path="/admin/quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
-      <Route path="/admin/quotes/new" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
+      <Route path="/admin/billing/*" element={<ProtectedAdminRoute><AdminLayout><BillingApp /></AdminLayout></ProtectedAdminRoute>} />
+      <Route path="/portal/q/:token" element={<BillingQuotePortal />} />
+      <Route path="/admin/previous-quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
+      <Route path="/admin/previous-invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
+      <Route path="/admin/previous-payments" element={<ProtectedAdminRoute><AdminPayments /></ProtectedAdminRoute>} />
+      <Route path="/admin/quotes" element={<ProtectedAdminRoute><Navigate to="/admin/billing/quotes" replace /></ProtectedAdminRoute>} />
+      <Route path="/admin/quotes/new" element={<ProtectedAdminRoute><Navigate to="/admin/billing/quotes/new" replace /></ProtectedAdminRoute>} />
       <Route path="/admin/quotes/:id" element={<ProtectedAdminRoute><AdminQuoteBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/email-templates" element={<ProtectedAdminRoute><AdminEmailTemplates /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts/detail" element={<ProtectedAdminRoute><AdminContactDetail /></ProtectedAdminRoute>} />
       <Route path="/admin/signatures" element={<ProtectedAdminRoute><AdminSignatures /></ProtectedAdminRoute>} />
       <Route path="/admin/signing" element={<ProtectedAdminRoute><AdminSigningWorkflow /></ProtectedAdminRoute>} />
       <Route path="/admin/projects" element={<ProtectedAdminRoute><AdminProjects /></ProtectedAdminRoute>} />
-      <Route path="/admin/invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
+      <Route path="/admin/invoices" element={<ProtectedAdminRoute><Navigate to="/admin/billing/invoices" replace /></ProtectedAdminRoute>} />
       <Route path="/admin/invoices/new" element={<ProtectedAdminRoute><AdminInvoiceBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/invoices/:id" element={<ProtectedAdminRoute><AdminInvoiceBuilder /></ProtectedAdminRoute>} />
-      <Route path="/admin/payments" element={<ProtectedAdminRoute><AdminPayments /></ProtectedAdminRoute>} />
+      <Route path="/admin/payments" element={<ProtectedAdminRoute><Navigate to="/admin/billing/payments" replace /></ProtectedAdminRoute>} />
       <Route path="/admin/tasks" element={<ProtectedAdminRoute><AdminTasks /></ProtectedAdminRoute>} />
       <Route path="/admin/documents" element={<ProtectedAdminRoute><AdminDocuments /></ProtectedAdminRoute>} />
       <Route path="/admin/contracts" element={<ProtectedAdminRoute><AdminContracts /></ProtectedAdminRoute>} />

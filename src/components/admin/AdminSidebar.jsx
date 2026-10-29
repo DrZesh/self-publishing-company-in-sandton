@@ -44,10 +44,10 @@ const NAV_GROUPS = [
     key: 'finance',
     label: 'Finance',
     items: [
-      { label: 'Finance Hub', path: '/admin/finance', icon: DollarSign },
-      { label: 'Quotes', path: '/admin/quotes', icon: FileText },
-      { label: 'Invoices', path: '/admin/invoices', icon: Receipt },
-      { label: 'Payments', path: '/admin/payments', icon: CreditCard },
+      { label: 'Quote to Cash', path: '/admin/billing', icon: DollarSign },
+      { label: 'Quotes', path: '/admin/billing/quotes', icon: FileText },
+      { label: 'Invoices', path: '/admin/billing/invoices', icon: Receipt },
+      { label: 'Payments', path: '/admin/billing/payments', icon: CreditCard },
     ],
   },
 
