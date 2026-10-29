@@ -14,7 +14,7 @@ serve('documentSignedWhatsApp', async (req) => {
 *Book:* ${doc.book_title || 'N/A'}
 *Status:* ✅ ${doc.status}
 
-View: https://creativebooks.co.za/admin/documents`;
+View: https://creative-books-sa.vercel.app/admin/documents`;
 
     const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}&apikey=${CALLMEBOT_API_KEY}`;
     

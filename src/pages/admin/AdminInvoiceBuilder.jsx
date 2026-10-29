@@ -163,21 +163,44 @@ export default function AdminInvoiceBuilder() {
       if (res.data?.invoice) setInvoiceData(res.data.invoice);
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast.success('Invoice saved');
+      return true;
     } catch (err) {
       toast.error(err.message || 'Failed to save');
+      return false;
     } finally {
       setSaving(false);
     }
   };
 
   // ── Send invoice ───────────────────────────────────────────────────────────
+  const handleDownload = async () => {
+    try {
+      if (!(await handleSave())) return;
+      const { data } = await platform.functions.invoke('invoiceActions', { action: 'generate_pdf', invoice_id: routeInvoiceId });
+      const link = document.createElement('a');
+      let objectUrl;
+      if (data.pdf_base64) {
+        const bytes = Uint8Array.from(atob(data.pdf_base64), c => c.charCodeAt(0));
+        objectUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+        link.href = objectUrl;
+        link.download = `${data.invoice_number || 'invoice'}.pdf`;
+      } else if (data.pdf_url) {
+        link.href = data.pdf_url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+      } else throw new Error('PDF generation did not return a file.');
+      link.click();
+      if (objectUrl) setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    } catch (error) { toast.error(error.message || 'Could not download PDF'); }
+  };
+
   const handleSend = async () => {
     if (!routeInvoiceId) return toast.error('Please save first.');
     if (!lineItems.length) return toast.error('Add at least one line item.');
     if (!contact?.email) return toast.error('Contact must have an email address.');
     setSending(true);
     try {
-      await handleSave();
+      if (!(await handleSave())) return;
       const res = await platform.functions.invoke('invoiceActions', { action: 'send', invoice_id: routeInvoiceId });
       if (res.data?.success) {
         toast.success('Invoice sent to ' + contact.email);
@@ -278,9 +301,10 @@ export default function AdminInvoiceBuilder() {
                   <Save className="w-4 h-4" />
                   {saving ? 'Saving…' : 'Save Draft'}
                 </Button>
-                <Button onClick={handleSend} disabled={sending || !lineItems.length} className="gap-2 bg-amber-700 hover:bg-amber-800 text-white">
+                <Button variant="outline" onClick={handleDownload} disabled={saving}>Download PDF</Button>
+                <Button onClick={handleSend} disabled title="Email delivery is pending approval" className="gap-2 bg-amber-700 hover:bg-amber-800 text-white">
                   <Send className="w-4 h-4" />
-                  {sending ? 'Sending…' : 'Send to Client'}
+                  Email pending approval
                 </Button>
               </div>
             </div>

@@ -6,7 +6,7 @@ export const publicActions = {
   appointmentActions: ['get_by_cancel_token', 'cancel_by_client'],
   documentActions: ['track_view', 'track_download', 'client_action'],
 };
-export const publicForms = ['captureFormSubmission', 'sendFormEmailResend', 'createBookingRequest', 'getAvailableSlots', 'fetchGoogleReviews', 'sendEstimateNotification', 'checkCoverErrors'];
+export const publicForms = ['captureFormSubmission', 'createBookingRequest', 'getAvailableSlots', 'fetchGoogleReviews', 'checkCoverErrors'];
 export const portalActions = {
   clientPortalData: ['load', 'access', 'mark_messages_read', 'accept_quote', 'decline_quote', 'download_invoice', 'download_receipt'],
   portalMessages: ['list', 'send', 'mark_read'],

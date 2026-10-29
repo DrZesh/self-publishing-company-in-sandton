@@ -114,7 +114,7 @@ serve('sendFollowUpReminders', async (req) => {
         ${buildSection(highPriority, '#DC2626', '#FEE2E2', '🔴 High Priority')}
         ${buildSection(mediumPriority, '#D97706', '#FEF3C7', '🟡 Medium Priority')}
         <div style="text-align:center;margin-top:24px;">
-          <a href="https://creativebooks.co.za/admin/dashboard" style="display:inline-block;background:#B87333;color:#fff;padding:13px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">View Dashboard →</a>
+          <a href="https://creative-books-sa.vercel.app/admin/dashboard" style="display:inline-block;background:#B87333;color:#fff;padding:13px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">View Dashboard →</a>
         </div>
       </td></tr>
       <tr><td style="padding:24px 32px;border-top:1px solid #E5E0D5;text-align:center;font-size:13px;color:#AAAAAA;">

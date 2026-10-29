@@ -1,5 +1,4 @@
 import { createClientFromRequest, serve } from '../_shared/server.ts';
-import { Resend } from 'npm:resend@4.0.0';
 import { jsPDF } from 'npm:jspdf@4.0.0';
 
 const LOGO_URL = 'https://media.base44.com/images/public/69fb173eeab1ba78da6eab45/a6ae114da_creativelogo.png';
@@ -35,7 +34,11 @@ function generateToken() { return crypto.randomUUID().replaceAll('-', '') + cryp
 async function getNextQuoteNumber(platform) {
   const year = new Date().getFullYear();
   const existing = await platform.asServiceRole.entities.Quote.filter({ quote_number: { $regex: `CBSA-QT-${year}-` } });
-  const nextNum = existing.length + 1;
+  const prefix = `CBSA-QT-${year}-`;
+  const nextNum = existing.reduce((highest, row) => {
+    const suffix = String(row.quote_number || '').slice(prefix.length);
+    return /^\d+$/.test(suffix) ? Math.max(highest, Number(suffix)) : highest;
+  }, 0) + 1;
   return `CBSA-QT-${year}-${String(nextNum).padStart(4, '0')}`;
 }
 
@@ -387,273 +390,6 @@ async function buildQuotePdf(platform, quote, company, lineItems) {
   return doc;
 }
 
-async function sendAdminNotification(platform, company, quote, action, clientMessage) {
-  const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-  const adminEmail = company.admin_notification_email || company.email || 'info@creativebooks.co.za';
-  const contact = quote.contact_snapshot || {};
-  const actionEmoji = action === 'Accepted' ? '✅' : action === 'Rejected' ? '❌' : '📝';
-  const subject = `Quote ${action}: ${quote.quote_number} — ${contact.full_name}`;
-  const total = `R ${Number(quote.total||0).toLocaleString('en-ZA',{minimumFractionDigits:2})}`;
-  const clientMsgHtml = clientMessage ? `<tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#92400e;font-weight:600;">Client message: ${clientMessage}</td></tr>` : '';
-  const nextStepHtml = action === 'Accepted' ? `<tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#d97706;font-weight:600;">⏳ Invoice generated and sent. Awaiting admin confirmation before NDA/portal steps.</td></tr>` : '';
-
-  const html = buildEmail({
-    preheader: subject,
-    icon: actionEmoji,
-    title: `Quote ${action}`,
-    greeting: 'Hi Admin,',
-    message: action === 'Accepted'
-      ? `<strong>${contact.full_name}</strong> has accepted quote <strong>${quote.quote_number}</strong>. An invoice has been automatically generated and sent to the client.`
-      : action === 'Rejected'
-      ? `<strong>${contact.full_name}</strong> has rejected quote <strong>${quote.quote_number}</strong>.`
-      : `<strong>${contact.full_name}</strong> has requested changes to quote <strong>${quote.quote_number}</strong>.`,
-    highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Client</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${contact.full_name}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Email</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${contact.email}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Quote #</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.quote_number}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Total</td><td style="padding:4px 0;font-size:16px;color:#B87333;font-weight:800;text-align:right;">${total}</td></tr>
-      ${clientMsgHtml}${nextStepHtml}
-    </table>`,
-    buttonLabel: 'View in Dashboard',
-    buttonUrl: `https://www.creativebooks.co.za/admin/quotes`,
-    companyName: company.company_name || 'Creative Books SA',
-    companyEmail: company.email || 'info@creativebooks.co.za',
-    logoUrl: company.logo_url || LOGO_URL,
-    phone: company.phone || '084 230 5393',
-    address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-    website: company.website_url || 'https://www.creativebooks.co.za',
-  });
-
-  await resend.emails.send({
-    from: `${company.company_name} <${company.email}>`,
-    to: [adminEmail],
-    subject,
-    html,
-  });
-}
-
-async function sendWhatsAppNotification(platform, company, quote, action) {
-  if (!company.enable_whatsapp_notifications) return;
-  
-  const contact = quote.contact_snapshot || {};
-  const adminPhone = company.whatsapp || Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
-  if (!adminPhone) return;
-
-  const actionEmoji = action === 'Accepted' ? '✅' : action === 'Rejected' ? '❌' : '📝';
-  const amount = `R${Number(quote.total).toLocaleString('en-ZA', {minimumFractionDigits:2})}`;
-  const message = action === 'Accepted'
-    ? `Creative Books SA Update:\n✅ Quote ${quote.quote_number} has been accepted by ${contact.full_name}.\nAmount: ${amount}\nInvoice has been generated and sent. Workflow is now awaiting admin confirmation.`
-    : action === 'Rejected'
-    ? `Creative Books SA Update:\n❌ Quote ${quote.quote_number} was rejected by ${contact.full_name}.\nAmount: ${amount}\nReason: ${quote.declined_reason || 'Not provided'}`
-    : `Creative Books SA Update:\n📝 ${contact.full_name} requested an amendment on Quote ${quote.quote_number}.\nAmount: ${amount}\nPlease review the request in the dashboard.`;
-
-  try {
-    await platform.asServiceRole.functions.invoke('sendWhatsAppNotification', {
-      to: adminPhone,
-      message,
-    });
-  } catch (err) {
-    console.error('WhatsApp notification failed:', err.message);
-  }
-}
-
-async function sendClientConfirmation(platform, company, quote, action, clientMessage) {
-  const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-  const contact = quote.contact_snapshot || {};
-  const clientEmail = contact.email;
-  if (!clientEmail) return;
-
-  const total = `R ${Number(quote.total||0).toLocaleString('en-ZA',{minimumFractionDigits:2})}`;
-  const subject = action === 'Accepted'
-    ? `Thank You for Accepting Your Quote — ${quote.quote_number}`
-    : action === 'Rejected'
-    ? `Quotation Update — ${quote.quote_number}`
-    : `Quote Changes Requested — ${quote.quote_number}`;
-
-  const icon = action === 'Accepted' ? '✅' : action === 'Rejected' ? '❌' : '📝';
-  const title = action === 'Accepted' ? 'Thank You for Accepting Your Quote' : action === 'Rejected' ? 'Quotation Update' : 'Changes Requested';
-  const bodyMsg = action === 'Accepted'
-    ? `Thank you for accepting your quote for <strong>${quote.book_title || 'your project'}</strong>.<br/><br/>Your invoice has now been generated and sent to you with the relevant payment details. Please review the invoice and follow the payment instructions provided.<br/><br/>Please note that work will only begin once payment has been received and confirmed.`
-    : action === 'Rejected'
-    ? `Thank you for reviewing our quotation for <strong>${quote.book_title || 'your project'}</strong>. We appreciate your feedback and will review your decision.`
-    : `Thank you for your feedback on the quotation for <strong>${quote.book_title || 'your project'}</strong>. Our team will review your requested changes and get back to you within 24 hours.`;
-
-  const clientMsgRow = clientMessage && action !== 'Accepted' ? `<tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#4a5568;">Your message: <em>${clientMessage}</em></td></tr>` : '';
-
-  const html = buildEmail({
-    preheader: subject,
-    icon,
-    title,
-    greeting: `Hi ${contact.full_name},`,
-    message: bodyMsg,
-    highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Quote Number</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.quote_number}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Project</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.book_title || 'N/A'}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Total</td><td style="padding:4px 0;font-size:16px;color:#B87333;font-weight:800;text-align:right;">${total}</td></tr>
-      <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Status</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${action}</td></tr>
-      ${clientMsgRow}
-    </table>`,
-    companyName: company.company_name || 'Creative Books SA',
-    companyEmail: company.email || 'info@creativebooks.co.za',
-    logoUrl: company.logo_url || LOGO_URL,
-    phone: company.phone || '084 230 5393',
-    address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-    website: company.website_url || 'https://www.creativebooks.co.za',
-  });
-
-  await resend.emails.send({
-    from: `${company.company_name} <${company.email}>`,
-    to: [clientEmail],
-    subject,
-    html,
-  });
-}
-
-async function triggerPostAcceptanceWorkflow(platform, quote, company) {
-  const contactId = quote.contact_id;
-  if (!contactId) return;
-
-  // Get service workflow
-  const serviceType = quote.service_category || 'Full Publishing Package';
-  const workflows = await platform.asServiceRole.entities.ServiceWorkflow.filter({ 
-    service_name: serviceType,
-    is_active: true 
-  });
-
-  const workflow = workflows[0];
-  const requiresNDA = workflow?.requires_nda || false;
-  const requiresDeposit = workflow?.requires_deposit || false;
-  const depositPercentage = workflow?.deposit_percentage || 75;
-
-  // Move contact pipeline stage to "Invoice Sent" and update deal
-  const nextStage = 'Invoice Sent';
-  await platform.asServiceRole.entities.Contact.update(contactId, {
-    pipeline_stage: nextStage,
-    pipeline_stage_changed_at: new Date().toISOString(),
-  });
-
-  const contactSnapshot = quote.contact_snapshot || {};
-
-  // Update or create PipelineDeal in "Invoice Sent" stage
-  const existingDeals = await platform.asServiceRole.entities.PipelineDeal.filter({ 
-    client_email: contactSnapshot.email,
-    stage_key: 'Quote Sent'
-  });
-  
-  if (existingDeals.length > 0) {
-    // Update existing deal to move to Invoice Sent
-    await platform.asServiceRole.entities.PipelineDeal.update(existingDeals[0].id, {
-      stage_key: nextStage,
-      deal_value: Number(quote.total) || 0,
-    });
-  } else {
-    // Create new deal if none exists
-    const defaultPipeline = await platform.asServiceRole.entities.Pipeline.filter({ is_default: true, entity_type: 'contact' });
-    const pipelineId = defaultPipeline[0]?.id || 'default';
-    
-    await platform.asServiceRole.entities.PipelineDeal.create({
-      pipeline_id: pipelineId,
-      stage_key: nextStage,
-      client_name: contactSnapshot.full_name || 'Unknown',
-      client_email: contactSnapshot.email || '',
-      client_phone: contactSnapshot.phone || '',
-      service_type: serviceType,
-      project_title: quote.book_title || 'Book Publishing Project',
-      deal_value: Number(quote.total) || 0,
-      notes: `Auto-created from accepted quote ${quote.quote_number}`,
-    });
-  }
-
-  // Create workflow record
-  await platform.asServiceRole.entities.ClientWorkflow.create({
-    contact_id: contactId,
-    current_stage: nextStage,
-    quote_id: quote.id,
-    quote_status: 'accepted',
-    service_type: serviceType,
-    nda_required: requiresNDA,
-    invoice_status: 'sent',
-    payment_status: 'unpaid',
-    next_action: 'Await Payment',
-    automation_enabled: true,
-  });
-
-  // AUTOMATICALLY CREATE INVOICE FROM QUOTE
-  const lineItems = await platform.asServiceRole.entities.QuoteLineItem.filter({ quote_id: quote.id });
-  lineItems.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-  
-  const invoiceLineItems = lineItems.map(item => ({
-    description: item.description,
-    quantity: Number(item.quantity) || 1,
-    unit_price: Number(item.unit_price) || 0,
-    line_total: Number(item.line_total) || 0,
-  }));
-
-  // Get next invoice number
-  const existingInvoices = await platform.asServiceRole.entities.Invoice.list('-created_date', 1);
-  const nextInvNum = !existingInvoices.length ? 'INV-0001' : (() => {
-    const last = existingInvoices[0].invoice_number || 'INV-0000';
-    const match = last.match(/(\d+)$/);
-    const num = match ? parseInt(match[1]) + 1 : 1;
-    return `INV-${String(num).padStart(4, '0')}`;
-  })();
-
-  // Calculate totals (VAT removed - total is final amount)
-  const totalVal = Number(quote.total) || 0;
-
-  // Create invoice
-  const invoice = await platform.asServiceRole.entities.Invoice.create({
-    invoice_number: nextInvNum,
-    contact_id: contactId,
-    quote_id: quote.id,
-    contact_snapshot: quote.contact_snapshot,
-    status: 'Draft',
-    issue_date: new Date().toISOString().split('T')[0],
-    due_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
-    include_vat: false,
-    vat_rate: 0,
-    line_items: invoiceLineItems,
-    subtotal: 0,
-    vat_amount: 0,
-    total: totalVal,
-    amount_paid: 0,
-    balance_due: totalVal,
-    notes: `Generated from accepted quotation ${quote.quote_number}`,
-    payment_terms: 'Payment due within 7 days of invoice date. A 75% deposit is required before work commences.',
-    banking_details: company.banking_details || [
-      company.bank_name && `Bank: ${company.bank_name}`,
-      company.bank_account_name && `Account Name: ${company.bank_account_name}`,
-      company.bank_account_number && `Account No: ${company.bank_account_number}`,
-      company.bank_branch_code && `Branch Code: ${company.bank_branch_code}`,
-    ].filter(Boolean).join('\n'),
-    book_title: quote.book_title || '',
-    view_token: generateToken(),
-  });
-
-  // Send invoice email to client
-  try {
-    await platform.asServiceRole.functions.invoke('invoiceActions', {
-      action: 'send',
-      invoice_id: invoice.id,
-    });
-    console.log('Invoice automatically sent to client:', invoice.invoice_number);
-  } catch (err) {
-    console.error('Failed to send invoice automatically:', err.message);
-  }
-
-  // Create task for admin
-  const taskTitle = `Invoice generated for ${quote.contact_snapshot?.full_name}`;
-  await platform.asServiceRole.entities.Task.create({
-    title: taskTitle,
-    description: `Quotation ${quote.quote_number} accepted. Invoice ${invoice.invoice_number} automatically generated and sent to client for R${totalVal.toLocaleString('en-ZA', {minimumFractionDigits:2})}. Follow up on deposit payment.`,
-    status: 'todo',
-    priority: 'high',
-    due_date: new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0],
-  });
-
-  return invoice;
-}
-
 serve('quoteActions', async (req) => {
   try {
     const platform = createClientFromRequest(req);
@@ -661,7 +397,7 @@ serve('quoteActions', async (req) => {
     const { action } = body;
     const company = await getCompanySettings(platform);
     // Only fetch user for admin actions
-    const user = (action === 'create' || action === 'send' || action === 'generate_pdf' || action === 'duplicate' || action === 'convert_to_invoice') ? await platform.auth.me() : null;
+    const user = (action === 'load' || action === 'update' || action === 'create' || action === 'send' || action === 'generate_pdf' || action === 'duplicate' || action === 'convert_to_invoice') ? await platform.auth.me() : null;
 
     // GET PUBLIC (client view)
     if (action === 'get_public') {
@@ -734,18 +470,6 @@ serve('quoteActions', async (req) => {
 
       const updatedQuote = await platform.asServiceRole.entities.Quote.update(quote_id, updates);
 
-      // Send admin notifications
-      const actionText = response === 'accept' ? 'Accepted' : response === 'reject' ? 'Rejected' : 'Changes Requested';
-      await sendAdminNotification(platform, company, updatedQuote, actionText, clientMessage);
-      await sendWhatsAppNotification(platform, company, updatedQuote, actionText);
-      await sendClientConfirmation(platform, company, updatedQuote, actionText, clientMessage);
-
-      // Trigger workflow if accepted (auto-generates and sends invoice)
-      if (response === 'accept') {
-        const invoice = await triggerPostAcceptanceWorkflow(platform, updatedQuote, company);
-        console.log('Invoice created and sent:', invoice?.invoice_number);
-      }
-
       // Move contact pipeline
       const pipelineStage = response === 'accept' ? 'Quote Accepted' : response === 'reject' ? 'Lost' : 'Quote in Progress';
       await platform.asServiceRole.entities.Contact.update(quote.contact_id, {
@@ -757,12 +481,41 @@ serve('quoteActions', async (req) => {
       return Response.json({ success: true, quote: updatedQuote });
     }
 
+    // Staff editor actions used by AdminQuoteBuilder.
+    if (action === 'load' && user) {
+      const quote = (await platform.entities.Quote.filter({ id: body.quote_id }))[0];
+      if (!quote) return Response.json({ error: 'Quote not found' }, { status: 404 });
+      const line_items = await platform.entities.QuoteLineItem.filter({ quote_id: quote.id });
+      line_items.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      return Response.json({ quote, line_items });
+    }
+
+    if (action === 'update' && user) {
+      const existing = (await platform.entities.Quote.filter({ id: body.quote_id }))[0];
+      if (!existing) return Response.json({ error: 'Quote not found' }, { status: 404 });
+      const items = body.line_items || [];
+      const vatRate = body.vat_rate ?? existing.vat_rate ?? company.default_vat_rate ?? 15;
+      const totals = calcTotals(items, body.discount_amount, body.discount_percentage, body.include_vat !== false, vatRate);
+      const contactId = body.contact_id || existing.contact_id;
+      const contact = (await platform.entities.Contact.filter({ id: contactId }))[0];
+      if (!contact) return Response.json({ error: 'Contact not found' }, { status: 400 });
+      const quote = await platform.entities.Quote.update(existing.id, {
+        ...totals, contact_id: contactId,
+        contact_snapshot: { full_name: contact.full_name, email: contact.email, phone: contact.phone, company: contact.company, billing_address: contact.billing_address },
+        valid_until: body.valid_until || existing.valid_until,
+        include_vat: body.include_vat !== false, vat_rate: vatRate,
+        book_title: body.book_title ?? existing.book_title, notes: body.notes ?? existing.notes, terms: body.terms ?? existing.terms,
+      });
+      await saveLineItems(platform, quote.id, items);
+      return Response.json({ quote });
+    }
+
     // ADMIN: CREATE
     if (action === 'create' && user) {
       const { contact_id, contact_snapshot, valid_until, include_vat, vat_rate, discount_amount, discount_percentage, notes, terms, line_items, service_category } = body;
       const contactData = contact_id ? (await platform.asServiceRole.entities.Contact.filter({ id: contact_id }))[0] || {} : {};
       const quoteNumber = await getNextQuoteNumber(platform);
-      const totals = calcTotals(line_items || [], discount_amount, discount_percentage, include_vat, vat_rate || company.default_vat_rate);
+      const totals = calcTotals(line_items || [], discount_amount, discount_percentage, include_vat, vat_rate ?? company.default_vat_rate ?? 15);
       const expiryDate = valid_until || new Date(Date.now() + (company.quote_validity_days || 30) * 86400000).toISOString().split('T')[0];
 
       const quote = await platform.asServiceRole.entities.Quote.create({
@@ -779,7 +532,7 @@ serve('quoteActions', async (req) => {
         service_category: service_category || '',
         valid_until: expiryDate,
         include_vat: include_vat !== false,
-        vat_rate: vat_rate || company.default_vat_rate,
+        vat_rate: vat_rate ?? company.default_vat_rate ?? 15,
         discount_amount: totals.discount_amount,
         discount_percentage: totals.discount_percentage,
         subtotal: totals.subtotal,
@@ -797,95 +550,7 @@ serve('quoteActions', async (req) => {
     }
 
     // ADMIN: SEND
-    if (action === 'send' && user) {
-      const { quote_id } = body;
-      const quotes = await platform.asServiceRole.entities.Quote.filter({ id: quote_id });
-      if (!quotes.length) return Response.json({ error: 'Quote not found' }, { status: 404 });
-      const quote = quotes[0];
-
-      const contactEmail = quote.contact_snapshot?.email;
-      if (!contactEmail) return Response.json({ error: 'Contact has no email address' }, { status: 400 });
-
-      const lineItemsForPdf = await platform.asServiceRole.entities.QuoteLineItem.filter({ quote_id });
-      lineItemsForPdf.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-
-      const pdf = await buildQuotePdf(platform, quote, company, lineItemsForPdf);
-      const pdfArrayBuffer = pdf.output('arraybuffer');
-      const uint8 = new Uint8Array(pdfArrayBuffer);
-      let binary = '';
-      uint8.forEach(b => binary += String.fromCharCode(b));
-      const pdfBase64 = btoa(binary);
-
-      const contactName = quote.contact_snapshot?.full_name || 'there';
-      const viewUrl = `https://www.creativebooks.co.za/quote/view/${quote.id}/${quote.view_token}`;
-
-      const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-      const emailHtml = buildEmail({
-        preheader: `Your quote from Creative Books SA is ready`,
-        icon: '📋',
-        title: 'Your Quote is Ready',
-        greeting: `Hi ${contactName},`,
-        message: `Thank you for your interest in Creative Books SA! We're excited to present your custom quote for your publishing project.<br/><br/>Your detailed quote PDF is attached to this email for your records. You can also view and accept or decline your quote online using the button below.`,
-        highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Quote Number</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.quote_number}</td></tr>
-          ${quote.book_title ? `<tr><td style="padding:4px 0;font-size:13px;color:#718096;">Project</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.book_title}</td></tr>` : ''}
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Total</td><td style="padding:4px 0;font-size:16px;color:#B87333;font-weight:800;text-align:right;">R ${Number(quote.total||0).toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Valid Until</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${quote.valid_until ? new Date(quote.valid_until).toLocaleDateString('en-ZA') : '30 days'}</td></tr>
-        </table>`,
-        buttonLabel: 'View Quote Online',
-        buttonUrl: viewUrl,
-        footerNote: 'Questions? Reply to this email or call us — we\'re here to help bring your book to life.',
-        companyName: company.company_name || 'Creative Books SA',
-        companyEmail: company.email || 'info@creativebooks.co.za',
-        logoUrl: company.logo_url || LOGO_URL,
-        phone: company.phone || '084 230 5393',
-        address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-        website: company.website_url || 'https://www.creativebooks.co.za',
-      });
-
-      await resend.emails.send({
-        from: `${company.company_name} <${company.email}>`,
-        to: [contactEmail],
-        subject: `Quotation ${quote.quote_number} from ${company.company_name}`,
-        html: emailHtml,
-        attachments: [{
-          filename: `Quote-${quote.quote_number}.pdf`,
-          content: pdfBase64,
-          contentType: 'application/pdf',
-        }],
-      });
-
-      const updated = await platform.asServiceRole.entities.Quote.update(quote_id, {
-        status: 'Sent',
-        sent_at: new Date().toISOString(),
-      });
-
-      // Move contact to Quote Sent and create deal
-      if (quote.contact_id) {
-        await platform.asServiceRole.entities.Contact.update(quote.contact_id, {
-          pipeline_stage: 'Quote Sent',
-          pipeline_stage_changed_at: new Date().toISOString(),
-        });
-
-        // Automatically create a PipelineDeal in "Quote Sent" stage
-        const defaultPipeline = await platform.asServiceRole.entities.Pipeline.filter({ is_default: true, entity_type: 'contact' });
-        const pipelineId = defaultPipeline[0]?.id || 'default';
-        
-        await platform.asServiceRole.entities.PipelineDeal.create({
-          pipeline_id: pipelineId,
-          stage_key: 'Quote Sent',
-          client_name: quote.contact_snapshot?.full_name || 'Unknown',
-          client_email: quote.contact_snapshot?.email || '',
-          client_phone: quote.contact_snapshot?.phone || '',
-          service_type: quote.service_category || 'Publishing Services',
-          project_title: quote.book_title || 'Book Publishing Project',
-          deal_value: Number(quote.total) || 0,
-          notes: `Auto-created from quote ${quote.quote_number}`,
-        });
-      }
-
-      return Response.json({ success: true, quote: updated });
-    }
+    if (action === 'send') return Response.json({ error: 'Quote email sending is pending approval. You can create, edit and download quotes.' }, { status: 503 });
 
     // GENERATE PDF
     if (action === 'generate_pdf') {
@@ -908,7 +573,7 @@ serve('quoteActions', async (req) => {
 
       // Upload to temporary storage
       const uploadResp = await platform.asServiceRole.integrations.Core.UploadFile({
-        file: pdfBase64,
+        file: new Blob([pdfArrayBuffer], { type: 'application/pdf' }),
       });
 
       return Response.json({ pdf_url: uploadResp.file_url });
@@ -932,7 +597,7 @@ serve('quoteActions', async (req) => {
         service_category: src.service_category || '',
         valid_until: expiryDate,
         include_vat: src.include_vat !== false,
-        vat_rate: src.vat_rate || company.default_vat_rate,
+        vat_rate: src.vat_rate ?? company.default_vat_rate ?? 15,
         discount_amount: src.discount_amount || 0,
         discount_percentage: src.discount_percentage || 0,
         subtotal: src.subtotal || 0,
@@ -952,29 +617,7 @@ serve('quoteActions', async (req) => {
     }
 
     // ADMIN: CONVERT TO INVOICE
-    if (action === 'convert_to_invoice' && user) {
-      const { quote_id } = body;
-      const quotes = await platform.asServiceRole.entities.Quote.filter({ id: quote_id });
-      if (!quotes.length) return Response.json({ error: 'Quote not found' }, { status: 404 });
-      const quote = quotes[0];
-
-      if (quote.status !== 'Accepted') {
-        return Response.json({ error: 'Only accepted quotes can be converted.' }, { status: 400 });
-      }
-      if (quote.converted_to_invoice_id) {
-        return Response.json({ error: 'This quote has already been converted.', invoice_id: quote.converted_to_invoice_id }, { status: 400 });
-      }
-
-      const invoice = await triggerPostAcceptanceWorkflow(platform, quote, company);
-
-      await platform.asServiceRole.entities.Quote.update(quote_id, {
-        status: 'Converted',
-        converted_to_invoice_id: invoice?.id || null,
-        converted_at: new Date().toISOString(),
-      });
-
-      return Response.json({ success: true, invoice });
-    }
+    if (action === 'convert_to_invoice') return Response.json({ error: 'Automatic invoice conversion and delivery are pending approval. Create a draft invoice from the invoice screen.' }, { status: 503 });
 
     return Response.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {

@@ -29,8 +29,8 @@ export default function Contact() {
     setError('');
     setSubmitting(true);
     try {
-      // Capture to admin database (non-blocking)
-      platform.functions.invoke('captureFormSubmission', {
+      // Save the enquiry before showing success.
+      await platform.functions.invoke('captureFormSubmission', {
         formType: 'contact',
         fullName: form.name,
         email: form.email,
@@ -40,27 +40,9 @@ export default function Contact() {
         serviceInterest: form.service ? [form.service] : [],
         additionalFields: { subject: form.subject },
         sessionDuration: Math.floor((Date.now() - loadedAt.current) / 1000),
-      }).catch(err => console.error('Form capture failed:', err));
-
-      // Send confirmation emails (primary action)
-      await platform.functions.invoke('sendFormEmailResend', {
-        formType: 'Contact Form',
-        submitterName: form.name,
-        submitterEmail: form.email,
-        businessSubject: `New Contact Form Submission from ${form.name}`,
-        userSubject: 'Thanks for reaching out to Creative Books SA',
-        fields: [
-                           ['Full Name', form.name],
-                           ['Email Address', form.email],
-                           ['Phone Number', form.phone],
-                           ['Service Interested In', form.service],
-                           ['Subject', form.subject],
-                           ['Message', form.message],
-                         ],
-        pageUrl: 'https://creativebooks.co.za/contact',
-        honeypot: '',
-        loadedAt: loadedAt.current,
       });
+
+
       setSubmitted(true);
     } catch (err) {
       setError('Something went wrong. Please try again or email us directly at info@creativebookssa.co.za');
@@ -129,7 +111,7 @@ export default function Contact() {
                       Thanks, {form.name.split(' ')[0]}! Your message has been received.
                     </h3>
                     <p className="text-[#0F0F0F]/60 font-body mb-2 text-sm leading-relaxed max-w-sm mx-auto">
-                      We'll be in touch within 24 hours during business days. We've also sent a confirmation to <strong>{form.email}</strong> — please check your inbox (and spam folder, just in case).
+                      Your request has been saved for our team to review. Please contact us on 084 230 5393 if you need to follow up.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mt-7">
                       <Link to="/" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-copper text-white rounded-full font-medium text-sm hover:bg-copper/90 transition-colors">

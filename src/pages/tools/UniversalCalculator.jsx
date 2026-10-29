@@ -104,7 +104,7 @@ export default function UniversalCalculator() {
     setError('');
     try {
       const quoteRef = `CB-${Date.now().toString().slice(-6)}`;
-      await platform.functions.invoke('sendEstimateNotification', { clientInfo, breakdown, total: estimateTotal, quoteNumber: quoteRef });
+      await platform.functions.invoke('captureFormSubmission', { formType: 'calculator_estimate', fullName: clientInfo.name, email: clientInfo.email, phone: clientInfo.phone || '', sourcePage: window.location.pathname, additionalFields: { breakdown, estimatedTotal: estimateTotal, quoteNumber: quoteRef } });
       setCurrentStep('confirmation');
     } catch (err) {
       setError(`Error: ${err.message}`);
@@ -381,7 +381,7 @@ export default function UniversalCalculator() {
                   <button onClick={() => setCurrentStep('details')} className="px-6 py-3 border-2 border-copper text-copper rounded-full font-medium hover:bg-copper/5">← Back</button>
                   <button onClick={submitEstimate} disabled={loading || !clientInfo.name || !clientInfo.email}
                     className="flex-1 py-3 bg-copper text-white rounded-full font-medium disabled:opacity-40 hover:bg-copper/90 shadow-lg flex items-center justify-center gap-2">
-                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <>Send Estimate <ArrowRight className="w-4 h-4" /></>}
+                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <>Save Enquiry <ArrowRight className="w-4 h-4" /></>}
                   </button>
                 </div>
               </motion.div>
@@ -393,9 +393,9 @@ export default function UniversalCalculator() {
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500 flex items-center justify-center">
                   <CheckCircle2 className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="font-heading text-3xl font-bold text-black mb-3">Estimate Sent!</h2>
-                <p className="text-black/60 mb-2">We've sent your estimate to <strong className="text-copper">{clientInfo.email}</strong></p>
-                <p className="text-black/40 text-sm mb-8">Our team will follow up within 24 hours with a formal quote.</p>
+                <h2 className="font-heading text-3xl font-bold text-black mb-3">Enquiry Saved!</h2>
+                <p className="text-black/60 mb-2">Your estimate details have been saved for our team to review.</p>
+                <p className="text-black/40 text-sm mb-8">Please call 084 230 5393 if you need to follow up.</p>
                 <button onClick={() => { setCurrentStep('services'); setSelectedServices([]); setFormData({}); setClientInfo({ name: '', email: '', phone: '' }); setError(''); }}
                   className="px-8 py-3 bg-copper text-white rounded-full font-medium hover:bg-copper/90 shadow-lg">
                   Start New Estimate

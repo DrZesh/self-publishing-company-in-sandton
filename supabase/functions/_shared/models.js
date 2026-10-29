@@ -1,4 +1,5 @@
 export const models = {
+  "CoverTemplateLead": { "table": "cover_template_lead", "defaults": {} },
   "Invoice": {
     "table": "invoice",
     "defaults": {

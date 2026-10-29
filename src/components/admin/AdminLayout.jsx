@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Bell, Search, LogOut } from 'lucide-react';
 import { platform } from '@/api/platformClient';
 import AdminSidebar from './AdminSidebar';
+import CrmAvailabilityNotice from './CrmAvailabilityNotice';
 import CommandPalette from './CommandPalette';
 import NotificationBell from './notifications/NotificationBell';
 import { getTheme, CURRENT_THEME_KEY } from '@/lib/adminTheme';
@@ -180,6 +181,7 @@ export default function AdminLayout({ children }) {
         {/* Page Content */}
         <div className="flex-1 overflow-auto">
           <div className="p-6 lg:p-7 h-full">
+            <CrmAvailabilityNotice />
             {children}
           </div>
         </div>

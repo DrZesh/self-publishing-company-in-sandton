@@ -1,4 +1,4 @@
--- Creative Books SA: empty Supabase schema. No live records are imported.
+-- Creative Books SA schema. Historical records are imported separately, never embedded in source.
 begin;
 create schema if not exists cb_private;
 revoke all on schema cb_private from public;
@@ -1251,10 +1251,10 @@ $$;
 create or replace function public.cb_rate_limit(fingerprint text, maximum integer) returns boolean language plpgsql security definer set search_path = '' as $$
 declare current_count integer;
 begin
- insert into cb_private.request_limits values(fingerprint,date_trunc('minute',now()),1)
- on conflict(fingerprint,window_start) do update set count=cb_private.request_limits.count+1 returning count into current_count;
+ insert into cb_private.request_limits as limits values($1,date_trunc('minute',now()),1)
+ on conflict on constraint request_limits_pkey do update set count=limits.count+1 returning count into current_count;
  delete from cb_private.request_limits where window_start < now()-interval '1 hour';
- return current_count <= maximum;
+ return current_count <= $2;
 end;
 $$;
 revoke all on function public.cb_file_register(text,text),public.cb_file_lookup(text),public.cb_rate_limit(text,integer) from public,anon,authenticated;
@@ -1265,4 +1265,22 @@ do $$ begin
    alter publication supabase_realtime add table public.submission;
  end if;
 end $$;
+
+-- Historical export entity added 29 October 2026.
+create table if not exists public.cover_template_lead (
+ id text primary key default gen_random_uuid()::text,
+ data jsonb not null default '{}'::jsonb check (jsonb_typeof(data) = 'object'),
+ created_date timestamptz not null default now(),
+ updated_date timestamptz not null default now(),
+ created_by text default (auth.jwt()->>'email')
+);
+alter table public.cover_template_lead enable row level security;
+create index if not exists cover_template_lead_data_gin on public.cover_template_lead using gin (data jsonb_path_ops);
+create index if not exists cover_template_lead_created_idx on public.cover_template_lead (created_date desc,id);
+insert into cb_private.entity_registry(table_name) values ('cover_template_lead') on conflict do nothing;
+revoke all on public.cover_template_lead from anon;
+grant select,insert,update,delete on public.cover_template_lead to authenticated,service_role;
+create policy staff_access on public.cover_template_lead for all to authenticated using ((select cb_private.is_staff())) with check ((select cb_private.is_staff()));
+create trigger touch_record before update on public.cover_template_lead for each row execute function cb_private.touch_record();
+
 commit;

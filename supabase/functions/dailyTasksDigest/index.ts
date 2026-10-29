@@ -106,8 +106,8 @@ serve('dailyTasksDigest', async (req) => {
       </td></tr>` : ''}
 
       <tr><td style="padding:28px 32px;">
-        <a href="https://creativebooks.co.za/admin/tasks" style="display:inline-block;background:#B87333;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-right:10px;">View Tasks</a>
-        <a href="https://creativebooks.co.za/admin/quotes" style="display:inline-block;background:#fff;color:#B87333;border:2px solid #B87333;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">View Quotes</a>
+        <a href="https://creative-books-sa.vercel.app/admin/tasks" style="display:inline-block;background:#B87333;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-right:10px;">View Tasks</a>
+        <a href="https://creative-books-sa.vercel.app/admin/quotes" style="display:inline-block;background:#fff;color:#B87333;border:2px solid #B87333;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">View Quotes</a>
       </td></tr>
 
       <tr><td style="background:#f7fafc;border-top:1px solid #e2e8f0;padding:16px 32px;text-align:center;">

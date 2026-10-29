@@ -169,8 +169,8 @@ export default function GetQuote() {
         data.needEditing === 'yes' && 'Editing',
       ].filter(Boolean).join(', ') || 'General Publishing';
 
-      // Capture to admin database (non-blocking)
-      platform.functions.invoke('captureFormSubmission', {
+      // Save the enquiry before showing success.
+      await platform.functions.invoke('captureFormSubmission', {
         formType: 'quote',
         fullName: `${data.firstName} ${data.lastName}`.trim(),
         email: data.email,
@@ -188,6 +188,7 @@ export default function GetQuote() {
         bookPageCount: parseInt(data.numberOfPages),
         bookWordCount: parseInt(data.wordCount),
         additionalFields: {
+          address: [data.address, data.city, data.province, data.postalCode].filter(Boolean).join(', '),
           bookSize: data.bookSize,
           coverType: data.needCover === 'yes' ? data.coverType : null,
           printCopies: data.printCopies,
@@ -199,20 +200,9 @@ export default function GetQuote() {
           howFound: data.howFound,
           notes: data.additionalNotes,
         },
-      }).catch(err => console.error('Form capture failed:', err));
-
-      // Send confirmation emails (primary action)
-      await platform.functions.invoke('sendFormEmailResend', {
-        formType: 'Quote Request',
-        submitterName: `${data.firstName} ${data.lastName}`.trim(),
-        submitterEmail: data.email,
-        businessSubject: `New Quote Request from ${data.firstName} ${data.lastName} — ${serviceSummary}`,
-        userSubject: "We've received your quote request — Creative Books SA",
-        fields,
-        pageUrl: 'https://creativebooks.co.za/getquote',
-        honeypot: '',
-        loadedAt: null,
       });
+
+
       try { localStorage.removeItem(STORAGE_KEY); } catch {}
       setSubmitted(true);
     } catch (err) {
@@ -276,7 +266,7 @@ export default function GetQuote() {
               Thanks, {data.firstName}! Your quote request has been received.
             </h2>
             <p className="text-white/50 font-body leading-relaxed mb-3 text-sm">
-              We'll be in touch within 24 hours during business days. We've also sent a confirmation to <strong className="text-white/70">{data.email}</strong> — please check your inbox (and spam folder, just in case).
+              Your request has been saved for our team to review. Please contact us on 084 230 5393 if you need to follow up.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
               <Link to="/"

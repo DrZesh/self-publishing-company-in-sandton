@@ -159,7 +159,7 @@ serve('onQuoteAccepted', async (req) => {
           payment_terms: company.invoice_terms || 'Payment due within 7 days of invoice date.',
           banking_details: bankingDetails,
           book_title: quote.book_title || '',
-          view_token: Math.random().toString(36).substring(2, 34),
+          view_token: crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().replaceAll('-', ''),
         });
 
         // Link invoice back to quote
@@ -340,7 +340,7 @@ serve('onQuoteAccepted', async (req) => {
           <tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#d97706;font-weight:600;">⏳ Awaiting Admin Confirmation — The NDA and portal login will NOT be sent until you click Confirm Invoice and Continue in the dashboard.</td></tr>
         </table>`,
       buttonLabel: 'Confirm Invoice in Dashboard',
-      buttonUrl: 'https://creativebooks.co.za/admin/invoices',
+      buttonUrl: 'https://creative-books-sa.vercel.app/admin/invoices',
       companyName, companyEmail, logoUrl, phone: company.phone || '084 230 5393', address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg', website: company.website_url || 'https://www.creativebooks.co.za',
     });
     try {

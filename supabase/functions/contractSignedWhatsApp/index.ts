@@ -15,7 +15,7 @@ serve('contractSignedWhatsApp', async (req) => {
 *Signed By:* ${contract.signer_name || 'Client'}
 *Status:* ✅ ${contract.status}
 
-View: https://creativebooks.co.za/admin/contracts`;
+View: https://creative-books-sa.vercel.app/admin/contracts`;
 
     const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}&apikey=${CALLMEBOT_API_KEY}`;
     

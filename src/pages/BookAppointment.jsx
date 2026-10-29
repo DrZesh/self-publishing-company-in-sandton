@@ -146,14 +146,14 @@ export default function BookAppointment() {
             <CheckCircle className="w-10 h-10 text-green-400" />
           </div>
           <h1 className="text-3xl font-heading font-bold text-white mb-3">Request Received!</h1>
-          <p className="text-white/60 text-lg mb-2">We'll email you to confirm once your appointment is approved.</p>
-          <p className="text-white/40 text-sm mb-8">Please do not treat this as a confirmed booking until you receive our confirmation email.</p>
+          <p className="text-white/60 text-lg mb-2">Your request has been saved for our team to review.</p>
+          <p className="text-white/40 text-sm mb-8">Your appointment is not confirmed yet. Contact us on 084 230 5393 to confirm.</p>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-left mb-8 space-y-2">
             <p className="text-white/50 text-xs uppercase tracking-wider mb-3 font-semibold">Booking Summary</p>
             <p className="text-white text-sm"><span className="text-copper">Service:</span> {selectedService?.name}</p>
             <p className="text-white text-sm"><span className="text-copper">Date:</span> {selectedDate && formatDate(selectedDate)}</p>
             <p className="text-white text-sm"><span className="text-copper">Time:</span> {selectedSlot && formatTime(selectedSlot.start)} SAST</p>
-            <p className="text-white text-sm"><span className="text-copper">Mode:</span> {selectedMode === 'on_site' ? 'On-site (Sandton)' : 'Zoom (link will be emailed)'}</p>
+            <p className="text-white text-sm"><span className="text-copper">Mode:</span> {selectedMode === 'on_site' ? 'On-site (Sandton)' : 'Zoom (details to be arranged)'}</p>
           </div>
           {selectedService?.prep_tips && (
             <div className="bg-copper/10 border border-copper/20 rounded-2xl p-5 text-left mb-8">
@@ -348,7 +348,7 @@ export default function BookAppointment() {
                 <p className="text-white/80"><span className="text-white/40">Service: </span>{selectedService?.name}</p>
                 <p className="text-white/80"><span className="text-white/40">Date: </span>{selectedDate && formatDate(selectedDate)}</p>
                 <p className="text-white/80"><span className="text-white/40">Time: </span>{selectedSlot && formatTime(selectedSlot.start)} SAST</p>
-                <p className="text-white/80"><span className="text-white/40">Mode: </span>{selectedMode === 'on_site' ? '📍 On-site (Sandton)' : '💻 Zoom (link sent by email)'}</p>
+                <p className="text-white/80"><span className="text-white/40">Mode: </span>{selectedMode === 'on_site' ? '📍 On-site (Sandton)' : '💻 Zoom (details to be arranged)'}</p>
               </div>
 
               <div className="space-y-4">
@@ -380,7 +380,7 @@ export default function BookAppointment() {
                 className="mt-6 w-full py-4 bg-gradient-to-r from-copper to-[#9a6030] text-white rounded-full font-medium text-base disabled:opacity-40 transition-all hover:shadow-lg hover:shadow-copper/30 flex items-center justify-center gap-2">
                 {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : 'Request Appointment →'}
               </button>
-              <p className="text-center text-white/30 text-xs mt-3">You'll receive a confirmation email once we approve your request.</p>
+              <p className="text-center text-white/30 text-xs mt-3">Your request will be saved for review. This does not confirm your appointment.</p>
             </motion.div>
           )}
         </AnimatePresence>

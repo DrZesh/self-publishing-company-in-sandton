@@ -9,6 +9,9 @@ serve('quoteFollowUps', async (req) => {
       return Response.json({ error: 'Unauthorized - Admin only' }, { status: 403 });
     }
 
+    const body = await req.json();
+    const manual = body.action === 'send_followup';
+    if (manual && !body.quote_id) return Response.json({ error: 'Quote ID required' }, { status: 400 });
     const today = new Date();
     const threeDaysFromNow = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -21,7 +24,7 @@ serve('quoteFollowUps', async (req) => {
     let expirationsProcessed = 0;
 
     // 1. Send follow-up reminders for quotes expiring in 3 days
-    const expiringQuotes = await platform.asServiceRole.entities.Quote.filter({ status: 'Sent' });
+    const expiringQuotes = await platform.asServiceRole.entities.Quote.filter(manual ? { id: body.quote_id } : { status: 'Sent' });
     for (const quote of expiringQuotes) {
       if (!quote.valid_until) continue;
       const expiryDate = new Date(quote.valid_until);
@@ -29,12 +32,12 @@ serve('quoteFollowUps', async (req) => {
       // Check if expires in exactly 3 days (or less, but not yet followed up)
       const daysUntilExpiry = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       
-      if (daysUntilExpiry <= 3 && daysUntilExpiry >= 0 && !quote.follow_up_sent) {
+      if ((manual || (daysUntilExpiry <= 3 && !quote.follow_up_sent)) && daysUntilExpiry >= 0) {
         const contactEmail = quote.contact_snapshot?.email;
         const contactName = quote.contact_snapshot?.full_name || 'there';
         
         if (contactEmail) {
-          const viewUrl = `https://www.creativebooks.co.za/quote/view/${quote.id}/${quote.view_token}`;
+          const viewUrl = `https://creative-books-sa.vercel.app/quote/view/${quote.id}/${quote.view_token}`;
           
           const emailHtml = `
 <!DOCTYPE html>
@@ -113,8 +116,10 @@ serve('quoteFollowUps', async (req) => {
       }
     }
 
+    if (manual) return Response.json({ success: followUpsSent > 0, follow_ups_sent: followUpsSent });
+
     // 2. Mark expired quotes
-    const sentQuotes = await platform.asServiceRole.entities.Quote.filter({ status: 'Sent' });
+    const sentQuotes = await platform.asServiceRole.entities.Quote.filter(manual ? { id: body.quote_id } : { status: 'Sent' });
     for (const quote of sentQuotes) {
       if (quote.valid_until && new Date(quote.valid_until) < today) {
         await platform.asServiceRole.entities.Quote.update(quote.id, {
@@ -127,7 +132,7 @@ serve('quoteFollowUps', async (req) => {
     }
 
     // 3. Create follow-up tasks for quotes sent 7+ days ago with no response
-    const oldQuotes = await platform.asServiceRole.entities.Quote.filter({ status: 'Sent' });
+    const oldQuotes = await platform.asServiceRole.entities.Quote.filter(manual ? { id: body.quote_id } : { status: 'Sent' });
     let tasksCreated = 0;
     for (const quote of oldQuotes) {
       if (quote.sent_at) {
@@ -137,7 +142,7 @@ serve('quoteFollowUps', async (req) => {
         if (daysSinceSent >= 7 && !quote.follow_up_sent) {
           await platform.asServiceRole.entities.Task.create({
             title: `Follow up: Quote ${quote.quote_number} - ${quote.contact_snapshot?.full_name || 'Client'}`,
-            description: `This quote was sent ${daysSinceSent} days ago and hasn't been accepted yet. Consider following up with the client.\n\nQuote Total: R ${Number(quote.total).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}\nView: https://www.creativebooks.co.za/admin/quotes`,
+            description: `This quote was sent ${daysSinceSent} days ago and hasn't been accepted yet. Consider following up with the client.\n\nQuote Total: R ${Number(quote.total).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}\nView: https://creative-books-sa.vercel.app/admin/quotes`,
             status: 'todo',
             priority: 'medium',
             due_date: today.toISOString().split('T')[0],

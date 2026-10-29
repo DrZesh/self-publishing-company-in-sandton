@@ -16,7 +16,7 @@ ${service.price ? `*Price:* R${service.price.toFixed(2)}` : ''}
 ${service.basePrice ? `*Base Price:* R${service.basePrice.toFixed(2)}` : ''}
 *Status:* ${service.active !== false ? '✅ Active' : '❌ Inactive'}
 
-View in dashboard: https://creativebooks.co.za/admin/services`;
+View in dashboard: https://creative-books-sa.vercel.app/admin/services`;
 
     const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}&apikey=${CALLMEBOT_API_KEY}`;
     

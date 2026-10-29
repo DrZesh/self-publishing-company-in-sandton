@@ -250,7 +250,7 @@ export default function ReviewScreen({ answers, pricing, inclVat, setInclVat, up
       <div className="flex flex-col sm:flex-row gap-3">
         <button onClick={onEmail}
           className="flex-1 py-4 bg-copper text-white rounded-full font-bold text-base shadow-lg hover:bg-copper/90 transition-all flex items-center justify-center gap-2">
-          📧 Email This Quote to Me
+          Save My Enquiry
         </button>
         <button onClick={onPdf}
           className="flex-1 py-4 border-2 border-copper text-copper rounded-full font-bold text-base hover:bg-copper/5 transition-all flex items-center justify-center gap-2">

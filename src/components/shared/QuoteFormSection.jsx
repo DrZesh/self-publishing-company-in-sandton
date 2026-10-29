@@ -1,3 +1,4 @@
+import { platform } from '@/api/platformClient';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
@@ -40,53 +41,14 @@ export default function QuoteFormSection({ title = "Quick Quote Request", servic
         .map(s => s.label)
         .join(', ');
 
-      const emailBody = `Hi Creative Books SA,
-
-I'm interested in the following services: ${selectedServices}
-
-${formData.message ? `Additional Details:\n${formData.message}\n` : ''}
-
-Please contact me with more information and a quote.
-
-Contact Information:
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone}
-
-Thank you,
-${formData.name}`;
-
-      const response = await fetch('/api/sendFormEmail', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: 'info@creativebookssa.co.za',
-          subject: `Quote Request: ${selectedServices}`,
-          body: emailBody,
-          fromName: formData.name,
-          replyTo: formData.email,
-        }),
+      await platform.functions.invoke('captureFormSubmission', {
+        formType: 'quote', fullName: formData.name, email: formData.email,
+        phone: formData.phone, message: formData.message,
+        sourcePage: window.location.pathname, serviceInterest: formData.services,
       });
-
-      if (response.ok) {
-        // Send confirmation to user
-        await fetch('/api/sendFormEmail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: formData.email,
-            subject: 'Quote Request Received — Creative Books SA',
-            body: `Hi ${formData.name},\n\nThank you for your quote request for ${selectedServices}. We've received your inquiry and will get back to you within 24 hours.\n\nBest regards,\nCreative Books SA Team`,
-            fromName: 'Creative Books SA',
-          }),
-        });
-
-        setSuccess(true);
-        setFormData({ name: '', email: '', phone: '', services: services.length > 0 ? [services[0]?.value] : [], message: '' });
-        setTimeout(() => setSuccess(false), 5000);
-      } else {
-        setError('Failed to send quote request. Please try again.');
-      }
+      setSuccess(true);
+      setFormData({ name: '', email: '', phone: '', services: services.length > 0 ? [services[0]?.value] : [], message: '' });
+      setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error(err);
