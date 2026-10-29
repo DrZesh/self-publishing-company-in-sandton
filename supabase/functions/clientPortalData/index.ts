@@ -345,7 +345,7 @@ serve('clientPortalData', async (req) => {
     if (['accept_quote','decline_quote'].includes(action)) {
       const quote = await platform.entities.Quote.get(body.quote_id);
       if (quote.contact_id !== contactId) return Response.json({ error: 'Access denied' }, { status: 403 });
-      const result = await platform.functions.invoke('quoteActions', { action: 'respond', quote_id: quote.id, token: quote.view_token, response: action === 'accept_quote' ? 'Accepted' : 'Rejected', signer_name: contact.full_name, signer_email: contact.email });
+      const result = await platform.functions.invoke('quoteActions', { action: 'respond', quote_id: quote.id, token: quote.view_token, response: action === 'accept_quote' ? 'accept' : 'reject', signer_name: contact.full_name, signer_email: contact.email });
       return Response.json(result.data);
     }
     if (action === 'download_invoice' || action === 'download_receipt') {

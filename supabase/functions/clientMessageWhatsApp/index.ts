@@ -20,7 +20,7 @@ serve('clientMessageWhatsApp', async (req) => {
 *From:* ${message.sender_name || 'Client'}
 *Message:* ${truncatedMsg}
 
-View: https://creativebooks.co.za/admin/chat`;
+View: https://creative-books-sa.vercel.app/admin/chat`;
 
     const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(whatsappMsg)}&apikey=${CALLMEBOT_API_KEY}`;
     

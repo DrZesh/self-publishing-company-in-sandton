@@ -249,9 +249,9 @@ serve('onNdaSigned', async (req) => {
               <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Signed Date</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${signedAt}</td></tr>
             </table>`,
           buttonLabel: signedNdaUrl ? 'View Signed NDA' : 'View in Dashboard',
-          buttonUrl: signedNdaUrl || 'https://www.creativebooks.co.za/admin/documents',
+          buttonUrl: signedNdaUrl || 'https://creative-books-sa.vercel.app/admin/documents',
           secondaryButtonLabel: signedNdaUrl ? 'View in Dashboard' : '',
-          secondaryButtonUrl: signedNdaUrl ? 'https://www.creativebooks.co.za/admin/documents' : '',
+          secondaryButtonUrl: signedNdaUrl ? 'https://creative-books-sa.vercel.app/admin/documents' : '',
           companyName, companyEmail, logoUrl, phone: company.phone || '084 230 5393', address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg', website: company.website_url || 'https://www.creativebooks.co.za',
         });
 

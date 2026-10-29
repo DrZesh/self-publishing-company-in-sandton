@@ -24,8 +24,7 @@ serve('managePortalAccess', async (req) => {
     }
 
     const generateToken = () => {
-      if (custom_token) return custom_token.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-      return `portal-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      return crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().replaceAll('-', '');
     };
 
     if (action === 'generate') {
@@ -52,7 +51,7 @@ serve('managePortalAccess', async (req) => {
       return Response.json({
         success: true,
         portal_id: portal.id,
-        portal_url: `${new URL(req.url).origin}/portal/${token}`,
+        portal_url: `https://creative-books-sa.vercel.app/portal/${token}`,
         access_token: token,
       });
     }
@@ -83,7 +82,7 @@ serve('managePortalAccess', async (req) => {
 
       return Response.json({
         success: true,
-        portal_url: `${new URL(req.url).origin}/portal/${newToken}`,
+        portal_url: `https://creative-books-sa.vercel.app/portal/${newToken}`,
         access_token: newToken,
       });
     }

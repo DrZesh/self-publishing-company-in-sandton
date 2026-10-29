@@ -501,7 +501,9 @@ serve('invoiceActions', async (req) => {
       const paid = Number(amount_paid) || 0;
       const balance = parseFloat((totalVal - paid).toFixed(2));
 
-      let status = body.status || 'Draft';
+      const existing = (await platform.entities.Invoice.filter({ id: invoice_id }))[0];
+      if (!existing) return Response.json({ error: 'Invoice not found' }, { status: 404 });
+      let status = body.status || existing.status || 'Draft';
       if (paid >= totalVal && totalVal > 0) status = 'Paid';
       else if (paid > 0 && paid < totalVal) status = 'Partially Paid';
       else if (due_date && new Date(due_date) < new Date() && balance > 0 && status !== 'Draft') status = 'Overdue';
@@ -534,59 +536,18 @@ serve('invoiceActions', async (req) => {
     }
 
     // ── SEND EMAIL ────────────────────────────────────────────────────────────
-    if (action === 'send') {
-      const { invoice_id } = body;
-      const invoices = await platform.asServiceRole.entities.Invoice.filter({ id: invoice_id });
-      if (!invoices.length) return Response.json({ error: 'Invoice not found' }, { status: 404 });
-      const invoice = invoices[0];
-      const contactEmail = invoice.contact_snapshot?.email;
-      if (!contactEmail) return Response.json({ error: 'No email on contact' }, { status: 400 });
+    if (['send', 'resend'].includes(action)) return Response.json({ error: 'Invoice email sending is pending approval. You can create and save invoice drafts.' }, { status: 503 });
 
+    if (action === 'generate_pdf') {
+      const invoice = (await platform.entities.Invoice.filter({ id: body.invoice_id }))[0];
+      if (!invoice) return Response.json({ error: 'Invoice not found' }, { status: 404 });
       const company = await getCompanySettings(platform);
-      const logoB64 = await fetchLogoBase64(company.logo_url);
-      const pdf = await buildInvoicePdf(invoice, company, logoB64);
-      const uint8 = new Uint8Array(pdf.output('arraybuffer'));
+      const logo = await fetchLogoBase64(company.logo_url);
+      const pdf = await buildInvoicePdf(invoice, company, logo);
+      const bytes = new Uint8Array(pdf.output('arraybuffer'));
       let binary = '';
-      uint8.forEach(b => binary += String.fromCharCode(b));
-      const pdfBase64 = btoa(binary);
-
-      const companyName = company.company_name || 'Creative Books SA';
-      const companyEmail = company.email || 'info@creativebooks.co.za';
-      const contactName = invoice.contact_snapshot?.full_name || 'there';
-      const logoUrl = company.logo_url || LOGO_URL;
-
-      const invoiceViewUrl = `https://creative-books-sa.vercel.app/invoice/view/${invoice.id}/${invoice.view_token}`;
-
-      const emailHtml = buildEmail({
-        preheader: `Invoice ${invoice.invoice_number} from ${companyName}`,
-        icon: '📄',
-        title: 'Invoice for Your Accepted Quote',
-        greeting: `Hi ${contactName},`,
-        message: `Thank you for accepting your quote for <strong>${invoice.book_title || 'your project'}</strong>.<br/><br/>Please find your invoice attached to this email. You can also view your invoice online using the button below. Kindly use the payment details provided on the invoice and send proof of payment once payment has been made.`,
-        highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Invoice Number</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${invoice.invoice_number}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Amount Due</td><td style="padding:4px 0;font-size:16px;color:#B87333;font-weight:800;text-align:right;">R ${Number(invoice.total||0).toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr>
-          <tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#d97706;font-weight:600;">⚠️ Work will only begin once payment has been received and confirmed.</td></tr>
-        </table>`,
-        buttonLabel: 'View Invoice Online',
-        buttonUrl: invoiceViewUrl,
-        companyName, companyEmail, logoUrl,
-        phone: company.phone || '084 230 5393',
-        address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-        website: company.website_url || 'https://www.creativebooks.co.za',
-      });
-
-      const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-      await resend.emails.send({
-        from: `${companyName} <${companyEmail}>`,
-        to: [contactEmail],
-        subject: `Invoice ${invoice.invoice_number} from ${companyName}`,
-        html: emailHtml,
-        attachments: [{ filename: `Invoice-${invoice.invoice_number}.pdf`, content: pdfBase64, contentType: 'application/pdf' }],
-      });
-
-      await platform.asServiceRole.entities.Invoice.update(invoice_id, { status: 'Sent', sent_at: new Date().toISOString(), invoice_email_sent: true, automation_state: 'Awaiting Admin Confirmation' });
-      return Response.json({ success: true });
+      bytes.forEach(byte => binary += String.fromCharCode(byte));
+      return Response.json({ pdf_base64: btoa(binary), invoice_number: invoice.invoice_number });
     }
 
     // ── GET PUBLIC (invoice view page) ────────────────────────────────────────
@@ -603,60 +564,7 @@ serve('invoiceActions', async (req) => {
     }
 
     // ── RESEND EMAIL (with new design) ────────────────────────────────────────
-    if (action === 'resend') {
-      const { invoice_id } = body;
-      const invoices = await platform.asServiceRole.entities.Invoice.filter({ id: invoice_id });
-      if (!invoices.length) return Response.json({ error: 'Invoice not found' }, { status: 404 });
-      const invoice = invoices[0];
-      const contactEmail = invoice.contact_snapshot?.email;
-      if (!contactEmail) return Response.json({ error: 'No email on contact' }, { status: 400 });
-
-      const company = await getCompanySettings(platform);
-      const logoB64 = await fetchLogoBase64(company.logo_url);
-      const pdf = await buildInvoicePdf(invoice, company, logoB64);
-      const uint8 = new Uint8Array(pdf.output('arraybuffer'));
-      let binary = '';
-      uint8.forEach(b => binary += String.fromCharCode(b));
-      const pdfBase64 = btoa(binary);
-
-      const companyName = company.company_name || 'Creative Books SA';
-      const companyEmail = company.email || 'info@creativebooks.co.za';
-      const contactName = invoice.contact_snapshot?.full_name || 'there';
-      const logoUrl = company.logo_url || LOGO_URL;
-
-      const invoiceViewUrl = `https://creative-books-sa.vercel.app/invoice/view/${invoice.id}/${invoice.view_token}`;
-
-      const emailHtml = buildEmail({
-        preheader: `Invoice ${invoice.invoice_number} from ${companyName}`,
-        icon: '📄',
-        title: 'Invoice Reminder',
-        greeting: `Hi ${contactName},`,
-        message: `Please find a reminder for invoice <strong>${invoice.invoice_number}</strong> for <strong>${invoice.book_title || 'your project'}</strong>. Kindly use the payment details provided and send proof of payment once payment has been made.`,
-        highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Invoice Number</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${invoice.invoice_number}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Amount Due</td><td style="padding:4px 0;font-size:16px;color:#B87333;font-weight:800;text-align:right;">R ${Number(invoice.total||0).toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr>
-          <tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#d97706;font-weight:600;">⚠️ Work will only begin once payment has been received and confirmed.</td></tr>
-        </table>`,
-        buttonLabel: 'View Invoice Online',
-        buttonUrl: invoiceViewUrl,
-        companyName, companyEmail, logoUrl,
-        phone: company.phone || '084 230 5393',
-        address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-        website: company.website_url || 'https://www.creativebooks.co.za',
-      });
-
-      const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-      await resend.emails.send({
-        from: `${companyName} <${companyEmail}>`,
-        to: [contactEmail],
-        subject: `Invoice ${invoice.invoice_number} from ${companyName}`,
-        html: emailHtml,
-        attachments: [{ filename: `Invoice-${invoice.invoice_number}.pdf`, content: pdfBase64, contentType: 'application/pdf' }],
-      });
-
-      console.log('Invoice resent to:', contactEmail);
-      return Response.json({ success: true, resent: true });
-    }
+    if (['send', 'resend'].includes(action)) return Response.json({ error: 'Invoice email sending is pending approval. You can create and save invoice drafts.' }, { status: 503 });
 
     // ── MARK OVERDUE (scheduled / manual check) ───────────────────────────────
     if (action === 'check_overdue') {

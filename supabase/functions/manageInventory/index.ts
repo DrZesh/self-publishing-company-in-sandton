@@ -10,7 +10,7 @@ serve('manageInventory', async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { action, material_id, po_id, data } = body;
+    const { action, material_id, po_id, data = {} } = body;
 
     // Get company settings
     const getCompanySettings = async () => {
@@ -170,51 +170,9 @@ serve('manageInventory', async (req) => {
 
     // SEND purchase order
     if (action === 'send_po') {
-      const po = (await platform.entities.PurchaseOrder.filter({ id: po_id }))[0];
-      if (!po) {
-        return Response.json({ error: 'PO not found' }, { status: 404 });
-      }
-
-      const company = await getCompanySettings();
-      const supplier = (await platform.entities.Contact.filter({ id: po.supplier_id }))[0];
-
-      // Update status
-      await platform.entities.PurchaseOrder.update(po_id, {
-        status: 'Sent',
-        sent_at: new Date().toISOString(),
-      });
-
-      // Send email
-      const emailBody = `
-        <h2>Purchase Order - ${po.po_number}</h2>
-        <p>Dear ${supplier?.full_name || 'Supplier'},</p>
-        <p>Please find attached our purchase order ${po.po_number}.</p>
-        
-        <h3>Order Details:</h3>
-        <ul>
-          ${po.line_items.map(item => `
-            <li>${item.material_name || 'Item'} - Qty: ${item.quantity} @ R${item.unit_price} = R${item.line_total}</li>
-          `).join('')}
-        </ul>
-        
-        <p><strong>Total: R${po.total}</strong></p>
-        <p>Expected Delivery: ${po.expected_delivery_date ? new Date(po.expected_delivery_date).toLocaleDateString('en-ZA') : 'TBD'}</p>
-        <p>Delivery Address: ${po.delivery_address || company?.physical_address || 'TBD'}</p>
-        
-        <p>Thank you for your service.</p>
-        <p>Best regards,<br>${company?.company_name || 'Creative Books SA'}</p>
-      `;
-
-      await platform.integrations.Core.SendEmail({
-        to: supplier?.email || data.supplier_email,
-        subject: `Purchase Order ${po.po_number} - Creative Books SA`,
-        body: emailBody,
-      });
-
-      return Response.json({ success: true });
+      return Response.json({ error: 'Supplier email sending needs explicit approval. Purchase orders can still be saved and received.' }, { status: 503 });
     }
 
-    // RECEIVE items against PO
     if (action === 'receive_items') {
       const po = (await platform.entities.PurchaseOrder.filter({ id: po_id }))[0];
       if (!po) {

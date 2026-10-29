@@ -20,7 +20,8 @@ async function sendBrandedEmail(to, subject, htmlContent) {
   });
 
   const resendData = await resendRes.json();
-  return resendRes.ok;
+  if (!resendRes.ok) throw new Error('Email provider rejected the portal invitation');
+  return true;
 }
 
 serve('autoCreatePortalAccess', async (req) => {
@@ -53,7 +54,7 @@ serve('autoCreatePortalAccess', async (req) => {
     }
 
     // Generate access token
-    const generateToken = () => Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+    const generateToken = () => crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().replaceAll('-', '');
     const token = generateToken();
     const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(); // 90 days
 
@@ -70,7 +71,7 @@ serve('autoCreatePortalAccess', async (req) => {
     });
 
     // Send welcome email with portal link
-    const portalUrl = `https://creativebooks.co.za/portal/${token}`;
+    const portalUrl = `https://creative-books-sa.vercel.app/portal/${token}`;
     const emailHtml = `
       <!DOCTYPE html>
       <html>

@@ -114,7 +114,7 @@ serve('weeklyRevenueDigest', async (req) => {
     </ul>` : ''}
 
     <div style="background:#f9f5f0;border-radius:8px;padding:16px;text-align:center;margin-top:8px;">
-      <a href="https://creativebooks.co.za/admin/dashboard" style="display:inline-block;background:#B87333;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">Open Dashboard →</a>
+      <a href="https://creative-books-sa.vercel.app/admin/dashboard" style="display:inline-block;background:#B87333;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">Open Dashboard →</a>
     </div>
   </div>
   <div style="background:#f9f5f0;padding:16px 32px;text-align:center;font-size:11px;color:#999;">

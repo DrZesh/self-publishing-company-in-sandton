@@ -227,7 +227,7 @@ serve('adminConfirmWorkflow', async (req) => {
           logs.push('Portal account already existed — reused');
         }
 
-        const portalUrl = `https://www.creativebooks.co.za/portal/${portal.access_token}`;
+        const portalUrl = `https://creative-books-sa.vercel.app/portal/${portal.access_token}`;
         const accessCode = (portal.access_token || '').substring(0, 8).toUpperCase();
 
         const portalHtml = buildEmail({

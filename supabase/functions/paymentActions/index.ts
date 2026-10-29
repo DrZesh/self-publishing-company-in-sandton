@@ -242,7 +242,8 @@ serve('paymentActions', async (req) => {
     // ── RECORD PAYMENT ────────────────────────────────────────────────────────
     if (action === 'record') {
       const { invoice_id, contact_id, amount, payment_date, payment_method, reference, notes } = body;
-      const amt = parseFloat(amount) || 0;
+      const amt = Number(amount);
+      if (!Number.isFinite(amt) || amt <= 0) return Response.json({ error: 'Payment amount must be positive' }, { status: 400 });
 
       const [invoices, contacts] = await Promise.all([
         platform.asServiceRole.entities.Invoice.filter({ id: invoice_id }),
@@ -301,75 +302,8 @@ serve('paymentActions', async (req) => {
     }
 
     // ── SEND ACKNOWLEDGEMENT ──────────────────────────────────────────────────
-    if (action === 'send_acknowledgement') {
-      const { receipt_id } = body;
-      const receipts = await platform.asServiceRole.entities.Receipt.filter({ id: receipt_id });
-      if (!receipts.length) return Response.json({ error: 'Receipt not found' }, { status: 404 });
-      const receipt = receipts[0];
-      const contactEmail = receipt.contact_snapshot?.email;
-      if (!contactEmail) return Response.json({ error: 'No email on contact' }, { status: 400 });
+    if (action === 'send_acknowledgement') return Response.json({ error: 'Receipt email delivery is pending approval. Payment recording and PDF receipts remain available.' }, { status: 503 });
 
-      const company = await getCompanySettings(platform);
-      const logoB64 = await fetchLogoBase64(company.logo_url || LOGO_URL);
-
-      // Fetch linked invoice for PDF
-      let invoice = null;
-      if (receipt.invoice_id) {
-        const invs = await platform.asServiceRole.entities.Invoice.filter({ id: receipt.invoice_id });
-        invoice = invs[0] || null;
-      }
-
-      const pdf = await buildReceiptPdf(receipt, invoice, company, logoB64);
-      const uint8 = new Uint8Array(pdf.output('arraybuffer'));
-      let binary = '';
-      uint8.forEach(b => binary += String.fromCharCode(b));
-      const pdfBase64 = btoa(binary);
-
-      const companyName = company.company_name || 'Creative Books SA';
-      const companyEmail = company.email || 'info@creativebooks.co.za';
-      const contactName = receipt.contact_snapshot?.full_name || 'there';
-      const balanceRow = (receipt.balance_after || 0) > 0
-        ? `<tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#92400e;font-weight:600;">⚠️ Remaining balance on ${receipt.invoice_number}: R ${Number(receipt.balance_after).toFixed(2)}</td></tr>`
-        : `<tr><td colspan="2" style="padding:10px 0 0;font-size:13px;color:#065f46;font-weight:600;">✅ Invoice ${receipt.invoice_number} is now fully settled. Thank you!</td></tr>`;
-
-      const emailHtml = buildEmail({
-        preheader: `Payment Receipt ${receipt.receipt_number} from ${companyName}`,
-        icon: '✅',
-        title: 'Payment Received',
-        greeting: `Hi ${contactName},`,
-        message: `Thank you — your payment of <strong>R ${Number(receipt.amount_paid).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</strong> has been successfully received. Your official receipt is attached to this email for your records.`,
-        highlightHtml: `<table width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Receipt Number</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${receipt.receipt_number}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Invoice</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${receipt.invoice_number || ''}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Payment Date</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${fmtDate(receipt.payment_date)}</td></tr>
-          <tr><td style="padding:4px 0;font-size:13px;color:#718096;">Payment Method</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${receipt.payment_method || 'EFT'}</td></tr>
-          ${receipt.reference ? `<tr><td style="padding:4px 0;font-size:13px;color:#718096;">Reference</td><td style="padding:4px 0;font-size:13px;color:#2d3748;font-weight:600;text-align:right;">${receipt.reference}</td></tr>` : ''}
-          <tr><td style="padding:8px 0 4px;font-size:14px;color:#718096;border-top:1px solid #e2e8f0;">Amount Paid</td><td style="padding:8px 0 4px;font-size:18px;color:#10b981;font-weight:800;text-align:right;border-top:1px solid #e2e8f0;">R ${Number(receipt.amount_paid).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}</td></tr>
-          ${balanceRow}
-        </table>`,
-        footerNote: 'Your receipt PDF is attached for your records. Thank you for your business!',
-        companyName,
-        companyEmail,
-        logoUrl: company.logo_url || LOGO_URL,
-        phone: company.phone || '084 230 5393',
-        address: company.physical_address || 'Prism Office Park, Fourways, Johannesburg',
-        website: company.website_url || 'https://www.creativebooks.co.za',
-      });
-
-      const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-      await resend.emails.send({
-        from: `${companyName} <${companyEmail}>`,
-        to: [contactEmail],
-        subject: `Payment Receipt ${receipt.receipt_number} — Invoice ${receipt.invoice_number}`,
-        html: emailHtml,
-        attachments: [{ filename: `Receipt-${receipt.receipt_number}.pdf`, content: pdfBase64, contentType: 'application/pdf' }],
-      });
-
-      await platform.asServiceRole.entities.Receipt.update(receipt_id, { acknowledgement_sent_at: new Date().toISOString() });
-      return Response.json({ success: true });
-    }
-
-    // ── GET RECEIPT BY INVOICE ─────────────────────────────────────────────────
     if (action === 'get_by_invoice') {
       const { invoice_id } = body;
       const receipts = await platform.asServiceRole.entities.Receipt.filter({ invoice_id }, '-created_date', 1);

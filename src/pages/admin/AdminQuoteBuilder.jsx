@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { platform } from '@/api/platformClient';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { ArrowLeft, Plus, Trash2, Save, Send, Eye, FileText, Sparkles, UserPlus, Users, Copy, Download, Building2 } from 'lucide-react';
+import { Trash2, Save, Send, FileText, Copy, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -185,6 +185,7 @@ export default function AdminQuoteBuilder() {
         include_vat: quoteData?.include_vat !== false,
         vat_rate: quoteData?.vat_rate || 15,
         discount_amount: quoteData?.discount_amount || 0,
+        book_title: quoteData?.book_title || '',
         notes: quoteData?.notes || '',
         terms: quoteData?.terms || '',
         line_items: lineItems,
@@ -192,11 +193,34 @@ export default function AdminQuoteBuilder() {
       if (result.data?.quote) setQuoteData(result.data.quote);
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       toast.success('Quote saved');
+      return true;
     } catch (err) {
       toast.error(err.message || 'Failed to save');
+      return false;
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDownload = async () => {
+    try {
+      if (!(await handleSave())) return;
+      const { data } = await platform.functions.invoke('quoteActions', { action: 'generate_pdf', quote_id: routeQuoteId });
+      const link = document.createElement('a');
+      let objectUrl;
+      if (data.pdf_base64) {
+        const bytes = Uint8Array.from(atob(data.pdf_base64), c => c.charCodeAt(0));
+        objectUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+        link.href = objectUrl;
+        link.download = `${data.quote_number || 'quote'}.pdf`;
+      } else if (data.pdf_url) {
+        link.href = data.pdf_url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+      } else throw new Error('PDF generation did not return a file.');
+      link.click();
+      if (objectUrl) setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    } catch (error) { toast.error(error.message || 'Could not download PDF'); }
   };
 
   const handleSend = async () => {
@@ -208,7 +232,7 @@ export default function AdminQuoteBuilder() {
     if (!emailToCheck) return toast.error('Contact must have an email address');
     setSending(true);
     try {
-      await handleSave();
+      if (!(await handleSave())) return;
       const res = await platform.functions.invoke('quoteActions', { action: 'send', quote_id: routeQuoteId });
       
       // Automatically create deal and move contact to "Quote Sent" stage
@@ -341,9 +365,10 @@ export default function AdminQuoteBuilder() {
                   <Save className="w-4 h-4" />
                   {saving ? 'Saving…' : 'Save Draft'}
                 </Button>
-                <Button onClick={handleSend} disabled={sending || !lineItems.length} className="gap-2 bg-amber-700 hover:bg-amber-800 text-white">
+                <Button variant="outline" onClick={handleDownload} disabled={saving}>Download PDF</Button>
+                <Button onClick={handleSend} disabled title="Email delivery is pending approval" className="gap-2 bg-amber-700 hover:bg-amber-800 text-white">
                   <Send className="w-4 h-4" />
-                  {sending ? 'Sending…' : 'Send to Client'}
+                  Email pending approval
                 </Button>
               </div>
             </div>
@@ -392,6 +417,7 @@ export default function AdminQuoteBuilder() {
               <CardHeader className="pb-3 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-gray-700">Line Items</CardTitle>
                 <div className="flex items-center gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => addLineItem({ serviceName: '', pricingType: 'fixed', price: 0 })}>Add blank item</Button>
                   <Select value={selectedServiceId} onValueChange={(val) => {
                     const service = services.find(s => s.id === val);
                     if (service) addLineItem(service);
@@ -413,7 +439,7 @@ export default function AdminQuoteBuilder() {
                 {lineItems.length === 0 ? (
                   <div className="text-center py-8 text-gray-400 text-sm">
                     <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p>No line items yet. Select a service from the dropdown to add.</p>
+                    <p>Select a service or add a blank item.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">

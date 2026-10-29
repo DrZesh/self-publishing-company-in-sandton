@@ -1,4 +1,5 @@
 import { createClientFromRequest, serve } from '../_shared/server.ts';
+import { validateWorkflow, runWorkflowSteps } from '../_shared/workflows.js';
 
 serve('manageWorkflows', async (req) => {
   try {
@@ -10,7 +11,7 @@ serve('manageWorkflows', async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { action, workflow_id, execution_id, data } = body;
+    const { action, workflow_id, execution_id, data = {} } = body;
 
     // CREATE workflow template
     if (action === 'create_template') {
@@ -122,7 +123,8 @@ serve('manageWorkflows', async (req) => {
         return Response.json({ error: 'Template not found' }, { status: 404 });
       }
 
-      const executionId = `EXEC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      try { validateWorkflow(template, data); } catch (error) { return Response.json({ error: error.message }, { status: 400 }); }
+      const executionId = `EXEC-${crypto.randomUUID()}`;
       
       const execution = await platform.entities.WorkflowExecution.create({
         execution_id: executionId,
@@ -131,20 +133,21 @@ serve('manageWorkflows', async (req) => {
         trigger_type: 'manual',
         trigger_entity_name: data.entity_name,
         trigger_entity_id: data.entity_id,
-        status: 'Pending',
+        status: 'Running',
         total_steps: template.steps?.length || 0,
         started_at: new Date().toISOString(),
         variables: data.variables || {},
         created_by: user.full_name,
       });
 
-      // Queue for execution (in production, this would trigger a background job)
-      // For now, we'll just return the execution ID
-      return Response.json({ 
-        success: true, 
-        execution_id: executionId,
-        message: 'Workflow execution started',
-      });
+      try {
+        const step_results = await runWorkflowSteps(platform, template, data);
+        await platform.entities.WorkflowExecution.update(execution.id, { status: 'Completed', completed_steps: step_results.length, completed_at: new Date().toISOString(), step_results });
+        return Response.json({ success: true, execution_id: executionId, message: 'Workflow completed', step_results });
+      } catch (error) {
+        await platform.entities.WorkflowExecution.update(execution.id, { status: 'Failed', error_message: error.message, completed_at: new Date().toISOString() });
+        return Response.json({ error: error.message, execution_id: executionId }, { status: 500 });
+      }
     }
 
     // LIST executions

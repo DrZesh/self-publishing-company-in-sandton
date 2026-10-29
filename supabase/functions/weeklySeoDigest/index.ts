@@ -119,7 +119,7 @@ serve('weeklySeoDigest', async (req) => {
       </table>
 
       <div style="text-align:center;padding:16px;background:#f9f7f2;border-radius:12px;">
-        <a href="https://creativebooks.co.za/admin/search-console" style="color:#B87333;font-size:13px;font-weight:600;text-decoration:none;">View Full SEO Dashboard →</a>
+        <a href="https://creative-books-sa.vercel.app/admin/search-console" style="color:#B87333;font-size:13px;font-weight:600;text-decoration:none;">View Full SEO Dashboard →</a>
       </div>
     </div>
 

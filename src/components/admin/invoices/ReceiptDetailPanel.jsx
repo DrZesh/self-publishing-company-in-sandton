@@ -14,11 +14,20 @@ export default function ReceiptDetailPanel({ receipt, invoice, contact, onClose 
     try {
       const { platform } = await import('@/api/platformClient');
       const res = await platform.functions.invoke('paymentActions', {
-        action: 'generate_receipt_pdf',
+        action: 'get_receipt_pdf',
         receipt_id: receipt.id,
       });
       
-      if (res.data?.pdf_url) {
+      if (res.data?.pdf_base64) {
+        const bytes = Uint8Array.from(atob(res.data.pdf_base64), c => c.charCodeAt(0));
+        const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${res.data.receipt_number || 'receipt'}.pdf`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast.success('Receipt downloaded');
+      } else if (res.data?.pdf_url) {
         window.open(res.data.pdf_url, '_blank');
         toast.success('Receipt downloaded');
       }

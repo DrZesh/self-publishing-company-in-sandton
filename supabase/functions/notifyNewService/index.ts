@@ -65,7 +65,7 @@ serve('notifyNewService', async (req) => {
           </tbody>
         </table>
         <div style="text-align:center;margin-top:28px;">
-          <a href="https://creativebooks.co.za/admin/services" style="display:inline-block;background:#B87333;color:#fff;padding:13px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">View in Dashboard →</a>
+          <a href="https://creative-books-sa.vercel.app/admin/services" style="display:inline-block;background:#B87333;color:#fff;padding:13px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">View in Dashboard →</a>
         </div>
       </td></tr>
       <tr><td style="padding:24px 32px;border-top:1px solid #E5E0D5;text-align:center;font-size:13px;color:#AAAAAA;line-height:1.7;">

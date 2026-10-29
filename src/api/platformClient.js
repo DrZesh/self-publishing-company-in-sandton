@@ -1,7 +1,9 @@
 import { supabase } from './supabaseClient';
+import { pendingFunctions } from '../lib/crmMigrationStatus';
 import { safeRedirect } from '../../supabase/functions/_shared/policy.js';
 import { createEntities } from '../../supabase/functions/_shared/entities.js';
 async function invoke(name, body = {}) {
+  if (pendingFunctions[name]) throw new Error(pendingFunctions[name]);
   const token = typeof location !== 'undefined' && location.pathname.match(/^\/portal\/([^/]+)/)?.[1];
   if (token && !(body instanceof FormData) && ['clientPortalData','portalMessages','portalAppointments','fileUploadActions','proofApprovalActions'].includes(name)) body = { ...body, portal_token: decodeURIComponent(token), access_token: decodeURIComponent(token), token: decodeURIComponent(token) };
   const { data, error } = await supabase.functions.invoke(name, { body });
