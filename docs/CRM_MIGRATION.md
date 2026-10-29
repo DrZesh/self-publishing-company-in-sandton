@@ -33,9 +33,11 @@ Google Analytics/Search Console, Calendar/Gmail, Adobe Sign, Zoho Books, WhatsAp
 
 ## Outstanding data/configuration work
 
-Historical Base44 records were NOT imported. The source app observed in the user's browser is 69fb173eeab1ba78da6eab45; the connected Base44 account returned “Unable to access this app.” Several similarly named apps exist and were not substituted. Source-app access or a full entity/file export is required before historical records and private assets can be migrated and reconciled.
+The user-supplied historical ZIP was imported on 29 October 2026: 10,440 records in 46 entity types, all exported IDs reconciled, no source records skipped, financial totals matched. All five pre-existing CRM records remained unchanged. See HISTORICAL_IMPORT.md. This resolves the historical-record access blocker for this export.
 
-Booking services and availability, business-specific company/bank details and service catalogue must come from confirmed source data or administrator configuration. No prices, banking information, booking hours, legal signing decisions or client records were fabricated.
+The ZIP explicitly excludes documents and file contents. Historical URLs are retained, but binary assets and the excluded Document records still require a separate export. One invoice references a contact absent from the source, and duplicate quote/invoice number groups already existed. These were preserved rather than silently merged or renumbered. Imported user profiles do not create Supabase Auth accounts.
+
+Three booking-service records, seven availability rules, 52 services and company settings were imported. No scheduling hours, prices or banking details were fabricated. Data import did not enable communication functions, install event triggers or configure external provider secrets.
 
 The last verified custom-domain DNS still served Base44. Use the Vercel hostname for verification until DNS cutover is independently confirmed. Auth passwords/sessions are separate from Base44 entity records and cannot be copied as ordinary rows.
 

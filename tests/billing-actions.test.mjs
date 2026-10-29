@@ -90,3 +90,19 @@ test('invoice and quote PDFs are generated without client email delivery', async
   const qpdf = await quote({ action: 'generate_pdf', quote_id: q.quote.id });
   assert.equal(qpdf.pdf_url, 'https://test.invalid/document.pdf');
 });
+
+test('historical numbering gaps do not reuse existing quote or invoice numbers', async () => {
+  const year = new Date().getFullYear();
+  const quote = await harness('quoteActions', { Quote: [
+    { id: 'old-high', quote_number: `CBSA-QT-${year}-0500` },
+    { id: 'new-low', quote_number: `CBSA-QT-${year}-0001` },
+  ] });
+  const created = await quote({ action: 'create', contact_id: 'client', line_items: [] });
+  assert.equal(created.quote.quote_number, `CBSA-QT-${year}-0501`);
+  const invoice = await harness('invoiceActions', { Invoice: [
+    { id: 'old-high', invoice_number: 'INV-0500' },
+    { id: 'new-low', invoice_number: 'INV-0001' },
+  ] });
+  const inv = await invoice({ action: 'create', contact_id: 'client', line_items: [] });
+  assert.equal(inv.invoice.invoice_number, 'INV-0501');
+});

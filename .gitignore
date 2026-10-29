@@ -34,3 +34,6 @@ base44/.app.jsonc
 !.env.example
 !supabase/.env.example
 supabase/.temp/
+
+# Historical CRM exports and generated import payloads contain private data.
+historical-import/

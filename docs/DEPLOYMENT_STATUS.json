@@ -2,11 +2,11 @@
   "date": "2026-10-29",
   "project_url": "https://cobpbsfkeewxzyprbmet.supabase.co",
   "remote_schema_applied": true,
-  "tables": 71,
+  "tables": 72,
   "remote_functions_deployed": "partial, full pending inventory recorded",
   "website_target": "https://creativebooks.co.za",
   "vercel_project": "creative-books-sa",
-  "live_data_imported": false,
+  "live_data_imported": true,
   "integration_secrets_configured": "Resend only; other providers pending",
   "admin_account_created": true,
   "disabled_pending_review": [
@@ -14,13 +14,13 @@
     "autoCreatePortalAccess",
     "adobeSignActions"
   ],
-  "notes": "Core CRM backends restored. Historical Base44 data not imported: connected account cannot access source app 69fb173eeab1ba78da6eab45. No claim of full migration. See CRM_MIGRATION.md.",
+  "notes": "Historical export imported and reconciled. Original files/documents were excluded; URLs retained. Blocked CRM communications and provider integrations remain deferred. See HISTORICAL_IMPORT.md.",
   "save_only_forms_enabled": [
     "captureFormSubmission",
     "createBookingRequest"
   ],
   "live_form_tests": "passed with synthetic enquiry and pending booking; test records removed",
-  "booking_configuration": "No services or availability configured",
+  "booking_configuration": "Imported 3 booking-service records and 7 availability rules from the historical export",
   "domain_status": "creativebooks.co.za still points to Base44; new site at creative-books-sa.vercel.app",
   "enquiry_booking_email": "enabled through domain-restricted Resend key",
   "email_notifications_to": "info@creativebooks.co.za and the saved submitter email",
@@ -90,5 +90,21 @@
   "live_browser_verification": "Synthetic quote and invoice created, loaded and saved; invoice line item/VAT/total persisted across reload. Test records removed.",
   "billing_delivery": "Client quote/invoice/receipt email actions deferred; record/PDF operations active",
   "verification": "36 local tests; all 106 functions bundle; frontend production build passes",
-  "historical_source_access": "Base44 connector cannot access app 69fb173eeab1ba78da6eab45"
+  "historical_source_access": "Imported from user-supplied ZIP; direct Base44 account access not required for these records",
+  "historical_import": {
+    "date": "2026-10-29",
+    "archive_sha256": "86ce38e14270ba78eeec69b71a8fed654d7bc16ff7692d53d4d360f4304f2af6",
+    "records": 10440,
+    "entity_types": 46,
+    "batches": 26,
+    "skipped": 0,
+    "missing_ids": 0,
+    "financial_totals_match": true,
+    "preexisting_rows_preserved": 5,
+    "auth_accounts_created": 0,
+    "documents_and_file_bytes_included": false,
+    "source_invoice_missing_contact": 1,
+    "source_duplicate_quote_number_groups": 4,
+    "source_duplicate_invoice_number_groups": 4
+  }
 }

@@ -34,7 +34,11 @@ function generateToken() { return crypto.randomUUID().replaceAll('-', '') + cryp
 async function getNextQuoteNumber(platform) {
   const year = new Date().getFullYear();
   const existing = await platform.asServiceRole.entities.Quote.filter({ quote_number: { $regex: `CBSA-QT-${year}-` } });
-  const nextNum = existing.length + 1;
+  const prefix = `CBSA-QT-${year}-`;
+  const nextNum = existing.reduce((highest, row) => {
+    const suffix = String(row.quote_number || '').slice(prefix.length);
+    return /^\d+$/.test(suffix) ? Math.max(highest, Number(suffix)) : highest;
+  }, 0) + 1;
   return `CBSA-QT-${year}-${String(nextNum).padStart(4, '0')}`;
 }
 

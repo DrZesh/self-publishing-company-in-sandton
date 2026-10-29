@@ -7243,5 +7243,11 @@
         "type": "string"
       }
     }
+  },
+  "CoverTemplateLead": {
+    "name": "CoverTemplateLead",
+    "type": "object",
+    "additionalProperties": true,
+    "description": "Historical cover-template enquiry records. Original export fields are retained in data."
   }
 }

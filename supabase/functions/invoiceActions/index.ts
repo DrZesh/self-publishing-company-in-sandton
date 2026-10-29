@@ -33,11 +33,11 @@ function generateToken() { return crypto.randomUUID().replaceAll('-', '') + cryp
 }
 
 async function getNextInvoiceNumber(platform) {
-  const existing = await platform.asServiceRole.entities.Invoice.list('-created_date', 1);
-  if (!existing.length) return 'INV-0001';
-  const last = existing[0].invoice_number || 'INV-0000';
-  const match = last.match(/(\d+)$/);
-  const num = match ? parseInt(match[1]) + 1 : 1;
+  const existing = await platform.asServiceRole.entities.Invoice.list('-created_date');
+  const num = existing.reduce((highest, row) => {
+    const match = String(row.invoice_number || '').match(/^INV-(\d+)$/);
+    return match ? Math.max(highest, Number(match[1])) : highest;
+  }, 0) + 1;
   return `INV-${String(num).padStart(4, '0')}`;
 }
 
