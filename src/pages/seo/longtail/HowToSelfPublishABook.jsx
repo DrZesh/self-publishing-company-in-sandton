@@ -112,7 +112,7 @@ export default function HowToSelfPublishABook() {
       relatedLinks={[
         { label: 'Self Publishing SA', path: '/self-publishing-south-africa' },
         { label: 'Publishing Packages', path: '/publishingpackages/a5' },
-        { label: 'ISBN Registration', path: '/isbn' },
+        { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
         { label: 'Book Cover Design', path: '/book-cover-design' },
         { label: 'Book Typesetting', path: '/typesetting' },
         { label: 'Book Printing SA', path: '/book-printing' },

@@ -39,7 +39,7 @@ const importers = {
   '/calculator': () => import('@/pages/calculator/index.jsx'),
   '/resources/CoverSizeCalculator': () => import('@/pages/resources/CoverSizeCalculator'),
   '/barcode-generator': () => import('@/pages/BarcodeGenerator'),
-  '/isbn': () => import('@/pages/resources/ISBNRegistration'),
+  '/how-to-get-an-isbn-in-south-africa': () => import('@/pages/resources/ISBNRegistration'),
   '/publishingguide': () => import('@/pages/resources/CompletePublishingGuide'),
 };
 

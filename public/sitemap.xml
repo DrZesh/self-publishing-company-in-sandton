@@ -54,7 +54,7 @@
   <url><loc>https://creativebooks.co.za/publishingroadmap</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Resource Pages -->
-  <url><loc>https://creativebooks.co.za/isbn</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creativebooks.co.za/how-to-get-an-isbn-in-south-africa</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://creativebooks.co.za/howtopublishabook</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://creativebooks.co.za/printingguide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://creativebooks.co.za/editingguide</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -186,3 +186,4 @@
   <url><loc>https://creativebooks.co.za/howtostartpublishingcareerfromzeroinsouthafrica</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
 </urlset>
+

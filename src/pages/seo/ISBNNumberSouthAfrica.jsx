@@ -118,7 +118,7 @@ export default function ISBNNumberSouthAfrica() {
 
         <InternalLinks
           links={[
-            { label: 'ISBN Registration', path: '/isbn' },
+            { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
             { label: 'Book Publishing', path: '/book-publishing' },
             { label: 'Book Layout & Typesetting', path: '/typesetting' },
             { label: 'Book Cover Design', path: '/book-cover-design' },

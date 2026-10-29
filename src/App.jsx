@@ -506,8 +506,9 @@ const AuthenticatedApp = () => {
         <Route path="/publishingroadmap" element={<PublishingRoadmap />} />
 
         {/* Resource Pages */}
-        <Route path="/isbn" element={<ISBNRegistration />} />
-        <Route path="/isbnregistration" element={<Navigate to="/isbn" replace />} />
+        <Route path="/how-to-get-an-isbn-in-south-africa" element={<ISBNRegistration />} />
+        <Route path="/isbn" element={<Navigate to="/how-to-get-an-isbn-in-south-africa" replace />} />
+        <Route path="/isbnregistration" element={<Navigate to="/how-to-get-an-isbn-in-south-africa" replace />} />
         <Route path="/howtopublishabook" element={<CompletePublishingGuide />} />
         <Route path="/publishingguide" element={<CompletePublishingGuide />} />
         <Route path="/printingguide" element={<ResourcePage resourceKey="printingguide" />} />

@@ -71,7 +71,7 @@ export default function BookPublishersSouthAfrica() {
           { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
           { label: 'Best Publishers SA', path: '/best-publishing-companies-in-south-africa' },
           { label: 'Book Editing', path: '/book-editing' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}
         ctaTitle="Publish Your Book With South Africa's Trusted Publishers"

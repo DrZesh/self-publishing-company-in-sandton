@@ -72,7 +72,7 @@ export default function PublishingCompaniesSouthAfrica() {
           { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
           { label: 'Book Editing', path: '/book-editing' },
           { label: 'Book Cover Design', path: '/book-cover-design' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'Best Publishers SA', path: '/best-publishing-companies-in-south-africa' },
           { label: 'Self Publishing Packages', path: '/self-publishing-packages-in-south-africa' },
           { label: 'Get a Quote', path: '/getquote' },

@@ -65,7 +65,7 @@ export default function SelfPublishingSouthAfrica() {
           { label: 'Publishing Packages', path: '/publishingpackages/a5' },
           { label: 'Book Printing JHB', path: '/book-printing-johannesburg' },
           { label: 'Book Cover Design', path: '/book-cover-design' },
-          { label: 'ISBN Registration', path: '/isbn' },
+          { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
           { label: 'How to Publish a Book', path: '/howtopublishabook' },
           { label: 'Get a Quote', path: '/getquote' },
         ]}

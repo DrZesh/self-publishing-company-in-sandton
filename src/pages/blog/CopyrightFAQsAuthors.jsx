@@ -37,7 +37,7 @@ const article = {
     { q: 'Can I copy 10 percent of a book legally?', a: 'Not automatically. The 10 percent rule is not a universal legal safe harbour. Fair dealing is assessed case by case based on purpose, amount, importance of the extract and effect on the market.' },
   ],
   relatedLinks: [
-    { label: 'ISBN Registration', path: '/isbn' },
+    { label: 'ISBN Registration', path: '/how-to-get-an-isbn-in-south-africa' },
     { label: 'Book Editing Services', path: '/book-editing' },
     { label: 'Book Cover Design', path: '/book-cover-design' },
     { label: 'Self Publishing South Africa', path: '/self-publishing-south-africa' },
