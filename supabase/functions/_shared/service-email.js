@@ -1,9 +1,11 @@
-import {brandedWorkflowEmail} from './email-templates.js';
+import {brandedWorkflowEmail,googleReviewEmail} from './email-templates.js';
 export function serviceEmailMessage(payload){
  const subject=payload.template_subject;
  const body=payload.template_body;
  if(!subject||!body||/[\r\n]/.test(subject))throw new Error('Stage email subject or body is missing');
  const completed=['Project Completed','Request Google Review'].includes(payload.stage);
+ const REVIEW='https://g.page/r/CYluusLzUm24EBM/review';
+ if(completed)return {subject,text:body,html:googleReviewEmail({subject,message:body,reviewUrl:REVIEW,reviewMarker:'[Share your experience on Google]('+REVIEW+')'})};
  return {subject,text:body,html:brandedWorkflowEmail({heading:subject,introduction:'',message:body,fields:[],actionUrl:completed?'https://g.page/r/CYluusLzUm24EBM/review':payload.portal_url,actionLabel:completed?'Share your experience on Google':'View your project',inlineActionMarker:completed?'[Share your experience on Google](https://g.page/r/CYluusLzUm24EBM/review)':null,includeSignature:false})};
 }
 export function previewTemplate(template,firstName='',bookTitle='',paid=false,instructions='Review the supplied file and return your comments.'){

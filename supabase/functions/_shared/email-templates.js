@@ -196,3 +196,52 @@ export function brandedWorkflowEmail({heading,introduction,fields=[],message,act
  const messageHtml=inline?message.split(inlineActionMarker).map(part=>`<p style="font-size:16px;line-height:1.7;white-space:pre-wrap">${escapeHtml(part)}</p>`).join(action):`<p style="font-size:16px;line-height:1.7;white-space:pre-wrap">${escapeHtml(message)}</p>`;
  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#F5F5F5"><table width="100%" cellpadding="0" cellspacing="0" role="presentation"><tr><td align="center" style="padding:24px 16px"><table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)"><tr><td>${gradientBar()}</td></tr><tr><td>${logoRow()}</td></tr><tr><td style="padding:0 32px 28px;font-family:Helvetica,Arial,sans-serif;color:${TEXT_COLOR}"><h1 style="font-size:26px;margin:0 0 18px;color:${BRAND_COLOR}">${escapeHtml(heading)}</h1><p style="font-size:16px;line-height:1.7">${escapeHtml(introduction)}</p>${fields.length?fieldsTable(fields):''}${messageHtml}${inline?'':action}${includeSignature?'<p style="font-size:15px;line-height:1.7">Kind regards,<br><strong>Creative Books SA</strong></p>':''}</td></tr><tr><td>${footer().replace("You're receiving this email about a request submitted to Creative Books SA.","You're receiving this email about your Creative Books SA project.")}</td></tr></table></td></tr></table></body></html>`;
 }
+
+// "Project complete / Google review" email: navy header design (Option B, chosen 30 Oct 2026).
+// The wording still comes from the editable template body; this only lays it out.
+// Table-based with inline styles so it renders the same in Gmail, Outlook and phone mail apps.
+export function googleReviewEmail({ subject, message, reviewUrl, reviewMarker }) {
+  const NAVY = '#1A2B4A', BUTTON = '#8A4F1F', INK = '#1E2430', BODY = '#3A4252', MUTED = '#5B6475', LINE = '#E1E5EB';
+  const font = "font-family:Inter,'Helvetica Neue',Helvetica,Arial,sans-serif;";
+  const url = reviewUrl === 'https://g.page/r/CYluusLzUm24EBM/review' ? reviewUrl : null;
+  const paras = String(message || '').replace(/\r\n/g, '\n').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  let firstName = '';
+  if (paras.length && /^(dear|hi|hello)\s+[^,\n]+,$/i.test(paras[0])) firstName = paras.shift().replace(/^(dear|hi|hello)\s+/i, '').replace(/,$/, '').trim();
+  let signOff = null;
+  if (paras.length && /^(warm|kind|best)\s+regards,|^with thanks,|^thank you,\n/i.test(paras[paras.length - 1])) signOff = paras.pop().split('\n').map((l) => l.trim()).filter(Boolean);
+  const p = (text) => `<p style="margin:0 0 18px;${font}font-size:16px;line-height:26px;color:${BODY};">${escapeHtml(text).replace(/\n/g, '<br>')}</p>`;
+  const card = url ? `<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border:1px solid ${LINE};border-radius:10px;margin:6px 0 26px;"><tr><td class="cb-card" style="padding:26px 26px 28px;">
+      <table cellpadding="0" cellspacing="0" role="presentation"><tr>
+        <td width="44" valign="middle" style="width:44px;"><div style="width:44px;height:44px;border-radius:22px;background:#F6EBDD;text-align:center;font-size:22px;line-height:44px;color:${BUTTON};">&#9733;</div></td>
+        <td valign="middle" style="padding-left:12px;${font}font-size:18px;line-height:24px;font-weight:600;color:${INK};">Share your experience on Google</td>
+      </tr></table>
+      <p style="margin:14px 0 20px;${font}font-size:15px;line-height:24px;color:#4A5263;">It only takes a minute, and it helps other authors find a publisher they can trust.</p>
+      <table cellpadding="0" cellspacing="0" role="presentation"><tr><td bgcolor="${BUTTON}" style="border-radius:8px;background:${BUTTON};">
+        <a href="${escapeHtml(url)}" style="display:inline-block;padding:14px 26px;${font}font-size:15px;line-height:20px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:8px;">Write a review</a>
+      </td></tr></table>
+    </td></tr></table>` : '';
+  let placed = false;
+  const bodyHtml = paras.map((para) => {
+    if (reviewMarker && para.includes(reviewMarker)) { placed = true; const rest = para.replace(reviewMarker, '').trim(); return (rest ? p(rest) : '') + card; }
+    return p(para);
+  }).join('') + (placed ? '' : card);
+  const sign = signOff ? `<p style="margin:4px 0 0;${font}font-size:16px;line-height:24px;color:${BODY};">${escapeHtml(signOff[0])}${signOff.slice(1).map((l) => `<br><strong style="color:${INK};">${escapeHtml(l === 'Creative Books SA' ? 'The Creative Books SA team' : l)}</strong>`).join('')}</p>` : '';
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><style>@media (max-width:480px){.cb-px{padding-left:22px!important;padding-right:22px!important}.cb-card{padding:20px!important}}</style><title>${escapeHtml(subject)}</title></head>
+<body style="margin:0;padding:0;background:#EEF0F3;">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#EEF0F3" style="background:#EEF0F3;"><tr><td align="center" style="padding:28px 14px;">
+<table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;background:#FFFFFF;border-radius:12px;overflow:hidden;">
+  <tr><td class="cb-px" bgcolor="${NAVY}" style="background:${NAVY};padding:34px 40px 40px;">
+    <img src="${LOGO_URL}" alt="Creative Books SA" width="150" style="display:block;width:150px;max-width:150px;height:auto;border:0;">
+    <p style="margin:26px 0 10px;${font}font-size:13px;line-height:18px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#E8C9A6;">Your project is complete</p>
+    <h1 style="margin:0 0 10px;${font}font-size:30px;line-height:38px;font-weight:700;color:#FFFFFF;">Thank you${firstName ? `, ${escapeHtml(firstName)}` : ''}.</h1>
+    <p style="margin:0;${font}font-size:17px;line-height:26px;color:#C9D1DE;">It's been a pleasure helping bring your book to life.</p>
+  </td></tr>
+  <tr><td class="cb-px" style="padding:36px 40px 34px;">${bodyHtml}${sign}</td></tr>
+  <tr><td class="cb-px" bgcolor="#F6F7F9" style="background:#F6F7F9;padding:22px 40px 26px;${font}font-size:13px;line-height:20px;color:${MUTED};">
+    <strong style="color:${BODY};">Creative Books SA</strong><br>Prism Office Park, 1 Ruby Cl, Fourways, 2191<br>
+    <a href="mailto:${BUSINESS_EMAIL}" style="color:${NAVY};">${BUSINESS_EMAIL}</a> &middot; 010 500 3331 &middot; 084 230 5393
+  </td></tr>
+</table>
+<p style="margin:18px 0 0;${font}font-size:12px;line-height:18px;color:${MUTED};">You're receiving this email about your Creative Books SA project.</p>
+</td></tr></table></body></html>`;
+}
