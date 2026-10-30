@@ -40,6 +40,9 @@ export const api={
  previewServiceEmail:(id,service,index)=>rpc('cb_preview_service_email',{p_id:id,p_service:service,p_index:index}),
  resendServiceEmail:(id,service,request)=>rpc('cb_resend_service_email',{p_id:id,p_service:service,p_request:request}),
  saveServiceTemplate:(id,subject,body,version)=>rpc('cb_save_service_template',{p_id:id,p_subject:subject,p_body:body,p_version:version}),
+ async productionAction(body){const {data,error}=await client().functions.invoke('billingProductionAction',{body});if(error){let message=error.message;try{message=(await error.context.json()).error||message;}catch{}throw new Error(message);}if(data?.error)throw new Error(data.error);return data;},
+ requestGoogleReview:id=>api.productionAction({action:'google_review',project_id:id}),
+ sendReviewFiles:(id,service,instructions,request,resources,subject)=>api.productionAction({action:'review_files',project_id:id,service,instructions,request_id:request,resources,subject}),
  confirmFinalHandover:(id,service,method,note,version)=>rpc('cb_confirm_final_handover',{p_id:id,p_service:service,p_method:method,p_note:note,p_version:version}),
  previewProjectCompletion:id=>rpc('cb_preview_project_completion',{p_id:id}),
  saveProjectEmailTemplate:(id,subject,body,version)=>rpc('cb_save_project_email_template',{p_id:id,p_subject:subject,p_body:body,p_version:version}),
@@ -47,17 +50,18 @@ export const api={
  projectDetails:(id,title,owner)=>rpc('cb_project_details',{p_id:id,p_title:title,p_owner:owner||null}),
  addServiceResource:(id,service,purpose,file)=>rpc('cb_add_service_resource',{p_id:id,p_service:service,p_purpose:purpose,p_file:file}),
  saveReviewSettings:(id,service,instructions,track,resources)=>rpc('cb_save_review_settings',{p_id:id,p_service:service,p_instructions:instructions,p_track:track,p_resources:resources}),
- sendServiceDelivery:(id,service,instructions,request,resources,subject)=>rpc('cb_send_service_delivery',{p_id:id,p_service:service,p_instructions:instructions,p_request:request,p_resources:resources,p_subject:subject}),
+ sendServiceDelivery:(id,service,instructions,request,resources,subject)=>api.productionAction({action:'delivery_files',project_id:id,service,instructions,request_id:request,resources,subject}),
  projectLinkFromQuote:token=>rpc('cb_quote_project_link',{p_token:token}),
  legacyProjectLinks:token=>rpc('cb_legacy_project_links',{p_token:token}),
  projectPortal:token=>rpc('cb_project_portal',{p_token:token}),
  portalFeedback:(token,service,message,link)=>rpc('cb_portal_feedback',{p_token:token,p_service:service,p_message:message,p_link:link||null}),
  portalApprove:(token,service)=>rpc('cb_portal_approve',{p_token:token,p_service:service}),
  async uploadProjectFile(file){
-  const types=['application/pdf','image/png','image/jpeg','text/plain','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  if(!types.includes(file.type))throw new Error('Use a PDF, Word, PNG, JPEG or text file.');if(file.size>52428800)throw new Error('Project files must be 50 MB or smaller.');
-  const path=`${crypto.randomUUID()}/${file.name.replace(/[^\w.-]+/g,'_')}`;const {error}=await client().storage.from('cb-project-deliverables').upload(path,file,{contentType:file.type});if(error)throw new Error(error.message);return {path,name:file.name};
+  const extensions={pdf:'application/pdf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',txt:'text/plain'};
+  const type=extensions[file.name.split('.').pop()?.toLowerCase()];if(!type)throw new Error('Use a PDF, Word, PNG, JPEG or text file.');if(file.size>52428800)throw new Error('Project files must be 50 MB or smaller.');if(!file.size)throw new Error('The selected file is empty.');
+  const path=`${crypto.randomUUID()}/${file.name.replace(/[^\w.-]+/g,'_').slice(-180)}`;const {error}=await client().storage.from('cb-project-deliverables').upload(path,file,{contentType:type});if(error)throw new Error('Upload failed: '+error.message);return {path,name:file.name.slice(0,200)};
  },
+ async projectResourceLink(resource){if(resource.secure_url)return resource.secure_url;const {data,error}=await client().storage.from('cb-project-deliverables').createSignedUrl(resource.object_path,600,{download:resource.name});if(error)throw new Error(error.message);return data.signedUrl;},
  configureProjectServices:(id,services,version)=>rpc('cb_configure_project_services',{p_id:id,p_services:services,p_version:version}),
  setProductionStage:(id,key,complete,version)=>rpc('cb_set_production_stage',{p_id:id,p_key:key,p_complete:complete,p_version:version}),
  retryWorkflowNotification:id=>rpc('cb_retry_workflow_notification',{p_id:id}),

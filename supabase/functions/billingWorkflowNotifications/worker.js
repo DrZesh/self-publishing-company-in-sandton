@@ -16,9 +16,9 @@ export function workflowMessage(job){
  const message=admin?'The deposit invoice has been created. Production starts only after the deposit is paid and cleared.':p.message;
  return {from:'Creative Books SA <info@creativebooks.co.za>',to:admin?[...adminRecipients]:p.client_email,reply_to:'info@creativebooks.co.za',subject,text:`${heading}\n\n${intro}\n\n${fields.map(([k,v])=>`${k}: ${v||''}`).join('\n')}\n\n${message}\n\nCreative Books SA\ninfo@creativebooks.co.za`,html:brandedWorkflowEmail({heading,introduction:intro,fields,message,actionUrl:admin?`https://creativebooks.co.za/admin/billing/quotes/${job.quote_id}`:null,actionLabel:'Open accepted quote'})};
 }
-export async function deliverWorkflowJobs(admin,emailKey,transport=fetch){
+export async function deliverWorkflowJobs(admin,emailKey,transport=fetch,jobId=null){
  if(!emailKey)throw new Error('Email service is not configured');
- const {data:jobs,error}=await admin.rpc('cb_claim_workflow_notifications');if(error)throw new Error('Could not claim notifications');
+ const {data:jobs,error}=jobId?await admin.rpc('cb_claim_workflow_notification',{p_id:jobId}):await admin.rpc('cb_claim_workflow_notifications');if(error)throw new Error('Could not claim notifications');
  let sent=0,failed=0;
  for(const job of jobs||[]){
   try{

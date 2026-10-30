@@ -407,3 +407,11 @@ select.cb-in { appearance: none; background-image: linear-gradient(45deg, transp
 .cb-pdf-document object{display:block;width:100%;height:1123px;border:0;background:#eee}
 .cb-pdf-document object.compact{height:950px}
 @media(max-width:640px){.cb-pdf-document object{height:720px}.cb-pdf-tools .cb-help{width:100%}}
+
+.cb-file-panel{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:8px}
+.cb-file-panel .cb-label{display:block;margin:12px 0 6px}
+.cb-file-panel .cb-check{display:flex;gap:8px;align-items:flex-start;margin:12px 0}
+.cb-resource-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.cb-resource-row small{display:block}.cb-resource-row span{overflow-wrap:anywhere}
+.cb-final-production ol{padding-left:24px}.cb-final-production li{padding:12px 0}
+@media(max-width:640px){.cb-resource-row{align-items:flex-start;flex-direction:column}}

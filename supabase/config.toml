@@ -959,3 +959,6 @@ entrypoint = "./functions/billingWorkflowNotifications/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/billingProjectFile/index.ts"
+
+[functions.billingProductionAction]
+verify_jwt = true
