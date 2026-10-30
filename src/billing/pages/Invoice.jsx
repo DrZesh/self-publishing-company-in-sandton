@@ -34,7 +34,7 @@ export function InvoiceView() {
             {inv.status !== 'paid' && <button className="cb-btn primary" onClick={() => nav(to(`invoices/${id}/pay`))}>Record Payment</button>}
             {inv.status !== 'paid' && <a className="cb-btn" href={reminder}>Open reminder draft</a>}
             {d.project && <button className={`cb-btn ${inv.status === 'paid' ? 'primary' : ''}`} onClick={() => nav(to(`projects/${d.project.id}`))}>Open project</button>}
-            <button className="cb-btn" onClick={() => downloadDocument('invoice',id).catch(e=>window.alert(e.message))}>Download PDF</button><button className="cb-btn" onClick={() => window.print()}>Print</button>
+            <button className="cb-btn" onClick={() => downloadDocument('invoice',id).catch(e=>window.alert(e.message))}>Download PDF</button>
           </ActionBar>}>
           <PageHead crumb={<Link to={to('invoices')}>Invoices · {isDep ? 'Deposit' : 'Balance'}</Link>} title={inv.number} right={<Badge status={st} />} />
           {isDep && d.quote.accepted_at && <div className="cb-banner success"><span className="tag">Accepted</span><span><b>{d.quote.number}</b> {d.quote.signature?.method === 'portal' ? `signed by ${d.quote.signature.name}` : 'accepted'} on {fmtDate(d.quote.accepted_at)}. Deposit invoice <b>{inv.number}</b> created automatically (T&amp;C 4.1).</span><span className="right"><Link className="cb-btn sm" to={to(`quotes/${d.quote.id}`)}>View signed quote</Link></span></div>}

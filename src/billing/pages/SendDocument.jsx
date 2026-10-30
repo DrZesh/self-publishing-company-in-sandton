@@ -2,7 +2,8 @@ import React, { useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import cfg from '../billing.config.js';
 import { api } from '../lib/store.js';
-import { money } from '../lib/rules.js';
+import {money,buildDeal} from '../lib/rules.js';
+import PdfDocumentPreview from '../PdfDocumentPreview.jsx';
 import { ActionBar, Card, ErrorNote, Field, PageHead, Shell, to, useBilling } from '../components.jsx';
 
 export async function downloadDocument(kind,id) {
@@ -49,9 +50,9 @@ export function SendDocument({kind}) {
   const doc=db[kind==='quote'?'quotes':'invoices'].find(d=>d.id===id);
   if(!doc)return <Shell><ErrorNote error="Document not found."/></Shell>;
   const client=db.clients.find(c=>c.id===doc.client_id);
-  return <DocumentComposer key={`${kind}:${id}`} {...{kind,doc,client,nav,refresh,notify}}/>;
+  return <DocumentComposer key={`${kind}:${id}`} {...{kind,doc,client,nav,refresh,notify}} deal={buildDeal(db,db.quotes.find(q=>q.id===(kind==='quote'?id:doc.quote_id)))}/>;
 }
-function DocumentComposer({kind,doc,client,nav,refresh,notify}) {
+function DocumentComposer({kind,doc,client,nav,refresh,notify,deal}) {
   const request=useRef(crypto.randomUUID());
   const [form,setForm]=useState({to:client?.email||'',cc:cfg.company.email,subject:`Your ${kind} ${doc.number} from ${cfg.company.name}`,message:`Hi ${client?.first_name||client?.display_name||'there'},\n\nPlease find your ${kind} attached.${kind==='quote'?' You can review and accept it using the link below.':' Please use the invoice number as your payment reference.'}\n\nKind regards,\n${cfg.company.name}`});
   const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [sent,setSent]=useState(null);const [attempted,setAttempted]=useState(false);
@@ -85,5 +86,6 @@ function DocumentComposer({kind,doc,client,nav,refresh,notify}) {
         <Link className="cb-btn" to={to(`${kind}s/${doc.id}`)}>Edit {kind==='invoice'?'terms & attachments':'attachments'}</Link>
       </Card>
     </div>
+    <div style={{marginTop:20}}><PdfDocumentPreview kind={kind} deal={deal} invoice={kind==='invoice'?doc:undefined}/></div>
   </Shell>;
 }

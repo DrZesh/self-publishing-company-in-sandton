@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import cfg from './billing.config.js';
+import PdfDocumentPreview from './PdfDocumentPreview.jsx';
 import { api } from './lib/store.js';
 import { BADGE, STAGES, fmtDate, money, num, todayISO, balanceAmount, depositAmount, invoiceStatus } from './lib/rules.js';
 
@@ -178,7 +179,11 @@ export function Loading({ children }) {
 }
 
 /* ================= the document sheet (quote / invoice / statement) ================= */
-export function DocSheet({ kind, deal, invoice, compact }) {
+export function DocSheet({kind,deal,invoice,compact}){
+ if(kind==='quote'||kind==='invoice')return <PdfDocumentPreview {...{kind,deal,invoice,compact}}/>;
+ return <LegacyDocSheet {...{kind,deal,invoice,compact}}/>;
+}
+function LegacyDocSheet({ kind, deal, invoice, compact }) {
   const { quote, client, items } = deal;
   const C = cfg.company;
   const ribbonOf = { quote: { draft: null, sent: ['info', 'Sent'], viewed: ['info', 'Viewed'], accepted: ['success', 'Accepted'], expired: ['warning', 'Expired'], declined: ['warning', 'Declined'], superseded: ['warning', 'Superseded'] } };

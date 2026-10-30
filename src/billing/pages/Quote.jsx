@@ -44,7 +44,7 @@ export function QuoteView() {
         actions = <>{d.deposit && <button className="cb-btn primary" onClick={() => nav(to(`invoices/${d.deposit.id}`))}>Open deposit invoice</button>}{d.project && <button className="cb-btn" onClick={() => nav(to(`projects/${d.project.id}`))}>Open project</button>}</>;
       }
       return (
-        <Shell stage={d.status === 'closed' ? 9 : d.stage} actions={<ActionBar note={`${quote.number} · ${money(quote.total)}`}>{actions}<button className="cb-btn" onClick={() => downloadDocument('quote',id).catch(e=>notify(e.message))}>Download PDF</button><button className="cb-btn" onClick={() => window.print()}>Print</button></ActionBar>}>
+        <Shell stage={d.status === 'closed' ? 9 : d.stage} actions={<ActionBar note={`${quote.number} · ${money(quote.total)}`}>{actions}<button className="cb-btn" onClick={() => downloadDocument('quote',id).catch(e=>notify(e.message))}>Download PDF</button></ActionBar>}>
           <PageHead crumb={<Link to={to('quotes')}>Quotes</Link>} title={`${quote.number} · ${d.client?.display_name}`} right={<Badge status={st} />} />
           {banner}
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 16, alignItems: 'start' }} className="cb-cols-r">
