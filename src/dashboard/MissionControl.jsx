@@ -187,7 +187,7 @@ export default function MissionControl({ source, isDemo = false, onAsk, onDraftF
 
           {/* Ask + activity */}
           <div className="mc-grid">
-            <section className="mc-card" style={{ gridColumn: 'span 7' }}>
+            {onAsk && <section className="mc-card" style={{ gridColumn: 'span 7' }}>
               <div className="mc-card-hd"><span className="mint"><Icon name="spark" size={20} /></span><h2>Ask the CRM</h2></div>
               <form className="mc-ask" onSubmit={(e) => { e.preventDefault(); submitAsk(); }}>
                 <input type="text" value={ask} onChange={(e) => setAsk(e.target.value)} aria-label="Ask about your CRM data" placeholder="Which clients owe more than R5,000?" />
@@ -198,8 +198,8 @@ export default function MissionControl({ source, isDemo = false, onAsk, onDraftF
                   <button key={c} type="button" className="mc-chip" onClick={() => submitAsk(c)}>{c}</button>
                 ))}
               </div>
-            </section>
-            <section className="mc-card flush" style={{ gridColumn: 'span 5' }}>
+            </section>}
+            <section className="mc-card flush" style={{ gridColumn: onAsk ? 'span 5' : '1 / -1' }}>
               <div className="mc-card-hd pad"><h2>Live activity</h2><Link to={cfg.routes.activity}>View all →</Link></div>
               <ul className="mc-feed">
                 {m.activity.map((a) => <li key={a.id}><span className="mc-mono mc-dim">{ago(a.at)}</span><span>{a.title}{a.subtitle ? <small> · {a.subtitle}</small> : null}</span></li>)}

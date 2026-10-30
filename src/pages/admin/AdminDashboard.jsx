@@ -25,7 +25,6 @@ export default function AdminDashboard() {
         <MissionControl
           source={source}
           firstName={firstName}
-          onAsk={(text) => navigate(`/admin/chat?q=${encodeURIComponent(text)}`)}
           onDraftFollowUp={() => navigate('/admin/follow-ups')}
           onSearch={(q) => navigate(`/admin/contacts?q=${encodeURIComponent(q)}`)}
         />

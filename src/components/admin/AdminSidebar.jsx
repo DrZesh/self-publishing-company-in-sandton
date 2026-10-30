@@ -90,7 +90,6 @@ const NAV_GROUPS = [
     key: 'communication',
     label: 'Message Centre',
     items: [
-      { label: 'Client Chat', path: '/admin/chat', icon: MessageSquare, badge: 'chat' },
       { label: 'Message Centre', path: '/admin/message-centre', icon: Mail },
       { label: 'Automation Centre', path: '/admin/automation-centre', icon: Zap },
       { label: 'Email Settings', path: '/admin/email-settings', icon: Mail },

@@ -247,7 +247,6 @@ import AdminClauseLibrary from './pages/admin/AdminClauseLibrary';
 import AdminDocumentBuilder from './pages/admin/AdminDocumentBuilder';
 import AdminFinance from './pages/admin/AdminFinance';
 import AdminCommunication from './pages/admin/AdminCommunication';
-import AdminChat from './pages/admin/AdminChat';
 import AdminESignatures from './pages/admin/AdminESignatures';
 import EmailPreview from './pages/admin/EmailPreview';
 import AdminContractPrepare from './pages/admin/AdminContractPrepare';
@@ -750,7 +749,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/document-builder" element={<ProtectedAdminRoute><AdminDocumentBuilder /></ProtectedAdminRoute>} />
       <Route path="/admin/finance" element={<ProtectedAdminRoute><AdminFinance /></ProtectedAdminRoute>} />
       <Route path="/admin/communication" element={<ProtectedAdminRoute><AdminCommunication /></ProtectedAdminRoute>} />
-      <Route path="/admin/chat" element={<ProtectedAdminRoute><AdminChat /></ProtectedAdminRoute>} />
+      <Route path="/admin/chat" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/admin/esignatures" element={<ProtectedAdminRoute><AdminESignatures /></ProtectedAdminRoute>} />
       <Route path="/admin/esignatures/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepare /></ProtectedAdminRoute>} />
       <Route path="/admin/contracts/prepare/:id" element={<ProtectedAdminRoute><AdminContractPrepareContract /></ProtectedAdminRoute>} />

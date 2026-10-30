@@ -235,7 +235,6 @@ export default function AdminDashboard() {
               <QA label="New Invoice" icon={Receipt} to="/admin/invoices" color="#10b981" />
               <QA label="New Project" icon={FolderKanban} to="/admin/projects" color="#3b82f6" />
               <QA label="Add Task" icon={CheckSquare} to="/admin/tasks" color="#f43f5e" />
-              <QA label="Client Chat" icon={MessageSquare} to="/admin/chat" color="#22c55e" />
             </div>
           </Glass>
 
