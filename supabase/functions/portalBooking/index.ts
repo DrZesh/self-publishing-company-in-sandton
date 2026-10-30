@@ -5,9 +5,10 @@
 //
 // Actions (all need the client's portal access_token; the shared server checks it):
 //   services {}                                       → active Booking Settings services (consultations etc.)
-//   month    { kind, from, to }   kind = 'collection' | 'delivery' | 'service:<booking service id>'                      → { days: { 'YYYY-MM-DD': [{ start, end, remaining }] } }
+//   month    { kind, from, to }  kind = 'collection' | 'delivery' | 'service:<id>' → { days: { 'YYYY-MM-DD': [{ start, end, remaining }] } }
 //   request  { kind, date, start_time, address, note } → creates a pending appointment, emails team + client
 //   mine     {}                                       → the client's collection/delivery bookings
+//   (consultations: request with kind 'service:<id>' and mode 'zoom' | 'on_site'; cancel works for them too)
 //   cancel   { appointment_id }                       → client cancels their own booking, emails team
 //   uploaded { file_url, file_name, purpose, note }   → records the upload, emails the team with the file attached
 import { createClientFromRequest, serve, adminClient } from '../_shared/server.ts';
