@@ -172,17 +172,17 @@ export default function CompletePublishingGuide() {
             <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(255,255,255,0.85)', border: '1px solid rgba(184,115,51,0.12)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
               <p className="font-heading font-semibold text-[#0F0F0F] mb-4">Creative Books SA typesetting pricing (per page, Microsoft Word, print-ready file)</p>
               <PriceTable rows={[
-                ["Basic Layout — R10.50/page", "Basic formatting, drop cap, chapter headings, source file"],
-                ["Standard Layout — R12.50/page", "Adds header, bullet/numbering, images and bleed images"],
-                ["Premium Layout — R19.50/page", "Everything above plus tabulation and complex structures"],
+                ["Basic Layout — R12/page", "Basic formatting, drop cap, chapter headings, source file"],
+                ["Standard Layout — R13/page", "Adds header, bullet/numbering, images and bleed images"],
+                ["Premium Layout — R20/page", "Everything above plus tabulation, complex structures and eBook conversion"],
               ]} />
             </div>
 
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-3">
-              A worked example: a 200-page novel using Standard Layout works out to 200 × R12.50 = <strong className="text-[#0F0F0F]">R2,500</strong>.
+              A worked example: a 200-page novel using Standard Layout works out to 200 × R13 = <strong className="text-[#0F0F0F]">R2,600</strong>.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-4">
-              A 250-page non-fiction book using Premium Layout works out to 250 × R19.50 = <strong className="text-[#0F0F0F]">R4,875</strong>.
+              A 250-page non-fiction book using Premium Layout works out to 250 × R20 = <strong className="text-[#0F0F0F]">R5,000</strong>.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-10">
               Layout is also included in every Full Package and Mini Package. See our <InlineLink to="/typesetting">Book Typesetting</InlineLink> page for full detail.
@@ -481,9 +481,9 @@ export default function CompletePublishingGuide() {
                 ["Cover design (ebook, author's image)", "R1,200"],
                 ["Cover design (ebook, stock image)", "R1,700"],
                 ["Cover design (ebook, illustrated)", "R3,400"],
-                ["Layout — Basic", "R10.50 per page"],
-                ["Layout — Standard", "R12.50 per page"],
-                ["Layout — Premium", "R19.50 per page"],
+                ["Layout — Basic", "R12 per page"],
+                ["Layout — Standard", "R13 per page"],
+                ["Layout — Premium", "R20 per page (includes eBook conversion)"],
                 ["ISBN", "Free (National Library)"],
                 ["Printing (A5, 100 copies)", "R5,500 to R12,500"],
                 ["Printing (6x9, 100 copies)", "R6,200 to R13,200"],
@@ -513,7 +513,7 @@ export default function CompletePublishingGuide() {
               The smart approach: list the services you actually need, add them up, and compare the total to a full package. Packages usually work out cheaper than buying each service separately because everything is coordinated under one team.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-4">
-              For example, a 200-page A5 book bought as separate services costs roughly R2,150 (stock cover) + R2,500 (standard layout at 200 pages) + R7,500 (100 copies printed) = <strong className="text-[#0F0F0F]">R12,150</strong>, and that's before editing. The A5 Bronze package at <strong className="text-[#0F0F0F]">R21,000</strong> includes all of that plus editing (2 drafts), Facebook banner design, book mockups, and publishing consultation.
+              For example, a 200-page A5 book bought as separate services costs roughly R2,150 (stock cover) + R2,600 (standard layout at 200 pages) + R7,500 (100 copies printed) = <strong className="text-[#0F0F0F]">R12,250</strong>, and that's before editing. The A5 Bronze package at <strong className="text-[#0F0F0F]">R21,000</strong> includes all of that plus editing (2 drafts), Facebook banner design, book mockups, and publishing consultation.
             </p>
             <p className="text-[#0F0F0F]/70 leading-relaxed font-body mb-4">
               The two services we'd never recommend cutting corners on: editing and cover design. These two determine whether your book sells. Everything else can be adjusted.

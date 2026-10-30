@@ -21,7 +21,7 @@ const Section = ({ title, step, onEdit, children }) => (
 );
 
 const coverTypeMap = { author: 'Author Book Cover — R1,650', stock: 'Stock Design Cover — R2,150', illustrated: 'Illustrated Book Cover — R3,850' };
-const tsMap = { basic: 'Basic Layout — R10.50/page', standard: 'Standard Layout — R12.50/page', premium: 'Premium Layout — R19.50/page' };
+const tsMap = { basic: 'Basic Layout — R12/page', standard: 'Standard Layout — R13/page', premium: 'Premium Layout — R20/page + eBook conversion' };
 
 export default function QuoteReview({ data, onEdit }) {
   return (

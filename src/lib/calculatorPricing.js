@@ -41,9 +41,9 @@ export const COVER_DESIGN = {
 };
 
 export const TYPESETTING = {
-  basic:    10.50,
-  standard: 12.50,
-  premium:  19.50,
+  basic:    12,
+  standard: 13,
+  premium:  20,
 };
 
 export const PACKAGES = {

@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Field, RadioGroup, StepHeading } from './QuoteFields';
 
 const tsTypes = [
-  { value: 'basic', label: 'Basic Layout — R10.50 per page' },
-  { value: 'standard', label: 'Standard Layout — R12.50 per page' },
-  { value: 'premium', label: 'Premium Layout — R19.50 per page' },
+  { value: 'basic', label: 'Basic Layout — R12 per page' },
+  { value: 'standard', label: 'Standard Layout — R13 per page' },
+  { value: 'premium', label: 'Premium Layout — R20 per page, includes eBook conversion' },
 ];
 
 export default function QuoteStep5({ data, update, errors }) {

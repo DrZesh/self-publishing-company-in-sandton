@@ -328,7 +328,7 @@ export default function ChildrensBooks20x20() {
             {[
               { title: "Children's Book Packages", desc: 'Complete packages including illustration, layout, cover design, and printing', path: '/childrensbookpackages' },
               { title: 'Book Cover Design', desc: 'Custom children\'s book cover design from R3,850', path: '/book-cover-design' },
-              { title: 'Book Typesetting', desc: 'Professional layout from R10.50 per page', path: '/typesetting' },
+              { title: 'Book Typesetting', desc: 'Professional layout from R12 per page', path: '/typesetting' },
             ].map((item, i) => (
               <Link
                 key={i}

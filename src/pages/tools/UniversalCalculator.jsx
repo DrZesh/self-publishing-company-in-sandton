@@ -19,7 +19,7 @@ const PRINTING_TIERS = {
 const QTY_MULTIPLIERS = { 100: 1, 150: 1.45, 200: 1.85, 250: 2.25, 300: 2.6, 400: 3.3, 500: 4.0, 1000: 7.5 };
 const EDITING_RATES = { copyediting: 0.25, lineedit: 0.40, contentedit: 0.50 };
 const COVER_PRICES = { authors: 1700, stock: 2150, illustrated: 3650 };
-const TYPESET_RATES = { basic: 10.5, standard: 12.5, premium: 19.5 };
+const TYPESET_RATES = { basic: 12, standard: 13, premium: 20 };
 
 function getPrintTier(pages) {
   if (pages >= 50 && pages <= 100) return '50-100';
@@ -292,9 +292,9 @@ export default function UniversalCalculator() {
                       <label className="block text-xs font-semibold text-black/70 mb-1">Layout Level</label>
                       <select value={formData.typesetting?.tier || 'basic'} onChange={e => updateServiceData('typesetting', { tier: e.target.value })}
                         className="w-full px-3 py-2 border border-black/15 rounded-lg text-sm focus:outline-none focus:border-copper bg-white">
-                        <option value="basic">Basic — R10.50/page</option>
-                        <option value="standard">Standard — R12.50/page</option>
-                        <option value="premium">Premium — R19.50/page</option>
+                        <option value="basic">Basic — R12/page</option>
+                        <option value="standard">Standard — R13/page</option>
+                        <option value="premium">Premium — R20/page</option>
                       </select>
                     </div>
                   </div>
