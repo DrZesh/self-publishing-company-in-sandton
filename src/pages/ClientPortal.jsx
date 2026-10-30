@@ -5,7 +5,6 @@ import { platform } from '@/api/platformClient';
 import { toast } from 'sonner';
 import { AlertTriangle
 } from 'lucide-react';
-import ChatTab from '@/components/portal/ChatTab';
 import { Button } from '@/components/ui/button';
 import OverviewTabNew from '@/components/portal/OverviewTabNew';
 import ProjectsTab from '@/components/portal/ProjectsTab';
@@ -118,7 +117,6 @@ export default function ClientPortal() {
         project={(portalData.projects || []).find((p) => p.id === portalAccess?.project_id) || portalData.projects?.[0]}
         appointments={portalData.appointments || []}
         documents={portalData.documents || []}
-        onOpenChat={() => { setActiveTab('chat'); setTimeout(() => document.getElementById('cp-tabs')?.scrollIntoView({ behavior: 'smooth' }), 50); }}
       />
 
       {/* Tab Navigation */}
@@ -135,7 +133,6 @@ export default function ClientPortal() {
             { id: 'invoices', label: 'Invoices', icon: '💳' },
             { id: 'documents', label: 'Documents', icon: '📋' },
             { id: 'appointments', label: 'Book an Appointment', icon: '📅' },
-            { id: 'chat', label: 'Chat', icon: '💬' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -173,9 +170,6 @@ export default function ClientPortal() {
       )}
       {activeTab === 'appointments' && (
         <AppointmentsTab contact={contact} appointments={portalData.appointments || []} portalToken={token} />
-      )}
-      {activeTab === 'chat' && (
-        <ChatTab contact={contact} project={portalData.projects?.[0]} />
       )}
     </ClientPortalLayout>
   );

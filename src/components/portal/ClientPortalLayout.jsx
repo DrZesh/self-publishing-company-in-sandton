@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { 
   BookOpen, LayoutDashboard, FileText, CreditCard, FolderOpen, 
-  Calendar, User, MessageSquare, BarChart3, Settings,
-  Menu, X, LogOut, TrendingUp, CheckCircle, Upload, Sparkles,
+  Calendar,
+  Menu, X,
   Phone, Mail, HelpCircle, ChevronDown
 } from 'lucide-react';
-import { platform } from '@/api/platformClient';
 import NotificationBell from './NotificationBell';
 
 const NAV_ITEMS = [
@@ -16,7 +15,6 @@ const NAV_ITEMS = [
   { label: 'Invoices', path: 'invoices', icon: CreditCard },
   { label: 'Documents', path: 'documents', icon: FolderOpen },
   { label: 'Book an Appointment', path: 'appointments', icon: Calendar },
-  { label: 'Chat', path: 'chat', icon: MessageSquare },
 ];
 
 export default function ClientPortalLayout({ children, contact, portalAccess, allowedSections = [], activeTab = 'overview', onTabChange, portalData }) {
@@ -73,7 +71,7 @@ export default function ClientPortalLayout({ children, contact, portalAccess, al
   };
 
   const filteredNavItems = NAV_ITEMS.filter(item => {
-    if (item.path === 'overview' || item.path === 'profile' || item.path === 'appointments' || item.path === 'chat') return true;
+    if (item.path === 'overview' || item.path === 'profile' || item.path === 'appointments') return true;
     if (item.path === 'projects') return allowedSections.includes('projects');
     if (item.path === 'quotes') return allowedSections.includes('quotes');
     if (item.path === 'invoices') return allowedSections.includes('invoices');
@@ -83,7 +81,6 @@ export default function ClientPortalLayout({ children, contact, portalAccess, al
   });
 
   const getNotificationCount = (path) => {
-    if (path === 'chat') return notificationCounts.messages;
     if (path === 'documents') return notificationCounts.documents;
     if (path === 'contracts') return notificationCounts.contracts;
     if (path === 'invoices') return notificationCounts.invoices;
