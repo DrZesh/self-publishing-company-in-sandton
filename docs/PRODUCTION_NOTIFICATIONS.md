@@ -19,3 +19,5 @@ Project files use the private `cb-project-deliverables` bucket, limited to 50 MB
 Validation uses synthetic local records, mocked transports and test recipients. The automated suite covers the 26 exact stage transitions, placeholders, branded previews, editable templates, duplicate prevention, independent multi-service progress, safe failures, skipped editing stages, review-file requirements, delivery tasks, payment-dependent printing wording, access boundaries and separate delivery / approval states. Production build and targeted lint checks are required before release.
 
 No new external credentials are required. Operational preparation: select purchased services, set a book title and assigned team member, then upload the correct review/delivery files and instructions when ready. Existing acceptance alerts to info@creativebooks.co.za and draubreyzesh@gmail.com remain active.
+
+Review approval is also recorded on the specific delivery. A new intentional delivery reopens its internal delivery task and clears the current approval until the client reviews the latest sent delivery. Earlier delivery approvals remain in the audit history.
