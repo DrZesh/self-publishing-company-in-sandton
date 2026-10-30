@@ -113,10 +113,21 @@ async function attachmentFor(fileUrl: string, name: string) {
   } catch (e) { console.error('attachment', e); return null; }
 }
 
+async function contactForToken(platform: any, token: string) {
+  if (!token || token.length > 256) return null;
+  const access = (await platform.entities.ClientPortalAccess.filter({ access_token: token }))[0];
+  if (!access?.is_active || (access.expires_at && Date.parse(access.expires_at) < Date.now())) return null;
+  const { data } = await adminClient().from('contact').select('*').eq('id', access.contact_id).maybeSingle();
+  return data ? { ...data.data, id: data.id } : null;
+}
+
 serve('portalBooking', async (req) => {
   const platform = createClientFromRequest(req);
   const body = await req.json();
-  const contact = await platform.entities.Contact.get(body.contact_id); // set and verified by the shared portal check
+  // Always resolve the client from the portal link itself. (Signed-in staff skip the shared portal
+  // check, so we can't rely on it having set contact_id.)
+  const contact = await contactForToken(platform, String(body.access_token || body.portal_token || ''));
+  if (!contact) return Response.json({ error: 'This portal link is not valid or has expired. Please ask us for a new link.' }, { status: 401 });
   const name = contact.full_name || [contact.first_name, contact.last_name].filter(Boolean).join(' ') || contact.email;
   const portalLink = `${SITE()}/portal/${body.access_token}`;
   const crmLink = `${SITE()}/admin/appointments`;
@@ -163,7 +174,8 @@ serve('portalBooking', async (req) => {
   }
 
   if (body.action === 'cancel') {
-    const a = await platform.entities.Appointment.get(body.appointment_id); // ownership checked by the shared portal check
+    const a = (await platform.entities.Appointment.filter({ client_email: contact.email })).find((x: any) => x.id === body.appointment_id);
+    if (!a) return Response.json({ error: 'Booking not found' }, { status: 404 });
     if (!Object.values(KINDS).some((k) => k.service === a.service_name)) return Response.json({ error: 'Only collection and delivery bookings can be cancelled here' }, { status: 400 });
     if (!['pending', 'approved'].includes(a.status)) return Response.json({ error: 'This booking is already closed' }, { status: 400 });
     await platform.entities.Appointment.update(a.id, { status: 'cancelled', cancelled_at: new Date().toISOString() });
