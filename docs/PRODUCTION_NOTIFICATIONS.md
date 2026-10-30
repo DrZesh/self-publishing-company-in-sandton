@@ -21,3 +21,5 @@ Validation uses synthetic local records, mocked transports and test recipients. 
 No new external credentials are required. Operational preparation: select purchased services, set a book title and assigned team member, then upload the correct review/delivery files and instructions when ready. Existing acceptance alerts to info@creativebooks.co.za and draubreyzesh@gmail.com remain active.
 
 Review approval is also recorded on the specific delivery. A new intentional delivery reopens its internal delivery task and clears the current approval until the client reviews the latest sent delivery. Earlier delivery approvals remain in the audit history.
+
+Marketing analytics and the SalesIQ widget are not initialised on private portal or CRM entry pages. Public marketing pages retain the existing integrations.

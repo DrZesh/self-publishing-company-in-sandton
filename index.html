@@ -48,13 +48,19 @@
 
     <!-- Google Tag Manager & Meta Pixel load only after cookie consent — see src/components/legal/CookieConsent.jsx -->
 
-    <!-- Google Analytics 4 (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NM0D13TY2G"></script>
+    <!-- Marketing scripts are excluded from private portal and CRM routes. -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-NM0D13TY2G');
+      (function () {
+        if (/^\/(portal|admin)(?:\/|$)/i.test(window.location.pathname)) return;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-NM0D13TY2G');
+        var analytics = document.createElement('script');
+        analytics.async = true;
+        analytics.src = 'https://www.googletagmanager.com/gtag/js?id=G-NM0D13TY2G';
+        document.head.appendChild(analytics);
+      })();
     </script>
 
     <!-- Preconnect — top 3 LCP-critical origins only -->
@@ -74,7 +80,9 @@
     <!-- Zoho SalesIQ — deferred until after page is interactive to avoid blocking LCP -->
     <script>
       window.addEventListener('load', function() {
+        if (/^\/(portal|admin)(?:\/|$)/i.test(window.location.pathname)) return;
         setTimeout(function() {
+          if (/^\/(portal|admin)(?:\/|$)/i.test(window.location.pathname)) return;
           var s = document.createElement('script');
           s.type = 'text/javascript';
           s.async = true;
