@@ -6,6 +6,7 @@ test('exact service stages preserve old records, isolate progress, gate action f
  await db.exec("RESET ROLE;UPDATE cb_projects SET status='in_production',current_stage='printing:3',checklist=jsonb_set(checklist,'{2,done}','true');TRUNCATE cb_workflow_notifications,notification;");
  const before=(await db.query('SELECT checklist FROM cb_projects WHERE id=$1',[pid])).rows[0].checklist;
  await db.exec(await readFile(new URL('../supabase/migrations/20261029220604_service_workflow_portal_templates.sql',import.meta.url),'utf8'));
+ await db.exec(await readFile(new URL('../supabase/migrations/20261030050936_delivery_review_approval_history.sql',import.meta.url),'utf8'));
  let project=(await db.query('SELECT * FROM cb_projects WHERE id=$1',[pid])).rows[0];assert.deepEqual(project.legacy_production.checklist,before);assert.equal(project.current_stage,'printing:5');assert.equal(project.checklist[3].done,true);assert.equal((await db.query('SELECT count(*)::int n FROM cb_workflow_notifications')).rows[0].n,0);
  const definitions=JSON.parse(await readFile(new URL('../supabase/fixtures/service-workflows.json',import.meta.url),'utf8'));
  for(const d of definitions){assert.deepEqual((await db.query('SELECT stages FROM cb_production_services WHERE key=$1',[d.key])).rows[0].stages,d.stages.map(s=>s.name));}
@@ -33,6 +34,13 @@ await role();await rpc('cb_project_details',{p_id:pid,p_title:'Ink & Stories',p_
  await rpc('cb_send_service_delivery',{p_id:pid,p_service:'editing',p_instructions:'Review the supplied document.',p_request:request,p_resources:[resource],p_subject:'Your agreed editing files'});assert.equal((await db.query('SELECT status FROM cb_service_deliveries WHERE id=$1',[request])).rows[0].status,'queued');
  await db.exec("RESET ROLE");await db.query("UPDATE cb_workflow_notifications SET status='sent',provider_id='synthetic-provider',sent_at=now() WHERE id=$1",[request]);assert.equal((await db.query('SELECT status FROM cb_service_deliveries WHERE id=$1',[request])).rows[0].status,'sent');assert.equal((await db.query("SELECT client_approved_at FROM cb_project_service_progress WHERE project_id=$1 AND service='editing'",[pid])).rows[0].client_approved_at,null);
  await role('anon',null);await rpc('cb_portal_approve',{p_token:token,p_service:'editing'});portal=await rpc('cb_project_portal',{p_token:token});assert.ok(portal.services.find(s=>s.key==='editing').client_approved_at);
+ await role();assert.ok((await db.query('SELECT client_approved_at FROM cb_service_deliveries WHERE id=$1',[request])).rows[0].client_approved_at);
+ await role();const nextRequest='66666666-6666-4666-8666-666666666666';await rpc('cb_send_service_delivery',{p_id:pid,p_service:'editing',p_instructions:'Please review this delivery.',p_request:nextRequest,p_resources:[resource],p_subject:'Updated review delivery'});
+ assert.equal((await db.query("SELECT client_approved_at FROM cb_project_service_progress WHERE project_id=$1 AND service='editing'",[pid])).rows[0].client_approved_at,null);
+ await role('anon',null);await assert.rejects(rpc('cb_portal_approve',{p_token:token,p_service:'editing'}));
+ await db.exec('RESET ROLE');await db.query("UPDATE cb_workflow_notifications SET status='sent',provider_id='synthetic-provider-2',sent_at=now() WHERE id=$1",[nextRequest]);await role('anon',null);await rpc('cb_portal_approve',{p_token:token,p_service:'editing'});
+ assert.ok((await rpc('cb_project_portal',{p_token:token})).services.find(s=>s.key==='editing').client_approved_at);
+
  await role();await rpc('cb_project_details',{p_id:pid,p_title:'',p_owner:staffId});await db.exec('RESET ROLE');await db.query("UPDATE cb_clients SET first_name='' WHERE id=$1",[cid]);await role();preview=await rpc('cb_preview_service_email',{p_id:pid,p_service:'printing',p_index:7});assert.ok(preview.template_body.includes('Hi there,'));assert.ok(preview.template_body.includes('your book'));assert.ok(preview.template_body.includes('We will now send you the remaining balance'));
  
  const stageCountBefore=(await db.query("SELECT count(*)::int n FROM cb_workflow_notifications WHERE payload?'service' AND kind='stage_client'")).rows[0].n;
