@@ -1,519 +1,228 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+// CRM → Appointments: one calendar for every appointment (meetings, book collections, deliveries),
+// a "waiting for approval" queue, and the day's bookings with Approve / Decline / Move.
+// Also: client uploads from the portal, and the full list. Data and emails are the existing ones:
+// the `appointment` records and the appointmentActions function (approve, decline, propose, reminders).
+// The previous page is kept at /admin/appointments-classic.
+import React, { useEffect, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { toast } from 'sonner';
-import { Calendar, Clock, MapPin, Video, User, AlertTriangle, Check, X, ArrowRight, ChevronLeft, ChevronRight, Bell, RefreshCw, Mail, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import Calendar from '@/components/portal/journey/Calendar.jsx';
+import Icon from '@/components/portal/journey/Icon.jsx';
+import { fmtDay, fmtDayLong, fromYmd, todaySast, ago } from '@/components/portal/journey/dates.js';
+import '@/components/portal/journey/journey.css';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-}
-function formatTime(t) {
-  if (!t) return '';
-  const [h, m] = t.split(':').map(Number);
-  return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
-}
-function initials(name) {
-  return (name || '?').split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
-}
-function parseHHMM(s) { 
-  if (!s) return 0; 
-  const [h, m] = s.split(':').map(Number); 
-  return h * 60 + m; 
-}
-function overlaps(s1, e1, s2, e2) {
-  if (!s1 || !s2) return false;
-  const start1 = parseHHMM(s1);
-  const end1 = e1 ? parseHHMM(e1) : start1 + 30;
-  const start2 = parseHHMM(s2);
-  const end2 = e2 ? parseHHMM(e2) : start2 + 30;
-  return start1 < end2 && end1 > start2;
-}
-
-const STATUS_COLORS = {
-  pending:   { bg: 'bg-amber-50',  text: 'text-amber-700',  border: 'border-amber-200'  },
-  approved:  { bg: 'bg-green-50',  text: 'text-green-700',  border: 'border-green-200'  },
-  declined:  { bg: 'bg-red-50',    text: 'text-red-700',    border: 'border-red-200'    },
-  cancelled: { bg: 'bg-gray-50',   text: 'text-gray-500',   border: 'border-gray-200'   },
-  completed: { bg: 'bg-blue-50',   text: 'text-blue-700',   border: 'border-blue-200'   },
-  no_show:   { bg: 'bg-rose-50',   text: 'text-rose-700',   border: 'border-rose-200'   },
-};
-
-// ── Appointment Card ──────────────────────────────────────────────────────────
-function AppointmentCard({ appt, approvedAppts, onApprove, onDecline, onPropose, onNoShow, onComplete, showActions }) {
-  const [declining, setDeclining] = useState(false);
-  const [declineReason, setDeclineReason] = useState('');
-  const [proposing, setProposing] = useState(false);
-  const [proposeDate, setProposeDate] = useState('');
-  const [proposeTime, setProposeTime] = useState('');
-
-  // Conflict detection: pending appt vs approved ones on same date
-  const hasConflict = appt.status === 'pending' && approvedAppts.some(a =>
-    a.id !== appt.id && a.date === appt.date &&
-    overlaps(appt.start_time, appt.end_time, a.start_time, a.end_time)
-  );
-
-  const sc = STATUS_COLORS[appt.status] || STATUS_COLORS.pending;
-
-  return (
-    <div className={`bg-white border rounded-xl overflow-hidden shadow-sm ${hasConflict ? 'border-amber-300' : 'border-gray-100'}`}>
-      {hasConflict && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border-b border-amber-200 text-amber-700 text-xs font-medium">
-          <AlertTriangle className="w-3.5 h-3.5" />
-          Conflict — overlaps an approved appointment on this date
-        </div>
-      )}
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#B87333]/15 flex items-center justify-center text-[#B87333] font-bold text-sm flex-shrink-0">
-              {initials(appt.client_name)}
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900 text-sm">{appt.client_name}</p>
-              <p className="text-xs text-gray-500">{appt.client_email}</p>
-            </div>
-          </div>
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${sc.bg} ${sc.text} ${sc.border}`}>
-            {appt.status}
-          </span>
-        </div>
-
-        <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-3">
-          <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            <span className={`w-2 h-2 rounded-full ${DOT[tone(appt)]}`} />
-            {appt.service_name}
-            {bookingKind(appt) !== 'meeting' && <span className="ml-1 text-[10px] uppercase tracking-wide font-semibold text-emerald-700">{bookingKind(appt)}</span>}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            <Calendar className="w-3.5 h-3.5 text-gray-400" />
-            {formatDate(appt.date)}
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            <Clock className="w-3.5 h-3.5 text-gray-400" />
-            {formatTime(appt.start_time)} · {appt.service_duration_minutes} min
-          </span>
-          <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            {bookingKind(appt) === 'delivery'
-              ? <><MapPin className="w-3.5 h-3.5 text-green-600" /> Courier to client</>
-              : appt.mode === 'zoom'
-                ? <><Video className="w-3.5 h-3.5 text-blue-500" /> Zoom</>
-                : <><MapPin className="w-3.5 h-3.5 text-green-600" /> {bookingKind(appt) === 'collection' ? 'Collect at office' : 'On-site'}</>}
-          </span>
-        </div>
-
-        {appt.client_note && (
-          <div className="bg-gray-50 rounded-lg px-3 py-2 mb-3">
-            <p className="text-xs text-gray-500 mb-0.5 font-medium">Client note</p>
-            <p className="text-xs text-gray-700">{appt.client_note}</p>
-          </div>
-        )}
-
-        {showActions && appt.status === 'pending' && !declining && !proposing && (
-          <div className="flex gap-2 flex-wrap">
-            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1.5 text-xs" onClick={() => onApprove(appt)}>
-              <Check className="w-3.5 h-3.5" /> Approve
-            </Button>
-            <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5 text-xs" onClick={() => setDeclining(true)}>
-              <X className="w-3.5 h-3.5" /> Decline
-            </Button>
-            <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setProposing(true)}>
-              <ArrowRight className="w-3.5 h-3.5" /> Propose new time
-            </Button>
-          </div>
-        )}
-
-        {showActions && appt.status === 'approved' && (
-          <div className="flex gap-2 flex-wrap">
-            <Button size="sm" variant="outline" className="text-blue-600 border-blue-200 hover:bg-blue-50 gap-1.5 text-xs" onClick={() => onComplete(appt)}>
-              <Check className="w-3.5 h-3.5" /> Mark completed
-            </Button>
-            <Button size="sm" variant="outline" className="text-rose-600 border-rose-200 hover:bg-rose-50 gap-1.5 text-xs" onClick={() => onNoShow(appt)}>
-              <User className="w-3.5 h-3.5" /> No-show
-            </Button>
-          </div>
-        )}
-
-        {/* Decline form */}
-        {declining && (
-          <div className="mt-3 space-y-2">
-            <textarea value={declineReason} onChange={e => setDeclineReason(e.target.value)} rows={2} placeholder="Reason for declining (optional — will be sent to client)"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs resize-none focus:outline-none focus:border-red-300" />
-            <div className="flex gap-2">
-              <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white text-xs" onClick={() => { onDecline(appt, declineReason); setDeclining(false); }}>Confirm Decline</Button>
-              <Button size="sm" variant="outline" className="text-xs" onClick={() => setDeclining(false)}>Cancel</Button>
-            </div>
-          </div>
-        )}
-
-        {/* Propose form */}
-        {proposing && (
-          <div className="mt-3 space-y-2">
-            <div className="flex gap-2">
-              <input type="date" value={proposeDate} onChange={e => setProposeDate(e.target.value)} className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#B87333]" />
-              <input type="time" value={proposeTime} onChange={e => setProposeTime(e.target.value)} className="w-32 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#B87333]" />
-            </div>
-            <div className="flex gap-2">
-              <Button size="sm" className="bg-[#B87333] hover:bg-[#9a6030] text-white text-xs" disabled={!proposeDate || !proposeTime}
-                onClick={() => { onPropose(appt, proposeDate, proposeTime); setProposing(false); }}>Send Proposal</Button>
-              <Button size="sm" variant="outline" className="text-xs" onClick={() => setProposing(false)}>Cancel</Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ── Calendar View ─────────────────────────────────────────────────────────────
-// Kind of booking, from the service name
-function bookingKind(a) {
-  const n = (a?.service_name || '').toLowerCase();
-  if (n.includes('collect')) return 'collection';
-  if (n.includes('deliver')) return 'delivery';
-  return 'meeting';
-}
-const DOT = { pending: 'bg-amber-400', collection: 'bg-emerald-500', delivery: 'bg-emerald-500', meeting: 'bg-blue-500' };
-const CHIP = {
-  pending: 'bg-amber-50 text-amber-800 border-amber-200',
-  collection: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  delivery: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  meeting: 'bg-blue-50 text-blue-800 border-blue-200',
-};
-const tone = (a) => (a.status === 'pending' ? 'pending' : bookingKind(a));
-const sastToday = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Johannesburg' });
-
-// Shared calendar: every pending and approved booking (meetings, collections, deliveries).
-// Click a day to see its bookings and approve, decline or move them without leaving the calendar.
-function CalendarView({ appointments, approvedAppts, actions }) {
-  const today = sastToday();
-  const [calMonth, setCalMonth] = useState(() => ({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) - 1 }));
-  const [selected, setSelected] = useState(today);
-  const { year, month } = calMonth;
-  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // weeks start on Monday
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-  const shown = appointments.filter(a => ['pending', 'approved', 'completed'].includes(a.status) && a.date);
-  const byDate = {};
-  shown.forEach(a => { (byDate[a.date] = byDate[a.date] || []).push(a); });
-  Object.values(byDate).forEach(l => l.sort((x, y) => (x.start_time || '').localeCompare(y.start_time || '')));
-  const move = (d) => { setCalMonth(m => { const x = new Date(m.year, m.month + d); return { year: x.getFullYear(), month: x.getMonth() }; }); };
-  const goToday = () => { setCalMonth({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) - 1 }); setSelected(today); };
-  const dayList = byDate[selected] || [];
-  const monthPending = shown.filter(a => a.status === 'pending' && a.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`)).length;
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6">
-        <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
-          <div className="flex items-center gap-1">
-            <button aria-label="Previous month" onClick={() => move(-1)} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronLeft className="w-4 h-4" /></button>
-            <h3 className="font-semibold text-gray-900 min-w-[150px] text-center">{MONTHS[month]} {year}</h3>
-            <button aria-label="Next month" onClick={() => move(1)} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronRight className="w-4 h-4" /></button>
-            <button onClick={goToday} className="ml-1 text-xs font-medium px-2.5 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Today</button>
-          </div>
-          <div className="flex items-center gap-3 text-[11px] text-gray-500 flex-wrap">
-            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-amber-400 inline-block" />Needs approval{monthPending ? ` (${monthPending})` : ''}</span>
-            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Collection / delivery</span>
-            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-blue-500 inline-block" />Meeting</span>
-          </div>
-        </div>
-        <div className="grid grid-cols-7 gap-1 mb-1">
-          {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="text-center text-[11px] font-medium text-gray-400 py-1">{d}</div>)}
-        </div>
-        <div className="grid grid-cols-7 gap-1">
-          {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
-          {Array.from({ length: daysInMonth }).map((_, i) => {
-            const day = i + 1;
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const list = byDate[dateStr] || [];
-            const isToday = dateStr === today, isSel = dateStr === selected;
-            return (
-              <button key={day} type="button" onClick={() => setSelected(dateStr)} aria-pressed={isSel}
-                aria-label={`${day} ${MONTHS[month]}${list.length ? `, ${list.length} booking${list.length > 1 ? 's' : ''}` : ''}`}
-                className={`min-h-[58px] sm:min-h-[84px] rounded-lg p-1 text-left align-top transition-colors border ${isSel ? 'border-[#B87333] ring-1 ring-[#B87333]/40 bg-[#B87333]/5' : isToday ? 'border-[#B87333]/30 bg-[#B87333]/5' : 'border-gray-100 hover:bg-gray-50'} ${dateStr < today ? 'opacity-60' : ''}`}>
-                <span className={`block text-xs font-semibold mb-1 ${isToday ? 'text-[#B87333]' : 'text-gray-700'}`}>{day}</span>
-                <span className="hidden sm:block space-y-0.5">
-                  {list.slice(0, 3).map(a => (
-                    <span key={a.id} className={`block text-[10px] leading-tight border rounded px-1 py-0.5 truncate ${CHIP[tone(a)]}`}>
-                      {formatTime(a.start_time)} {a.client_name?.split(' ')[0]}
-                    </span>
-                  ))}
-                  {list.length > 3 && <span className="block text-[10px] text-gray-500">+{list.length - 3} more</span>}
-                </span>
-                <span className="flex sm:hidden gap-0.5 flex-wrap">
-                  {list.slice(0, 4).map(a => <i key={a.id} className={`w-1.5 h-1.5 rounded-full ${DOT[tone(a)]}`} />)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <div className="bg-white border border-gray-100 rounded-xl px-4 py-3">
-          <p className="text-xs text-gray-500">Selected day</p>
-          <p className="font-semibold text-gray-900">{formatDate(selected)}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{dayList.length ? `${dayList.length} booking${dayList.length > 1 ? 's' : ''}` : 'Nothing booked'}</p>
-        </div>
-        {dayList.map(a => (
-          <AppointmentCard key={a.id} appt={a} approvedAppts={approvedAppts} showActions
-            onApprove={actions.onApprove} onDecline={actions.onDecline} onPropose={actions.onPropose}
-            onComplete={actions.onComplete} onNoShow={actions.onNoShow} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Reminders Tab ─────────────────────────────────────────────────────────────
-function RemindersTab({ appointments }) {
-  const qc = useQueryClient();
-  const today = new Date().toISOString().split('T')[0];
-  const upcoming = appointments
-    .filter(a => a.status === 'approved' && a.date >= today)
-    .sort((a, b) => (a.date + a.start_time).localeCompare(b.date + b.start_time));
-
-  const [resending, setResending] = useState(null);
-
-  async function handleResend(appt) {
-    setResending(appt.id);
-    try {
-      await platform.functions.invoke('appointmentActions', { action: 'resend_reminder', appointmentId: appt.id });
-      qc.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success(`✅ Reminder resent to ${appt.client_email}`);
-    } catch {
-      toast.error('Failed to resend reminder');
-    } finally {
-      setResending(null);
-    }
-  }
-
-  if (upcoming.length === 0) {
-    return (
-      <div className="text-center py-16 text-gray-400 text-sm bg-white border border-gray-100 rounded-xl">
-        <Bell className="w-8 h-8 mx-auto mb-3 text-gray-300" />
-        No upcoming approved appointments
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
-        <Bell className="w-4 h-4 mt-0.5 flex-shrink-0" />
-        <span>The system automatically sends a reminder email to clients <strong>5 hours before</strong> their scheduled appointment. You can manually resend a reminder at any time.</span>
-      </div>
-
-      {/* Table header — desktop */}
-      <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_auto] gap-3 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-        <span>Client</span>
-        <span>Service</span>
-        <span>Date</span>
-        <span>Time</span>
-        <span>Location</span>
-        <span>Reminder</span>
-        <span></span>
-      </div>
-
-      {upcoming.map(appt => {
-        const reminderSent = appt.reminder_5h_sent;
-        const sentAt = appt.reminder_5h_sent_at
-          ? new Date(appt.reminder_5h_sent_at).toLocaleString('en-ZA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-          : null;
-        const locationLabel = appt.mode === 'zoom' ? 'Zoom' : 'On-site';
-
-        return (
-          <div key={appt.id} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-            {/* Mobile layout */}
-            <div className="md:hidden space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-full bg-[#B87333]/15 flex items-center justify-center text-[#B87333] font-bold text-xs flex-shrink-0">
-                    {initials(appt.client_name)}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">{appt.client_name}</p>
-                    <p className="text-xs text-gray-500">{appt.service_name}</p>
-                  </div>
-                </div>
-                <span className={`text-xs px-2 py-1 rounded-full font-medium ${reminderSent ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-500 border border-gray-200'}`}>
-                  {reminderSent ? 'Sent' : 'Pending'}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-gray-400" />{appt.client_email}</span>
-                {appt.client_phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-gray-400" />{appt.client_phone}</span>}
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-gray-400" />{formatDate(appt.date)}</span>
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-gray-400" />{formatTime(appt.start_time)}</span>
-                <span className="flex items-center gap-1">
-                  {appt.mode === 'zoom' ? <Video className="w-3 h-3 text-blue-500" /> : <MapPin className="w-3 h-3 text-green-600" />}
-                  {locationLabel}
-                </span>
-                {sentAt && <span className="text-gray-400 col-span-2">Sent: {sentAt}</span>}
-              </div>
-              <Button size="sm" variant="outline" className="w-full text-xs gap-1.5 text-[#B87333] border-[#B87333]/30 hover:bg-[#B87333]/5"
-                onClick={() => handleResend(appt)} disabled={resending === appt.id}>
-                {resending === appt.id ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><RefreshCw className="w-3.5 h-3.5" /> Resend Reminder</>}
-              </Button>
-            </div>
-
-            {/* Desktop layout */}
-            <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1fr_auto] gap-3 items-center">
-              <div>
-                <p className="font-semibold text-gray-900 text-sm">{appt.client_name}</p>
-                <p className="text-xs text-gray-400 flex items-center gap-1"><Mail className="w-3 h-3" />{appt.client_email}</p>
-                {appt.client_phone && <p className="text-xs text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" />{appt.client_phone}</p>}
-              </div>
-              <div>
-                <p className="text-sm text-gray-800">{appt.service_name}</p>
-              </div>
-              <div className="text-sm text-gray-700">{formatDate(appt.date)}</div>
-              <div className="text-sm text-gray-700">{formatTime(appt.start_time)}</div>
-              <div className="flex items-center gap-1 text-sm text-gray-700">
-                {appt.mode === 'zoom' ? <Video className="w-3.5 h-3.5 text-blue-500" /> : <MapPin className="w-3.5 h-3.5 text-green-600" />}
-                {locationLabel}
-              </div>
-              <div>
-                <span className={`text-xs px-2 py-1 rounded-full font-medium ${reminderSent ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-50 text-gray-500 border border-gray-200'}`}>
-                  {reminderSent ? '✓ Sent' : '⏳ Pending'}
-                </span>
-                {sentAt && <p className="text-[10px] text-gray-400 mt-1">{sentAt}</p>}
-              </div>
-              <Button size="sm" variant="outline" className="text-xs gap-1.5 text-[#B87333] border-[#B87333]/30 hover:bg-[#B87333]/5 whitespace-nowrap"
-                onClick={() => handleResend(appt)} disabled={resending === appt.id}>
-                {resending === appt.id ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><RefreshCw className="w-3.5 h-3.5" /> Resend</>}
-              </Button>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Main Page ─────────────────────────────────────────────────────────────────
-const TABS = ['Pending', 'Calendar', 'Upcoming', 'All', 'Reminders'];
+const kindOf = (a) => { const n = (a?.service_name || '').toLowerCase(); return n.includes('collect') ? 'collection' : n.includes('deliver') ? 'delivery' : 'meeting'; };
+const KIND = { meeting: ['Meeting', 'users'], collection: ['Collection', 'pin'], delivery: ['Delivery', 'truck'] };
+const STATUS = { pending: ['amber', 'Needs approval'], approved: ['green', 'Approved'], completed: ['blue', 'Completed'], declined: ['red', 'Declined'], cancelled: ['red', 'Cancelled'], no_show: ['red', 'No-show'] };
+const TIMES = Array.from({ length: 21 }, (_, i) => `${String(8 + Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`);
+const t24 = (t) => (t || '').slice(0, 5);
+const addressOf = (a) => (a.client_note || '').match(/Delivery address: (.*)/)?.[1];
+const noteOf = (a) => (a.client_note || '').split('\n').filter((l) => !/^Delivery address:|^Collecting at/.test(l)).join(' ').replace(/^Note: /, '');
 
 export default function AdminAppointments() {
-  const [activeTab, setActiveTab] = useState('Pending');
   const qc = useQueryClient();
+  const [tab, setTab] = useState('calendar');
+  const { data: appts = [], isLoading } = useQuery({ queryKey: ['appointments'], queryFn: () => platform.entities.Appointment.list('-created_date', 500), refetchInterval: 60000 });
+  const { data: docs = [] } = useQuery({ queryKey: ['portal-uploads'], queryFn: () => platform.entities.Document.list('-created_date', 200), refetchInterval: 120000 });
+  const uploads = useMemo(() => docs.filter((d) => ['Client Supplied', 'Proof of Payment'].includes(d.category) && d.file_url), [docs]);
+  const pending = appts.filter((a) => a.status === 'pending');
+  const newUploads = uploads.filter((d) => d.status === 'Pending Review').length;
+  const refresh = () => { qc.invalidateQueries({ queryKey: ['appointments'] }); qc.invalidateQueries({ queryKey: ['portal-uploads'] }); };
 
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ['appointments'],
-    queryFn: () => platform.entities.Appointment.list('-created_date', 200),
-    refetchInterval: 30000,
-  });
+  const act = async (label, fn) => { try { await fn(); toast.success(label); refresh(); return true; } catch (e) { toast.error(e?.message || 'Something went wrong'); return false; } };
+  const actions = {
+    approve: (a) => act('Approved. The client has been emailed.', () => platform.functions.invoke('appointmentActions', { action: 'approve', appointmentId: a.id })),
+    decline: (a, reason) => act('Declined. The client has been emailed.', () => platform.functions.invoke('appointmentActions', { action: 'decline', appointmentId: a.id, declineReason: reason })),
+    propose: (a, date, time) => act('New time proposed. The client has been emailed.', () => platform.functions.invoke('appointmentActions', { action: 'propose', appointmentId: a.id, proposeDate: date, proposeTime: time })),
+    remind: (a) => act('Reminder sent.', () => platform.functions.invoke('appointmentActions', { action: 'resend_reminder', appointmentId: a.id })),
+    status: (a, status, label) => act(label, () => platform.entities.Appointment.update(a.id, { status })),
+  };
 
-  const updateAppt = useMutation({
-    mutationFn: ({ id, data }) => platform.entities.Appointment.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['appointments'] }),
-  });
-
-  const today = new Date().toISOString().split('T')[0];
-  const approvedAppts = appointments.filter(a => a.status === 'approved');
-
-  const pending  = appointments.filter(a => a.status === 'pending');
-  const upcoming = appointments.filter(a => a.status === 'approved' && a.date >= today);
-  const allAppts = appointments;
-
-  async function handleApprove(appt) {
-    try {
-      await platform.functions.invoke('appointmentActions', { action: 'approve', appointmentId: appt.id });
-      qc.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success(`✅ Approved & confirmation email sent to ${appt.client_email}`);
-    } catch { toast.error('Failed to approve'); }
-  }
-  async function handleDecline(appt, reason) {
-    try {
-      await platform.functions.invoke('appointmentActions', { action: 'decline', appointmentId: appt.id, declineReason: reason });
-      qc.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Declined — client notified by email');
-    } catch { toast.error('Failed to decline'); }
-  }
-  async function handlePropose(appt, date, time) {
-    try {
-      await platform.functions.invoke('appointmentActions', { action: 'propose', appointmentId: appt.id, proposeDate: date, proposeTime: time });
-      qc.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Proposal sent — client notified by email');
-    } catch { toast.error('Failed to send proposal'); }
-  }
-  function handleComplete(appt) {
-    updateAppt.mutate({ id: appt.id, data: { status: 'completed' } });
-    toast.success('Marked as completed');
-  }
-  function handleNoShow(appt) {
-    updateAppt.mutate({ id: appt.id, data: { status: 'no_show' } });
-    toast.success('Marked as no-show');
-  }
-
-  const listForTab = activeTab === 'Pending' ? pending : activeTab === 'Upcoming' ? upcoming : allAppts;
-
+  const TABS = [['calendar', 'Calendar', 'calendar', pending.length], ['uploads', 'Client uploads', 'upload', newUploads], ['all', 'All appointments', 'layers', 0]];
   return (
     <AdminLayout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
-          <p className="text-sm text-gray-500 mt-1">Review and manage booking requests.</p>
+      <div className="ap-root -m-6 lg:-m-7">
+        <div className="ap-head"><div><div className="ap-eyebrow">CRM</div><h1>Appointments</h1></div></div>
+        <div className="ap-tabs" role="tablist">
+          {TABS.map(([k, l, ic, n]) => (
+            <button key={k} type="button" role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>
+              <Icon name={ic} size={16} />{l}{n > 0 && <span className="ap-count">{n}</span>}
+            </button>
+          ))}
+          <a className="ap-btn ghost" href="/admin/booking-settings" style={{ marginLeft: 'auto' }}><Icon name="clock" size={14} />Opening hours</a>
         </div>
+        {isLoading && <p className="ap-dim">Loading appointments…</p>}
+        {!isLoading && tab === 'calendar' && <CalendarTab appts={appts} pending={pending} actions={actions} />}
+        {tab === 'uploads' && <UploadsTab uploads={uploads} onChecked={(d) => act('Marked as checked.', () => platform.entities.Document.update(d.id, { status: 'Reviewed' }))} />}
+        {!isLoading && tab === 'all' && <AllTab appts={appts} actions={actions} />}
+      </div>
+    </AdminLayout>
+  );
+}
 
-        {/* Tabs */}
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6 w-fit max-w-full overflow-x-auto">
-          {TABS.map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shrink-0 whitespace-nowrap ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-              {tab}
-              {tab === 'Pending' && pending.length > 0 && (
-                <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                  {pending.length}
-                </span>
-              )}
-              {tab === 'Upcoming' && upcoming.length > 0 && (
-                <span className="bg-green-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                  {upcoming.length}
-                </span>
-              )}
-              {tab === 'Reminders' && upcoming.length > 0 && (
-                <span className="bg-[#B87333] text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                  {upcoming.length}
-                </span>
-              )}
+function CalendarTab({ appts, pending, actions }) {
+  const today = todaySast();
+  const [day, setDay] = useState(today);
+  const [ym, setYm] = useState(() => { const d = fromYmd(today); return { y: d.getFullYear(), m: d.getMonth() }; });
+  const byDay = useMemo(() => {
+    const m = {};
+    appts.filter((a) => a.date && !['cancelled', 'declined'].includes(a.status)).forEach((a) => { (m[a.date] = m[a.date] || []).push(a); });
+    Object.values(m).forEach((l) => l.sort((x, y) => (x.start_time || '').localeCompare(y.start_time || '')));
+    return m;
+  }, [appts]);
+  const info = (d) => {
+    const l = byDay[d]; if (!l) return {};
+    const dots = []; if (l.some((a) => a.status === 'pending')) dots.push('amber');
+    if (l.some((a) => a.status !== 'pending' && kindOf(a) !== 'meeting')) dots.push('green');
+    if (l.some((a) => a.status !== 'pending' && kindOf(a) === 'meeting')) dots.push('blue');
+    return { dots, count: l.length };
+  };
+  const jump = (a) => { setDay(a.date); const d = fromYmd(a.date); setYm({ y: d.getFullYear(), m: d.getMonth() }); };
+  const list = byDay[day] || [];
+  const queue = [...pending].sort((x, y) => `${x.date}${x.start_time}`.localeCompare(`${y.date}${y.start_time}`));
+
+  return (
+    <div className="ap-cal">
+      <div className="ap-panel">
+        <Calendar year={ym.y} month={ym.m} onMonth={(y, m) => setYm({ y, m })} selected={day} onSelect={setDay} info={info} />
+        <div className="cp-legend"><span><i className="amber" />Needs approval</span><span><i className="green" />Collection / delivery</span><span><i className="blue" />Meeting</span></div>
+        <div className="ap-queue">
+          <h3><Icon name="clock" size={16} />Waiting for approval · {queue.length}</h3>
+          {queue.length === 0 && <p className="ap-dim sm">Nothing waiting. New requests from your website and client portal appear here.</p>}
+          {queue.map((a) => (
+            <button key={a.id} type="button" className={`ap-qitem ${a.date === day ? 'on' : ''}`} onClick={() => jump(a)}>
+              <Icon name={KIND[kindOf(a)][1]} size={18} />
+              <span><b>{a.client_name || 'Client'}</b><small>{a.service_name} · {fmtDay(a.date)}, {t24(a.start_time)}</small></span>
+              <Icon name="right" size={16} />
             </button>
           ))}
         </div>
-
-        {/* Calendar view */}
-        {activeTab === 'Calendar' && <CalendarView appointments={appointments} approvedAppts={approvedAppts} actions={{ onApprove: handleApprove, onDecline: handleDecline, onPropose: handlePropose, onComplete: handleComplete, onNoShow: handleNoShow }} />}
-
-        {/* Reminders view */}
-        {activeTab === 'Reminders' && <RemindersTab appointments={appointments} />}
-
-        {/* List views */}
-        {activeTab !== 'Calendar' && activeTab !== 'Reminders' && (
-          <div className="space-y-4">
-            {isLoading && <div className="text-center py-12 text-gray-400 text-sm">Loading…</div>}
-            {!isLoading && listForTab.length === 0 && (
-              <div className="text-center py-12 text-gray-400 text-sm bg-white border border-gray-100 rounded-xl">
-                {activeTab === 'Pending' ? 'No pending requests 🎉' : 'No appointments found'}
-              </div>
-            )}
-            {listForTab.map(appt => (
-              <AppointmentCard key={appt.id} appt={appt} approvedAppts={approvedAppts}
-                showActions={true}
-                onApprove={handleApprove}
-                onDecline={handleDecline}
-                onPropose={handlePropose}
-                onComplete={handleComplete}
-                onNoShow={handleNoShow}
-              />
-            ))}
-          </div>
-        )}
       </div>
-    </AdminLayout>
+      <div className="ap-panel grow">
+        <div className="ap-row"><h2>{fmtDayLong(day)}</h2>{day !== today && <button type="button" className="ap-btn" onClick={() => { setDay(today); const d = fromYmd(today); setYm({ y: d.getFullYear(), m: d.getMonth() }); }}>Today</button>}</div>
+        {list.length === 0 && <p className="ap-dim">Nothing booked on this day.</p>}
+        {list.map((a) => <ApptCard key={a.id} a={a} actions={actions} />)}
+      </div>
+    </div>
+  );
+}
+
+function ApptCard({ a, actions }) {
+  const [dialog, setDialog] = useState(null); // 'decline' | 'move'
+  const k = kindOf(a); const [tone, label] = STATUS[a.status] || ['blue', a.status];
+  const upcoming = a.date >= todaySast();
+  const addr = addressOf(a), note = noteOf(a);
+  return (
+    <div className={`ap-item ${a.status === 'pending' ? 'requested' : a.status}`}>
+      <div className="ap-time"><b>{t24(a.start_time)}</b><small>{t24(a.end_time)}</small></div>
+      <div className="ap-body">
+        <div className="ap-row tight">
+          <span className="ap-kind"><Icon name={KIND[k][1]} size={14} />{k === 'meeting' ? a.service_name : KIND[k][0]}</span>
+          <span className={`ap-tag ${tone}`}>{label}</span>
+          {a.mode === 'zoom' && <span className="ap-dim sm">Zoom</span>}
+        </div>
+        <b className="ap-title">{a.client_name || 'Client'}</b>
+        <span className="ap-dim sm">{[a.client_email, a.client_phone].filter(Boolean).join(' · ')}</span>
+        {addr && <span className="ap-dim sm"><Icon name="pin" size={12} /> {addr}</span>}
+        {note && <span className="ap-dim sm">“{note}”</span>}
+        {a.proposed_date && a.status === 'pending' && <span className="ap-dim sm">You proposed {fmtDayLong(a.proposed_date)}, {t24(a.proposed_start_time)}</span>}
+        {a.decline_reason && ['declined', 'cancelled'].includes(a.status) && <span className="ap-dim sm">Reason: {a.decline_reason}</span>}
+        <div className="ap-acts">
+          {a.status === 'pending' && <>
+            <button type="button" className="ap-btn mint" onClick={() => actions.approve(a)}><Icon name="check" size={16} />Approve</button>
+            <button type="button" className="ap-btn" onClick={() => setDialog('move')}>Propose new time</button>
+            <button type="button" className="ap-btn red" onClick={() => setDialog('decline')}>Decline</button>
+          </>}
+          {a.status === 'approved' && <>
+            {upcoming && <button type="button" className="ap-btn" onClick={() => actions.remind(a)}><Icon name="bell" size={14} />Send reminder</button>}
+            <button type="button" className="ap-btn" onClick={() => actions.status(a, 'completed', 'Marked as completed.')}><Icon name="check" size={14} />Completed</button>
+            <button type="button" className="ap-btn" onClick={() => actions.status(a, 'no_show', 'Marked as no-show.')}>No-show</button>
+          </>}
+          {a.zoom_link && <a className="ap-btn ghost" href={a.zoom_link} target="_blank" rel="noreferrer">Zoom link</a>}
+          {a.client_email && <a className="ap-btn ghost" href={`mailto:${a.client_email}`}><Icon name="mail" size={14} />Email</a>}
+        </div>
+      </div>
+      {dialog === 'decline' && <DeclineDialog a={a} onClose={() => setDialog(null)} onSave={async (r) => { if (await actions.decline(a, r)) setDialog(null); }} />}
+      {dialog === 'move' && <MoveDialog a={a} onClose={() => setDialog(null)} onSave={async (d, t) => { if (await actions.propose(a, d, t)) setDialog(null); }} />}
+    </div>
+  );
+}
+
+function Modal({ title, children, onClose, footer }) {
+  useEffect(() => { const k = (e) => e.key === 'Escape' && onClose(); window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, [onClose]);
+  return (
+    <div className="cp-root" style={{ minHeight: 0, background: 'transparent' }}>
+      <div className="cp-sheet-bg" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <div className="cp-sheet ap-modal" role="dialog" aria-modal="true" aria-label={title}>
+          <div className="cp-sheet-hd"><h2>{title}</h2><button type="button" className="cp-icon-btn" aria-label="Close" onClick={onClose}><Icon name="x" /></button></div>
+          <div className="cp-sheet-bd">{children}</div>
+          <div className="cp-sheet-ft">{footer}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeclineDialog({ a, onClose, onSave }) {
+  const [reason, setReason] = useState('');
+  return (
+    <Modal title={`Decline ${a.client_name || 'request'}`} onClose={onClose} footer={<div className="cp-actions"><button type="button" className="cp-btn ghost" onClick={onClose}>Cancel</button><button type="button" className="cp-btn primary" onClick={() => onSave(reason)}>Decline and email client</button></div>}>
+      <p className="cp-muted">{a.service_name} · {fmtDayLong(a.date)}, {t24(a.start_time)}</p>
+      <label className="cp-field"><span className="cp-label">Reason (sent to the client)</span><textarea className="cp-in" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. We're fully booked that morning. Please choose another time." autoFocus /></label>
+    </Modal>
+  );
+}
+
+function MoveDialog({ a, onClose, onSave }) {
+  const [d, setD] = useState(a.date); const [t, setT] = useState(TIMES.includes(t24(a.start_time)) ? t24(a.start_time) : '10:00');
+  return (
+    <Modal title="Propose a new time" onClose={onClose} footer={<div className="cp-actions"><button type="button" className="cp-btn ghost" onClick={onClose}>Cancel</button><button type="button" className="cp-btn primary" onClick={() => onSave(d, t)}>Send to client</button></div>}>
+      <p className="cp-muted">Requested: {fmtDayLong(a.date)}, {t24(a.start_time)}. The client gets the new time by email.</p>
+      <div className="cp-two">
+        <label className="cp-field"><span className="cp-label">New date</span><input type="date" className="cp-in" value={d} onChange={(e) => setD(e.target.value)} /></label>
+        <label className="cp-field"><span className="cp-label">Start time</span><select className="cp-in" value={t} onChange={(e) => setT(e.target.value)}>{TIMES.map((x) => <option key={x}>{x}</option>)}</select></label>
+      </div>
+    </Modal>
+  );
+}
+
+function UploadsTab({ uploads, onChecked }) {
+  return (
+    <div className="ap-panel">
+      <h2>Files from clients</h2>
+      {uploads.length === 0 && <p className="ap-dim">No uploads yet. Files clients send from their portal appear here and are emailed to you.</p>}
+      {uploads.map((d) => (
+        <div key={d.id} className="ap-li">
+          <span className={`ap-fic ${d.category === 'Proof of Payment' ? 'mint' : ''}`}><Icon name={d.category === 'Proof of Payment' ? 'card' : 'file'} size={18} /></span>
+          <span className="ap-grow"><b>{d.file_name || d.title}</b><small>{d.category === 'Proof of Payment' ? 'Proof of payment' : 'Client file'}{d.created_date ? ` · ${ago(d.created_date)}` : ''}{d.description ? ` · “${d.description}”` : ''}</small></span>
+          <a className="ap-btn" href={d.file_url} target="_blank" rel="noreferrer"><Icon name="eye" size={14} />Open</a>
+          {d.status === 'Pending Review' ? <button type="button" className="ap-btn mint" onClick={() => onChecked(d)}><Icon name="check" size={14} />Mark checked</button> : <span className="ap-tag green">checked</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AllTab({ appts, actions }) {
+  const [filter, setFilter] = useState('upcoming');
+  const today = todaySast();
+  const rows = appts.filter((a) => filter === 'all' || (filter === 'upcoming' ? a.date >= today && ['pending', 'approved'].includes(a.status) : a.date < today || !['pending', 'approved'].includes(a.status)))
+    .sort((x, y) => (filter === 'upcoming' ? 1 : -1) * `${x.date}${x.start_time}`.localeCompare(`${y.date}${y.start_time}`));
+  return (
+    <div className="ap-panel">
+      <div className="ap-row">
+        {[['upcoming', 'Upcoming'], ['past', 'Past & closed'], ['all', 'Everything']].map(([k, l]) => <button key={k} type="button" className={`ap-btn ${filter === k ? 'mint' : ''}`} aria-pressed={filter === k} onClick={() => setFilter(k)}>{l}</button>)}
+        <span className="ap-dim sm" style={{ marginLeft: 'auto' }}>{rows.length} appointment{rows.length === 1 ? '' : 's'}</span>
+      </div>
+      {rows.length === 0 && <p className="ap-dim">Nothing here.</p>}
+      {rows.map((a) => (
+        <div key={a.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span className="ap-dim sm">{a.date ? fmtDayLong(a.date) : 'No date'}</span>
+          <ApptCard a={a} actions={actions} />
+        </div>
+      ))}
+    </div>
   );
 }

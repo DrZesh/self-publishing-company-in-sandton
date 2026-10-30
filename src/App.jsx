@@ -237,6 +237,7 @@ import WalkInCheckin from './pages/WalkInCheckin';
 import AdminBookLibrary from './pages/admin/AdminBookLibrary';
 import AdminBookingSettings from './pages/admin/AdminBookingSettings';
 import AdminAppointments from './pages/admin/AdminAppointments';
+import AdminAppointmentsClassic from './pages/admin/AdminAppointmentsClassic';
 import BookAppointment from './pages/BookAppointment';
 import AppointmentCancel from './pages/AppointmentCancel';
 import AdminAuthors from './pages/admin/AdminAuthors';
@@ -740,6 +741,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/books" element={<ProtectedAdminRoute><AdminBookLibrary /></ProtectedAdminRoute>} />
       <Route path="/admin/booking-settings" element={<ProtectedAdminRoute><AdminBookingSettings /></ProtectedAdminRoute>} />
       <Route path="/admin/appointments" element={<ProtectedAdminRoute><AdminAppointments /></ProtectedAdminRoute>} />
+      <Route path="/admin/appointments-classic" element={<ProtectedAdminRoute><AdminAppointmentsClassic /></ProtectedAdminRoute>} />
       <Route path="/admin/authors" element={<ProtectedAdminRoute><AdminAuthors /></ProtectedAdminRoute>} />
       <Route path="/admin/collections" element={<ProtectedAdminRoute><AdminCollections /></ProtectedAdminRoute>} />
       <Route path="/portal/:token" element={<ClientPortal />} />
