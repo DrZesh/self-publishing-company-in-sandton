@@ -8,9 +8,11 @@ import { addDays, fmtDayLong, fromYmd, todaySast, ymd } from './dates.js';
 
 const t12 = (t) => { const [h, m] = t.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'pm' : 'am'}`; };
 
-export default function BookingSheet({ token, onClose, onBooked, initialKind = 'collection', defaultAddress = '' }) {
+// Pass `service` ({ id, name, allowed_modes, duration_minutes, prep_tips }) to book a consultation instead of a hand-over.
+export default function BookingSheet({ token, onClose, onBooked, initialKind = 'collection', defaultAddress = '', service = null }) {
   const t0 = fromYmd(todaySast());
-  const [kind, setKind] = useState(initialKind);
+  const [kind, setKind] = useState(service ? `service:${service.id}` : initialKind);
+  const [mode, setMode] = useState(service?.allowed_modes?.[0] || 'on_site');
   const [ym, setYm] = useState({ y: t0.getFullYear(), m: t0.getMonth() });
   const [days, setDays] = useState({});
   const [loading, setLoading] = useState(false);
@@ -54,13 +56,13 @@ export default function BookingSheet({ token, onClose, onBooked, initialKind = '
     return free ? { dots: [free <= 1 ? 'amber' : 'green'] } : { disabled: true, reason: 'Fully booked' };
   };
   const pickKind = (k) => { autoJumps.current = 2; setYm({ y: t0.getFullYear(), m: t0.getMonth() }); setKind(k); setDay(null); setSlot(null); };
-  const ok = slot && (kind === 'collection' || address.trim().length > 5);
+  const ok = slot && (kind !== 'delivery' || address.trim().length > 5);
   const monthHasFree = useMemo(() => Object.values(days).some((l) => l.some((x) => x.remaining > 0)), [days]);
 
   const submit = async () => {
     setBusy(true); setErr(null);
     try {
-      await journeyApi.request(token, { kind, date: day, start_time: slot.start, address, note: notes });
+      await journeyApi.request(token, { kind, date: day, start_time: slot.start, address, note: notes, mode });
       onBooked({ kind, day, slot });
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
@@ -69,15 +71,26 @@ export default function BookingSheet({ token, onClose, onBooked, initialKind = '
     <div className="cp-sheet-bg" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="cp-sheet" role="dialog" aria-modal="true" aria-labelledby="bk-title" tabIndex={-1} ref={dialog}>
         <div className="cp-sheet-hd">
-          <h2 id="bk-title">Choose a {kind === 'delivery' ? 'delivery' : 'collection'} time</h2>
+          <h2 id="bk-title">{service ? service.name : `Choose a ${kind === 'delivery' ? 'delivery' : 'collection'} time`}</h2>
           <button type="button" className="cp-icon-btn" aria-label="Close" onClick={onClose}><Icon name="x" /></button>
         </div>
         <div className="cp-sheet-bd">
+          {service ? (
+            <>
+              {service.allowed_modes?.length > 1 && (
+                <div className="cp-seg" role="group" aria-label="How would you like to meet?">
+                  {service.allowed_modes.map((m) => <button key={m} type="button" aria-pressed={mode === m} className={mode === m ? 'on' : ''} onClick={() => setMode(m)}><Icon name={m === 'zoom' ? 'eye' : 'pin'} size={16} />{m === 'zoom' ? 'Zoom call' : 'At our office'}</button>)}
+                </div>
+              )}
+              <p className="cp-muted sm">{service.duration_minutes ? `${service.duration_minutes} minutes · ` : ''}{mode === 'zoom' ? 'We email the Zoom link once your time is confirmed.' : `At ${cfg.company.collectionAddress}.`}</p>
+            </>
+          ) : (<>
           <div className="cp-seg" role="group" aria-label="How do you want your books?">
             <button type="button" aria-pressed={kind === 'collection'} className={kind === 'collection' ? 'on' : ''} onClick={() => pickKind('collection')}><Icon name="pin" size={16} />Collect</button>
             <button type="button" aria-pressed={kind === 'delivery'} className={kind === 'delivery' ? 'on' : ''} onClick={() => pickKind('delivery')}><Icon name="truck" size={16} />Deliver</button>
           </div>
           <p className="cp-muted sm">{kind === 'collection' ? `At ${cfg.company.collectionAddress}. One-hour slots on our open days.` : 'Courier to your door. Morning or afternoon window on our open days.'}</p>
+          </>)}
 
           <Calendar year={ym.y} month={ym.m} onMonth={(y, m) => { setYm({ y, m }); setDay(null); setSlot(null); }} selected={day}
             onSelect={(d) => { setDay(d); setSlot(null); }} info={info} loading={loading}
@@ -104,7 +117,8 @@ export default function BookingSheet({ token, onClose, onBooked, initialKind = '
               <textarea className="cp-in" rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, suburb, city, postal code" /></label>
           )}
           <label className="cp-field"><span className="cp-label">Note for our team <span className="cp-muted">(optional)</span></span>
-            <input className="cp-in" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={kind === 'collection' ? 'e.g. my driver will collect' : 'e.g. gate code, contact person'} /></label>
+            <input className="cp-in" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={service ? 'What would you like to discuss?' : kind === 'collection' ? 'e.g. my driver will collect' : 'e.g. gate code, contact person'} /></label>
+          {service?.prep_tips && <div className="cp-note green"><Icon name="check" /><span><b>Please bring:</b> {service.prep_tips}</span></div>}
           {err && <div className="cp-err" role="alert">{err}</div>}
         </div>
         <div className="cp-sheet-ft">

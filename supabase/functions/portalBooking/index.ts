@@ -4,7 +4,8 @@
 // handled by the existing appointmentActions function, which emails the client.
 //
 // Actions (all need the client's portal access_token; the shared server checks it):
-//   month    { kind, from, to }                      → { days: { 'YYYY-MM-DD': [{ start, end, remaining }] } }
+//   services {}                                       → active Booking Settings services (consultations etc.)
+//   month    { kind, from, to }   kind = 'collection' | 'delivery' | 'service:<booking service id>'                      → { days: { 'YYYY-MM-DD': [{ start, end, remaining }] } }
 //   request  { kind, date, start_time, address, note } → creates a pending appointment, emails team + client
 //   mine     {}                                       → the client's collection/delivery bookings
 //   cancel   { appointment_id }                       → client cancels their own booking, emails team
@@ -72,8 +73,24 @@ function shell(title: string, rows: Array<[string, string]>, intro: string, butt
   </div></div>`;
 }
 
+// A meeting from Booking Settings (Consultation, Cover design discussion, ...): one client per time,
+// slot length = duration + buffer, blocked by any other meeting at that time.
+async function serviceKind(platform: any, kind: string) {
+  if (!kind.startsWith('service:')) return null;
+  const id = kind.slice(8);
+  const svc = (await platform.entities.BookingService.filter({ is_active: true })).find((x: any) => x.id === id);
+  if (!svc) throw Object.assign(new Error('That appointment type is not available any more'), { status: 400 });
+  const dur = Number(svc.duration_minutes || 30), step = dur + Number(svc.buffer_minutes || 0);
+  return {
+    service: svc.name, svc, capacity: 1, meeting: true,
+    slots: (open: string, close: string) => { const out: Array<[string, string]> = []; for (let t = mins(open); t + dur <= mins(close); t += step) out.push([hhmm(t), hhmm(t + dur)]); return out; },
+  };
+}
+const HANDOVER = Object.values(KINDS).map((k) => k.service);
+
 async function availability(platform: any, kind: string, from: string, to: string) {
-  const k = KINDS[kind]; if (!k) throw Object.assign(new Error('Choose collection or delivery'), { status: 400 });
+  const k: any = KINDS[kind] || await serviceKind(platform, kind);
+  if (!k) throw Object.assign(new Error('Choose collection or delivery'), { status: 400 });
   const rules = await platform.entities.AvailabilityRule.list();
   const notice = Number(rules.find((r: any) => r.weekday === 'Monday')?.min_notice_hours ?? 24);
   const earliest = Date.now() + notice * 3600e3;
@@ -81,7 +98,9 @@ async function availability(platform: any, kind: string, from: string, to: strin
   const last = new Date(`${today}T12:00:00Z`); last.setUTCDate(last.getUTCDate() + HORIZON_DAYS);
   const start = from > today ? from : today, end = to < ymd(last) ? to : ymd(last);
   if (start > end) return {};
-  const booked = (await platform.entities.Appointment.filter({ service_name: k.service }))
+  const booked = (k.meeting
+    ? (await platform.entities.Appointment.list('-created_date', 1000)).filter((a: any) => !HANDOVER.includes(a.service_name))
+    : await platform.entities.Appointment.filter({ service_name: k.service }))
     .filter((a: any) => ['pending', 'approved'].includes(a.status) && a.date >= start && a.date <= end);
   const days: Record<string, Array<{ start: string; end: string; remaining: number }>> = {};
   for (let d = new Date(`${start}T12:00:00Z`); ymd(d) <= end; d.setUTCDate(d.getUTCDate() + 1)) {
@@ -132,6 +151,11 @@ serve('portalBooking', async (req) => {
   const portalLink = `${SITE()}/portal/${body.access_token}`;
   const crmLink = `${SITE()}/admin/appointments`;
 
+  if (body.action === 'services') {
+    const list = (await platform.entities.BookingService.filter({ is_active: true })).sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+    return Response.json({ services: list.map((x: any) => ({ id: x.id, name: x.name, description: x.description || '', duration_minutes: x.duration_minutes, allowed_modes: x.allowed_modes?.length ? x.allowed_modes : ['on_site'], prep_tips: x.prep_tips || '' })) });
+  }
+
   if (body.action === 'month') {
     return Response.json({ days: await availability(platform, body.kind, String(body.from || ''), String(body.to || '')) });
   }
@@ -144,29 +168,36 @@ serve('portalBooking', async (req) => {
   }
 
   if (body.action === 'request') {
-    const kind = String(body.kind), k = KINDS[kind];
+    const kind = String(body.kind), k: any = KINDS[kind] || await serviceKind(platform, kind);
     const date = String(body.date || ''), start = String(body.start_time || '');
     const address = String(body.address || '').trim().slice(0, 500), note = String(body.note || '').trim().slice(0, 1000);
     if (!k) return Response.json({ error: 'Choose collection or delivery' }, { status: 400 });
+    const mode = k.meeting ? (k.svc.allowed_modes?.includes(body.mode) ? body.mode : (k.svc.allowed_modes?.[0] || 'on_site')) : 'on_site';
     if (kind === 'delivery' && address.length < 6) return Response.json({ error: 'Please enter the delivery address' }, { status: 400 });
     const slot = (await availability(platform, kind, date, date))[date]?.find((s) => s.start === start);
     if (!slot) return Response.json({ error: 'That time is no longer available. Please pick another.' }, { status: 409 });
     if (slot.remaining <= 0) return Response.json({ error: 'That time has just been fully booked. Please pick another.' }, { status: 409 });
 
     // A new request replaces the client's previous open request of the same kind
-    const open = (await platform.entities.Appointment.filter({ client_email: contact.email, service_name: k.service })).filter((a: any) => a.status === 'pending');
+    const open = k.meeting ? [] : (await platform.entities.Appointment.filter({ client_email: contact.email, service_name: k.service })).filter((a: any) => a.status === 'pending');
     for (const a of open) await platform.entities.Appointment.update(a.id, { status: 'cancelled', cancelled_at: new Date().toISOString(), decline_reason: 'Replaced by a new request from the client portal' });
 
     const token = () => crypto.randomUUID().replaceAll('-', '');
-    const clientNote = [kind === 'delivery' ? `Delivery address: ${address}` : 'Collecting at the Creative Books SA office', note && `Note: ${note}`].filter(Boolean).join('\n');
+    const clientNote = k.meeting ? note : [kind === 'delivery' ? `Delivery address: ${address}` : 'Collecting at the Creative Books SA office', note && `Note: ${note}`].filter(Boolean).join('\n');
     const appt = await platform.entities.Appointment.create({
       client_name: name, client_email: contact.email, client_phone: contact.phone || '', linked_client_id: contact.id,
-      service_name: k.service, service_id: null, service_duration_minutes: mins(slot.end) - mins(slot.start),
-      date, start_time: slot.start, end_time: slot.end, mode: 'on_site', status: 'pending', client_note: clientNote,
+      service_name: k.service, service_id: k.meeting ? k.svc.id : null, service_duration_minutes: mins(slot.end) - mins(slot.start),
+      date, start_time: slot.start, end_time: slot.end, mode, status: 'pending', client_note: clientNote,
       cancel_token: token(), reschedule_token: token(), created_by_id: null, is_sample: false,
     });
 
     const when = `${fmtDate(date)}, ${fmtTime(slot.start)} – ${fmtTime(slot.end)}`;
+    if (k.meeting) {
+      const how = mode === 'zoom' ? 'Zoom (link sent once confirmed)' : 'At our office, Prism Office Park, Fourways';
+      await mail(ADMIN_EMAIL(), `New appointment request: ${k.service}, ${name}`, shell('New appointment request', [['Client', name], ['Email', contact.email], ['Phone', contact.phone || '—'], ['Appointment', k.service], ['Requested time', when], ['How', how], ...(note ? [['Note', note] as [string, string]] : [])], `${esc(name)} requested an appointment from the client portal. Please approve, decline or propose a new time.`, { href: crmLink, label: 'Open Appointments' }));
+      await mail(contact.email, `We've received your appointment request`, shell('Appointment request received', [['Appointment', k.service], ['Requested time', when], ['How', how], ...(k.svc.prep_tips ? [['Please bring', k.svc.prep_tips] as [string, string]] : [])], `Hi ${esc(name.split(' ')[0])}, thank you. Our team will confirm this time shortly and you'll get an email either way.`, { href: portalLink, label: 'View in your portal' }));
+      return Response.json({ success: true, booking: { id: appt.id, date, start_time: slot.start, end_time: slot.end, status: 'pending' } });
+    }
     const rows: Array<[string, string]> = [['Client', name], ['Email', contact.email], ['Phone', contact.phone || '—'], ['Type', kind === 'delivery' ? 'Delivery' : 'Collection'], ['Requested time', when], ...(kind === 'delivery' ? [['Address', address] as [string, string]] : []), ...(note ? [['Note', note] as [string, string]] : [])];
     await mail(ADMIN_EMAIL(), `New ${kind} request: ${name}, ${fmtDate(date)}`, shell(`New ${kind} request`, rows, `${esc(name)} has asked for a book ${kind} time. Please approve, decline or move it.`, { href: crmLink, label: 'Open Appointments' }));
     await mail(contact.email, `We've received your ${kind} request`, shell(`${kind === 'delivery' ? 'Delivery' : 'Collection'} request received`, [['Requested time', when], ...(kind === 'delivery' ? [['Address', address] as [string, string]] : [['Where', 'Creative Books SA office'] as [string, string]])], `Hi ${esc(name.split(' ')[0])}, thank you. Our team will confirm this time shortly and you'll get an email either way.`, { href: portalLink, label: 'View in your portal' }));
@@ -176,7 +207,6 @@ serve('portalBooking', async (req) => {
   if (body.action === 'cancel') {
     const a = (await platform.entities.Appointment.filter({ client_email: contact.email })).find((x: any) => x.id === body.appointment_id);
     if (!a) return Response.json({ error: 'Booking not found' }, { status: 404 });
-    if (!Object.values(KINDS).some((k) => k.service === a.service_name)) return Response.json({ error: 'Only collection and delivery bookings can be cancelled here' }, { status: 400 });
     if (!['pending', 'approved'].includes(a.status)) return Response.json({ error: 'This booking is already closed' }, { status: 400 });
     await platform.entities.Appointment.update(a.id, { status: 'cancelled', cancelled_at: new Date().toISOString() });
     await mail(ADMIN_EMAIL(), `Cancelled by client: ${a.service_name}, ${name}`, shell('Booking cancelled by the client', [['Client', name], ['Booking', a.service_name], ['Was', `${fmtDate(a.date)}, ${fmtTime(a.start_time)}`]], `${esc(name)} cancelled this booking from the client portal.`, { href: crmLink, label: 'Open Appointments' }));

@@ -1,224 +1,90 @@
-import React, { useState } from 'react';
-import { platform } from '@/api/platformClient';
-import { Calendar, Clock, Video, MapPin, CheckCircle, XCircle } from 'lucide-react';
+// Client portal "Book an Appointment" tab: pick a consultation type from Booking Settings and choose a time
+// in the same calendar pop-up used for collections/deliveries. Requests go to the CRM Appointments tab for approval.
+import React, { useEffect, useState } from 'react';
+import Icon from '@/components/portal/journey/Icon.jsx';
+import BookingSheet from '@/components/portal/journey/BookingSheet.jsx';
+import { journeyApi } from '@/components/portal/journey/api.js';
+import { fmtDayLong } from '@/components/portal/journey/dates.js';
+import '@/components/portal/journey/journey.css';
 
-export default function AppointmentsTab({ appointments = [], contact = {}, portalToken }) {
-  const [selectedType, setSelectedType] = React.useState('Discovery Call');
-  const [selectedMode, setSelectedMode] = React.useState('zoom');
-  const [selectedDate, setSelectedDate] = React.useState('');
-  const [selectedTime, setSelectedTime] = React.useState('09:00');
-  const [note, setNote] = React.useState('');
-  const [requesting, setRequesting] = React.useState(false);
+const t12 = (t) => { if (!t) return ''; const [h, m] = t.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'pm' : 'am'}`; };
+const STATUS = { pending: ['amber', 'Waiting for approval'], approved: ['green', 'Confirmed'], completed: ['green', 'Completed'], declined: ['red', 'Not possible'], cancelled: ['', 'Cancelled'], no_show: ['', 'Missed'] };
 
-  const appointmentTypes = [
-    'Discovery Call',
-    'Quote Discussion',
-    'Project Update Call',
-    'Cover Design Review',
-    'Proof Approval Call',
-    'Final Collection/Delivery Call',
-  ];
+export default function AppointmentsTab({ appointments = [], portalToken }) {
+  const [services, setServices] = useState(null);
+  const [err, setErr] = useState(null);
+  const [list, setList] = useState(appointments);
+  const [sheet, setSheet] = useState(null); // { service } | { kind }
+  const [toast, setToast] = useState(null);
 
-  const handleRequestAppointment = async () => {
-    if (!selectedDate || !selectedTime) {
-      alert('Please select a date and time');
-      return;
-    }
-    
-    setRequesting(true);
-    try {
-      const result = await platform.functions.invoke('portalAppointments', {
-        action: 'create_appointment',
-        contact_id: contact.id,
-        service_name: selectedType,
-        mode: selectedMode,
-        date: selectedDate,
-        start_time: selectedTime,
-        client_note: note,
-        portal_token: portalToken,
-      });
-      
-      if (result.data.error) {
-        alert('Failed to book: ' + result.data.error);
-      } else {
-        alert('Appointment request sent! We will confirm shortly.');
-        setSelectedDate('');
-        setSelectedTime('09:00');
-        setNote('');
-      }
-    } catch (error) {
-      console.error('Appointment booking error:', error);
-      alert('Failed to book appointment: ' + (error.response?.data?.error || error.message));
-    } finally {
-      setRequesting(false);
-    }
+  useEffect(() => {
+    let live = true;
+    journeyApi.services(portalToken).then((s) => live && setServices(s)).catch((e) => live && setErr(e.message));
+    return () => { live = false; };
+  }, [portalToken]);
+
+  const notify = (t) => { setToast(t); setTimeout(() => setToast(null), 4500); };
+  const sorted = [...list].sort((a, b) => `${b.date}${b.start_time}`.localeCompare(`${a.date}${a.start_time}`));
+
+  const cancel = async (a) => {
+    if (!window.confirm(`Cancel ${a.service_name} on ${fmtDayLong(a.date)}?`)) return;
+    try { await journeyApi.cancel(portalToken, a.id); setList((l) => l.map((x) => (x.id === a.id ? { ...x, status: 'cancelled' } : x))); notify('Cancelled. We have let the team know.'); } catch (e) { notify(e.message); }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Book New Appointment - Compact & Responsive */}
-      <div className="rounded-2xl border p-5 transition-all bg-white shadow-lg" style={{
-        borderColor: 'rgba(59, 130, 246, 0.3)',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
-      }}>
-        <h3 className="font-bold text-gray-900 text-base mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-600" />
-          Book Appointment
-        </h3>
-        
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="col-span-2 lg:col-span-1">
-            <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Type</label>
-            <select 
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-blue-300"
-            >
-              {appointmentTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Mode</label>
-            <select 
-              value={selectedMode}
-              onChange={(e) => setSelectedMode(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-blue-300"
-            >
-              <option value="zoom">Video Call</option>
-              <option value="on_site">In-Person</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Date</label>
-            <input 
-              type="date" 
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-blue-300"
-            />
-          </div>
-          
-          <div>
-            <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Time</label>
-            <select 
-              value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-blue-300"
-            >
-              <option>09:00</option>
-              <option>10:00</option>
-              <option>11:00</option>
-              <option>14:00</option>
-              <option>15:00</option>
-              <option>16:00</option>
-            </select>
-          </div>
-        </div>
-        
-        <div className="mt-3">
-          <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Notes (optional)</label>
-          <textarea 
-            rows={2}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-blue-300 resize-none"
-            placeholder="Brief description..."
-          />
-        </div>
-        
-        <button 
-          onClick={handleRequestAppointment}
-          disabled={requesting}
-          className="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2.5 rounded-xl shadow-md transition-all duration-300 disabled:opacity-50 text-sm"
-        >
-          {requesting ? 'Sending...' : 'Request Appointment'}
-        </button>
-      </div>
-
-      {/* Upcoming Appointments */}
-      <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-lg" style={{
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
-      }}>
-        <h3 className="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-blue-600" />
-          Your Appointments
-        </h3>
-        
-        {!appointments || appointments.length === 0 ? (
-          <div className="text-center py-12">
-            <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-gray-500">No appointments scheduled</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {appointments.map(apt => (
-              <div key={apt.id} className="p-5 bg-white rounded-xl border border-gray-200 shadow-md" style={{
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
-              }}>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold text-gray-900">{apt.service_name}</h4>
-                      <StatusBadge status={apt.status} />
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-700">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(apt.date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {apt.start_time}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        {apt.mode === 'zoom' ? <Video className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
-                        {apt.mode === 'zoom' ? 'Video Call' : 'In-Person'}
-                      </span>
-                    </div>
-                    {apt.client_note && (
-                      <p className="text-xs text-gray-600 mt-2 italic">"{apt.client_note}"</p>
-                    )}
-                  </div>
-                  
-                  {apt.status === 'approved' && apt.zoom_link && (
-                    <a
-                      href={apt.zoom_link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-md"
-                    >
-                      Join Call
-                    </a>
-                  )}
-                </div>
-              </div>
+    <div className="cp-root cp-embed">
+      <section className="cp-card">
+        <h2 className="cp-h2">Book an appointment</h2>
+        <p className="cp-muted">Choose what you'd like to meet about, then pick a time. Our team confirms every request by email.</p>
+        {err && <div className="cp-err" role="alert">{err}</div>}
+        {!services && !err && <p className="cp-muted sm">Loading appointment types…</p>}
+        {services && (
+          <div className="cp-two">
+            {services.map((s) => (
+              <button key={s.id} type="button" className="cp-option" onClick={() => setSheet({ service: s })}>
+                <Icon name="calendar" size={22} /><b>{s.name}</b>
+                <span>{s.duration_minutes} min · {s.allowed_modes.map((m) => (m === 'zoom' ? 'Zoom' : 'At our office')).join(' or ')}</span>
+              </button>
             ))}
+            <button type="button" className="cp-option" onClick={() => setSheet({ kind: 'collection' })}>
+              <Icon name="truck" size={22} /><b>Collect or deliver my books</b><span>Choose a hand-over time</span>
+            </button>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
+      </section>
 
-function StatusBadge({ status }) {
-  const config = {
-    'pending': { icon: Clock, color: 'bg-yellow-500/20 text-yellow-400' },
-    'approved': { icon: CheckCircle, color: 'bg-green-500/20 text-green-400' },
-    'declined': { icon: XCircle, color: 'bg-red-500/20 text-red-400' },
-    'cancelled': { icon: XCircle, color: 'bg-gray-500/20 text-gray-400' },
-    'completed': { icon: CheckCircle, color: 'bg-green-500/20 text-green-400' },
-  };
-  
-  const { icon: Icon, color } = config[status] || config.pending;
-  
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${color}`}>
-      <Icon className="w-3 h-3" />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
+      <section className="cp-card">
+        <h2 className="cp-h2">Your appointments</h2>
+        {sorted.length === 0 ? <p className="cp-muted">No appointments yet.</p> : (
+          <ul className="cp-list">
+            {sorted.map((a) => {
+              const [tone, label] = STATUS[a.status] || ['', a.status];
+              const open = ['pending', 'approved'].includes(a.status);
+              return (
+                <li key={a.id}>
+                  <Icon name="calendar" size={16} />
+                  <span>{a.service_name}<small>{a.date ? `${fmtDayLong(a.date)}, ${t12(a.start_time)}` : ''}{a.mode === 'zoom' ? ' · Zoom' : ''}</small></span>
+                  {a.status === 'approved' && a.zoom_link
+                    ? <a className="cp-btn sm" href={a.zoom_link} target="_blank" rel="noreferrer">Join call</a>
+                    : <b className={tone}>{label}</b>}
+                  {open && !String(a.id).startsWith('new-') && <button type="button" className="cp-btn ghost sm" onClick={() => cancel(a)}>Cancel</button>}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      {sheet && (
+        <BookingSheet token={portalToken} service={sheet.service || null} initialKind={sheet.kind || 'collection'} onClose={() => setSheet(null)}
+          onBooked={({ kind, day, slot }) => {
+            const name = sheet.service ? sheet.service.name : kind === 'delivery' ? 'Book delivery' : 'Book collection';
+            setList((l) => [{ id: `new-${Date.now()}`, service_name: name, date: day, start_time: slot.start, end_time: slot.end, status: 'pending' }, ...l]);
+            setSheet(null);
+            notify("Request sent. We've emailed you and will confirm soon.");
+          }} />
+      )}
+      {toast && <div className="cp-toast" role="status">{toast}</div>}
+    </div>
   );
 }

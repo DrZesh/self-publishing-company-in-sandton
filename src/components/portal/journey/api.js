@@ -9,6 +9,7 @@ async function call(token, action, body = {}) {
 }
 
 export const journeyApi = {
+  services: (token) => call(token, 'services').then((d) => d.services || []),
   month: (token, kind, from, to) => call(token, 'month', { kind, from, to }).then((d) => d.days || {}),
   mine: (token) => call(token, 'mine').then((d) => d.bookings || []),
   request: (token, b) => call(token, 'request', b),
