@@ -1,0 +1,12 @@
+import {PGlite} from '@electric-sql/pglite';
+import {readFile} from 'node:fs/promises';
+export const staffId='11111111-1111-4111-8111-111111111111';
+export async function fixture(){const db=await PGlite.create();await db.exec(`CREATE ROLE anon;CREATE ROLE authenticated;CREATE ROLE service_role BYPASSRLS;CREATE SCHEMA auth;CREATE SCHEMA cb_private;CREATE SCHEMA storage;GRANT USAGE ON SCHEMA auth,cb_private,storage TO anon,authenticated,service_role;
+CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;CREATE FUNCTION cb_private.is_staff() RETURNS boolean LANGUAGE sql STABLE AS $$SELECT auth.uid()='${staffId}'::uuid$$;
+CREATE TABLE auth.users(id uuid PRIMARY KEY,email text);CREATE TABLE public."user"(id text PRIMARY KEY,data jsonb);INSERT INTO auth.users VALUES('${staffId}','editor@example.test');INSERT INTO public."user" VALUES('${staffId}','{"role":"admin","full_name":"Mac"}');
+CREATE TABLE public.client_portal_access(id text,data jsonb);CREATE TABLE public.project(id text,data jsonb);CREATE TABLE public.contact(id text PRIMARY KEY,data jsonb);CREATE TABLE public.quote(id text PRIMARY KEY,data jsonb);CREATE TABLE public.invoice(id text PRIMARY KEY,data jsonb);CREATE TABLE public.payment(id text PRIMARY KEY,data jsonb);CREATE TABLE public.notification(id text PRIMARY KEY DEFAULT gen_random_uuid()::text,data jsonb);CREATE TABLE public.task(id text PRIMARY KEY DEFAULT gen_random_uuid()::text,data jsonb,updated_date timestamptz DEFAULT now());
+CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);CREATE TABLE storage.objects(id uuid DEFAULT gen_random_uuid(),bucket_id text,name text);ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;`);
+for(const name of ['20261029202832_quote_to_cash_replacement.sql','20261029210405_billing_document_delivery.sql','20261029212706_billing_workflow_notifications.sql']){let s=await readFile(new URL('../../supabase/migrations/'+name,import.meta.url),'utf8');if(s.includes('-- INFRASTRUCTURE:'))s=s.split('-- INFRASTRUCTURE:')[0]+'COMMIT;';await db.exec(s);}
+const role=async(r='authenticated',uid=staffId)=>{await db.exec(`RESET ROLE;SELECT set_config('request.jwt.claim.sub','${uid||''}',false);SET ROLE ${r};`);};
+const rpc=async(name,args={})=>{const keys=Object.keys(args);return(await db.query(`SELECT public.${name}(${keys.map((k,i)=>`${k}=>$${i+1}`).join(',')}) AS value`,Object.values(args))).rows[0].value;};
+return {db,role,rpc};}

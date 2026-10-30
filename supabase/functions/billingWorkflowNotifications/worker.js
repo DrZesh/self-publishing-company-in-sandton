@@ -1,7 +1,11 @@
+import {serviceEmailMessage} from '../_shared/service-email.js';
 import {brandedWorkflowEmail} from '../_shared/email-templates.js';
 const adminRecipients=['info@creativebooks.co.za','draubreyzesh@gmail.com'];
 export function workflowMessage(job){
- const p=job.payload;const admin=job.kind==='acceptance_admin';
+ const p=job.payload;
+ if(job.kind==='editor_feedback'){return {from:'Creative Books SA <info@creativebooks.co.za>',to:p.recipient,reply_to:'info@creativebooks.co.za',subject:`Author feedback received: ${p.project_title}`,text:p.message,html:brandedWorkflowEmail({heading:'Author feedback received',introduction:`Feedback for ${p.project_title} is available.`,message:p.message,actionUrl:`https://creativebooks.co.za/admin/billing/projects/${job.project_id}`,actionLabel:'Review author feedback'})};}
+ if(p.template_subject){return {from:'Creative Books SA <info@creativebooks.co.za>',to:p.client_email,reply_to:'info@creativebooks.co.za',...serviceEmailMessage(p)};}
+ const admin=job.kind==='acceptance_admin';
  if(!admin&&job.kind!=='stage_client')throw new Error('Unknown workflow notification');
  if(!admin&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.client_email||''))throw new Error('Client email is missing or invalid');
  const isSigned=['portal','upload'].includes(p.method);
@@ -18,6 +22,7 @@ export async function deliverWorkflowJobs(admin,emailKey,transport=fetch){
  let sent=0,failed=0;
  for(const job of jobs||[]){
   try{
+   if(job.payload?.requires_review||job.kind==='delivery_client'){const ready=await admin.rpc('cb_workflow_resources_ready',{p_job:job.id});if(ready.error||ready.data!==true){await admin.from('cb_workflow_notifications').update({status:'blocked',last_error:'Pending: required review or delivery files are unavailable.',lease_until:null}).eq('id',job.id).eq('claim_token',job.claim_token);failed++;continue;}}
    let message=job.email_message;
    if(!message){message=workflowMessage(job);const saved=await admin.from('cb_workflow_notifications').update({email_message:message}).eq('id',job.id).eq('claim_token',job.claim_token).select('id').single();if(saved.error)throw new Error('Could not persist notification snapshot');}
    const response=await transport('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${emailKey}`,'Content-Type':'application/json','Idempotency-Key':`cb-workflow/${job.id}`},body:JSON.stringify(message),signal:AbortSignal.timeout(8000)});

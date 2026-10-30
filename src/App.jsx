@@ -1,4 +1,5 @@
 import AdminLayout from '@/components/admin/AdminLayout';
+import BillingProjectPortal from './billing/ProjectPortal.jsx';
 import { BillingApp, QuotePortal as BillingQuotePortal } from './billing';
 import ResetPassword from './pages/admin/ResetPassword';
 import { Toaster } from "@/components/ui/toaster"
@@ -701,6 +702,7 @@ const AuthenticatedApp = () => {
       <Route path="/admin/company-settings" element={<ProtectedAdminRoute><AdminCompanySettings /></ProtectedAdminRoute>} />
       <Route path="/admin/pipeline" element={<ProtectedAdminRoute><AdminPipeline /></ProtectedAdminRoute>} />
       <Route path="/admin/billing/*" element={<ProtectedAdminRoute><AdminLayout><BillingApp /></AdminLayout></ProtectedAdminRoute>} />
+      <Route path="/portal/p/:token" element={<BillingProjectPortal />} />
       <Route path="/portal/q/:token" element={<BillingQuotePortal />} />
       <Route path="/admin/previous-quotes" element={<ProtectedAdminRoute><AdminQuotes /></ProtectedAdminRoute>} />
       <Route path="/admin/previous-invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />

@@ -18,6 +18,8 @@ export default function QuotePortal() {
     return () => { meta.content = previous; };
   }, []);
   const [data, setData] = useState(null); const [err, setErr] = useState(null);
+  const [progressLink,setProgressLink]=useState(null);
+  useEffect(()=>{let active=true;setProgressLink(null);if(data?.quote?.status==='accepted')api.projectLinkFromQuote(token).then(link=>{if(active)setProgressLink(link);}).catch(()=>{});return()=>{active=false;};},[token,data?.quote?.status]);
   const [name, setName] = useState(''); const [sig, setSig] = useState(null); const [agree, setAgree] = useState(false);
   const [busy, setBusy] = useState(false); const [done, setDone] = useState(null); const [dialog, setDialog] = useState(null); const [msg, setMsg] = useState('');
   const load = () => api.portalGet(token).then((r) => { setData(r); setName((n) => n || r.client?.display_name || ''); }).catch((e) => setErr(e.message));
@@ -82,7 +84,7 @@ export default function QuotePortal() {
         <section className="cb-card" style={{ alignSelf: 'start' }}>
           {st === 'accepted' ? (
             <><div className="hd">Thank you, {client?.first_name || client?.display_name}!</div>
-              <div className="bd"><div className="cb-banner success" style={{ margin: 0 }}><span className="tag">Accepted</span><span>Your acceptance is recorded{done === 'accepted' ? '' : ` (${fmtDate(quote.accepted_at)})`}. Your deposit invoice for <b>{money(depositAmount(quote.total))}</b> has been created. Our team will provide the invoice. Work starts after the deposit is paid and cleared.</span></div></div></>
+              <div className="bd"><div className="cb-banner success" style={{ margin: 0 }}><span className="tag">Accepted</span><span>Your acceptance is recorded{done === 'accepted' ? '' : ` (${fmtDate(quote.accepted_at)})`}. Your deposit invoice for <b>{money(depositAmount(quote.total))}</b> has been created. Our team will provide the invoice. Work starts after the deposit is paid and cleared.</span></div>{progressLink&&<a className="cb-btn primary" style={{marginTop:16}} href={progressLink}>View your project progress</a>}</div></>
           ) : !canAct ? (
             <><div className="hd">This quote is {st}</div>
               <div className="bd"><div className="cb-help" style={{ margin: 0, fontSize: 13, color: 'var(--ink)' }}>
