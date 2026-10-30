@@ -23,3 +23,12 @@ No new external credentials are required. Operational preparation: select purcha
 Review approval is also recorded on the specific delivery. A new intentional delivery reopens its internal delivery task and clears the current approval until the client reviews the latest sent delivery. Earlier delivery approvals remain in the audit history.
 
 Marketing analytics and the SalesIQ widget are not initialised on private portal or CRM entry pages. Public marketing pages retain the existing integrations.
+
+
+## Final project completion
+
+Project Completed is the final fulfilment stage, separate from financial `complete` / `closed`. Complete every included checklist stage for every selected service (skip only genuinely excluded work), then confirm final handover per service. Printing requires delivered or collected plus a receipt/reference note. Digital services require a successfully sent latest agreed-file delivery and a staff confirmation that the final files reached the client. Readiness, provider acknowledgement of a review email, client review approval, and payment alone never trigger completion. The project and service records are locked during the check; the final handover, completion timestamp, timeline entry and unique project email enqueue commit atomically. Service scope and completed checks cannot change after handover. Safe retries of an existing digital delivery remain idempotent; new deliveries are prevented after final handover.
+
+The thank-you email uses the supplied wording, first-name/book-title fallbacks and a single inline Google review button to https://g.page/r/CYluusLzUm24EBM/review. Its subject refers to the project. Edit it under Production email templates → Project Completed. Queued email payloads and attempted provider snapshots remain immutable. No deliberate resend is exposed for this project-wide email. Existing provider-idempotent retries apply, with a 23-hour retry cut-off. Delivery acceptance is visible in Email history.
+
+No historical projects are backfilled or emailed during installation. Financially closed projects can finish their outstanding production checks and record actual handover without changing financial data. Completion tests use synthetic recipients and mocked transport only.
