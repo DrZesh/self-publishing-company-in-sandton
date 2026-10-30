@@ -193,6 +193,7 @@ import NewCalculator from './pages/calculator/index.jsx';
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDashboardLegacy from './pages/admin/AdminDashboardLegacy';
 import AdminInbox from './pages/admin/AdminInbox';
 import AdminLeads from './pages/admin/AdminLeads';
 import AdminContacts from './pages/admin/AdminContacts';
@@ -692,6 +693,7 @@ const AuthenticatedApp = () => {
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+      <Route path="/admin/dashboard-classic" element={<ProtectedAdminRoute><AdminDashboardLegacy /></ProtectedAdminRoute>} />
       <Route path="/admin/submissions" element={<ProtectedAdminRoute><AdminInbox /></ProtectedAdminRoute>} />
       <Route path="/admin/leads" element={<ProtectedAdminRoute><AdminLeads /></ProtectedAdminRoute>} />
       <Route path="/admin/contacts" element={<ProtectedAdminRoute><AdminContacts /></ProtectedAdminRoute>} />
