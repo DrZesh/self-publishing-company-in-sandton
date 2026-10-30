@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { toast } from 'sonner';
-import { Calendar, Clock, MapPin, Video, User, AlertTriangle, Check, X, ArrowRight, ChevronLeft, ChevronRight, MessageSquare, Bell, RefreshCw, Mail, Phone } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, User, AlertTriangle, Check, X, ArrowRight, ChevronLeft, ChevronRight, Bell, RefreshCw, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -84,8 +84,9 @@ function AppointmentCard({ appt, approvedAppts, onApprove, onDecline, onPropose,
 
         <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-3">
           <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            <span className="w-2 h-2 rounded-full bg-[#B87333]" />
+            <span className={`w-2 h-2 rounded-full ${DOT[tone(appt)]}`} />
             {appt.service_name}
+            {bookingKind(appt) !== 'meeting' && <span className="ml-1 text-[10px] uppercase tracking-wide font-semibold text-emerald-700">{bookingKind(appt)}</span>}
           </span>
           <span className="flex items-center gap-1.5 text-xs text-gray-600">
             <Calendar className="w-3.5 h-3.5 text-gray-400" />
@@ -96,9 +97,11 @@ function AppointmentCard({ appt, approvedAppts, onApprove, onDecline, onPropose,
             {formatTime(appt.start_time)} · {appt.service_duration_minutes} min
           </span>
           <span className="flex items-center gap-1.5 text-xs text-gray-600">
-            {appt.mode === 'zoom'
-              ? <><Video className="w-3.5 h-3.5 text-blue-500" /> Zoom</>
-              : <><MapPin className="w-3.5 h-3.5 text-green-600" /> On-site</>}
+            {bookingKind(appt) === 'delivery'
+              ? <><MapPin className="w-3.5 h-3.5 text-green-600" /> Courier to client</>
+              : appt.mode === 'zoom'
+                ? <><Video className="w-3.5 h-3.5 text-blue-500" /> Zoom</>
+                : <><MapPin className="w-3.5 h-3.5 text-green-600" /> {bookingKind(appt) === 'collection' ? 'Collect at office' : 'On-site'}</>}
           </span>
         </div>
 
@@ -166,49 +169,102 @@ function AppointmentCard({ appt, approvedAppts, onApprove, onDecline, onPropose,
 }
 
 // ── Calendar View ─────────────────────────────────────────────────────────────
-function CalendarView({ appointments }) {
-  const approved = appointments.filter(a => a.status === 'approved');
-  const today = new Date();
-  const [calMonth, setCalMonth] = useState({ year: today.getFullYear(), month: today.getMonth() });
+// Kind of booking, from the service name
+function bookingKind(a) {
+  const n = (a?.service_name || '').toLowerCase();
+  if (n.includes('collect')) return 'collection';
+  if (n.includes('deliver')) return 'delivery';
+  return 'meeting';
+}
+const DOT = { pending: 'bg-amber-400', collection: 'bg-emerald-500', delivery: 'bg-emerald-500', meeting: 'bg-blue-500' };
+const CHIP = {
+  pending: 'bg-amber-50 text-amber-800 border-amber-200',
+  collection: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+  delivery: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+  meeting: 'bg-blue-50 text-blue-800 border-blue-200',
+};
+const tone = (a) => (a.status === 'pending' ? 'pending' : bookingKind(a));
+const sastToday = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Johannesburg' });
+
+// Shared calendar: every pending and approved booking (meetings, collections, deliveries).
+// Click a day to see its bookings and approve, decline or move them without leaving the calendar.
+function CalendarView({ appointments, approvedAppts, actions }) {
+  const today = sastToday();
+  const [calMonth, setCalMonth] = useState(() => ({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) - 1 }));
+  const [selected, setSelected] = useState(today);
   const { year, month } = calMonth;
-  const firstDay = new Date(year, month, 1).getDay();
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // weeks start on Monday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+  const shown = appointments.filter(a => ['pending', 'approved', 'completed'].includes(a.status) && a.date);
   const byDate = {};
-  approved.forEach(a => {
-    if (!byDate[a.date]) byDate[a.date] = [];
-    byDate[a.date].push(a);
-  });
+  shown.forEach(a => { (byDate[a.date] = byDate[a.date] || []).push(a); });
+  Object.values(byDate).forEach(l => l.sort((x, y) => (x.start_time || '').localeCompare(y.start_time || '')));
+  const move = (d) => { setCalMonth(m => { const x = new Date(m.year, m.month + d); return { year: x.getFullYear(), month: x.getMonth() }; }); };
+  const goToday = () => { setCalMonth({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) - 1 }); setSelected(today); };
+  const dayList = byDate[selected] || [];
+  const monthPending = shown.filter(a => a.status === 'pending' && a.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`)).length;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-6">
-      <div className="flex items-center justify-between mb-5">
-        <button onClick={() => setCalMonth(m => { const d = new Date(m.year, m.month - 1); return { year: d.getFullYear(), month: d.getMonth() }; })} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronLeft className="w-4 h-4 text-gray-500" /></button>
-        <h3 className="font-semibold text-gray-900">{MONTHS[month]} {year}</h3>
-        <button onClick={() => setCalMonth(m => { const d = new Date(m.year, m.month + 1); return { year: d.getFullYear(), month: d.getMonth() }; })} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronRight className="w-4 h-4 text-gray-500" /></button>
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6">
+        <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+          <div className="flex items-center gap-1">
+            <button aria-label="Previous month" onClick={() => move(-1)} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronLeft className="w-4 h-4" /></button>
+            <h3 className="font-semibold text-gray-900 min-w-[150px] text-center">{MONTHS[month]} {year}</h3>
+            <button aria-label="Next month" onClick={() => move(1)} className="p-1.5 hover:bg-gray-100 rounded-lg"><ChevronRight className="w-4 h-4" /></button>
+            <button onClick={goToday} className="ml-1 text-xs font-medium px-2.5 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Today</button>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-gray-500 flex-wrap">
+            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-amber-400 inline-block" />Needs approval{monthPending ? ` (${monthPending})` : ''}</span>
+            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Collection / delivery</span>
+            <span className="flex items-center gap-1"><i className="w-2 h-2 rounded-full bg-blue-500 inline-block" />Meeting</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-7 gap-1 mb-1">
+          {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <div key={d} className="text-center text-[11px] font-medium text-gray-400 py-1">{d}</div>)}
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day = i + 1;
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const list = byDate[dateStr] || [];
+            const isToday = dateStr === today, isSel = dateStr === selected;
+            return (
+              <button key={day} type="button" onClick={() => setSelected(dateStr)} aria-pressed={isSel}
+                aria-label={`${day} ${MONTHS[month]}${list.length ? `, ${list.length} booking${list.length > 1 ? 's' : ''}` : ''}`}
+                className={`min-h-[58px] sm:min-h-[84px] rounded-lg p-1 text-left align-top transition-colors border ${isSel ? 'border-[#B87333] ring-1 ring-[#B87333]/40 bg-[#B87333]/5' : isToday ? 'border-[#B87333]/30 bg-[#B87333]/5' : 'border-gray-100 hover:bg-gray-50'} ${dateStr < today ? 'opacity-60' : ''}`}>
+                <span className={`block text-xs font-semibold mb-1 ${isToday ? 'text-[#B87333]' : 'text-gray-700'}`}>{day}</span>
+                <span className="hidden sm:block space-y-0.5">
+                  {list.slice(0, 3).map(a => (
+                    <span key={a.id} className={`block text-[10px] leading-tight border rounded px-1 py-0.5 truncate ${CHIP[tone(a)]}`}>
+                      {formatTime(a.start_time)} {a.client_name?.split(' ')[0]}
+                    </span>
+                  ))}
+                  {list.length > 3 && <span className="block text-[10px] text-gray-500">+{list.length - 3} more</span>}
+                </span>
+                <span className="flex sm:hidden gap-0.5 flex-wrap">
+                  {list.slice(0, 4).map(a => <i key={a.id} className={`w-1.5 h-1.5 rounded-full ${DOT[tone(a)]}`} />)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">{d}</div>)}
-      </div>
-      <div className="grid grid-cols-7 gap-1">
-        {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
-        {Array.from({ length: daysInMonth }).map((_, i) => {
-          const day = i + 1;
-          const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          const dayAppts = byDate[dateStr] || [];
-          const isToday = dateStr === today.toISOString().split('T')[0];
-          return (
-            <div key={day} className={`min-h-[52px] rounded-lg p-1 ${isToday ? 'bg-[#B87333]/10 border border-[#B87333]/30' : dayAppts.length ? 'bg-green-50 border border-green-100' : 'border border-transparent'}`}>
-              <p className={`text-xs font-medium mb-1 ${isToday ? 'text-[#B87333]' : 'text-gray-600'}`}>{day}</p>
-              {dayAppts.map((a, idx) => (
-                <div key={idx} className="text-[10px] bg-green-600 text-white rounded px-1 py-0.5 mb-0.5 truncate">
-                  {formatTime(a.start_time)} {a.client_name?.split(' ')[0]}
-                </div>
-              ))}
-            </div>
-          );
-        })}
+
+      <div className="space-y-3">
+        <div className="bg-white border border-gray-100 rounded-xl px-4 py-3">
+          <p className="text-xs text-gray-500">Selected day</p>
+          <p className="font-semibold text-gray-900">{formatDate(selected)}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{dayList.length ? `${dayList.length} booking${dayList.length > 1 ? 's' : ''}` : 'Nothing booked'}</p>
+        </div>
+        {dayList.map(a => (
+          <AppointmentCard key={a.id} appt={a} approvedAppts={approvedAppts} showActions
+            onApprove={actions.onApprove} onDecline={actions.onDecline} onPropose={actions.onPropose}
+            onComplete={actions.onComplete} onNoShow={actions.onNoShow} />
+        ))}
       </div>
     </div>
   );
@@ -341,7 +397,7 @@ function RemindersTab({ appointments }) {
 }
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
-const TABS = ['Pending', 'Upcoming', 'All', 'Calendar', 'Reminders'];
+const TABS = ['Pending', 'Calendar', 'Upcoming', 'All', 'Reminders'];
 
 export default function AdminAppointments() {
   const [activeTab, setActiveTab] = useState('Pending');
@@ -406,10 +462,10 @@ export default function AdminAppointments() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6 w-fit">
+        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6 w-fit max-w-full overflow-x-auto">
           {TABS.map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shrink-0 whitespace-nowrap ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
               {tab}
               {tab === 'Pending' && pending.length > 0 && (
                 <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
@@ -431,7 +487,7 @@ export default function AdminAppointments() {
         </div>
 
         {/* Calendar view */}
-        {activeTab === 'Calendar' && <CalendarView appointments={appointments} />}
+        {activeTab === 'Calendar' && <CalendarView appointments={appointments} approvedAppts={approvedAppts} actions={{ onApprove: handleApprove, onDecline: handleDecline, onPropose: handlePropose, onComplete: handleComplete, onNoShow: handleNoShow }} />}
 
         {/* Reminders view */}
         {activeTab === 'Reminders' && <RemindersTab appointments={appointments} />}
