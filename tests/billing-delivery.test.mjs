@@ -29,8 +29,8 @@ function fixture(){
 }
 const run=(f,fetcher)=>handleDocument({...f,pdfLib,emailKey:'synthetic-key',fetcher});
 test('PDF and supporting files are attached; retries do not duplicate acknowledged sends',async()=>{
- const f=fixture();let calls=0;
- const fetcher=async(url,options)=>{calls++;assert.equal(url,'https://api.resend.com/emails');assert.equal(options.headers['Idempotency-Key'],`cb-billing/${rid}`);const body=JSON.parse(options.body);assert.deepEqual(body.to,[client.email]);assert.equal(body.attachments.length,2);assert.equal(body.attachments[0].filename,'INV-009999.pdf');const bytes=Buffer.from(body.attachments[0].content,'base64');assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert.equal(body.attachments[1].filename,'Support.txt');assert.equal(Buffer.from(body.attachments[1].content,'base64').toString(),'Supporting test file');return Response.json({id:'provider-test-id'});};
+ const f=fixture();let calls=0;const preview=await handleDocument({...f,input:{action:'preview',kind:'invoice',id:iid},pdfLib});
+ const fetcher=async(url,options)=>{calls++;assert.equal(url,'https://api.resend.com/emails');assert.equal(options.headers['Idempotency-Key'],`cb-billing/${rid}`);const body=JSON.parse(options.body);assert.deepEqual(body.to,[client.email]);assert.equal(body.attachments.length,2);assert.equal(body.attachments[0].filename,'INV-009999.pdf');const bytes=Buffer.from(body.attachments[0].content,'base64');assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert.equal(body.attachments[0].content,preview.content,'preview and emailed attachment must be the identical PDF');assert.equal(body.attachments[1].filename,'Support.txt');assert.equal(Buffer.from(body.attachments[1].content,'base64').toString(),'Supporting test file');return Response.json({id:'provider-test-id'});};
  assert.equal((await run(f,fetcher)).sent,true);assert.equal(f.finishes,1);assert.equal(calls,1);assert.equal((await run(f,fetcher)).sent,true);assert.equal(calls,1);
 });
 test('provider rejection leaves quote unsent and preserves snapshot for retry',async()=>{
@@ -63,4 +63,13 @@ test('reject unsafe recipients and subjects; escape email message HTML',()=>{
 });
 test('deployed PDF configuration matches the website configuration',async()=>{
  assert.equal(await readFile(new URL('../supabase/functions/billingDocumentEmail/config.js',import.meta.url),'utf8'),await readFile(new URL('../src/billing/billing.config.js',import.meta.url),'utf8'));
+});
+
+test('canonical PDF embeds Open Sans, wraps long rows and keeps drawn text within A4 pages',async()=>{
+ const draws=[];const wrapped={...pdfLib,PDFDocument:{async create(){const d=await pdfLib.PDFDocument.create();const add=d.addPage.bind(d);d.addPage=(...args)=>{const p=add(...args);const draw=p.drawText.bind(p);p.drawText=(t,o)=>{draws.push({t,...o});draw(t,o);};return p;};return d;}}};
+ const longItems=[{...items[0],description:('Long final book specifications with detailed instructions.\n').repeat(130)},{...items[0],name:'Another service',description:'Unbroken'+('X'.repeat(900)),discount:10,discount_type:'percent',amount:900}];
+ const bytes=await documentPdf(wrapped,'quote',{...quote,sub_total:1900,total:1900},quote,client,longItems);const doc=await pdfLib.PDFDocument.load(bytes);assert.ok(doc.getPageCount()>2);
+ for(const d of draws){assert.ok(d.x>=39,`${d.t} left margin`);assert.ok(d.x+d.font.widthOfTextAtSize(d.t,d.size)<=561,`${d.t} right margin`);assert.ok(d.y>=34,`${d.t} bottom margin`);assert.ok(d.y<=792,`${d.t} top margin`);}
+ assert.ok(draws.some(d=>d.font.name.includes('OpenSans')),'reference template font is embedded');
+ const a=await documentPdf(pdfLib,'quote',quote,quote,client,items);const b=await documentPdf(pdfLib,'quote',quote,quote,client,items);assert.deepEqual(a,b,'stable document inputs produce byte-identical previews and attachments');
 });

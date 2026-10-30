@@ -400,3 +400,10 @@ select.cb-in { appearance: none; background-image: linear-gradient(45deg, transp
 .cb-root .cb-service-panel summary { font-weight:700;cursor:pointer; }
 .cb-root .cb-email-preview { max-height:600px;overflow:auto;border:1px solid var(--line); }
 @media(max-width:1150px){.cb-root .cb-production-cols{grid-template-columns:minmax(0,1fr);}}
+
+/* The canonical PDF is shared by on-screen preview, download and email. */
+.cb-pdf-document{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;min-width:0}
+.cb-pdf-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px;border-bottom:1px solid var(--line)}
+.cb-pdf-document object{display:block;width:100%;height:1123px;border:0;background:#eee}
+.cb-pdf-document object.compact{height:950px}
+@media(max-width:640px){.cb-pdf-document object{height:720px}.cb-pdf-tools .cb-help{width:100%}}
