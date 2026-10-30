@@ -31,7 +31,9 @@ function roadIndex(stage = '') {
   return 0;
 }
 
-export default function JourneyPanel({ token, contact = {}, project, appointments = [], documents = [], onOpenChat }) {
+// Optional props for the project portal (/portal/p/…): `api` (projectJourneyApi), `journey` = { road, at, ready, stageLabel, subtitle, updatedAt }
+// to drive the road from its services, `firstName`, and `children` (extra cards under the journey).
+export default function JourneyPanel({ token, contact = {}, project, appointments = [], documents = [], onOpenChat, api = journeyApi, journey = null, firstName = '', children }) {
   const [bookings, setBookings] = useState(() => appointments.filter((a) => BOOKING_SERVICES[a.service_name]).map((a) => ({ ...a, kind: BOOKING_SERVICES[a.service_name] })));
   const [docs, setDocs] = useState(documents);
   const [booking, setBooking] = useState(null); // null | 'collection' | 'delivery'
@@ -44,19 +46,20 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
 
   const notify = (t) => { setToast(t); setTimeout(() => setToast(null), 4500); };
   const refresh = useCallback(async () => {
-    try { setBookings(await journeyApi.mine(token)); } catch { /* keep what we have */ }
-  }, [token]);
+    try { setBookings(await api.mine(token)); } catch { /* keep what we have */ }
+  }, [token, api]);
   useEffect(() => { refresh(); }, [refresh]);
 
-  const first = (contact.full_name || contact.first_name || '').split(' ')[0];
+  const first = firstName || (contact.full_name || contact.first_name || '').split(' ')[0];
   const title = project?.book_title || project?.title || '';
-  const stage = project?.stage || project?.current_stage || '';
+  const stage = journey ? (journey.stageLabel || '') : (project?.stage || project?.current_stage || '');
+  const road = journey?.road || ROAD;
   const active = bookings.find((b) => ['pending', 'approved'].includes(b.status));
   const lastDeclined = !active ? bookings.find((b) => b.status === 'declined') : null;
   const handedOver = bookings.some((b) => ['approved', 'completed'].includes(b.status) && b.date < new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Johannesburg' }));
-  const at = handedOver ? ROAD.length : Math.min(roadIndex(stage), ROAD.length);
-  const pct = Math.round((Math.min(at, ROAD.length) / ROAD.length) * 100);
-  const readyForHandover = at >= 5;
+  const at = handedOver ? road.length : journey ? Math.min(journey.at, road.length) : Math.min(roadIndex(stage), road.length);
+  const pct = Math.round((Math.min(at, road.length) / road.length) * 100);
+  const readyForHandover = journey ? Boolean(journey.ready) || at >= road.length - 1 : at >= 5;
 
   let next;
   if (active?.status === 'pending') next = { label: 'Your book hand-over time is waiting for approval', icon: 'clock', go: () => document.getElementById('cp-handover')?.scrollIntoView({ behavior: 'smooth' }) };
@@ -69,7 +72,7 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
     if (file.size > cfg.upload.maxMB * 1024 * 1024) { notify(`That file is over ${cfg.upload.maxMB} MB. Please email it to ${cfg.company.email}.`); return; }
     setBusy('upload');
     try {
-      await journeyApi.upload(token, file, purpose, note);
+      await api.upload(token, file, purpose, note);
       setDocs((d) => [{ id: `new-${Date.now()}`, file_name: file.name, category: purpose === 'payment' ? 'Proof of Payment' : 'Client Supplied', created_date: new Date().toISOString(), status: 'Pending Review' }, ...d]);
       setNote('');
       notify(purpose === 'payment' ? "Proof of payment sent. We'll confirm once it reflects." : `${file.name} sent to our team.`);
@@ -77,7 +80,7 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
   };
   const cancel = async () => {
     if (!window.confirm('Cancel this booking?')) return;
-    try { await journeyApi.cancel(token, active.id); await refresh(); notify('Booking cancelled. We have let the team know.'); } catch (e) { notify(e.message); }
+    try { await api.cancel(token, active.id); await refresh(); notify('Booking cancelled. We have let the team know.'); } catch (e) { notify(e.message); }
   };
   const sent = docs.filter((d) => ['Client Supplied', 'Proof of Payment'].includes(d.category)).slice(0, 5);
 
@@ -97,10 +100,10 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
         </svg>
         <div className="cp-hero-txt">
           <span className="cp-eyebrow">{first ? `Hi ${first}` : 'Welcome back'}</span>
-          <h1>{at >= ROAD.length ? 'Your books are with you. Thank you!' : readyForHandover ? 'Your books are ready.' : title ? `${title} is on its way.` : 'Your book is on its way.'}</h1>
-          {project?.service_type && <span className="cp-hero-spec">{project.service_type}</span>}
+          <h1>{at >= road.length ? 'Your books are with you. Thank you!' : readyForHandover ? 'Your books are ready.' : title ? `${title} is on its way.` : 'Your book is on its way.'}</h1>
+          {(journey?.subtitle || project?.service_type) && <span className="cp-hero-spec">{journey?.subtitle || project.service_type}</span>}
           <div className="cp-progress" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Project progress"><i style={{ width: `${pct}%` }} /></div>
-          <span className="cp-hero-spec">{pct}% of your journey{project?.stage_changed_at ? ` · updated ${ago(project.stage_changed_at)}` : ''}</span>
+          <span className="cp-hero-spec">{pct}% of your journey{(journey?.updatedAt || project?.stage_changed_at) ? ` · updated ${ago(journey?.updatedAt || project.stage_changed_at)}` : ''}</span>
         </div>
         {next.go ? <button type="button" className="cp-next" onClick={next.go}><Icon name={next.icon} />{next.label}<Icon name="right" size={16} /></button>
           : <div className="cp-next static"><Icon name={next.icon} />{next.label}</div>}
@@ -111,9 +114,9 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
           {/* Journey */}
           <section className="cp-card">
             <h2 className="cp-h2">Your book's journey</h2>
-            <div className="cp-road" style={{ gridTemplateColumns: `repeat(${ROAD.length}, minmax(0, 1fr))` }}>
-              <div className="cp-road-line" aria-hidden="true"><i style={{ width: `${Math.min(1, at / (ROAD.length - 1)) * 100}%` }} /></div>
-              {ROAD.map((r, i) => {
+            <div className="cp-road" style={{ gridTemplateColumns: `repeat(${road.length}, minmax(0, 1fr))` }}>
+              <div className="cp-road-line" aria-hidden="true"><i style={{ width: `${Math.min(1, at / Math.max(1, road.length - 1)) * 100}%` }} /></div>
+              {road.map((r, i) => {
                 const state = i < at ? 'done' : i === at ? 'now' : 'next';
                 return (
                   <div key={r.id} className={`cp-stop ${state}`} aria-label={`${r.name}: ${state === 'done' ? 'done' : state === 'now' ? 'in progress' : 'up next'}`}>
@@ -125,6 +128,8 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
             </div>
             {stage && <p className="cp-muted sm">Current stage: <b>{stage}</b></p>}
           </section>
+
+          {children}
 
           {/* Send files */}
           <section className="cp-card">
@@ -191,7 +196,7 @@ export default function JourneyPanel({ token, contact = {}, project, appointment
       </div>
 
       {booking && (
-        <BookingSheet token={token} initialKind={booking} onClose={() => setBooking(null)}
+        <BookingSheet api={api} token={token} initialKind={booking} onClose={() => setBooking(null)}
           onBooked={async ({ kind }) => { setBooking(null); await refresh(); notify(`${kind === 'delivery' ? 'Delivery' : 'Collection'} requested. We've emailed you and will confirm soon.`); }} />
       )}
       {toast && <div className="cp-toast" role="status">{toast}</div>}

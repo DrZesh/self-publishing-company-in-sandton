@@ -9,7 +9,7 @@ import { addDays, fmtDayLong, fromYmd, todaySast, ymd } from './dates.js';
 const t12 = (t) => { const [h, m] = t.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'pm' : 'am'}`; };
 
 // Pass `service` ({ id, name, allowed_modes, duration_minutes, prep_tips }) to book a consultation instead of a hand-over.
-export default function BookingSheet({ token, onClose, onBooked, initialKind = 'collection', defaultAddress = '', service = null }) {
+export default function BookingSheet({ token, onClose, onBooked, initialKind = 'collection', defaultAddress = '', service = null, api = journeyApi }) {
   const t0 = fromYmd(todaySast());
   const [kind, setKind] = useState(service ? `service:${service.id}` : initialKind);
   const [mode, setMode] = useState(service?.allowed_modes?.[0] || 'on_site');
@@ -37,14 +37,14 @@ export default function BookingSheet({ token, onClose, onBooked, initialKind = '
     let live = true;
     const from = ymd(new Date(ym.y, ym.m, 1)); const to = ymd(new Date(ym.y, ym.m + 1, 0));
     setLoading(true); setErr(null);
-    journeyApi.month(token, kind, from, to).then((d) => {
+    api.month(token, kind, from, to).then((d) => {
       if (!live) return;
       const free = Object.values(d).some((l) => l.some((x) => x.remaining > 0));
       if (!free && autoJumps.current > 0) { autoJumps.current -= 1; setYm(({ y, m }) => (m === 11 ? { y: y + 1, m: 0 } : { y, m: m + 1 })); return; }
       autoJumps.current = 0; setDays(d);
     }).catch((e) => live && setErr(e.message)).finally(() => live && setLoading(false));
     return () => { live = false; };
-  }, [token, kind, ym]);
+  }, [token, kind, ym, api]);
 
   const daySlots = day ? (days[day] || []) : [];
   const maxDay = ymd(addDays(t0, cfg.booking.horizonDays));
@@ -62,7 +62,7 @@ export default function BookingSheet({ token, onClose, onBooked, initialKind = '
   const submit = async () => {
     setBusy(true); setErr(null);
     try {
-      await journeyApi.request(token, { kind, date: day, start_time: slot.start, address, note: notes, mode });
+      await api.request(token, { kind, date: day, start_time: slot.start, address, note: notes, mode });
       onBooked({ kind, day, slot });
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
