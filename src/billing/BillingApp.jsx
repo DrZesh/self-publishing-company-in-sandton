@@ -9,6 +9,7 @@ import QuoteEditor from './pages/QuoteEditor.jsx';
 import { QuoteView } from './pages/Quote.jsx';
 import { InvoiceView, RecordPayment } from './pages/Invoice.jsx';
 import { SendDocument } from './pages/SendDocument.jsx';
+import EmailTemplates from './pages/EmailTemplates.jsx';
 import ProjectView from './pages/Project.jsx';
 
 export default function BillingApp() {
@@ -31,6 +32,7 @@ export default function BillingApp() {
           <Route path="invoices/:id/send" element={<SendDocument kind="invoice" />} />
           <Route path="invoices/:id/pay" element={<RecordPayment />} />
           <Route path="payments" element={<PaymentsList />} />
+          <Route path="templates" element={<EmailTemplates />} />
           <Route path="projects" element={<ProjectsList />} />
           <Route path="projects/:id" element={<ProjectView />} />
           <Route path="*" element={<Navigate to="" replace />} />

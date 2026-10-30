@@ -392,3 +392,11 @@ select.cb-in { appearance: none; background-image: linear-gradient(45deg, transp
 .cb-root .cb-document-files li { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .cb-root .cb-terms-input { min-height: 260px; width: 100%; }
 @media(max-width:1000px) { .cb-root .cb-cols-r { grid-template-columns: minmax(0,1fr) !important; } }
+
+.cb-root .cb-production-cols { grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); align-items:start; }
+.cb-root .cb-service-stage { display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--line); }
+.cb-root .cb-service-stage .stage-name { flex:1;overflow-wrap:anywhere; }
+.cb-root .cb-service-panel { margin:18px 0;border:1px solid var(--line);padding:14px;border-radius:10px; }
+.cb-root .cb-service-panel summary { font-weight:700;cursor:pointer; }
+.cb-root .cb-email-preview { max-height:600px;overflow:auto;border:1px solid var(--line); }
+@media(max-width:1150px){.cb-root .cb-production-cols{grid-template-columns:minmax(0,1fr);}}

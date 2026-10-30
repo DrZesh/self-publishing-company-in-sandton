@@ -1,0 +1,204 @@
+[
+  {
+    "key": "printing",
+    "stages": [
+      {
+        "index": 0,
+        "name": "Setting Up Files for Print",
+        "subject": "Your book is moving into print preparation",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We are now setting up the files for {{book_title}} for print. We are checking the page size, margins, layout and cover alignment to make sure everything is correctly prepared before printing begins.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 1,
+        "name": "Printing Inners",
+        "subject": "The inside pages of your book are being printed",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We are now printing the inside pages of {{book_title}}. Your words are coming to life on paper as we check print clarity, page order and consistency throughout the run.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 2,
+        "name": "Printing The Covers",
+        "subject": "Your book covers are being printed",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are now printing the covers for {{book_title}}. This stage brings your cover design to life, with attention to colour, clarity and alignment before the covers move on to finishing and binding.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 3,
+        "name": "Book Binding",
+        "subject": "Your book is taking shape",
+        "body": "Hi {{client_first_name}},\n\nExciting news! {{book_title}} has reached the binding stage. We are bringing the printed pages and covers together, checking that the pages are secure and the covers sit correctly.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 4,
+        "name": "Book Trimming",
+        "subject": "Your books are getting their final shape",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are now trimming the copies of {{book_title}} to their final size. This gives each book clean, even edges and a neat finish before quality checks.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 5,
+        "name": "Quality Check",
+        "subject": "Your books have reached quality check",
+        "body": "Hi {{client_first_name}},\n\nExciting news! {{book_title}} is now at quality check. We are inspecting print clarity, page order, binding, trimming and the overall finish to check that your books meet our production standards before packaging.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 6,
+        "name": "Packaging",
+        "subject": "Your books are being packed",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are now packaging {{book_title}}. We are counting and securely packing your books to help protect them during handling and prepare your order for delivery or collection.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 7,
+        "name": "Ready for Delivery/Collection",
+        "subject": "Your books are ready for delivery or collection",
+        "body": "Hi {{client_first_name}},\n\nExciting news! Your copies of {{book_title}} are packed and ready for delivery or collection.\n\n{{printing_balance_paragraph}}\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      }
+    ]
+  },
+  {
+    "key": "cover",
+    "stages": [
+      {
+        "index": 0,
+        "name": "First Concept in Progress",
+        "subject": "Your first book cover concept is underway",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have started the first cover concept for {{book_title}}. We are exploring imagery, typography and colour to create a visual direction that reflects your book and its intended readers.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 1,
+        "name": "Finalising First Concept",
+        "subject": "Your first cover concept is taking shape",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are putting the finishing touches on the first cover concept for {{book_title}}. We are refining the layout, title placement and visual details so the design comes together clearly.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 2,
+        "name": "First Concept Complete",
+        "subject": "Your first cover concept is complete",
+        "body": "Hi {{client_first_name}},\n\nExciting news! The first cover concept for {{book_title}} is complete. We will now move on to the second concept, giving you another creative option to consider.\n\nWe will send the concepts together once they are ready for your review.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 3,
+        "name": "Second Concept in Progress",
+        "subject": "Your second book cover concept is underway",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We have started the second cover concept for {{book_title}}. We are developing a different visual approach so you can compare two distinct interpretations of your book.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 4,
+        "name": "Finalising Cover Concepts",
+        "subject": "We are finalising your book cover concepts",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We are finalising the cover concepts for {{book_title}}. We are reviewing the typography, spacing, imagery and overall presentation before preparing both designs for your review.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 5,
+        "name": "Cover Designs Ready for Delivery",
+        "subject": "Your book cover concepts are ready",
+        "body": "Hi {{client_first_name}},\n\nExciting news! Your cover concepts for {{book_title}} are ready for you to see.\n\nLook out for our next email, which will include your designs and instructions for sharing your feedback and choosing your preferred direction. We look forward to hearing what you think!\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      }
+    ]
+  },
+  {
+    "key": "typesetting",
+    "stages": [
+      {
+        "index": 0,
+        "name": "Typesetting Started",
+        "subject": "Typesetting has started on your book",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have started typesetting {{book_title}}. We are arranging your manuscript into its book layout, setting up the fonts, chapter headings, spacing and page structure for a clear, comfortable reading experience.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 1,
+        "name": "Typesetting Halfway Complete",
+        "subject": "Your book’s typesetting is halfway complete",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are halfway through typesetting {{book_title}}. Your book’s layout is taking shape as we work through the remaining pages and maintain consistent formatting throughout.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 2,
+        "name": "Typesetting Complete, Ready for Delivery",
+        "subject": "Your typeset book is ready for review",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have completed the typesetting of {{book_title}} and checked the layout for consistency, spacing and page flow.\n\nLook out for our next email, which will include your typeset file and instructions for reviewing it and sharing any corrections.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      }
+    ]
+  },
+  {
+    "key": "editing",
+    "stages": [
+      {
+        "index": 0,
+        "name": "Manuscript Review and Preparation",
+        "subject": "Your manuscript is entering the editing process",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We are preparing {{book_title}} for editing. We are reviewing the manuscript and your instructions so we can approach the work with a clear understanding of your writing and the agreed editing requirements.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 1,
+        "name": "First Editorial Pass Started",
+        "subject": "Editing has started on your book",
+        "body": "Hi {{client_first_name}},\n\nExciting news! The first editorial pass on {{book_title}} is underway. We are working through the manuscript to improve clarity, grammar, punctuation and consistency while preserving your voice and meaning.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 2,
+        "name": "First Editorial Pass Halfway Complete",
+        "subject": "We are halfway through your first editorial pass",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We are halfway through the first editorial pass on {{book_title}}. We are continuing through the remaining chapters, refining the writing and noting any points that may need your input.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 3,
+        "name": "First Editorial Pass Complete",
+        "subject": "Your first editorial pass is complete",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have completed the first editorial pass on {{book_title}}. We are now preparing the edited manuscript and any editorial notes for your review.\n\nLook out for our next email with your file and guidance on the next step.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 4,
+        "name": "Awaiting Author Review",
+        "subject": "Your edited manuscript is ready for your input",
+        "body": "Hi {{client_first_name}},\n\nExciting news! The first edited version of {{book_title}} is now ready for your review.\n\nPlease use the secure review link below to review the edits and respond to any comments or questions. Keep your feedback in one document where possible, then return it to us so we can continue with the next agreed stage.\n\n{{review_instructions}}\n\n{{review_link}}\n\nKind regards,\nCreative Books SA",
+        "requires_review": true
+      },
+      {
+        "index": 5,
+        "name": "Author Feedback Received",
+        "subject": "We have received your manuscript feedback",
+        "body": "Hi {{client_first_name}},\n\nGreat news! We have received your feedback on {{book_title}}. We are reviewing your responses and requested adjustments before continuing with the next agreed editorial pass.\n\nWe will contact you if anything needs clarification.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 6,
+        "name": "Second Editorial Pass",
+        "subject": "Your book’s second editorial pass is underway",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have started the second editorial pass on {{book_title}}. We are working through your feedback, refining the agreed changes and checking that revisions remain consistent with the rest of the manuscript.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 7,
+        "name": "Final Editorial Checks",
+        "subject": "Your manuscript has reached final editorial checks",
+        "body": "Hi {{client_first_name}},\n\nGreat news! {{book_title}} has reached the final editorial checks. We are reviewing spelling, punctuation, consistency and any outstanding editorial queries before preparing your files for delivery.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      },
+      {
+        "index": 8,
+        "name": "Editing Complete, Ready for Delivery",
+        "subject": "Editing is complete on your book",
+        "body": "Hi {{client_first_name}},\n\nExciting news! We have completed the agreed editing work on {{book_title}} and are preparing your files for delivery.\n\nLook out for our next email, which will include your edited manuscript and any accompanying notes, along with guidance on the next step.\n\nKind regards,\nCreative Books SA",
+        "requires_review": false
+      }
+    ]
+  }
+]

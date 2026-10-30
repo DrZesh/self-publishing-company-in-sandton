@@ -45,9 +45,9 @@ export default function ProjectView() {
         <Shell stage={project.status === 'closed' ? 9 : d.stage} actions={<ActionBar note={`Quote total ${money(d.quote.total)} · outstanding ${money(d.outstanding)}`}>{actions}<button className="cb-btn" onClick={() => window.print()}>PDF / Print</button></ActionBar>}>
           <PageHead crumb={<Link to={to('projects')}>Projects</Link>} title={`${d.client?.display_name}: ${project.title}`} right={<><Badge status={d.status === 'closed' ? 'paid' : d.status} /><Badge status={project.status} /></>} />
           {banner}
-          <div className="cb-cols side">
+          <div className="cb-cols cb-production-cols">
             <div className="cb-stack">
-              <ProductionCard key={project.id} project={project} catalogue={db.production_services || []} />
+              <ProductionCard key={project.id} project={project} catalogue={db.production_services || []} db={db} />
               <Card title="Money">
                 <SplitBar compact total={d.quote.total} depositState={deposit?.status === 'paid' ? 'paid' : 'due'} balanceState={balance ? (balancePaid ? 'paid' : 'due') : 'wait'} />
                 <div className="cb-sum" style={{ marginTop: 12 }}>

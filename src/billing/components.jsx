@@ -139,7 +139,7 @@ export function FilePick({ value, onPicked, accept = 'application/pdf,image/*', 
 }
 
 /* ================= app shell ================= */
-const NAV = [['', 'Deals'], ['clients', 'Clients'], ['quotes', 'Quotes'], ['invoices', 'Invoices'], ['payments', 'Payments Received'], ['projects', 'Projects']];
+const NAV = [['', 'Deals'], ['clients', 'Clients'], ['quotes', 'Quotes'], ['invoices', 'Invoices'], ['payments', 'Payments Received'], ['projects', 'Projects'], ['templates','Email templates']];
 export function Shell({ children, stage, actions, enabled = false }) {
   if (!enabled) return <div className="cb-screen"><nav className="cb-tabs" aria-label="Billing sections">{NAV.map(([p,label])=><NavLink key={p} end={p===''} to={to(p)}>{label}</NavLink>)}</nav>{stage ? <StageBar stage={stage} /> : null}{actions}<div className="cb-main full">{children}</div></div>;
   return (

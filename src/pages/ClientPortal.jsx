@@ -1,3 +1,4 @@
+import LegacyProgressLinks from '../billing/LegacyProgressLinks.jsx';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { platform } from '@/api/platformClient';
@@ -122,6 +123,7 @@ export default function ClientPortal() {
       portalData={portalData}
     >
       <NoIndexMeta title="Client Portal | Creative Books SA" />
+      <LegacyProgressLinks token={token} />
       {/* Welcome Hero Banner */}
       <div className="mb-8 rounded-2xl overflow-hidden" style={{
         background: 'linear-gradient(135deg, #FFF9F5 0%, #F5EFE8 100%)',

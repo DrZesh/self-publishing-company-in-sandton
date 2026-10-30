@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { platform } from '@/api/platformClient';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Pencil, Trash2, X, Save, FileText, ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, FileText, ChevronDown, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CATEGORIES = ['general', 'follow_up', 'quote', 'onboarding', 'invoice', 'marketing'];
@@ -247,6 +248,7 @@ export default function AdminEmailTemplates() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Email Templates</h1>
+                <Link className="text-sm text-[#B87333] underline" to="/admin/billing/templates">Edit production workflow emails</Link>
                 <p className="text-sm text-gray-500 mt-0.5">{templates.length} templates · Click to preview</p>
               </div>
               <div className="flex items-center gap-2">

@@ -9,7 +9,7 @@ async function all(table){
  for(let offset=0;offset<100000;offset+=1000){const {data,error}=await client().from(table).select('*').order(table==='cb_production_services'?'sort_order':'id').range(offset,offset+999);if(error)throw new Error(`${table}: ${error.message}`);rows.push(...data);if(data.length<1000)return rows;}
  throw new Error('Too many billing records to load. Contact your administrator.');
 }
-const TABLES=['clients','items','quotes','quote_items','invoices','payments','projects','activity','production_services'];
+const TABLES=['clients','items','quotes','quote_items','invoices','payments','projects','activity','production_services','project_service_progress','service_resources','service_deliveries','service_feedback','production_tasks','service_email_templates'];
 export const api={
  async load(){const data=await Promise.all(TABLES.map(t=>all(`cb_${t}`)));const db=Object.fromEntries(TABLES.map((t,i)=>[t,data[i]]));db.items=db.items.filter(x=>x.active!==false);return db;},
  async saveClient(c){
@@ -36,10 +36,29 @@ export const api={
  },
  recordPayment:p=>rpc('cb_record_payment',{p_payment:p}),
  clearPayment:id=>rpc('cb_clear_payment',{p_payment_id:id}),
+ serviceStage:(id,service,index,action,version)=>rpc('cb_service_stage',{p_id:id,p_service:service,p_index:index,p_action:action,p_version:version}),
+ previewServiceEmail:(id,service,index)=>rpc('cb_preview_service_email',{p_id:id,p_service:service,p_index:index}),
+ resendServiceEmail:(id,service,request)=>rpc('cb_resend_service_email',{p_id:id,p_service:service,p_request:request}),
+ saveServiceTemplate:(id,subject,body,version)=>rpc('cb_save_service_template',{p_id:id,p_subject:subject,p_body:body,p_version:version}),
+ productionTeam:()=>rpc('cb_production_team',{}),
+ projectDetails:(id,title,owner)=>rpc('cb_project_details',{p_id:id,p_title:title,p_owner:owner||null}),
+ addServiceResource:(id,service,purpose,file)=>rpc('cb_add_service_resource',{p_id:id,p_service:service,p_purpose:purpose,p_file:file}),
+ saveReviewSettings:(id,service,instructions,track,resources)=>rpc('cb_save_review_settings',{p_id:id,p_service:service,p_instructions:instructions,p_track:track,p_resources:resources}),
+ sendServiceDelivery:(id,service,instructions,request,resources,subject)=>rpc('cb_send_service_delivery',{p_id:id,p_service:service,p_instructions:instructions,p_request:request,p_resources:resources,p_subject:subject}),
+ projectLinkFromQuote:token=>rpc('cb_quote_project_link',{p_token:token}),
+ legacyProjectLinks:token=>rpc('cb_legacy_project_links',{p_token:token}),
+ projectPortal:token=>rpc('cb_project_portal',{p_token:token}),
+ portalFeedback:(token,service,message,link)=>rpc('cb_portal_feedback',{p_token:token,p_service:service,p_message:message,p_link:link||null}),
+ portalApprove:(token,service)=>rpc('cb_portal_approve',{p_token:token,p_service:service}),
+ async uploadProjectFile(file){
+  const types=['application/pdf','image/png','image/jpeg','text/plain','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+  if(!types.includes(file.type))throw new Error('Use a PDF, Word, PNG, JPEG or text file.');if(file.size>52428800)throw new Error('Project files must be 50 MB or smaller.');
+  const path=`${crypto.randomUUID()}/${file.name.replace(/[^\w.-]+/g,'_')}`;const {error}=await client().storage.from('cb-project-deliverables').upload(path,file,{contentType:file.type});if(error)throw new Error(error.message);return {path,name:file.name};
+ },
  configureProjectServices:(id,services,version)=>rpc('cb_configure_project_services',{p_id:id,p_services:services,p_version:version}),
  setProductionStage:(id,key,complete,version)=>rpc('cb_set_production_stage',{p_id:id,p_key:key,p_complete:complete,p_version:version}),
  retryWorkflowNotification:id=>rpc('cb_retry_workflow_notification',{p_id:id}),
- async workflowNotifications(id){const {data,error}=await client().from('cb_workflow_notifications').select('id,kind,status,payload,last_error,created_at,sent_at').eq('project_id',id).order('created_at',{ascending:false}).limit(10);if(error)throw new Error(error.message);return data;},
+ async workflowNotifications(id){const {data,error}=await client().from('cb_workflow_notifications').select('id,kind,status,payload,last_error,created_at,sent_at,provider_id').eq('project_id',id).order('created_at',{ascending:false}).limit(10);if(error)throw new Error(error.message);return data;},
  toggleChecklist:(id,index)=>rpc('cb_toggle_checklist',{p_project_id:id,p_index:index}),
  completeProject:id=>rpc('cb_complete_project',{p_project_id:id}),
  releaseFiles:id=>rpc('cb_release_files',{p_project_id:id}),
