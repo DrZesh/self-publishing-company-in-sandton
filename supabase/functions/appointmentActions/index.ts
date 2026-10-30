@@ -21,7 +21,7 @@ async function createCalendarEvent(appt, accessToken) {
       appt.client_phone ? `Phone: ${appt.client_phone}` : '',
       `Mode: ${appt.mode === 'zoom' ? 'Zoom' : 'On-site'}`,
     ].filter(Boolean).join('\n'),
-    location: appt.mode === 'zoom' ? 'Zoom (link to be sent)' : 'Creative Books SA, Sandton, Johannesburg',
+    location: /deliver/i.test(appt.service_name || '') ? (String(appt.client_note || '').match(/Delivery address: (.*)/)?.[1] || 'Delivery to client') : appt.mode === 'zoom' ? 'Zoom (link to be sent)' : 'Creative Books SA, Sandton, Johannesburg',
     start: { dateTime: startRFC, timeZone: 'Africa/Johannesburg' },
     end:   { dateTime: endRFC,   timeZone: 'Africa/Johannesburg' },
     attendees: [{ email: appt.client_email, displayName: appt.client_name }],
@@ -185,7 +185,7 @@ serve('appointmentActions', async (req) => {
         ...(googleEventId ? { google_event_id: googleEventId } : {}),
       });
 
-      const modeLabel = appt.mode === 'zoom' ? 'Zoom (link will be emailed separately)' : 'On-site — Creative Books SA, Johannesburg';
+      const modeLabel = /deliver/i.test(appt.service_name || '') ? 'Courier delivery to the address you gave us' : /collect/i.test(appt.service_name || '') ? 'Collect at Creative Books SA, Johannesburg' : appt.mode === 'zoom' ? 'Zoom (link will be emailed separately)' : 'On-site — Creative Books SA, Johannesburg';
       const approveHtml = baseEmail(
         '<h1 style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:28px;font-weight:700;color:#2C2C2C;text-align:center;margin:0 0 8px 0;">Appointment Confirmed! 🎉</h1>' +
         '<p style="font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif;font-size:15px;color:#6B6B6B;text-align:center;margin:0 0 28px 0;">Hi ' + appt.client_name + ', we\'re looking forward to seeing you.</p>' +
@@ -251,7 +251,9 @@ serve('appointmentActions', async (req) => {
 
     else if (action === 'resend_reminder') {
       const endTime = appt.end_time || addMinutes(appt.start_time, appt.service_duration_minutes || 30);
-      const modeLabel = appt.mode === 'zoom'
+      const modeLabel = /deliver/i.test(appt.service_name || '')
+        ? 'Courier delivery to the address you gave us'
+        : appt.mode === 'zoom'
         ? 'Zoom (link was sent in your confirmation email)'
         : 'On-site — Creative Books SA, Prism Office Park, Fourways, Johannesburg';
       const noteRow = appt.client_note

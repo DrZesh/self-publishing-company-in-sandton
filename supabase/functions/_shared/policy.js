@@ -11,6 +11,7 @@ export const portalActions = {
   clientPortalData: ['load', 'access', 'mark_messages_read', 'accept_quote', 'decline_quote', 'download_invoice', 'download_receipt'],
   portalMessages: ['list', 'send', 'mark_read'],
   portalAppointments: ['get_my_appointments', 'get_available_slots', 'create_appointment', 'cancel_appointment'],
+  portalBooking: ['month', 'request', 'mine', 'cancel', 'uploaded'],
   fileUploadActions: ['upload_file', 'upload_payment_proof'], proofApprovalActions: ['approve', 'request_changes'],
 };
 export function accessMode(name, action, role, internal = false) {
