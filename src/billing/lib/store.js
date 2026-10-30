@@ -9,7 +9,7 @@ async function all(table){
  for(let offset=0;offset<100000;offset+=1000){const {data,error}=await client().from(table).select('*').order(table==='cb_production_services'?'sort_order':'id').range(offset,offset+999);if(error)throw new Error(`${table}: ${error.message}`);rows.push(...data);if(data.length<1000)return rows;}
  throw new Error('Too many billing records to load. Contact your administrator.');
 }
-const TABLES=['clients','items','quotes','quote_items','invoices','payments','projects','activity','production_services','project_service_progress','service_resources','service_deliveries','service_feedback','production_tasks','service_email_templates'];
+const TABLES=['clients','items','quotes','quote_items','invoices','payments','projects','activity','production_services','project_service_progress','service_resources','service_deliveries','service_feedback','production_tasks','service_email_templates','project_email_templates'];
 export const api={
  async load(){const data=await Promise.all(TABLES.map(t=>all(`cb_${t}`)));const db=Object.fromEntries(TABLES.map((t,i)=>[t,data[i]]));db.items=db.items.filter(x=>x.active!==false);return db;},
  async saveClient(c){
@@ -40,6 +40,9 @@ export const api={
  previewServiceEmail:(id,service,index)=>rpc('cb_preview_service_email',{p_id:id,p_service:service,p_index:index}),
  resendServiceEmail:(id,service,request)=>rpc('cb_resend_service_email',{p_id:id,p_service:service,p_request:request}),
  saveServiceTemplate:(id,subject,body,version)=>rpc('cb_save_service_template',{p_id:id,p_subject:subject,p_body:body,p_version:version}),
+ confirmFinalHandover:(id,service,method,note,version)=>rpc('cb_confirm_final_handover',{p_id:id,p_service:service,p_method:method,p_note:note,p_version:version}),
+ previewProjectCompletion:id=>rpc('cb_preview_project_completion',{p_id:id}),
+ saveProjectEmailTemplate:(id,subject,body,version)=>rpc('cb_save_project_email_template',{p_id:id,p_subject:subject,p_body:body,p_version:version}),
  productionTeam:()=>rpc('cb_production_team',{}),
  projectDetails:(id,title,owner)=>rpc('cb_project_details',{p_id:id,p_title:title,p_owner:owner||null}),
  addServiceResource:(id,service,purpose,file)=>rpc('cb_add_service_resource',{p_id:id,p_service:service,p_purpose:purpose,p_file:file}),

@@ -150,12 +150,12 @@ export function ProjectsList() {
           <PageHead title="Projects" />
           <div className="cb-card" style={{ overflow: 'auto' }}>
             {db.projects.length === 0 ? <div className="cb-empty">Projects are created when a quote is accepted.</div> : (
-              <table className="cb-list"><thead><tr><th>Project</th><th>Client</th><th>Status</th><th className="r">Outstanding (R)</th></tr></thead>
+              <table className="cb-list"><thead><tr><th>Project</th><th>Client</th><th>Account status</th><th>Final project stage</th><th className="r">Outstanding (R)</th></tr></thead>
                 <tbody>{[...db.projects].sort((a, b) => (a.created_at < b.created_at ? 1 : -1)).map((p) => {
                   const d = buildDeal(db, db.quotes.find((q) => q.id === p.quote_id));
                   return (
                     <tr key={p.id} onClick={() => nav(to(`projects/${p.id}`))}>
-                      <td><div className="who">{p.title}</div><div className="sub">{d.quote.number}</div></td><td>{d.client?.display_name}</td><td><Badge status={p.status} /></td><td className="r">{num(d.outstanding)}</td>
+                      <td><div className="who">{p.title}</div><div className="sub">{d.quote.number}</div></td><td>{d.client?.display_name}</td><td><Badge status={p.status} /></td><td>{p.project_completed_at?<span className="cb-badge success">Project Completed</span>:<span className="cb-help">Awaiting service completion / final handover</span>}</td><td className="r">{num(d.outstanding)}</td>
                     </tr>);
                 })}</tbody></table>
             )}

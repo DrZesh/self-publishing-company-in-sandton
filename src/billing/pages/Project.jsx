@@ -23,11 +23,11 @@ export default function ProjectView() {
         actions = <button className="cb-btn primary" onClick={() => nav(to(`invoices/${deposit.id}`))}>Open deposit invoice</button>;
         doc = deposit && <DocSheet kind="invoice" deal={d} invoice={deposit} compact />;
       } else if (project.status === 'in_production') {
-        banner = <div className="cb-banner success"><span className="tag">In production</span><span>Deposit cleared on {fmtDate(project.started_at)}. When the work is done, mark it complete to issue the {100 - cfg.rules.depositPercent}% balance invoice (T&amp;C 4.3).</span></div>;
-        actions = <button className="cb-btn primary" onClick={() => setConfirm(true)}>Mark complete → issue balance invoice</button>;
+        banner = <div className="cb-banner success"><span className="tag">In production</span><span>Deposit cleared on {fmtDate(project.started_at)}. When the work is ready, issue the {100 - cfg.rules.depositPercent}% balance invoice (T&amp;C 4.3).</span></div>;
+        actions = <button className="cb-btn primary" onClick={() => setConfirm(true)}>Work ready → issue balance invoice</button>;
         doc = <DocSheet kind="statement" deal={d} compact />;
       } else if (project.status === 'complete' && !balancePaid) {
-        banner = <div className="cb-banner info"><span className="tag">Complete</span><span>Project marked complete on {fmtDate(project.completed_at)}. Balance invoice <b>{balance?.number}</b> was created (T&amp;C 4.3).</span></div>;
+        banner = <div className="cb-banner info"><span className="tag">Work ready</span><span>Work marked ready on {fmtDate(project.completed_at)}. Balance invoice <b>{balance?.number}</b> was created (T&amp;C 4.3).</span></div>;
         const reminder = mailto(d.client?.email, `Your balance invoice ${balance?.number}`, `Hi ${firstName(d.client)},\n\nGreat news: your project is complete. The balance of ${money(balance?.balance_due)} (invoice ${balance?.number}) is now due. We release your final files as soon as payment reflects.\n\nPay by EFT or cash deposit using ${balance?.number} as reference:\n${cfg.banks.map((b) => `${b.bank}: ${b.accountName}, ${b.accountNumber}`).join('\n')}\n\nKind regards,\n${cfg.company.name}`);
         actions = <><button className="cb-btn primary" onClick={() => nav(to(`invoices/${balance.id}/pay`))}>Record Payment</button><button className="cb-btn" onClick={() => nav(to(`invoices/${balance.id}/send`))}>Email balance invoice</button><button className="cb-btn" disabled title="Unlocks after the balance is paid">Release final files</button></>;
         doc = balance && <DocSheet kind="invoice" deal={d} invoice={balance} compact />;
@@ -62,7 +62,7 @@ export default function ProjectView() {
             <div className="cb-canvas" style={{ padding: 16, borderRadius: 10, border: '1px solid var(--line)' }}>{doc}</div>
           </div>
           {confirm && (
-            <Modal title="Mark project complete?" onClose={() => setConfirm(false)} footer={<><button className="cb-btn ghost" onClick={() => setConfirm(false)}>Cancel</button><button className="cb-btn primary" onClick={async () => { setConfirm(false); await run(() => api.completeProject(project.id), 'Balance invoice created'); }}>Complete &amp; issue invoice</button></>}>
+            <Modal title="Issue the balance invoice?" onClose={() => setConfirm(false)} footer={<><button className="cb-btn ghost" onClick={() => setConfirm(false)}>Cancel</button><button className="cb-btn primary" onClick={async () => { setConfirm(false); await run(() => api.completeProject(project.id), 'Balance invoice created'); }}>Issue balance invoice</button></>}>
               <div>This issues the balance invoice for <b>{money(d.quote.total - d.received)}</b> to {d.client?.display_name}. Final files stay locked until it is paid (T&amp;C 4.3).</div>
             </Modal>
           )}
