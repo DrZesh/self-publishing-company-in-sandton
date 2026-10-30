@@ -155,7 +155,7 @@ export function ProjectsList() {
                   const d = buildDeal(db, db.quotes.find((q) => q.id === p.quote_id));
                   return (
                     <tr key={p.id} onClick={() => nav(to(`projects/${p.id}`))}>
-                      <td><div className="who">{p.title}</div><div className="sub">{d.quote.number}</div></td><td>{d.client?.display_name}</td><td><Badge status={p.status} /></td><td>{p.project_completed_at?<span className="cb-badge success">Project Completed</span>:<span className="cb-help">Awaiting service completion / final handover</span>}</td><td className="r">{num(d.outstanding)}</td>
+                      <td><div className="who">{p.title}</div><div className="sub">{d.quote.number}</div></td><td>{d.client?.display_name}</td><td><Badge status={p.status} /></td><td>{p.review_requested_at?<span className="cb-badge success">Google review requested</span>:p.project_completed_at?<span className="cb-badge success">Delivered / collected</span>:<span className="cb-help">Awaiting service completion / final handover</span>}</td><td className="r">{num(d.outstanding)}</td>
                     </tr>);
                 })}</tbody></table>
             )}

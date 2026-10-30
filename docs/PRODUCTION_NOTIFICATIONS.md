@@ -1,3 +1,15 @@
+# Current production action behaviour
+
+Final service delivery / collection marks fulfilment complete but sends no Google review request automatically. The last production stage is now **Request Google Review**. Staff select it once; the recipient name and email come from the project's saved client. Existing completion emails retain their original event key so they cannot be sent twice. The project-wide template remains editable under Production email templates.
+
+The authenticated `billingProductionAction` Edge Function queues the requested action using the caller's staff RPC, then immediately dispatches only that job. Existing cron handles deferred / failed retries using the same immutable provider payload and idempotency key. Safe retries cannot claim an active lease twice. No credentials are exposed to the browser.
+
+The file area supports private uploads, confirmed HTTPS links, separate review and agreed-delivery selections, saved instructions, previews, deliberate review-file sends and delivery-file sends for all four services, including printing. A printing file email never confirms physical delivery of books. Every send validates project/service/purpose and storage availability on the server. The client portal only exposes released files belonging to that project capability. The resource lookup's PL/pgSQL record/alias ambiguity is fixed. Uploads resolve file type from the supported extension when browsers omit MIME metadata.
+
+To use: choose file purpose, upload or save a named HTTPS link, select saved files, add review or delivery instructions, then preview and send. Saving review settings can release a stage email held for missing materials; the new direct review-file button works even when the current stage has no automatic review email. Open links / temporary download links are available to staff.
+
+The older implementation notes below describe the original migration. This section supersedes their references to automatic project completion emails. No migration backfills or sends client messages.
+
 # Creative Books service workflows
 
 The production catalogue now follows the attached specification exactly: Printing has 8 stages, Book Cover Design 6, Typesetting 3 and Book Editing 9. The 26 default subject lines and messages are stored in `cb_service_email_templates` and editable at `/admin/billing/templates`, also linked from the existing Email Templates settings page. The source fixture is `supabase/fixtures/service-workflows.json`.
